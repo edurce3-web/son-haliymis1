@@ -1,5 +1,5 @@
-export const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
-export const WS_BASE_URL = import.meta.env.VITE_WS_URL || API_BASE_URL.replace('http', 'ws').replace('/api', '');
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.edurce.com/api';
+export const WS_BASE_URL = import.meta.env.VITE_WS_URL || 'wss://api.edurce.com';
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
   return {
@@ -23,7 +23,7 @@ export const getCourseImageUrl = (courseId?: number | string, imagePath?: string
 
   // Eğer zaten proxy URL ise doğrudan döndür
   if (typeof imagePath === 'string' && imagePath.includes('/media/course-image/')) {
-    return imagePath.startsWith('http') ? imagePath : `${API_BASE_URL.replace('/api', '')}${imagePath}`;
+    return imagePath.startsWith('http') ? imagePath : `https://api.edurce.com${imagePath}`;
   }
 
   // Eğer local path / relative path ise (ör: /uploads/... veya /course-images/...)
@@ -37,7 +37,7 @@ export const getCourseImageUrl = (courseId?: number | string, imagePath?: string
     imagePath.includes('neuralakademi') ||
     imagePath.includes('platform-kurs-kapak')
   )) {
-    return `${API_BASE_URL.replace('/api', '')}/api/media/course-image/${courseId}`;
+    return `https://api.edurce.com/api/media/course-image/${courseId}`;
   }
 
   // Diğer durumlarda (harici URL vb.) olduğu gibi döndür

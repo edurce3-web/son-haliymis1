@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import CourseCard from "@/components/instructor/CourseCard";
 import CourseForm from "@/components/instructor/CourseForm";
 import InstructorStats from "@/components/instructor/InstructorStats";
+import { apiRequest } from "@/lib/api";
 
 const InstructorCourses = () => {
   const { isAuthenticated, user } = useAuth();
@@ -32,6 +33,7 @@ const InstructorCourses = () => {
     title: "",
     description: "",
     category: "",
+    subcategory: "",
     level: "",
     price: "",
     curriculum: [{ title: "", videoFile: null, documentFiles: [] }] as LessonItem[],
@@ -50,7 +52,7 @@ const InstructorCourses = () => {
         if (r1.ok) {
           const d = await r1.json();
           setStats({
-            total_courses: 0, // hesaplamayı kurs listesinden yapacağız
+            total_courses: 0, 
             total_students: d.total_students || 0,
             average_rating: d.average_rating ?? null,
             total_revenue: d.total_revenue || 0,
@@ -131,19 +133,44 @@ const InstructorCourses = () => {
     }
   };
 
-  const handleSaveCourse = () => {
-    toast.success("Kurs başarıyla kaydedildi!", {
-      description: "Kursunuz incelendikten sonra yayınlanacak."
-    });
-    setNewCourseStep(1);
-    setNewCourse({
-      title: "",
-      description: "",
-      category: "",
-      level: "",
-      price: "",
-      curriculum: [{ title: "", videoFile: null, documentFiles: [] }],
-    });
+  const handleSaveCourse = async () => {
+    try {
+      setLoading(true);
+      const courseData = {
+        title: newCourse.title,
+        description: newCourse.description,
+        category_id: parseInt(newCourse.category),
+        subcategory_id: newCourse.subcategory ? parseInt(newCourse.subcategory) : null,
+        level: newCourse.level,
+        price: parseFloat(newCourse.price || "0"),
+        status: 'draft'
+      };
+
+      const response = await apiRequest('/courses', {
+        method: 'POST',
+        body: JSON.stringify(courseData)
+      });
+
+      toast.success("Kurs başarıyla kaydedildi!", {
+        description: "Kursunuz incelendikten sonra yayınlanacak."
+      });
+      
+      setNewCourseStep(1);
+      setNewCourse({
+        title: "",
+        description: "",
+        category: "",
+        subcategory: "",
+        level: "",
+        price: "",
+        curriculum: [{ title: "", videoFile: null, documentFiles: [] }],
+      });
+      setActiveTab("courses");
+    } catch (error: any) {
+      toast.error("Hata: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -191,6 +218,7 @@ const InstructorCourses = () => {
                 title: newCourse.title,
                 description: newCourse.description,
                 category: newCourse.category,
+                subcategory: newCourse.subcategory,
                 level: newCourse.level,
                 price: newCourse.price
               }}

@@ -30,7 +30,7 @@ import { formatPrice } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = 'https://api.edurce.com/api';
 
 export const Checkout: React.FC = () => {
   const navigate = useNavigate();

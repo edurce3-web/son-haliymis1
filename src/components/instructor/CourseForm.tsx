@@ -66,10 +66,26 @@ const CourseForm: React.FC<CourseFormProps> = ({
                   <SelectValue placeholder="Kategori seçin" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="programming">Programlama</SelectItem>
-                  <SelectItem value="design">Tasarım</SelectItem>
-                  <SelectItem value="business">İş Dünyası</SelectItem>
-                  <SelectItem value="marketing">Pazarlama</SelectItem>
+                  <SelectItem value="1">Yazılım</SelectItem>
+                  <SelectItem value="2">Tasarım</SelectItem>
+                  <SelectItem value="3">İş Dünyası</SelectItem>
+                  <SelectItem value="4">Pazarlama</SelectItem>
+                  <SelectItem value="5">Kişisel Gelişim</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="subcategory">Alt Kategori (Opsiyonel)</Label>
+              <Select value={course.subcategory || ""} onValueChange={(value) => onInputChange('subcategory', value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Alt kategori seçin" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="6">Web Geliştirme</SelectItem>
+                  <SelectItem value="7">Mobil Geliştirme</SelectItem>
+                  <SelectItem value="8">Grafik Tasarım</SelectItem>
+                  <SelectItem value="9">UI/UX Tasarım</SelectItem>
+                  <SelectItem value="10">Dijital Pazarlama</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -80,9 +96,9 @@ const CourseForm: React.FC<CourseFormProps> = ({
                   <SelectValue placeholder="Seviye seçin" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="beginner">Başlangıç</SelectItem>
-                  <SelectItem value="intermediate">Orta</SelectItem>
-                  <SelectItem value="advanced">İleri</SelectItem>
+                  <SelectItem value="Başlangıç">Başlangıç</SelectItem>
+                  <SelectItem value="Orta">Orta</SelectItem>
+                  <SelectItem value="İleri">İleri</SelectItem>
                 </SelectContent>
               </Select>
             </div>
