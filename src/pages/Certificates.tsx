@@ -28,7 +28,7 @@ const Certificates = () => {
     const { data, isLoading } = useQuery({
         queryKey: ['certificates'],
         queryFn: async () => {
-            const r = await fetch(`${API_BASE_URL}/certificates', {
+            const r = await fetch(`${API_BASE_URL}/certificates`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             if (!r.ok) return { certificates: [] };

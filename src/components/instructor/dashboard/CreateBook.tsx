@@ -22,7 +22,7 @@ export function CreateBook() {
     // ─── Mutation ──────────────────────────────────────────────────────────────
     const createDbMutation = useMutation({
         mutationFn: async () => {
-            const r = await fetch(`${API_BASE_URL}/instructor/books', {
+            const r = await fetch(`${API_BASE_URL}/instructor/books`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

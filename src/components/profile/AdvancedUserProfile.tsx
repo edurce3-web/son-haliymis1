@@ -73,7 +73,7 @@ export const AdvancedUserProfile: React.FC = () => {
   const { data: profile, isLoading } = useQuery({
     queryKey: ['user-profile', user?.id],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/profile', {
+      const response = await fetch(`${API_BASE_URL}/profile`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -84,7 +84,7 @@ export const AdvancedUserProfile: React.FC = () => {
   const { data: achievements } = useQuery({
     queryKey: ['user-achievements', user?.id],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/profile/achievements', {
+      const response = await fetch(`${API_BASE_URL}/profile/achievements`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -95,7 +95,7 @@ export const AdvancedUserProfile: React.FC = () => {
   const { data: settings } = useQuery({
     queryKey: ['user-settings', user?.id],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/profile/settings', {
+      const response = await fetch(`${API_BASE_URL}/profile/settings`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -105,7 +105,7 @@ export const AdvancedUserProfile: React.FC = () => {
   // Update profile mutation
   const updateProfileMutation = useMutation({
     mutationFn: async (profileData: Partial<UserProfile>) => {
-      const response = await fetch(`${API_BASE_URL}/profile', {
+      const response = await fetch(`${API_BASE_URL}/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ export const AdvancedUserProfile: React.FC = () => {
   // Update settings mutation
   const updateSettingsMutation = useMutation({
     mutationFn: async (settingsData: Partial<UserSettings>) => {
-      const response = await fetch(`${API_BASE_URL}/profile/settings', {
+      const response = await fetch(`${API_BASE_URL}/profile/settings`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ export const AdvancedUserProfile: React.FC = () => {
       const formData = new FormData();
       formData.append('avatar', file);
       
-      const response = await fetch(`${API_BASE_URL}/profile/avatar', {
+      const response = await fetch(`${API_BASE_URL}/profile/avatar`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
         body: formData

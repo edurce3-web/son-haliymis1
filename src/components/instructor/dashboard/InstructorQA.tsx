@@ -40,7 +40,7 @@ export function InstructorQA({ onBack }: InstructorQAProps) {
         queryKey: ['instructor-questions'],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_BASE_URL}/qa/instructor-questions', {
+            const res = await fetch(`${API_BASE_URL}/qa/instructor-questions`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('Sorular yüklenemedi');

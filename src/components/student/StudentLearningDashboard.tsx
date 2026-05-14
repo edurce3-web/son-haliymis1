@@ -174,7 +174,7 @@ export const StudentLearningDashboard: React.FC = () => {
   const { data: recommendations } = useQuery({
     queryKey: ['course-recommendations'],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/student/recommendations', {
+      const response = await fetch(`${API_BASE_URL}/student/recommendations`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();

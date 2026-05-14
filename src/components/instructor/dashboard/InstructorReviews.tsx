@@ -32,7 +32,7 @@ export function InstructorReviews() {
         queryKey: ['instructor-reviews'],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            const r = await fetch(`${API_BASE_URL}/instructor/reviews', { headers: { Authorization: `Bearer ${token}` } });
+            const r = await fetch(`${API_BASE_URL}/instructor/reviews`, { headers: { Authorization: `Bearer ${token}` } });
             if (!r.ok) throw new Error('Değerlendirmeler yüklenemedi');
             return r.json();
         }

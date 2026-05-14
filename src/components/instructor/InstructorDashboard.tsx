@@ -135,7 +135,7 @@ export const InstructorDashboard: React.FC = () => {
   const { data: courseAnalytics, isLoading: coursesLoading } = useQuery({
     queryKey: ['instructor-courses', user?.user_id],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/instructor/courses/analytics', {
+      const response = await fetch(`${API_BASE_URL}/instructor/courses/analytics`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       if (!response.ok) throw new Error('Failed to fetch courses');
@@ -177,7 +177,7 @@ export const InstructorDashboard: React.FC = () => {
   const { data: reviews, isLoading: reviewsLoading } = useQuery({
     queryKey: ['instructor-reviews', user?.user_id],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/instructor/reviews', {
+      const response = await fetch(`${API_BASE_URL}/instructor/reviews`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       if (!response.ok) throw new Error('Failed to fetch reviews');

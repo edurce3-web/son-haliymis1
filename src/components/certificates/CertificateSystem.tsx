@@ -100,7 +100,7 @@ export const CertificateSystem: React.FC = () => {
   const { data: templates } = useQuery({
     queryKey: ['certificate-templates'],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/certificates/templates', {
+      const response = await fetch(`${API_BASE_URL}/certificates/templates`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -110,7 +110,7 @@ export const CertificateSystem: React.FC = () => {
   // Generate certificate mutation
   const generateCertificateMutation = useMutation({
     mutationFn: async ({ courseId, templateId }: { courseId: number; templateId: string }) => {
-      const response = await fetch(`${API_BASE_URL}/certificates/generate', {
+      const response = await fetch(`${API_BASE_URL}/certificates/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

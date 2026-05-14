@@ -20,7 +20,7 @@ export const StudentList: React.FC = () => {
         queryKey: ['instructor-students'],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_BASE_URL}/instructor/students', {
+            const res = await fetch(`${API_BASE_URL}/instructor/students`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('Öğrenci listesi alınamadı');

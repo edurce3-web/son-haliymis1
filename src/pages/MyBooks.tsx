@@ -13,7 +13,7 @@ const MyBooks = () => {
     const { data, isLoading } = useQuery({
         queryKey: ['my-books'],
         queryFn: async () => {
-            const r = await fetch(`${API_BASE_URL}/my-books', {
+            const r = await fetch(`${API_BASE_URL}/my-books`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             if (!r.ok) return { books: [] };

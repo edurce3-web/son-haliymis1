@@ -144,7 +144,7 @@ export const CourseMarketplace: React.FC = () => {
   // Add to cart function
   const addToCart = async (courseId: number) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/cart/add', {
+      const response = await fetch(`${API_BASE_URL}/cart/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

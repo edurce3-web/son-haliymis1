@@ -133,7 +133,7 @@ export const NotificationSystem: React.FC = () => {
   const { data: templates } = useQuery({
     queryKey: ['notification-templates'],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/notifications/templates', {
+      const response = await fetch(`${API_BASE_URL}/notifications/templates`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -203,7 +203,7 @@ export const NotificationSystem: React.FC = () => {
       delivery_methods: string[];
       scheduled_for?: string;
     }) => {
-      const response = await fetch(`${API_BASE_URL}/notifications/send', {
+      const response = await fetch(`${API_BASE_URL}/notifications/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

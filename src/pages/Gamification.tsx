@@ -37,7 +37,7 @@ const Gamification = () => {
     const { data: profile } = useQuery({
         queryKey: ['gamification-profile'],
         queryFn: async () => {
-            const r = await fetch(`${API_BASE_URL}/gamification/profile', {
+            const r = await fetch(`${API_BASE_URL}/gamification/profile`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             if (!r.ok) return { xp: 0, level: 1, streak_days: 0 };
@@ -48,7 +48,7 @@ const Gamification = () => {
     const { data: badgesData } = useQuery({
         queryKey: ['gamification-badges'],
         queryFn: async () => {
-            const r = await fetch(`${API_BASE_URL}/gamification/badges', {
+            const r = await fetch(`${API_BASE_URL}/gamification/badges`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             if (!r.ok) return { badges: [] };
@@ -59,7 +59,7 @@ const Gamification = () => {
     const { data: lbData } = useQuery({
         queryKey: ['gamification-leaderboard'],
         queryFn: async () => {
-            const r = await fetch(`${API_BASE_URL}/gamification/leaderboard', {
+            const r = await fetch(`${API_BASE_URL}/gamification/leaderboard`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             if (!r.ok) return { leaderboard: [] };

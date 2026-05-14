@@ -69,7 +69,7 @@ const NotesTab: React.FC<{ courseId: number; lessonId: number | null }> = ({ cou
 
     const addMutation = useMutation({
         mutationFn: async () => {
-            const r = await fetch(`${API_BASE_URL}/notes', {
+            const r = await fetch(`${API_BASE_URL}/notes`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` },
                 body: JSON.stringify({ course_id: courseId, lesson_id: lessonId, content: draft })

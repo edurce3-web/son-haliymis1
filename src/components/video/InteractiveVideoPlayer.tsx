@@ -150,7 +150,7 @@ export default function InteractiveVideoPlayer({
   const trackVideoAnalytics = async (watchTime: number, completionPercentage: number) => {
     try {
       const token = localStorage.getItem('token');
-      await fetch(`${API_BASE_URL}/videos/analytics', {
+      await fetch(`${API_BASE_URL}/videos/analytics`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -219,7 +219,7 @@ export default function InteractiveVideoPlayer({
   const addBookmark = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/videos/bookmarks', {
+      const response = await fetch(`${API_BASE_URL}/videos/bookmarks`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -246,7 +246,7 @@ export default function InteractiveVideoPlayer({
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/videos/comments', {
+      const response = await fetch(`${API_BASE_URL}/videos/comments`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -274,7 +274,7 @@ export default function InteractiveVideoPlayer({
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/videos/notes', {
+      const response = await fetch(`${API_BASE_URL}/videos/notes`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

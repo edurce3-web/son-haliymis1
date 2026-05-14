@@ -129,7 +129,7 @@ export const PaymentSystem: React.FC = () => {
   const { data: cartData, isLoading: cartLoading } = useQuery({
     queryKey: ['cart'],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/cart', {
+      const response = await fetch(`${API_BASE_URL}/cart`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -140,7 +140,7 @@ export const PaymentSystem: React.FC = () => {
   const { data: availableCoupons } = useQuery({
     queryKey: ['available-coupons'],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/coupons/available', {
+      const response = await fetch(`${API_BASE_URL}/coupons/available`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -151,7 +151,7 @@ export const PaymentSystem: React.FC = () => {
   const { data: paymentMethods } = useQuery({
     queryKey: ['payment-methods'],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/payment-methods', {
+      const response = await fetch(`${API_BASE_URL}/payment-methods`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -176,7 +176,7 @@ export const PaymentSystem: React.FC = () => {
   // Apply coupon mutation
   const applyCouponMutation = useMutation({
     mutationFn: async (code: string) => {
-      const response = await fetch(`${API_BASE_URL}/coupons/apply', {
+      const response = await fetch(`${API_BASE_URL}/coupons/apply`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -200,7 +200,7 @@ export const PaymentSystem: React.FC = () => {
   // Process payment mutation
   const processPaymentMutation = useMutation({
     mutationFn: async (paymentData: any) => {
-      const response = await fetch(`${API_BASE_URL}/payments/process', {
+      const response = await fetch(`${API_BASE_URL}/payments/process`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
