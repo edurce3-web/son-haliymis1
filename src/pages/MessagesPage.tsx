@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import {
 import { API_BASE_URL } from '@/lib/api';
-    Send, Search, Loader2, MessageCircle, CheckCheck, Clock, GraduationCap
+import {
+  Send, Search, Loader2, MessageCircle, CheckCheck, Clock, GraduationCap
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';

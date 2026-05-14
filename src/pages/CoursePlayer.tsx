@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import {
 import { API_BASE_URL } from '@/lib/api';
-    Play,
+import {
+  Play,
     CheckCircle2,
     Circle,
     Menu,
