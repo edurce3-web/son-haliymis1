@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '@/lib/api';
 import {
   BookOpen,
   Clock,
@@ -109,7 +110,7 @@ export const EnhancedDashboard: React.FC = () => {
   const { data: stats } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: async () => {
-      const response = await fetch('/api/dashboard/stats', {
+      const response = await fetch(`${API_BASE_URL}/dashboard/stats', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -122,7 +123,7 @@ export const EnhancedDashboard: React.FC = () => {
   const { data: enrolledCourses } = useQuery({
     queryKey: ['enrolled-courses'],
     queryFn: async () => {
-      const response = await fetch('/api/dashboard/courses', {
+      const response = await fetch(`${API_BASE_URL}/dashboard/courses', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -135,7 +136,7 @@ export const EnhancedDashboard: React.FC = () => {
   const { data: achievements } = useQuery({
     queryKey: ['achievements'],
     queryFn: async () => {
-      const response = await fetch('/api/dashboard/achievements', {
+      const response = await fetch(`${API_BASE_URL}/dashboard/achievements', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -161,7 +162,7 @@ export const EnhancedDashboard: React.FC = () => {
   const { data: recentActivities } = useQuery({
     queryKey: ['recent-activities'],
     queryFn: async () => {
-      const response = await fetch('/api/dashboard/recent-activities', {
+      const response = await fetch(`${API_BASE_URL}/dashboard/recent-activities', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

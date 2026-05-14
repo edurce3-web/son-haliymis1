@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { API_BASE_URL } from '@/lib/api';
 import {
   TrendingUp,
   DollarSign,
@@ -138,7 +139,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
   const { data: courses, isLoading: coursesLoading } = useQuery({
     queryKey: ['instructor-courses'],
     queryFn: async () => {
-      const response = await fetch('/api/instructor/courses', {
+      const response = await fetch(`${API_BASE_URL}/instructor/courses', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -149,7 +150,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
   const { data: campaigns } = useQuery({
     queryKey: ['instructor-campaigns'],
     queryFn: async () => {
-      const response = await fetch('/api/instructor/campaigns', {
+      const response = await fetch(`${API_BASE_URL}/instructor/campaigns', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -159,7 +160,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
   // Create campaign mutation
   const createCampaignMutation = useMutation({
     mutationFn: async (campaignData: any) => {
-      const response = await fetch('/api/instructor/campaigns', {
+      const response = await fetch(`${API_BASE_URL}/instructor/campaigns', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

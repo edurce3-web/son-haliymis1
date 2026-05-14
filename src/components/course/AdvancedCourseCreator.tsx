@@ -13,6 +13,7 @@ import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { API_BASE_URL } from '@/lib/api';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -354,7 +355,7 @@ export default function AdvancedCourseCreator() {
     }
 
     try {
-      const res = await fetch('https://api.edurce.com/api/courses/create-initial', {
+      const res = await fetch(`${API_BASE_URL}/courses/create-initial`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -493,7 +494,7 @@ export default function AdvancedCourseCreator() {
     try {
       if (type === 'video' && dbId && token) {
         // Ders videosunu sil
-        const dRes = await fetch(`https://api.edurce.com/api/courses/lessons/${dbId}/video`, {
+        const dRes = await fetch(`${API_BASE_URL}/courses/lessons/${dbId}/video`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -520,7 +521,7 @@ export default function AdvancedCourseCreator() {
         }
       } else if (type === 'resource' && resourceId && token) {
         // Kaynağı sil
-        const dRes = await fetch(`https://api.edurce.com/api/lessons/resources/${resourceId}`, {
+        const dRes = await fetch(`${API_BASE_URL}/lessons/resources/${resourceId}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -540,8 +541,8 @@ export default function AdvancedCourseCreator() {
         // Bölüm veya ders silme
         if (dbId && token) {
           const endpoint = type === 'section'
-            ? `https://api.edurce.com/api/courses/sections/${dbId}`
-            : `https://api.edurce.com/api/courses/lessons/${dbId}`;
+            ? `${API_BASE_URL}/courses/sections/${dbId}`
+            : `${API_BASE_URL}/courses/lessons/${dbId}`;
 
           const res = await fetch(endpoint, {
             method: 'DELETE',
@@ -650,7 +651,7 @@ export default function AdvancedCourseCreator() {
 
       console.log('Sending payload:', payload);
 
-      const res = await fetch('https://api.edurce.com/api/courses/full-save', {
+      const res = await fetch(`${API_BASE_URL}/courses/full-save`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1213,12 +1214,12 @@ export default function AdvancedCourseCreator() {
         formData.append('courseSlug', courseSlug);
         formData.append('lessonId', lessonIdToSend);
 
-        result = await uploadWithProgress(`/api/upload/video`, formData);
+        result = await uploadWithProgress(`${API_BASE_URL}/upload/video`, formData);
       } else {
         // Slayt ve belge için birleştirilmiş endpoint kullan
         formData.append('resourceType', fileType);
 
-        result = await uploadWithProgress(`/api/courses/${courseSlug}/lessons/${selectedLesson.lessonId}/upload-resource`, formData);
+        result = await uploadWithProgress(`${API_BASE_URL}/courses/${courseSlug}/lessons/${selectedLesson.lessonId}/upload-resource`, formData);
       }
 
       // Update UI with successful upload
@@ -1297,7 +1298,7 @@ export default function AdvancedCourseCreator() {
     const checkStatus = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`/api/video/status/${dbLessonId}`, {
+        const response = await fetch(`${API_BASE_URL}/video/status/${dbLessonId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -1462,7 +1463,7 @@ export default function AdvancedCourseCreator() {
       const uploadCoverImage = (): Promise<any> => {
         return new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
-          xhr.open('POST', 'https://api.edurce.com/api/upload/course-cover');
+          xhr.open('POST', `${API_BASE_URL}/upload/course-cover`);
           xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
           xhr.upload.onprogress = (event) => {
@@ -1551,7 +1552,7 @@ export default function AdvancedCourseCreator() {
       const uploadPromoVideo = (): Promise<any> => {
         return new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
-          xhr.open('POST', 'https://api.edurce.com/api/upload/course-preview');
+          xhr.open('POST', `${API_BASE_URL}/upload/course-preview`);
           xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
           xhr.upload.onprogress = (event) => {
@@ -2003,7 +2004,7 @@ export default function AdvancedCourseCreator() {
                                           const token = localStorage.getItem('token');
                                           if (!token) return toast.error('Oturum açmanız gerekiyor');
                                           try {
-                                            const response = await fetch('https://api.edurce.com/api/courses/sections', {
+                                            const response = await fetch(`${API_BASE_URL}/courses/sections`, {
                                               method: 'POST',
                                               headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                                               body: JSON.stringify({
@@ -2095,7 +2096,7 @@ export default function AdvancedCourseCreator() {
                                                             const token = localStorage.getItem('token');
                                                             if (!token) return toast.error('Oturum açmanız gerekiyor');
                                                             try {
-                                                              const response = await fetch('https://api.edurce.com/api/courses/lessons', {
+                                                              const response = await fetch(`${API_BASE_URL}/courses/lessons`, {
                                                                 method: 'POST',
                                                                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                                                                 body: JSON.stringify({
@@ -2223,7 +2224,7 @@ export default function AdvancedCourseCreator() {
                                                                     const loadingToast = toast.loading(`${file.name} yükleniyor...`);
                                                                     
                                                                     try {
-                                                                      const res = await fetch('https://api.edurce.com/api/lessons/resource/upload', {
+                                                                      const res = await fetch(`${API_BASE_URL}/lessons/resource/upload`, {
                                                                         method: 'POST',
                                                                         headers: { 'Authorization': `Bearer ${token}` },
                                                                         body: formData
@@ -2716,7 +2717,7 @@ export default function AdvancedCourseCreator() {
                     }
                     try {
                       const token = localStorage.getItem('token');
-                      const res = await fetch('/api/coupons', {
+                      const res = await fetch(`${API_BASE_URL}/coupons`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                         body: JSON.stringify({

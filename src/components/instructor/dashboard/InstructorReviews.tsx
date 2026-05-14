@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import { API_BASE_URL } from '@/lib/api';
 
 function StarBar({ rating, total, count }: { rating: number; total: number; count: number }) {
     const pct = total > 0 ? Math.round((count / total) * 100) : 0;
@@ -31,7 +32,7 @@ export function InstructorReviews() {
         queryKey: ['instructor-reviews'],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            const r = await fetch('/api/instructor/reviews', { headers: { Authorization: `Bearer ${token}` } });
+            const r = await fetch(`${API_BASE_URL}/instructor/reviews', { headers: { Authorization: `Bearer ${token}` } });
             if (!r.ok) throw new Error('Değerlendirmeler yüklenemedi');
             return r.json();
         }

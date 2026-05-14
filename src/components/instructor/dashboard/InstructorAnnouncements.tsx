@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
+import { API_BASE_URL } from '@/lib/api';
     Megaphone, Plus, Pencil, Trash2, BookOpen, Loader2,
     Calendar, ChevronDown, ChevronUp, X, Check
 } from 'lucide-react';
@@ -24,7 +25,7 @@ export function InstructorAnnouncements() {
     const { data: coursesData } = useQuery({
         queryKey: ['instructor-courses-ann'],
         queryFn: async () => {
-            const r = await fetch('/api/instructor/courses', { headers: { Authorization: `Bearer ${token()}` } });
+            const r = await fetch(`${API_BASE_URL}/instructor/courses', { headers: { Authorization: `Bearer ${token()}` } });
             return r.json();
         }
     });
@@ -33,7 +34,7 @@ export function InstructorAnnouncements() {
     const { data, isLoading } = useQuery({
         queryKey: ['instructor-announcements'],
         queryFn: async () => {
-            const r = await fetch('/api/instructor/announcements', { headers: { Authorization: `Bearer ${token()}` } });
+            const r = await fetch(`${API_BASE_URL}/instructor/announcements', { headers: { Authorization: `Bearer ${token()}` } });
             if (!r.ok) throw new Error('Duyurular yüklenemedi');
             return r.json();
         }
@@ -42,7 +43,7 @@ export function InstructorAnnouncements() {
     // Oluştur
     const createMutation = useMutation({
         mutationFn: async () => {
-            const r = await fetch('/api/instructor/announcements', {
+            const r = await fetch(`${API_BASE_URL}/instructor/announcements', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` },
                 body: JSON.stringify({ course_id: Number(form.course_id), title: form.title, content: form.content })

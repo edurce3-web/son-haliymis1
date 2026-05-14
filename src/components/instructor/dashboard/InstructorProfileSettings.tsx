@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,7 +34,7 @@ export const InstructorProfileSettings: React.FC = () => {
         const fetchProfile = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('/api/instructor/profile', {
+                const res = await fetch(`${API_BASE_URL}/instructor/profile`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
@@ -92,7 +93,7 @@ export const InstructorProfileSettings: React.FC = () => {
         setSaving(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('/api/instructor/profile', {
+            const res = await fetch(`${API_BASE_URL}/instructor/profile`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,

@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
+import { API_BASE_URL } from '@/lib/api';
   Play, 
   Pause, 
   Volume2, 
@@ -149,7 +150,7 @@ export default function InteractiveVideoPlayer({
   const trackVideoAnalytics = async (watchTime: number, completionPercentage: number) => {
     try {
       const token = localStorage.getItem('token');
-      await fetch('/api/videos/analytics', {
+      await fetch(`${API_BASE_URL}/videos/analytics', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -218,7 +219,7 @@ export default function InteractiveVideoPlayer({
   const addBookmark = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/videos/bookmarks', {
+      const response = await fetch(`${API_BASE_URL}/videos/bookmarks', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -245,7 +246,7 @@ export default function InteractiveVideoPlayer({
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/videos/comments', {
+      const response = await fetch(`${API_BASE_URL}/videos/comments', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -273,7 +274,7 @@ export default function InteractiveVideoPlayer({
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/videos/notes', {
+      const response = await fetch(`${API_BASE_URL}/videos/notes', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

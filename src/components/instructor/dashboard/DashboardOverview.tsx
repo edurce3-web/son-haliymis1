@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -30,7 +31,7 @@ export const DashboardOverview = () => {
                     navigate('/login');
                     return;
                 }
-                const res = await fetch('https://api.edurce.com/api/instructor/dashboard', {
+                const res = await fetch(`${API_BASE_URL}/instructor/dashboard`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 

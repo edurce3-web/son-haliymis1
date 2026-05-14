@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import {
+import { API_BASE_URL } from '@/lib/api';
     Search, Users, BookOpen, TrendingUp, Loader2,
     Calendar, GraduationCap
 } from 'lucide-react';
@@ -19,7 +20,7 @@ export const StudentList: React.FC = () => {
         queryKey: ['instructor-students'],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            const res = await fetch('/api/instructor/students', {
+            const res = await fetch(`${API_BASE_URL}/instructor/students', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('Öğrenci listesi alınamadı');

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
+import { API_BASE_URL } from '@/lib/api';
     MessageCircle,
     Send,
     CheckCircle2,
@@ -39,7 +40,7 @@ export function InstructorQA({ onBack }: InstructorQAProps) {
         queryKey: ['instructor-questions'],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            const res = await fetch('/api/qa/instructor-questions', {
+            const res = await fetch(`${API_BASE_URL}/qa/instructor-questions', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('Sorular yüklenemedi');

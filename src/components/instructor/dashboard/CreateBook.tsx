@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { API_BASE_URL } from '@/lib/api';
 
 export function CreateBook() {
     const qc = useQueryClient();
@@ -21,7 +22,7 @@ export function CreateBook() {
     // ─── Mutation ──────────────────────────────────────────────────────────────
     const createDbMutation = useMutation({
         mutationFn: async () => {
-            const r = await fetch('/api/instructor/books', {
+            const r = await fetch(`${API_BASE_URL}/instructor/books', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

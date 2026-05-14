@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -54,7 +55,7 @@ const Cart = () => {
         return;
       }
 
-      const response = await fetch('/api/cart', {
+      const response = await fetch(`${API_BASE_URL}/cart`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -87,7 +88,7 @@ const Cart = () => {
         return;
       }
 
-      const response = await fetch(`/api/cart/${courseId}`, {
+      const response = await fetch(`${API_BASE_URL}/cart/${courseId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

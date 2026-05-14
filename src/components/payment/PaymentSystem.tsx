@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { API_BASE_URL } from '@/lib/api';
 import {
   CreditCard,
   Wallet,
@@ -128,7 +129,7 @@ export const PaymentSystem: React.FC = () => {
   const { data: cartData, isLoading: cartLoading } = useQuery({
     queryKey: ['cart'],
     queryFn: async () => {
-      const response = await fetch('/api/cart', {
+      const response = await fetch(`${API_BASE_URL}/cart', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -139,7 +140,7 @@ export const PaymentSystem: React.FC = () => {
   const { data: availableCoupons } = useQuery({
     queryKey: ['available-coupons'],
     queryFn: async () => {
-      const response = await fetch('/api/coupons/available', {
+      const response = await fetch(`${API_BASE_URL}/coupons/available', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -150,7 +151,7 @@ export const PaymentSystem: React.FC = () => {
   const { data: paymentMethods } = useQuery({
     queryKey: ['payment-methods'],
     queryFn: async () => {
-      const response = await fetch('/api/payment-methods', {
+      const response = await fetch(`${API_BASE_URL}/payment-methods', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -175,7 +176,7 @@ export const PaymentSystem: React.FC = () => {
   // Apply coupon mutation
   const applyCouponMutation = useMutation({
     mutationFn: async (code: string) => {
-      const response = await fetch('/api/coupons/apply', {
+      const response = await fetch(`${API_BASE_URL}/coupons/apply', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -199,7 +200,7 @@ export const PaymentSystem: React.FC = () => {
   // Process payment mutation
   const processPaymentMutation = useMutation({
     mutationFn: async (paymentData: any) => {
-      const response = await fetch('/api/payments/process', {
+      const response = await fetch(`${API_BASE_URL}/payments/process', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

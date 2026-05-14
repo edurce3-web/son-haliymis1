@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { API_BASE_URL } from '@/lib/api';
 import {
   Bell,
   BellRing,
@@ -132,7 +133,7 @@ export const NotificationSystem: React.FC = () => {
   const { data: templates } = useQuery({
     queryKey: ['notification-templates'],
     queryFn: async () => {
-      const response = await fetch('/api/notifications/templates', {
+      const response = await fetch(`${API_BASE_URL}/notifications/templates', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -202,7 +203,7 @@ export const NotificationSystem: React.FC = () => {
       delivery_methods: string[];
       scheduled_for?: string;
     }) => {
-      const response = await fetch('/api/notifications/send', {
+      const response = await fetch(`${API_BASE_URL}/notifications/send', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { API_BASE_URL } from '@/lib/api';
 import {
   Award,
   Download,
@@ -99,7 +100,7 @@ export const CertificateSystem: React.FC = () => {
   const { data: templates } = useQuery({
     queryKey: ['certificate-templates'],
     queryFn: async () => {
-      const response = await fetch('/api/certificates/templates', {
+      const response = await fetch(`${API_BASE_URL}/certificates/templates', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -109,7 +110,7 @@ export const CertificateSystem: React.FC = () => {
   // Generate certificate mutation
   const generateCertificateMutation = useMutation({
     mutationFn: async ({ courseId, templateId }: { courseId: number; templateId: string }) => {
-      const response = await fetch('/api/certificates/generate', {
+      const response = await fetch(`${API_BASE_URL}/certificates/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

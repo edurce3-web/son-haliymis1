@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { API_BASE_URL } from '@/lib/api';
 import {
     BookOpen, ChevronRight, Download, BookMarked,
     ShoppingBag, User2, Calendar, FileText, Tag
@@ -12,7 +13,7 @@ const MyBooks = () => {
     const { data, isLoading } = useQuery({
         queryKey: ['my-books'],
         queryFn: async () => {
-            const r = await fetch('/api/my-books', {
+            const r = await fetch(`${API_BASE_URL}/my-books', {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             if (!r.ok) return { books: [] };

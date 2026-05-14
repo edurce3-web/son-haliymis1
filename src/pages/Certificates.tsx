@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '@/lib/api';
 import {
     Award, CheckCircle, ChevronRight, Download,
     BookOpen, FileImage, FileText, Eye, Loader2,
@@ -27,7 +28,7 @@ const Certificates = () => {
     const { data, isLoading } = useQuery({
         queryKey: ['certificates'],
         queryFn: async () => {
-            const r = await fetch('/api/certificates', {
+            const r = await fetch(`${API_BASE_URL}/certificates', {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             if (!r.ok) return { certificates: [] };

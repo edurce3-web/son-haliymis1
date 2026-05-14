@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
 import { VideoPlayer } from '@/components/video/VideoPlayer';
-import { coursesAPI, cartAPI, enrollmentAPI, reviewsAPI, qaAPI, getCourseImageUrl } from '@/lib/api';
+import { coursesAPI, cartAPI, enrollmentAPI, reviewsAPI, qaAPI, getCourseImageUrl, API_BASE_URL } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -71,14 +71,13 @@ export const CourseDetailPage = () => {
         return coursesAPI.getCourse(Number(courseIdentifier));
       }
       // Two-step: resolve slug → course_id, then fetch full data
-      const slugRes = await fetch(`/api/courses/slug/${encodeURIComponent(courseIdentifier)}`);
+      const slugRes = await fetch(`${API_BASE_URL}/courses/slug/${encodeURIComponent(courseIdentifier)}`);
       if (!slugRes.ok) throw new Error('Kurs bulunamadı');
-      // The slug endpoint redirects to /api/courses/:id which returns {course: {...}}
       const data = await slugRes.json();
-      // If redirect was followed and we got a full course response
-      if (data?.course) return data;
-      // If for some reason we only got course_id, fetch by ID
+      // Slug endpoint returns { course_id }, then fetch full course data
       if (data?.course_id) return coursesAPI.getCourse(data.course_id);
+      // If full course response was returned directly
+      if (data?.course) return data;
       throw new Error('Kurs verisi alınamadı');
     },
     enabled: !!courseIdentifier,

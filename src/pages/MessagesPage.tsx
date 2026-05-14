@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
+import { API_BASE_URL } from '@/lib/api';
     Send, Search, Loader2, MessageCircle, CheckCheck, Clock, GraduationCap
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -56,7 +57,7 @@ export default function MessagesPage() {
     const { data: convData, isLoading: convLoading } = useQuery({
         queryKey: ['student-conversations'],
         queryFn: async () => {
-            const r = await fetch('/api/instructor/messages/conversations', {
+            const r = await fetch(`${API_BASE_URL}/instructor/messages/conversations', {
                 headers: { Authorization: `Bearer ${token()}` }
             });
             if (!r.ok) throw new Error();
@@ -83,7 +84,7 @@ export default function MessagesPage() {
     const { data: instructorsData } = useQuery({
         queryKey: ['student-msg-instructors'],
         queryFn: async () => {
-            const r = await fetch('/api/student/messages/instructors/list', {
+            const r = await fetch(`${API_BASE_URL}/student/messages/instructors/list', {
                 headers: { Authorization: `Bearer ${token()}` }
             });
             return r.json();
@@ -93,7 +94,7 @@ export default function MessagesPage() {
     // Mesaj gönder
     const sendMutation = useMutation({
         mutationFn: async () => {
-            const r = await fetch('/api/instructor/messages/send', {
+            const r = await fetch(`${API_BASE_URL}/instructor/messages/send', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` },
                 body: JSON.stringify({ receiver_id: selectedUserId, message_content: messageText })

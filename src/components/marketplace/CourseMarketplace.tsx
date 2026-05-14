@@ -12,6 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { useQuery } from '@tanstack/react-query';
+import { API_BASE_URL } from '@/lib/api';
 import {
   Search,
   Filter,
@@ -143,7 +144,7 @@ export const CourseMarketplace: React.FC = () => {
   // Add to cart function
   const addToCart = async (courseId: number) => {
     try {
-      const response = await fetch('/api/cart/add', {
+      const response = await fetch(`${API_BASE_URL}/cart/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

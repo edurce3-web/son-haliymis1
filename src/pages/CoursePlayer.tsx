@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
+import { API_BASE_URL } from '@/lib/api';
     Play,
     CheckCircle2,
     Circle,
@@ -68,7 +69,7 @@ const NotesTab: React.FC<{ courseId: number; lessonId: number | null }> = ({ cou
 
     const addMutation = useMutation({
         mutationFn: async () => {
-            const r = await fetch('/api/notes', {
+            const r = await fetch(`${API_BASE_URL}/notes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` },
                 body: JSON.stringify({ course_id: courseId, lesson_id: lessonId, content: draft })

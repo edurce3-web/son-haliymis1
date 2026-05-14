@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { API_BASE_URL } from '@/lib/api';
 
 export function EditBook() {
     const { id } = useParams<{ id: string }>();
@@ -24,7 +25,7 @@ export function EditBook() {
     const [subcategories, setSubcategories] = useState<any[]>([]);
 
     useEffect(() => {
-        fetch('/api/categories').then(r => r.json()).then(data => {
+        fetch(`${API_BASE_URL}/categories').then(r => r.json()).then(data => {
             setCategories(Array.isArray(data) ? data.filter((c: any) => !c.parent_category_id) : []);
         }).catch(console.error);
     }, []);
@@ -146,7 +147,7 @@ export function EditBook() {
             const fd = new FormData();
             fd.append('cover', file);
             fd.append('bookId', id!);
-            const r = await fetch('/api/instructor/upload-book-cover', {
+            const r = await fetch(`${API_BASE_URL}/instructor/upload-book-cover', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token()}` },
                 body: fd
@@ -162,7 +163,7 @@ export function EditBook() {
             const fd = new FormData();
             fd.append('bookFile', file);
             fd.append('bookId', id!);
-            const r = await fetch('/api/instructor/upload-book-file', {
+            const r = await fetch(`${API_BASE_URL}/instructor/upload-book-file', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token()}` },
                 body: fd

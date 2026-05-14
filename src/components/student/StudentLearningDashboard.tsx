@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
+import { API_BASE_URL } from '@/lib/api';
 import {
   BookOpen,
   Play,
@@ -173,7 +174,7 @@ export const StudentLearningDashboard: React.FC = () => {
   const { data: recommendations } = useQuery({
     queryKey: ['course-recommendations'],
     queryFn: async () => {
-      const response = await fetch('/api/student/recommendations', {
+      const response = await fetch(`${API_BASE_URL}/student/recommendations', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();

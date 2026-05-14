@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -37,7 +38,7 @@ const Favorites = () => {
       const token = localStorage.getItem('token');
       if (!token) { toast.error('Lütfen giriş yapın'); return; }
 
-      const response = await fetch('/api/favorites', {
+      const response = await fetch(`${API_BASE_URL}/favorites`, {
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
       });
 
@@ -64,7 +65,7 @@ const Favorites = () => {
       const token = localStorage.getItem('token');
       if (!token) { toast.error('Lütfen giriş yapın'); return; }
 
-      const response = await fetch(`/api/favorites/${courseId}`, {
+      const response = await fetch(`${API_BASE_URL}/favorites/${courseId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
       });
@@ -87,7 +88,7 @@ const Favorites = () => {
       if (!token) { toast.error('Lütfen giriş yapın'); return; }
 
       const courseId = course.course_id || course.id;
-      const response = await fetch('/api/cart', {
+      const response = await fetch(`${API_BASE_URL}/cart`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ course_id: courseId })
