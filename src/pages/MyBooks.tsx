@@ -115,7 +115,7 @@ const BookCard = ({ book, onRead }: { book: any; onRead: () => void }) => {
             <div className="relative aspect-[3/4] overflow-hidden bg-gradient-to-br from-violet-900/50 to-slate-800/50 cursor-pointer" onClick={onRead}>
                 {book.cover_image_path ? (
                     <img
-                        src={`/api/books/${book.book_id}/cover`}
+                        src={`${API_BASE_URL}/books/${book.book_id}/cover`}
                         alt={book.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
@@ -176,7 +176,7 @@ const BookCard = ({ book, onRead }: { book: any; onRead: () => void }) => {
                     </button>
                     {hasEpub && (
                         <a
-                            href={`/api/books/${book.book_id}/download`}
+                            href={`${API_BASE_URL}/books/${book.book_id}/download`}
                             className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 hover:text-emerald-300 text-xs font-bold rounded-xl transition-all"
                         >
                             <Download className="w-3.5 h-3.5" /> İndir

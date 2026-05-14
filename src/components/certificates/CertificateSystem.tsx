@@ -88,7 +88,7 @@ export const CertificateSystem: React.FC = () => {
   const { data: certificates, isLoading } = useQuery({
     queryKey: ['user-certificates', user?.user_id],
     queryFn: async () => {
-      const response = await fetch(`/api/certificates/user/${user?.user_id}`, {
+      const response = await fetch(`${API_BASE_URL}/certificates/user/${user?.user_id}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -138,7 +138,7 @@ export const CertificateSystem: React.FC = () => {
   // Verify certificate on blockchain
   const verifyCertificateMutation = useMutation({
     mutationFn: async (certificateId: string) => {
-      const response = await fetch(`/api/certificates/${certificateId}/verify-blockchain`, {
+      const response = await fetch(`${API_BASE_URL}/certificates/${certificateId}/verify-blockchain`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ export const CertificateSystem: React.FC = () => {
   // Verify certificate by hash
   const verifyByHashMutation = useMutation({
     mutationFn: async (hash: string) => {
-      const response = await fetch(`/api/certificates/verify/${hash}`, {
+      const response = await fetch(`${API_BASE_URL}/certificates/verify/${hash}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();

@@ -161,7 +161,7 @@ export const PaymentSystem: React.FC = () => {
   // Remove from cart mutation
   const removeFromCartMutation = useMutation({
     mutationFn: async (cartItemId: number) => {
-      const response = await fetch(`/api/cart/${cartItemId}`, {
+      const response = await fetch(`${API_BASE_URL}/cart/${cartItemId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });

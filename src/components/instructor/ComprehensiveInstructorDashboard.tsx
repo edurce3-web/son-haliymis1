@@ -128,7 +128,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['instructor-stats', selectedPeriod],
     queryFn: async () => {
-      const response = await fetch(`/api/instructor/stats?period=${selectedPeriod}`, {
+      const response = await fetch(`${API_BASE_URL}/instructor/stats?period=${selectedPeriod}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();

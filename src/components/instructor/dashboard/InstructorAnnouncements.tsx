@@ -63,7 +63,7 @@ export function InstructorAnnouncements() {
     // Güncelle
     const updateMutation = useMutation({
         mutationFn: async () => {
-            const r = await fetch(`/api/instructor/announcements/${editingId}`, {
+            const r = await fetch(`${API_BASE_URL}/instructor/announcements/${editingId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` },
                 body: JSON.stringify({ title: form.title, content: form.content })
@@ -84,7 +84,7 @@ export function InstructorAnnouncements() {
     // Sil
     const deleteMutation = useMutation({
         mutationFn: async (id: number) => {
-            const r = await fetch(`/api/instructor/announcements/${id}`, {
+            const r = await fetch(`${API_BASE_URL}/instructor/announcements/${id}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${token()}` }
             });

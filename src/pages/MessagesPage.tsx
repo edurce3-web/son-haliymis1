@@ -70,7 +70,7 @@ export default function MessagesPage() {
     const { data: msgData, isLoading: msgLoading } = useQuery({
         queryKey: ['student-messages', selectedUserId],
         queryFn: async () => {
-            const r = await fetch(`/api/instructor/messages/${selectedUserId}`, {
+            const r = await fetch(`${API_BASE_URL}/instructor/messages/${selectedUserId}`, {
                 headers: { Authorization: `Bearer ${token()}` }
             });
             if (!r.ok) throw new Error();

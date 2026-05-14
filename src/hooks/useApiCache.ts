@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { apiCache, getCacheKey, CACHE_TTL } from '@/utils/cache';
 
 interface UseApiCacheOptions {
@@ -82,7 +83,7 @@ export function useNavigationCache(userId?: number) {
   return useApiCache(
     getCacheKey.navigation(userId),
     async () => {
-      const response = await fetch('https://api.edurce.com/api/navigation/menu', {
+      const response = await fetch(`${API_BASE_URL}/navigation/menu`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json',
@@ -99,7 +100,7 @@ export function useSiteConfigCache() {
   return useApiCache(
     getCacheKey.siteConfig(),
     async () => {
-      const response = await fetch('https://api.edurce.com/api/site/config');
+      const response = await fetch(`${API_BASE_URL}/site/config`);
       if (!response.ok) throw new Error('Failed to fetch site config');
       return response.json();
     },
@@ -111,7 +112,7 @@ export function useFooterConfigCache() {
   return useApiCache(
     getCacheKey.footerConfig(),
     async () => {
-      const response = await fetch('https://api.edurce.com/api/site/footer');
+      const response = await fetch(`${API_BASE_URL}/site/footer`);
       if (!response.ok) throw new Error('Failed to fetch footer config');
       return response.json();
     },
@@ -129,7 +130,7 @@ export function useCoursesCache(page: number = 1, filters?: any) {
         ...filters
       });
       
-      const response = await fetch(`https://api.edurce.com/api/courses/search?${queryParams}`);
+      const response = await fetch(`${API_BASE_URL}/courses/search?${queryParams}`);
       if (!response.ok) throw new Error('Failed to fetch courses');
       return response.json();
     },
@@ -141,7 +142,7 @@ export function useHomepageContentCache() {
   return useApiCache(
     getCacheKey.homepageContent(),
     async () => {
-      const response = await fetch('https://api.edurce.com/api/homepage/content');
+      const response = await fetch(`${API_BASE_URL}/homepage/content`);
       if (!response.ok) throw new Error('Failed to fetch homepage content');
       return response.json();
     },

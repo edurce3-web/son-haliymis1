@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -20,7 +21,7 @@ const ProfileSettings: React.FC = () => {
         const fetchUserData = async () => {
             if (!user) return;
             try {
-                const response = await fetch(`https://api.edurce.com/api/users/${user.user_id}`, {
+                const response = await fetch(`${API_BASE_URL}/users/${user.user_id}`, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
                 if (response.ok) {
@@ -72,7 +73,7 @@ const ProfileSettings: React.FC = () => {
             const formDataUpload = new FormData();
             formDataUpload.append('profileImage', file, 'profile.jpg');
 
-            const response = await fetch('https://api.edurce.com/api/instructor/upload-profile-image', {
+            const response = await fetch(`${API_BASE_URL}/instructor/upload-profile-image`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -105,7 +106,7 @@ const ProfileSettings: React.FC = () => {
     const handleSave = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`https://api.edurce.com/api/users/${user?.user_id}`, {
+            const response = await fetch(`${API_BASE_URL}/users/${user?.user_id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,

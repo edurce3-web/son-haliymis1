@@ -122,7 +122,7 @@ export const InstructorDashboard: React.FC = () => {
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['instructor-stats', user?.user_id, selectedTimeRange],
     queryFn: async () => {
-      const response = await fetch(`/api/instructor/stats?range=${selectedTimeRange}`, {
+      const response = await fetch(`${API_BASE_URL}/instructor/stats?range=${selectedTimeRange}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       if (!response.ok) throw new Error('Failed to fetch stats');
@@ -149,8 +149,8 @@ export const InstructorDashboard: React.FC = () => {
     queryKey: ['instructor-students', user?.user_id, selectedCourse],
     queryFn: async () => {
       const url = selectedCourse
-        ? `/api/instructor/students?course_id=${selectedCourse}`
-        : '/api/instructor/students';
+        ? `${API_BASE_URL}/instructor/students?course_id=${selectedCourse}`
+        : `${API_BASE_URL}/instructor/students`;
       const response = await fetch(url, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
@@ -164,7 +164,7 @@ export const InstructorDashboard: React.FC = () => {
   const { data: revenueData, isLoading: revenueLoading } = useQuery({
     queryKey: ['instructor-revenue', user?.user_id, selectedTimeRange],
     queryFn: async () => {
-      const response = await fetch(`/api/instructor/revenue?range=${selectedTimeRange}`, {
+      const response = await fetch(`${API_BASE_URL}/instructor/revenue?range=${selectedTimeRange}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       if (!response.ok) throw new Error('Failed to fetch revenue');

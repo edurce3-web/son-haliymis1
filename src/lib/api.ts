@@ -37,7 +37,7 @@ export const getCourseImageUrl = (courseId?: number | string, imagePath?: string
     imagePath.includes('neuralakademi') ||
     imagePath.includes('platform-kurs-kapak')
   )) {
-    return `https://api.edurce.com/api/media/course-image/${courseId}`;
+    return `${API_BASE_URL}/media/course-image/${courseId}`;
   }
 
   // Diğer durumlarda (harici URL vb.) olduğu gibi döndür

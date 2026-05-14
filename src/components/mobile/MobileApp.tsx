@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -108,7 +109,7 @@ export const MobileApp: React.FC = () => {
   const { data: courses } = useQuery({
     queryKey: ['mobile-courses', user?.user_id],
     queryFn: async () => {
-      const response = await fetch(`/api/mobile/courses/${user?.user_id}`, {
+      const response = await fetch(`${API_BASE_URL}/mobile/courses/${user?.user_id}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -120,7 +121,7 @@ export const MobileApp: React.FC = () => {
   const { data: offlineContent } = useQuery({
     queryKey: ['offline-content', user?.user_id],
     queryFn: async () => {
-      const response = await fetch(`/api/mobile/offline-content/${user?.user_id}`, {
+      const response = await fetch(`${API_BASE_URL}/mobile/offline-content/${user?.user_id}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -143,7 +144,7 @@ export const MobileApp: React.FC = () => {
     try {
       setDownloadProgress(prev => ({ ...prev, [courseId]: 0 }));
       
-      const response = await fetch(`/api/mobile/download/${courseId}`, {
+      const response = await fetch(`${API_BASE_URL}/mobile/download/${courseId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

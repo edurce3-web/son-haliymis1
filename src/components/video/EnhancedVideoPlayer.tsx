@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -102,7 +103,7 @@ export const EnhancedVideoPlayer: React.FC<VideoPlayerProps> = ({
   const { data: notes } = useQuery({
     queryKey: ['video-notes', lessonId],
     queryFn: async () => {
-      const response = await fetch(`/api/lessons/${lessonId}/notes`, {
+      const response = await fetch(`${API_BASE_URL}/lessons/${lessonId}/notes`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -115,7 +116,7 @@ export const EnhancedVideoPlayer: React.FC<VideoPlayerProps> = ({
   const { data: bookmarks } = useQuery({
     queryKey: ['video-bookmarks', lessonId],
     queryFn: async () => {
-      const response = await fetch(`/api/lessons/${lessonId}/bookmarks`, {
+      const response = await fetch(`${API_BASE_URL}/lessons/${lessonId}/bookmarks`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -127,7 +128,7 @@ export const EnhancedVideoPlayer: React.FC<VideoPlayerProps> = ({
   // Add note mutation
   const addNoteMutation = useMutation({
     mutationFn: async (noteData: { timestamp: number; content: string }) => {
-      const response = await fetch(`/api/lessons/${lessonId}/notes`, {
+      const response = await fetch(`${API_BASE_URL}/lessons/${lessonId}/notes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +149,7 @@ export const EnhancedVideoPlayer: React.FC<VideoPlayerProps> = ({
   // Update note mutation
   const updateNoteMutation = useMutation({
     mutationFn: async ({ noteId, content }: { noteId: number; content: string }) => {
-      const response = await fetch(`/api/lessons/${lessonId}/notes/${noteId}`, {
+      const response = await fetch(`${API_BASE_URL}/lessons/${lessonId}/notes/${noteId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -168,7 +169,7 @@ export const EnhancedVideoPlayer: React.FC<VideoPlayerProps> = ({
   // Delete note mutation
   const deleteNoteMutation = useMutation({
     mutationFn: async (noteId: number) => {
-      const response = await fetch(`/api/lessons/${lessonId}/notes/${noteId}`, {
+      const response = await fetch(`${API_BASE_URL}/lessons/${lessonId}/notes/${noteId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -185,7 +186,7 @@ export const EnhancedVideoPlayer: React.FC<VideoPlayerProps> = ({
   // Add bookmark mutation
   const addBookmarkMutation = useMutation({
     mutationFn: async (bookmarkData: { timestamp: number; title: string; description?: string }) => {
-      const response = await fetch(`/api/lessons/${lessonId}/bookmarks`, {
+      const response = await fetch(`${API_BASE_URL}/lessons/${lessonId}/bookmarks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

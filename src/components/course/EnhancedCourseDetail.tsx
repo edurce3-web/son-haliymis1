@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -107,7 +108,7 @@ export const EnhancedCourseDetail: React.FC = () => {
   const { data: course, isLoading } = useQuery({
     queryKey: ['course', id],
     queryFn: async () => {
-      const response = await fetch(`/api/courses/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/courses/${id}`, {
         headers: isAuthenticated ? {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         } : {}
@@ -122,7 +123,7 @@ export const EnhancedCourseDetail: React.FC = () => {
   const { data: sections } = useQuery({
     queryKey: ['course-sections', id],
     queryFn: async () => {
-      const response = await fetch(`/api/courses/${id}/sections`);
+      const response = await fetch(`${API_BASE_URL}/courses/${id}/sections`);
       return response.json();
     },
     enabled: !!id,
@@ -132,7 +133,7 @@ export const EnhancedCourseDetail: React.FC = () => {
   const { data: reviews } = useQuery({
     queryKey: ['course-reviews', id],
     queryFn: async () => {
-      const response = await fetch(`/api/courses/${id}/reviews`);
+      const response = await fetch(`${API_BASE_URL}/courses/${id}/reviews`);
       return response.json();
     },
     enabled: !!id,
@@ -142,7 +143,7 @@ export const EnhancedCourseDetail: React.FC = () => {
   const favoritesMutation = useMutation({
     mutationFn: async () => {
       const method = course?.is_favorite ? 'DELETE' : 'POST';
-      const response = await fetch(`/api/favorites/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/favorites/${id}`, {
         method,
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -160,7 +161,7 @@ export const EnhancedCourseDetail: React.FC = () => {
   // Enroll mutation
   const enrollMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`/api/courses/${id}/enroll`, {
+      const response = await fetch(`${API_BASE_URL}/courses/${id}/enroll`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`

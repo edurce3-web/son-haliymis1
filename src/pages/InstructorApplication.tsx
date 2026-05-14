@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -101,6 +102,14 @@ const InstructorApplication = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
 
+  // If user is already an instructor, redirect immediately
+  useEffect(() => {
+    if (user && (user.role === 'instructor' || user.is_instructor)) {
+      navigate('/instructor', { replace: true });
+    }
+  }, [user, navigate]);
+
+
   const [formData, setFormData] = useState<InstructorApplicationData>({
     fullName: '',
     email: '',
@@ -147,7 +156,7 @@ const InstructorApplication = () => {
 
       // Sonra veritabanından detaylı bilgileri çekmeye çalış
       try {
-        const response = await fetch(`https://api.edurce.com/api/users/${user.user_id}`, {
+        const response = await fetch(`${API_BASE_URL}/users/${user.user_id}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -276,7 +285,7 @@ const InstructorApplication = () => {
       // Append blob as file, give it a name 'profile.jpg'
       formData.append('profileImage', blob, 'profile.jpg');
 
-      const response = await fetch('https://api.edurce.com/api/instructor/upload-profile-image', {
+      const response = await fetch(`${API_BASE_URL}/instructor/upload-profile-image`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -326,7 +335,7 @@ const InstructorApplication = () => {
     console.log('📊 Expertise length:', formData.expertise.length);
 
     try {
-      const response = await fetch('https://api.edurce.com/api/instructor/apply', {
+      const response = await fetch(`${API_BASE_URL}/instructor/apply`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from '@/lib/api';
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
@@ -46,8 +47,8 @@ const InstructorCourses = () => {
       try {
         setLoading(true);
         const [r1, r2] = await Promise.all([
-          fetch(`/api/instructors/${user.user_id}/overview`, { signal: controller.signal }),
-          fetch(`/api/instructors/${user.user_id}/courses`, { signal: controller.signal }),
+          fetch(`${API_BASE_URL}/instructors/${user.user_id}/overview`, { signal: controller.signal }),
+          fetch(`${API_BASE_URL}/instructors/${user.user_id}/courses`, { signal: controller.signal }),
         ]);
         if (r1.ok) {
           const d = await r1.json();

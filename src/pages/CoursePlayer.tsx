@@ -54,8 +54,8 @@ const NotesTab: React.FC<{ courseId: number; lessonId: number | null }> = ({ cou
     const token = () => localStorage.getItem('token');
 
     const url = lessonId
-        ? `/api/notes?course_id=${courseId}&lesson_id=${lessonId}`
-        : `/api/notes?course_id=${courseId}`;
+        ? `${API_BASE_URL}/notes?course_id=${courseId}&lesson_id=${lessonId}`
+        : `${API_BASE_URL}/notes?course_id=${courseId}`;
 
     const { data, isLoading } = useQuery({
         queryKey: ['course-notes', courseId, lessonId],
@@ -83,7 +83,7 @@ const NotesTab: React.FC<{ courseId: number; lessonId: number | null }> = ({ cou
 
     const updateMutation = useMutation({
         mutationFn: async (noteId: number) => {
-            const r = await fetch(`/api/notes/${noteId}`, {
+            const r = await fetch(`${API_BASE_URL}/notes/${noteId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` },
                 body: JSON.stringify({ content: editText })
@@ -96,7 +96,7 @@ const NotesTab: React.FC<{ courseId: number; lessonId: number | null }> = ({ cou
 
     const deleteMutation = useMutation({
         mutationFn: async (noteId: number) => {
-            await fetch(`/api/notes/${noteId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token()}` } });
+            await fetch(`${API_BASE_URL}/notes/${noteId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token()}` } });
         },
         onSuccess: () => qc.invalidateQueries({ queryKey: ['course-notes', courseId, lessonId] })
     });
@@ -174,7 +174,7 @@ const AnnouncementsTab: React.FC<{ courseId: number }> = ({ courseId }) => {
         queryKey: ['course-announcements', courseId],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            const r = await fetch(`/api/courses/${courseId}/announcements`, {
+            const r = await fetch(`${API_BASE_URL}/courses/${courseId}/announcements`, {
                 headers: token ? { Authorization: `Bearer ${token}` } : {}
             });
             if (!r.ok) return { announcements: [] };
@@ -294,7 +294,7 @@ const CoursePlayer = () => {
         queryKey: ['course-questions', id],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            const res = await fetch(`/api/courses/${id}/questions`, {
+            const res = await fetch(`${API_BASE_URL}/courses/${id}/questions`, {
                 headers: token ? { Authorization: `Bearer ${token}` } : {}
             });
             return res.json();
@@ -306,7 +306,7 @@ const CoursePlayer = () => {
     const { data: resourcesData, refetch: refetchResources } = useQuery({
         queryKey: ['lesson-resources', activeLessonId],
         queryFn: async () => {
-            const res = await fetch(`/api/lessons/${activeLessonId}/resources`);
+            const res = await fetch(`${API_BASE_URL}/lessons/${activeLessonId}/resources`);
             return res.json();
         },
         enabled: !!activeLessonId,
@@ -316,7 +316,7 @@ const CoursePlayer = () => {
     const askQuestionMutation = useMutation({
         mutationFn: async () => {
             const token = localStorage.getItem('token');
-            const res = await fetch(`/api/courses/${id}/questions`, {
+            const res = await fetch(`${API_BASE_URL}/courses/${id}/questions`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ title: questionTitle, content: questionContent, lessonId: activeLessonId })
@@ -338,7 +338,7 @@ const CoursePlayer = () => {
     const answerMutation = useMutation({
         mutationFn: async (questionId: number) => {
             const token = localStorage.getItem('token');
-            const res = await fetch(`/api/questions/${questionId}/answers`, {
+            const res = await fetch(`${API_BASE_URL}/questions/${questionId}/answers`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ content: answerContent })

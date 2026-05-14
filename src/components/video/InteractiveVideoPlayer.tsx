@@ -111,9 +111,9 @@ export default function InteractiveVideoPlayer({
       };
 
       const [bookmarksRes, commentsRes, notesRes] = await Promise.all([
-        fetch(`/api/videos/${videoId}/bookmarks`, { headers }),
-        fetch(`/api/videos/${videoId}/comments`, { headers }),
-        fetch(`/api/videos/${videoId}/notes`, { headers })
+        fetch(`${API_BASE_URL}/videos/${videoId}/bookmarks`, { headers }),
+        fetch(`${API_BASE_URL}/videos/${videoId}/comments`, { headers }),
+        fetch(`${API_BASE_URL}/videos/${videoId}/notes`, { headers })
       ]);
 
       const bookmarksData = await bookmarksRes.json();

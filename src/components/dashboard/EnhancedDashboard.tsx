@@ -149,7 +149,7 @@ export const EnhancedDashboard: React.FC = () => {
   const { data: activityData } = useQuery({
     queryKey: ['learning-activity', selectedPeriod],
     queryFn: async () => {
-      const response = await fetch(`/api/dashboard/activity?period=${selectedPeriod}`, {
+      const response = await fetch(`${API_BASE_URL}/dashboard/activity?period=${selectedPeriod}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

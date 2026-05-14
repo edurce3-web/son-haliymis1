@@ -541,7 +541,7 @@ export const CourseDetailPage = () => {
                     onClick={async () => {
                       setCouponLoading(true);
                       try {
-                        const res = await fetch(`/api/coupons/validate/${couponCode}`);
+                        const res = await fetch(`${API_BASE_URL}/coupons/validate/${couponCode}`);
                         const data = await res.json();
                         if (res.ok && data.valid) {
                           setAppliedCoupon(data.coupon);

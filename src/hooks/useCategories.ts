@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { API_BASE_URL } from '@/lib/api';
 
 export interface Category {
   id: number;
@@ -13,7 +14,7 @@ export const useCategories = () => {
   return useQuery({
     queryKey: ['categories'],
     queryFn: async (): Promise<Category[]> => {
-      const response = await fetch('https://api.edurce.com/api/categories');
+      const response = await fetch(`${API_BASE_URL}/categories`);
       if (!response.ok) {
         throw new Error('Failed to fetch categories');
       }
@@ -29,7 +30,7 @@ export const useCoursesByCategory = (categoryId: number, page = 1, limit = 12) =
     queryKey: ['courses', 'category', categoryId, page, limit],
     queryFn: async () => {
       const response = await fetch(
-        `https://api.edurce.com/api/categories/${categoryId}/courses?page=${page}&limit=${limit}`
+        `${API_BASE_URL}/categories/${categoryId}/courses?page=${page}&limit=${limit}`
       );
       if (!response.ok) {
         throw new Error('Failed to fetch courses');

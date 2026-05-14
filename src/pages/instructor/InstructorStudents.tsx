@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from '@/lib/api';
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -73,7 +74,7 @@ const InstructorStudents = () => {
       if (!user?.user_id) return;
       try {
         setLoading(true);
-        const r1 = await fetch(`/api/instructors/${user.user_id}/overview`, { signal: controller.signal });
+        const r1 = await fetch(`${API_BASE_URL}/instructors/${user.user_id}/overview`, { signal: controller.signal });
         if (r1.ok) {
           const d = await r1.json();
           setStats(prev => ({
@@ -81,7 +82,7 @@ const InstructorStudents = () => {
             total_students: Number(d.total_students || 0),
           }));
         }
-        const r2 = await fetch(`/api/instructors/${user.user_id}/students`, { signal: controller.signal });
+        const r2 = await fetch(`${API_BASE_URL}/instructors/${user.user_id}/students`, { signal: controller.signal });
         if (r2.ok) {
           const d = await r2.json();
           setStudentsFromDb(Array.isArray(d.items) ? d.items : []);

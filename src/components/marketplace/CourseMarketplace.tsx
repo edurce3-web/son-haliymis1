@@ -110,7 +110,7 @@ export const CourseMarketplace: React.FC = () => {
         page: currentPage.toString(),
         ...filters
       });
-      const response = await fetch(`/api/courses/marketplace?${params}`);
+      const response = await fetch(`${API_BASE_URL}/courses/marketplace?${params}`);
       return response.json();
     }
   });
@@ -166,7 +166,7 @@ export const CourseMarketplace: React.FC = () => {
   // Toggle favorite
   const toggleFavorite = async (courseId: number) => {
     try {
-      const response = await fetch(`/api/courses/${courseId}/favorite`, {
+      const response = await fetch(`${API_BASE_URL}/courses/${courseId}/favorite`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`

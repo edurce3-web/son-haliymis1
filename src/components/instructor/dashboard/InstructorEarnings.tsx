@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Wallet, TrendingUp, Users, ArrowRight, Loader2 } from 'lucide-react';
@@ -11,7 +12,7 @@ export const InstructorEarnings: React.FC = () => {
         const fetchEarnings = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('https://api.edurce.com/api/instructor/finance/earnings', {
+                const res = await fetch(`${API_BASE_URL}/instructor/finance/earnings`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 

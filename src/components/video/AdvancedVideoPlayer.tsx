@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -125,7 +126,7 @@ export const AdvancedVideoPlayer: React.FC<{
   const { data: videoData, isLoading } = useQuery({
     queryKey: ['video', videoId],
     queryFn: async () => {
-      const response = await fetch(`/api/videos/${videoId}`, {
+      const response = await fetch(`${API_BASE_URL}/videos/${videoId}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -136,7 +137,7 @@ export const AdvancedVideoPlayer: React.FC<{
   const { data: progress } = useQuery({
     queryKey: ['video-progress', videoId],
     queryFn: async () => {
-      const response = await fetch(`/api/videos/${videoId}/progress`, {
+      const response = await fetch(`${API_BASE_URL}/videos/${videoId}/progress`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -147,7 +148,7 @@ export const AdvancedVideoPlayer: React.FC<{
   const { data: notesData } = useQuery({
     queryKey: ['video-notes', videoId],
     queryFn: async () => {
-      const response = await fetch(`/api/videos/${videoId}/notes`, {
+      const response = await fetch(`${API_BASE_URL}/videos/${videoId}/notes`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -157,7 +158,7 @@ export const AdvancedVideoPlayer: React.FC<{
   const { data: bookmarksData } = useQuery({
     queryKey: ['video-bookmarks', videoId],
     queryFn: async () => {
-      const response = await fetch(`/api/videos/${videoId}/bookmarks`, {
+      const response = await fetch(`${API_BASE_URL}/videos/${videoId}/bookmarks`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -167,7 +168,7 @@ export const AdvancedVideoPlayer: React.FC<{
   // Update progress mutation
   const updateProgressMutation = useMutation({
     mutationFn: async ({ currentTime, duration }: { currentTime: number; duration: number }) => {
-      const response = await fetch(`/api/videos/${videoId}/progress`, {
+      const response = await fetch(`${API_BASE_URL}/videos/${videoId}/progress`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -182,7 +183,7 @@ export const AdvancedVideoPlayer: React.FC<{
   // Add note mutation
   const addNoteMutation = useMutation({
     mutationFn: async ({ timestamp, content }: { timestamp: number; content: string }) => {
-      const response = await fetch(`/api/videos/${videoId}/notes`, {
+      const response = await fetch(`${API_BASE_URL}/videos/${videoId}/notes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -202,7 +203,7 @@ export const AdvancedVideoPlayer: React.FC<{
   // Add bookmark mutation
   const addBookmarkMutation = useMutation({
     mutationFn: async ({ timestamp, title }: { timestamp: number; title: string }) => {
-      const response = await fetch(`/api/videos/${videoId}/bookmarks`, {
+      const response = await fetch(`${API_BASE_URL}/videos/${videoId}/bookmarks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

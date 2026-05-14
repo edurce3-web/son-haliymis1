@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from '@/lib/api';
 import { useParams, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +19,7 @@ const InstructorProfile = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/instructor/${id}`, { signal: controller.signal });
+        const res = await fetch(`${API_BASE_URL}/instructor/${id}`, { signal: controller.signal });
         if (res.ok) {
           const data = await res.json();
           if (data.profile) {

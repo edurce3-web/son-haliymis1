@@ -1,7 +1,6 @@
 // API Service Layer for Backend Integration
 import { toast } from 'sonner';
-
-const API_BASE_URL = 'https://api.edurce.com/api';
+import { API_BASE_URL } from '@/lib/api';
 
 // Get auth token from localStorage
 const getAuthToken = (): string | null => {

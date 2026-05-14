@@ -141,7 +141,7 @@ export const StudentLearningDashboard: React.FC = () => {
         search: searchQuery,
         category: filterCategory
       });
-      const response = await fetch(`/api/student/courses?${params}`, {
+      const response = await fetch(`${API_BASE_URL}/student/courses?${params}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -152,7 +152,7 @@ export const StudentLearningDashboard: React.FC = () => {
   const { data: learningStats } = useQuery({
     queryKey: ['learning-stats', selectedPeriod],
     queryFn: async () => {
-      const response = await fetch(`/api/student/stats?period=${selectedPeriod}`, {
+      const response = await fetch(`${API_BASE_URL}/student/stats?period=${selectedPeriod}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -163,7 +163,7 @@ export const StudentLearningDashboard: React.FC = () => {
   const { data: studySessions } = useQuery({
     queryKey: ['study-sessions', selectedPeriod],
     queryFn: async () => {
-      const response = await fetch(`/api/student/sessions?period=${selectedPeriod}`, {
+      const response = await fetch(`${API_BASE_URL}/student/sessions?period=${selectedPeriod}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();

@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from '@/lib/api';
 import { Star, Heart, ShoppingCart, TrendingUp, Clock, BookOpen, BarChart2, Check, Users, Loader2, PlayCircle, MoreHorizontal } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -36,7 +37,7 @@ interface CourseCardProps {
 }
 
 async function fetchHoverData(courseId: number) {
-  const res = await fetch(`/api/courses/${courseId}/hover`);
+  const res = await fetch(`${API_BASE_URL}/courses/${courseId}/hover`);
   if (!res.ok) throw new Error("fetch failed");
   return res.json();
 }

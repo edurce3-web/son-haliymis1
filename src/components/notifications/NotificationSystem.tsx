@@ -109,7 +109,7 @@ export const NotificationSystem: React.FC = () => {
         read: filterRead,
         search: searchQuery
       });
-      const response = await fetch(`/api/notifications/${user?.user_id}?${params}`, {
+      const response = await fetch(`${API_BASE_URL}/notifications/${user?.user_id}?${params}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -121,7 +121,7 @@ export const NotificationSystem: React.FC = () => {
   const { data: settings } = useQuery({
     queryKey: ['notification-settings', user?.user_id],
     queryFn: async () => {
-      const response = await fetch(`/api/notifications/settings/${user?.user_id}`, {
+      const response = await fetch(`${API_BASE_URL}/notifications/settings/${user?.user_id}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       return response.json();
@@ -144,7 +144,7 @@ export const NotificationSystem: React.FC = () => {
   // Mark as read mutation
   const markAsReadMutation = useMutation({
     mutationFn: async (notificationId: string) => {
-      const response = await fetch(`/api/notifications/${notificationId}/read`, {
+      const response = await fetch(`${API_BASE_URL}/notifications/${notificationId}/read`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -161,7 +161,7 @@ export const NotificationSystem: React.FC = () => {
   // Delete notification mutation
   const deleteNotificationMutation = useMutation({
     mutationFn: async (notificationId: string) => {
-      const response = await fetch(`/api/notifications/${notificationId}`, {
+      const response = await fetch(`${API_BASE_URL}/notifications/${notificationId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
@@ -176,7 +176,7 @@ export const NotificationSystem: React.FC = () => {
   // Update settings mutation
   const updateSettingsMutation = useMutation({
     mutationFn: async (newSettings: Partial<NotificationSettings>) => {
-      const response = await fetch(`/api/notifications/settings/${user?.user_id}`, {
+      const response = await fetch(`${API_BASE_URL}/notifications/settings/${user?.user_id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

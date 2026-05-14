@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +14,7 @@ export const InstructorAccountSettings: React.FC = () => {
         const fetchAccount = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('https://api.edurce.com/api/instructor/settings/account', {
+                const res = await fetch(`${API_BASE_URL}/instructor/settings/account`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 

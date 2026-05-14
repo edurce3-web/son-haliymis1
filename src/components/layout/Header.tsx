@@ -62,7 +62,20 @@ const getNotificationIcon = (type: string) => {
 export const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, loading } = useAuth();
+
+  // Determine instructor status immediately from localStorage to avoid flicker on refresh
+  const isInstructor = user?.role === 'instructor' || user?.is_instructor === true ||
+    (() => {
+      try {
+        const stored = localStorage.getItem('user');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          return parsed.role === 'instructor' || parsed.is_instructor === true;
+        }
+      } catch { }
+      return false;
+    })();
   const [searchQuery, setSearchQuery] = useState('');
 
   // State for dynamic data
@@ -410,7 +423,7 @@ export const Header = () => {
         {/* Actions */}
         <div className="flex items-center gap-1 ml-auto">
           {/* Eğitimci ol / Eğitmen paneli */}
-          {user?.role === 'instructor' ? (
+          {isInstructor ? (
             <Button
               variant="outline"
               size="sm"
@@ -420,7 +433,7 @@ export const Header = () => {
               <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
               Eğitmen Paneli
             </Button>
-          ) : (
+          ) : !loading && isAuthenticated ? (
             <Button
               variant="outline"
               size="sm"
@@ -430,7 +443,17 @@ export const Header = () => {
               <GraduationCap className="w-3.5 h-3.5 mr-1.5" />
               Eğitimci Ol
             </Button>
-          )}
+          ) : !isAuthenticated ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/become-instructor')}
+              className="hidden md:flex rounded-full text-indigo-600 border-indigo-200 hover:bg-indigo-600 hover:text-white text-xs px-4 h-8 font-semibold transition-all"
+            >
+              <GraduationCap className="w-3.5 h-3.5 mr-1.5" />
+              Eğitimci Ol
+            </Button>
+          ) : null}
 
           {/* Favorites with Hover Popover */}
           {isAuthenticated && (
@@ -539,7 +562,7 @@ export const Header = () => {
                     <MessageSquare className="w-4 h-4 mr-3 text-cyan-500" /> Mesajlar
                   </DropdownMenuItem>
 
-                  {user?.role === 'instructor' && (
+                  {isInstructor && (
                     <>
                       <DropdownMenuSeparator className="my-1.5" />
                       <DropdownMenuItem onClick={() => navigate('/instructor')} className="rounded-lg py-2 cursor-pointer text-blue-700 font-semibold text-sm">

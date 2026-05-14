@@ -34,7 +34,7 @@ export function EditBook() {
     const { data: bookData, isLoading: bookLoading } = useQuery({
         queryKey: ['instructor-book', id],
         queryFn: async () => {
-            const r = await fetch(`/api/instructor/books/${id}`, {
+            const r = await fetch(`${API_BASE_URL}/instructor/books/${id}`, {
                 headers: { Authorization: `Bearer ${token()}` }
             });
             if (!r.ok) throw new Error('Kitap bulunamadı');
@@ -93,7 +93,7 @@ export function EditBook() {
             setSubcategories([]);
             return;
         }
-        fetch(`/api/categories/${formData.category_id}/subcategories`).then(r => r.json()).then(data => {
+        fetch(`${API_BASE_URL}/categories/${formData.category_id}/subcategories`).then(r => r.json()).then(data => {
             setSubcategories(Array.isArray(data) ? data : []);
         }).catch(console.error);
     }, [formData.category_id]);
@@ -107,7 +107,7 @@ export function EditBook() {
                 if (!isNaN(num)) parsedPrice = num;
             }
 
-            const r = await fetch(`/api/instructor/books/${id}`, {
+            const r = await fetch(`${API_BASE_URL}/instructor/books/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ export function EditBook() {
 
     const publishMutation = useMutation({
         mutationFn: async () => {
-            const r = await fetch(`/api/instructor/books/${id}/publish`, {
+            const r = await fetch(`${API_BASE_URL}/instructor/books/${id}/publish`, {
                 method: 'PUT',
                 headers: { Authorization: `Bearer ${token()}` }
             });

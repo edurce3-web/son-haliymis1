@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +14,7 @@ export const InstructorPayoutSettings: React.FC = () => {
         const fetchPayouts = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('https://api.edurce.com/api/instructor/finance/payouts', {
+                const res = await fetch(`${API_BASE_URL}/instructor/finance/payouts`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 

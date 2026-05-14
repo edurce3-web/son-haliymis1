@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from '@/lib/api';
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -86,7 +87,7 @@ const CourseDetail = () => {
       const courseId = parseInt(id || "0");
       if (!courseId) return;
       try {
-        const res = await fetch(`/api/courses/${courseId}`, { signal: controller.signal });
+        const res = await fetch(`${API_BASE_URL}/courses/${courseId}`, { signal: controller.signal });
         if (res.ok) {
           const data = await res.json();
           // normalize keys to UI expectations
@@ -120,8 +121,8 @@ const CourseDetail = () => {
     (async () => {
       try {
         const [r1, r2] = await Promise.all([
-          fetch(`/api/courses/${courseId}/similar`, { signal: controller.signal }),
-          fetch(`/api/courses/${courseId}/also-bought`, { signal: controller.signal }),
+          fetch(`${API_BASE_URL}/courses/${courseId}/similar`, { signal: controller.signal }),
+          fetch(`${API_BASE_URL}/courses/${courseId}/also-bought`, { signal: controller.signal }),
         ]);
         if (r1.ok) {
           const d1 = await r1.json();

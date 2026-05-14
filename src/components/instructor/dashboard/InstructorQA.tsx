@@ -52,7 +52,7 @@ export function InstructorQA({ onBack }: InstructorQAProps) {
     const answerMutation = useMutation({
         mutationFn: async (questionId: number) => {
             const token = localStorage.getItem('token');
-            const res = await fetch(`/api/questions/${questionId}/answers`, {
+            const res = await fetch(`${API_BASE_URL}/questions/${questionId}/answers`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ content: answerContent })

@@ -30,7 +30,7 @@ import { formatPrice } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-const API_BASE_URL = 'https://api.edurce.com/api';
+const API_BASE_URL = '${API_BASE_URL}';
 
 export const Checkout: React.FC = () => {
   const navigate = useNavigate();
@@ -107,7 +107,7 @@ export const Checkout: React.FC = () => {
     if (!code) return;
     setCouponLoading(true);
     try {
-      const res = await fetch(`/api/coupons/validate/${code}`);
+      const res = await fetch(`${API_BASE_URL}/coupons/validate/${code}`);
       const data = await res.json();
       if (res.ok && data.valid) {
         setAppliedCoupon(data.coupon);

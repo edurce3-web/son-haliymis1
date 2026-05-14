@@ -173,7 +173,7 @@ export const LiveClassChat: React.FC<LiveClassChatProps> = ({
     const connectWebSocket = async () => {
       try {
         // Get WebSocket token
-        const response = await fetch(`/api/live-classes/${classId}/ws-token`, {
+        const response = await fetch(`${API_BASE_URL}/live-classes/${classId}/ws-token`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
