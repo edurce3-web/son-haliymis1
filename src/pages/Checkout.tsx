@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { cartAPI, coursesAPI } from '@/lib/api';
+import { cartAPI, coursesAPI, API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -29,8 +29,6 @@ import { countries } from '@/data/countries';
 import { formatPrice } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-
-const API_BASE_URL = '${API_BASE_URL}';
 
 export const Checkout: React.FC = () => {
   const navigate = useNavigate();
