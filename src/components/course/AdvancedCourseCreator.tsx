@@ -1143,9 +1143,7 @@ export default function AdvancedCourseCreator() {
       formData.append(fieldName, file);
 
       // Add course and lesson info for CDN organization
-      const courseSlug = courseData.title.toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '') || 'untitled-course';
+      const courseSlug = generateSlug(courseData.title) || 'untitled-course';
 
       // Get auth token
       const token = localStorage.getItem('token');
@@ -1444,7 +1442,7 @@ export default function AdvancedCourseCreator() {
 
       // Use slug from backend response or fallback to frontend generation
       const activeSlug = saveResult?.slug ||
-        courseData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') ||
+        generateSlug(courseData.title) ||
         'untitled-course';
 
       // FormData oluştur
@@ -1538,7 +1536,7 @@ export default function AdvancedCourseCreator() {
 
       // Use slug from backend response
       const activeSlug = saveResult?.slug ||
-        courseData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') ||
+        generateSlug(courseData.title) ||
         'untitled-course';
 
       const formData = new FormData();
@@ -2218,7 +2216,7 @@ export default function AdvancedCourseCreator() {
                                                                     const formData = new FormData();
                                                                     formData.append('file', file);
                                                                     formData.append('lessonId', lesson.dbLessonId!.toString());
-                                                                    formData.append('courseSlug', courseData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'untitled');
+                                                                    formData.append('courseSlug', generateSlug(courseData.title) || 'untitled');
                                                                     const token = localStorage.getItem('token');
                                                                     
                                                                     const loadingToast = toast.loading(`${file.name} yükleniyor...`);
