@@ -11,20 +11,23 @@ interface User {
   profile_image?: string;
 }
 
-interface RegisterData {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-}
-
 interface AuthContextType {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (userData: RegisterData) => Promise<void>;
+  /** 1. adım: ad/soyad/e-posta gönderilir, e-postaya doğrulama kodu gider. */
+  registerStart: (data: { first_name: string; last_name: string; email: string }) => Promise<void>;
+  /** 2. adım: kod doğrulanır, şifre belirleme jetonu döner. */
+  registerVerify: (email: string, code: string) => Promise<string>;
+  /** 3. adım: şifre belirlenir, hesap açılır ve oturum başlar. */
+  registerComplete: (data: {
+    email: string;
+    verify_token: string;
+    password: string;
+    password_confirm: string;
+  }) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -120,41 +123,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const register = async (userData: RegisterData) => {
+  /** Kayıt uçlarına ortak istek yardımcısı; hata mesajını sunucudan alır. */
+  const postRegister = async (path: string, body: Record<string, unknown>) => {
+    const response = await fetch(`${API_BASE_URL}/auth/register/${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    let data: any = {};
     try {
-      console.log('Register attempt with data:', userData);
-      console.log('Sending request to:', `${API_BASE_URL}/auth/register`);
-
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
-
-      const data = await response.json();
-      console.log('Response data:', data);
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Kayıt başarısız');
-      }
-
-      // Automatically log in after successful registration
-      setToken(data.token);
-      setUser(data.user);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-
-      console.log('Registration successful, user logged in:', data.user);
-
-    } catch (error) {
-      console.error('Register error:', error);
-      throw error;
+      data = await response.json();
+    } catch {
+      throw new Error('Sunucuya ulaşılamadı');
     }
+
+    if (!response.ok) {
+      throw new Error(data.error || 'İşlem başarısız');
+    }
+    return data;
+  };
+
+  const registerStart = async (data: { first_name: string; last_name: string; email: string }) => {
+    await postRegister('start', data);
+  };
+
+  const registerVerify = async (email: string, code: string): Promise<string> => {
+    const data = await postRegister('verify', { email, code });
+    return data.verify_token as string;
+  };
+
+  const registerComplete = async (payload: {
+    email: string;
+    verify_token: string;
+    password: string;
+    password_confirm: string;
+  }) => {
+    const data = await postRegister('complete', payload);
+
+    // Kayıt tamamlanınca doğrudan oturum aç
+    setToken(data.token);
+    setUser(data.user);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
   };
 
   const refreshUser = async () => {
@@ -192,7 +203,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     token,
     login,
-    register,
+    registerStart,
+    registerVerify,
+    registerComplete,
     logout,
     refreshUser,
     isAuthenticated,
