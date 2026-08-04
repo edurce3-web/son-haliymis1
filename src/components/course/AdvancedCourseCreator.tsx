@@ -855,6 +855,54 @@ export default function AdvancedCourseCreator() {
     }
   };
 
+  // ---------------------------------------------------------------------------
+  // YAYINLAMA ÖN KOŞULLARI
+  // "Kursu Yayınla" basıldığında eksikler tek tek listelenir; hepsi tamamlanmadan
+  // yayınlama yapılmaz.
+  // ---------------------------------------------------------------------------
+  const MIN_TOTAL_VIDEO_MINUTES = 30;
+  const [publishIssuesOpen, setPublishIssuesOpen] = useState(false);
+
+  /** Kurstaki tüm derslerin toplam video süresi (saniye). */
+  const totalVideoSeconds = courseData.sections.reduce(
+    (sum, section) => sum + section.lessons.reduce((s, l) => s + (l.durationSeconds || 0), 0),
+    0
+  );
+
+  /** Yayın kontrol listesi — her madde için sağlandı/sağlanmadı bilgisi. */
+  const publishChecklist = [
+    { key: 'title', label: 'Kurs başlığı', hint: 'Temel Bilgiler', step: 1, ok: Boolean(courseData.title?.trim()) },
+    { key: 'subtitle', label: 'Alt başlık', hint: 'Temel Bilgiler', step: 1, ok: Boolean(courseData.subtitle?.trim()) },
+    { key: 'cover', label: 'Kapak görseli', hint: 'Temel Bilgiler', step: 1, ok: Boolean(courseData.coverImage?.cdnPath) },
+    { key: 'preview', label: 'Kurs tanıtım videosu', hint: 'Temel Bilgiler', step: 1, ok: Boolean(courseData.previewVideo?.cdnPath) },
+    {
+      key: 'duration',
+      label: `En az ${MIN_TOTAL_VIDEO_MINUTES} dakika ders videosu`,
+      hint: `Şu an ${Math.floor(totalVideoSeconds / 60)} dk`,
+      step: 2,
+      ok: totalVideoSeconds >= MIN_TOTAL_VIDEO_MINUTES * 60,
+    },
+    { key: 'price', label: 'Kurs fiyatı', hint: 'Fiyatlandırma', step: 3, ok: Number(courseData.price) > 0 },
+    {
+      key: 'objectives',
+      label: `${MIN_LEARNING_OBJECTIVES} öğrenme hedefi`,
+      hint: `Şu an ${learningObjectives.filter(o => o.trim()).length}/${MIN_LEARNING_OBJECTIVES}`,
+      step: 4,
+      ok: learningObjectives.filter(o => o.trim()).length >= MIN_LEARNING_OBJECTIVES,
+    },
+  ];
+
+  const missingPublishItems = publishChecklist.filter(item => !item.ok);
+
+  /** Yayınla butonuna basıldığında: eksik varsa listeyi göster, yoksa yayınla. */
+  const handlePublishClick = async () => {
+    if (missingPublishItems.length > 0) {
+      setPublishIssuesOpen(true);
+      return;
+    }
+    await saveCourseToServer(true);
+  };
+
   /**
    * Adımın kaydedilebilmesi için gereken kontroller.
    * Hata varsa mesaj, sorun yoksa null döner.
@@ -3124,7 +3172,17 @@ export default function AdvancedCourseCreator() {
       <div className="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800">
         <div className="container mx-auto px-4">
           <div className="h-16 flex items-center justify-between gap-4">
-            <div className="min-w-0">
+            <div className="flex items-center gap-3 min-w-0">
+              {/* Eğitmen paneline dönüş */}
+              <button
+                onClick={() => navigate('/instructor')}
+                title="Eğitmen paneline dön"
+                className="shrink-0 w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+
+              <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <h1 className="text-base font-semibold text-slate-900 dark:text-white truncate">
                   {courseData.title?.trim() || 'Yeni kurs'}
@@ -3143,19 +3201,15 @@ export default function AdvancedCourseCreator() {
                     ? `Son kayıt ${lastSavedAt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`
                     : 'Her adım ayrı kaydedilir'}
               </p>
-            </div>
-
-            <div className="hidden sm:flex items-center gap-3 shrink-0">
-              <span className="text-xs text-slate-500">
-                Adım {steps.findIndex(s => s.id === currentStep) + 1}/{steps.length}
-              </span>
-              <div className="w-28 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-indigo-600 rounded-full transition-all duration-300"
-                  style={{ width: `${((steps.findIndex(s => s.id === currentStep) + 1) / steps.length) * 100}%` }}
-                />
               </div>
             </div>
+
+            <button
+              onClick={() => navigate('/instructor')}
+              className="hidden sm:inline-flex shrink-0 items-center gap-2 h-9 px-3 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              Eğitmen paneli
+            </button>
           </div>
         </div>
       </div>
@@ -3169,9 +3223,7 @@ export default function AdvancedCourseCreator() {
               {/* Mobilde yatay kaydırmalı, masaüstünde dikey liste */}
               <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
                 {steps.map((step, index) => {
-                  const activeIndex = steps.findIndex(s => s.id === currentStep);
                   const isActive = currentStep === step.id;
-                  const isDone = index < activeIndex;
 
                   return (
                     <button
@@ -3184,11 +3236,9 @@ export default function AdvancedCourseCreator() {
                     >
                       <span className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-semibold ${isActive
                         ? 'bg-indigo-600 text-white'
-                        : isDone
-                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400'
-                          : 'bg-slate-200 text-slate-500 dark:bg-slate-800 dark:text-slate-500'
+                        : 'bg-slate-200 text-slate-500 dark:bg-slate-800 dark:text-slate-500'
                         }`}>
-                        {isDone ? <Check className="w-3.5 h-3.5" /> : index + 1}
+                        {index + 1}
                       </span>
                       <span className={`text-sm whitespace-nowrap ${isActive ? 'font-semibold' : 'font-medium'}`}>
                         {step.title}
@@ -3260,8 +3310,8 @@ export default function AdvancedCourseCreator() {
                     {steps.findIndex(s => s.id === currentStep) === steps.length - 1 ? (
                       (courseData as any).status !== 'published' && (
                         <Button
-                          className="flex-1 sm:flex-none bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-200 dark:shadow-none rounded-xl px-10 h-12 font-bold transition-all hover:scale-[1.02] active:scale-95"
-                          onClick={() => saveCourseToServer(true)}
+                          className="flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-10 h-12 font-semibold transition-colors"
+                          onClick={handlePublishClick}
                         >
                           Kursu Yayınla
                           <ArrowRight className="w-4 h-4 ml-2" />
@@ -3288,6 +3338,81 @@ export default function AdvancedCourseCreator() {
 
           </div>
         </div>
+
+        {/* YAYINLAMA KONTROL LİSTESİ — eksikler tamamlanmadan yayınlanamaz */}
+        {publishIssuesOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4"
+            onClick={() => setPublishIssuesOpen(false)}
+          >
+            <div
+              className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-md overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center shrink-0">
+                    <AlertCircle className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">
+                      Kurs yayınlanamaz
+                    </h3>
+                    <p className="text-sm text-slate-500 mt-0.5">
+                      {missingPublishItems.length} madde eksik. Tamamladıktan sonra tekrar deneyin.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 space-y-1 max-h-[50vh] overflow-y-auto">
+                {publishChecklist.map(item => (
+                  <button
+                    key={item.key}
+                    onClick={() => {
+                      if (item.ok) return;
+                      setPublishIssuesOpen(false);
+                      setCurrentStep(item.step);
+                    }}
+                    disabled={item.ok}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${item.ok
+                      ? 'cursor-default'
+                      : 'hover:bg-slate-50 dark:hover:bg-slate-800'
+                      }`}
+                  >
+                    <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${item.ok
+                      ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15'
+                      : 'bg-red-100 text-red-600 dark:bg-red-500/15'
+                      }`}>
+                      {item.ok ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
+                    </span>
+                    <span className="flex-1 min-w-0">
+                      <span className={`block text-sm ${item.ok
+                        ? 'text-slate-400 line-through'
+                        : 'text-slate-800 dark:text-slate-200 font-medium'
+                        }`}>
+                        {item.label}
+                      </span>
+                      {!item.ok && (
+                        <span className="block text-xs text-slate-400">{item.hint}</span>
+                      )}
+                    </span>
+                    {!item.ok && <ArrowRight className="w-4 h-4 text-slate-300 shrink-0" />}
+                  </button>
+                ))}
+              </div>
+
+              <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800">
+                <Button
+                  onClick={() => setPublishIssuesOpen(false)}
+                  className="w-full h-11 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-medium"
+                >
+                  Tamam
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* DOSYA YÜKLEME MODALI - Profesyonel Tasarım */}
         {showFileUpload && (
