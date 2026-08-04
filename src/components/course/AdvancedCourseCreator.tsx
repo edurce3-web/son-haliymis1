@@ -94,6 +94,36 @@ import CourseCard from '@/components/instructor/CourseCard';
 import { toast } from 'sonner';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
+/** Kurs yayınlanmadan önce girilmesi zorunlu öğrenme hedefi sayısı. */
+const MIN_LEARNING_OBJECTIVES = 6;
+
+/** Her adımın başlığının altında görünen kısa açıklama. */
+const STEP_DESCRIPTIONS: Record<number, string> = {
+  1: 'Kursun adı, açıklaması, kategorisi ve kapak görseli.',
+  2: 'Bölümleri ve dersleri oluşturun, video ve kaynak yükleyin.',
+  3: 'Kursun fiyatını ve para birimini belirleyin.',
+  4: 'Öğrencilerin ne kazanacağını ve kimler için uygun olduğunu yazın.',
+  5: 'Kuponlar ve tanıtım ayarları.',
+  6: 'Kurs bitiminde verilecek sertifika ayarları.',
+  7: 'Her şeyi son bir kez gözden geçirip yayınlayın.',
+};
+
+/** Sunucudan gelen listeyi en az `min` uzunluğa boş satırlarla tamamlar. */
+const padToMin = (items: string[], min: number) => {
+  const list = Array.isArray(items) ? [...items] : [];
+  while (list.length < min) list.push('');
+  return list;
+};
+
+// Frontend seviye değerlerini veritabanı ENUM değerlerine eşler.
+// Hem tam kaydetme hem adım bazlı kaydetme kullandığı için bileşen dışında.
+const levelMap: Record<string, string> = {
+  beginner: 'Başlangıç',
+  intermediate: 'Orta',
+  advanced: 'İleri',
+  all: 'Tüm Seviyeler',
+};
+
 // Helper: Generate URL-friendly slug from title
 function generateSlug(title: string) {
   return (title || '').toString()
@@ -181,6 +211,10 @@ interface CourseLesson {
   fileName?: string;
   uploadDate?: string;
   errorMessage?: string;
+  /** Sunucudaki işleme kuyruğundan gelen ilerleme (0-100) */
+  processingProgress?: number;
+  /** İşlemenin hangi aşamada olduğu ("480p hazır", "12/60 parça yüklendi" ...) */
+  processingStage?: string;
 }
 
 interface CourseSection {
@@ -316,7 +350,10 @@ export default function AdvancedCourseCreator() {
           if (data.category_id) setSelectedCategory(String(data.category_id));
 
           if (data.targetAudience) setAudiences(Array.isArray(data.targetAudience) ? data.targetAudience : []);
-          if (data.learningObjectives) setLearningObjectives(Array.isArray(data.learningObjectives) ? data.learningObjectives : []);
+          // Kayıtlı hedef sayısı 6'dan azsa kalanı boş satır olarak açılır
+          if (data.learningObjectives) {
+            setLearningObjectives(padToMin(data.learningObjectives, MIN_LEARNING_OBJECTIVES));
+          }
           if (data.requirements) setPrerequisites(Array.isArray(data.requirements) ? data.requirements : []);
 
           // Initialize media states from loaded data
@@ -611,14 +648,6 @@ export default function AdvancedCourseCreator() {
     }
 
     try {
-      // Map frontend level to DB ENUM values
-      const levelMap: Record<string, string> = {
-        beginner: 'Başlangıç',
-        intermediate: 'Orta',
-        advanced: 'İleri',
-        all: 'Tüm Seviyeler'
-      };
-
       const dbLevel = levelMap[courseData.level] || 'Başlangıç';
 
       const payload = {
@@ -714,7 +743,10 @@ export default function AdvancedCourseCreator() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Öğrenci Kitlesi State'leri
-  const [learningObjectives, setLearningObjectives] = useState<string[]>(['']);
+  // Öğrenme hedefleri: en az 6 tanesi zorunlu, form 6 boş satırla açılır.
+  const [learningObjectives, setLearningObjectives] = useState<string[]>(
+    Array.from({ length: MIN_LEARNING_OBJECTIVES }, () => '')
+  );
   const [prerequisites, setPrerequisites] = useState<string[]>(['']);
   const [audiences, setAudiences] = useState<string[]>(['']);
   const addAudience = () => setAudiences(prev => [...prev, '']);
@@ -774,6 +806,123 @@ export default function AdvancedCourseCreator() {
       logoPosition: 'top-left'
     }
   });
+
+  // ---------------------------------------------------------------------------
+  // ADIM BAZLI KAYDETME
+  // Her adımın kendi "Kaydet" butonu var ve yalnızca o adımın alanlarını gönderir.
+  // Daha önce her buton tüm kursu (full-save) gönderiyordu; bir adımdaki eksik
+  // alan başka adımın verisini eziyor ve kaydetme öngörülemez hale geliyordu.
+  // ---------------------------------------------------------------------------
+  const [savingStep, setSavingStep] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+
+  /** Verilen adımın sunucuya gönderilecek verisini üretir. */
+  const buildStepPayload = (stepId: number) => {
+    switch (stepId) {
+      case 1: // Temel Bilgiler
+        return {
+          course: {
+            title: courseData.title.trim(),
+            subtitle: courseData.subtitle.trim(),
+            description: courseData.description.trim(),
+            categoryId: courseData.category ? Number(courseData.category) : null,
+            subcategoryId: courseData.subcategory ? Number(courseData.subcategory) : null,
+            language: courseData.language || null,
+            level: courseData.level ? levelMap[courseData.level] : null,
+            imagePath: courseData.coverImage?.cdnPath || undefined,
+            videoPreviewPath: courseData.previewVideo?.cdnPath || undefined,
+          },
+        };
+      case 3: // Fiyatlandırma
+        return {
+          course: {
+            price: courseData.price ? Number(courseData.price) : 0,
+            currency: courseData.currency || null,
+            price_level: (courseData as any).price_level || 1,
+          },
+        };
+      case 4: // Öğrenci Kitlesi
+        return {
+          audience: {
+            learningGoals: learningObjectives.filter(o => o.trim()),
+            requirements: prerequisites.filter(r => r.trim()),
+            targetStudents: targetAudience.filter(a => a.trim()),
+          },
+        };
+      default:
+        // 2 (Kurs İçeriği), 5, 6, 7 — bölüm/ders ve diğerleri kendi uçlarıyla anında kaydediliyor
+        return null;
+    }
+  };
+
+  /**
+   * Adımın kaydedilebilmesi için gereken kontroller.
+   * Hata varsa mesaj, sorun yoksa null döner.
+   */
+  const validateStep = (stepId: number): string | null => {
+    if (stepId === 1 && !courseData.title.trim()) {
+      return 'Kurs başlığı zorunludur';
+    }
+    if (stepId === 4) {
+      const filled = learningObjectives.filter(o => o.trim()).length;
+      if (filled < MIN_LEARNING_OBJECTIVES) {
+        return `En az ${MIN_LEARNING_OBJECTIVES} öğrenme hedefi girmelisiniz (şu an ${filled})`;
+      }
+    }
+    return null;
+  };
+
+  /** Sadece bulunduğun adımı kaydeder. */
+  const saveCurrentStep = async (opts: { silent?: boolean } = {}) => {
+    const validationError = validateStep(currentStep);
+    if (validationError) {
+      toast.error('Eksik bilgi', { description: validationError });
+      return false;
+    }
+
+    const payload = buildStepPayload(currentStep);
+
+    // Bu adımın kaydedilecek kendi verisi yoksa (içerik adımı gibi) sessizce geç
+    if (!payload) {
+      if (!opts.silent) toast.info('Bu adımdaki değişiklikler anında kaydediliyor.');
+      return true;
+    }
+
+    // Kurs henüz oluşturulmadıysa önce oluşturulmalı (slug ve kayıt burada üretilir)
+    if (!courseData.courseId && !courseUrlId) {
+      return await saveCourseToServer(false);
+    }
+
+    setSavingStep(true);
+    try {
+      const token = localStorage.getItem('token');
+      const id = courseData.courseId || Number(courseUrlId);
+
+      const res = await fetch(`${API_BASE_URL}/courses/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Kaydedilemedi');
+
+      setLastSavedAt(new Date());
+      if (!opts.silent) {
+        const stepTitle = steps.find(s => s.id === currentStep)?.title || 'Adım';
+        toast.success(`${stepTitle} kaydedildi`);
+      }
+      return true;
+    } catch (error: any) {
+      toast.error('Kaydedilemedi', { description: error.message });
+      return false;
+    } finally {
+      setSavingStep(false);
+    }
+  };
 
   const steps = [
     { id: 1, title: 'Temel Bilgiler', icon: BookOpen },
@@ -1248,11 +1397,14 @@ export default function AdvancedCourseCreator() {
         )
       }));
 
-      const successMessage =
-        fileType === 'video' ? 'Video yüklendi ve işleniyor' :
-          fileType === 'presentation' ? 'Slayt başarıyla yüklendi' :
-            'Belge başarıyla yüklendi';
-      toast.success(result.message || successMessage);
+      if (fileType === 'video') {
+        toast.success('Video yüklendi ve işleme alındı', {
+          description: 'Bu sırada sayfadan çıkabilirsiniz — işlem sunucuda devam eder ve tamamlandığında e-posta ile bilgilendirileceksiniz.',
+          duration: 8000,
+        });
+      } else {
+        toast.success(result.message || (fileType === 'presentation' ? 'Slayt başarıyla yüklendi' : 'Belge başarıyla yüklendi'));
+      }
 
       // Eğer video ise, işleme durumunu kontrol et
       if (fileType === 'video') {
@@ -1289,80 +1441,79 @@ export default function AdvancedCourseCreator() {
   };
 
   // Video işleme durumunu kontrol etme fonksiyonu
+  // Video işleme durumunu izler.
+  // Not: İşleme sunucudaki kalıcı kuyrukta yürür. Bu yoklama sadece ekranı canlı
+  // tutmak içindir — sayfayı kapatmak işlemi durdurmaz, bittiğinde e-posta gelir.
   const pollVideoStatus = async (dbLessonId: string, uiLessonId: string) => {
-    const maxAttempts = 270; // 45 dakika (10 saniye * 270)
+    const maxAttempts = 360; // 60 dakika (10 saniye * 360)
     let attempts = 0;
 
-    const checkStatus = async () => {
+    const applyToUi = (patch: Record<string, unknown>) => {
+      setCourseData(prev => ({
+        ...prev,
+        sections: prev.sections.map(s => ({
+          ...s,
+          lessons: s.lessons.map(l => (l.id === uiLessonId ? { ...l, ...patch } : l)),
+        })),
+      }));
+    };
+
+    const checkStatus = async (): Promise<boolean> => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE_URL}/video/status/${dbLessonId}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+        const response = await fetch(`${API_BASE_URL}/lessons/${dbLessonId}/video-job`, {
+          headers: { 'Authorization': `Bearer ${token}` },
         });
 
         if (response.ok) {
           const result = await response.json();
-          const lesson = result.lesson;
+          const job = result.job;
 
-          // UI'yi güncelle — uiLessonId ile eşleştir
-          setCourseData(prev => ({
-            ...prev,
-            sections: prev.sections.map(s => ({
-              ...s,
-              lessons: s.lessons.map(l =>
-                l.id === uiLessonId
-                  ? {
-                    ...l,
-                    processingStatus: lesson.status,
-                    videoUrl: lesson.videoUrl,
-                    errorMessage: lesson.errorMessage,
-                    ...(lesson.durationSeconds ? { durationSeconds: lesson.durationSeconds } : {})
-                  }
-                  : l
-              )
-            }))
-          }));
+          applyToUi({
+            processingStatus: result.video_status === 'processed' ? 'processed'
+              : result.video_status === 'error' ? 'error'
+                : 'processing',
+            videoUrl: result.video_url || undefined,
+            errorMessage: job?.error || undefined,
+            processingProgress: job?.progress ?? undefined,
+            processingStage: job?.stage ?? undefined,
+          });
 
-          if (lesson.status === 'processed') {
-            toast.success('Video işleme tamamlandı! 🎬');
-            return true; // İşlem tamamlandı
-          } else if (lesson.status === 'error') {
-            toast.error(`Video işleme hatası: ${lesson.errorMessage}`);
-            return true; // Hata ile tamamlandı
+          if (result.ready || result.video_status === 'processed') {
+            toast.success('Video işleme tamamlandı 🎬', {
+              description: 'Ders artık izlenebilir. Bilgilendirme e-postası da gönderildi.',
+            });
+            return true;
+          }
+
+          if (result.video_status === 'error' || job?.status === 'failed') {
+            toast.error('Video işlenemedi', {
+              description: job?.error || 'Videoyu tekrar yüklemeyi deneyin.',
+            });
+            return true;
           }
         }
 
         attempts++;
-
-        // Her 2 dakikada bir progress bildirimi göster
-        if (attempts % 12 === 0) {
-          const minutesPassed = Math.round(attempts * 10 / 60);
-          toast.info(`⏳ Video hâlâ işleniyor... (${minutesPassed} dk)`, { duration: 4000 });
-        }
-
         if (attempts >= maxAttempts) {
-          toast.warning('Video işleme süresi aşıldı (45 dk). Sayfayı yenileyerek durumu kontrol edin.');
-          return true; // Zaman aşımı
+          // Zaman aşımı yalnızca bu ekran içindir; iş sunucuda devam eder.
+          toast.info('İşleme devam ediyor', {
+            description: 'Tamamlandığında e-posta ile bilgilendirileceksiniz.',
+          });
+          return true;
         }
 
-        // 10 saniye sonra tekrar kontrol et
         setTimeout(checkStatus, 10000);
         return false;
-
       } catch (error) {
         console.error('Video status check error:', error);
         attempts++;
-        if (attempts < maxAttempts) {
-          setTimeout(checkStatus, 10000);
-        }
+        if (attempts < maxAttempts) setTimeout(checkStatus, 10000);
         return false;
       }
     };
 
-    // İlk kontrolü 15 saniye sonra başlat (FFmpeg başlayana kadar bekle)
-    setTimeout(checkStatus, 15000);
+    setTimeout(checkStatus, 5000);
   };
 
   // Form validasyon fonksiyonu
@@ -1610,10 +1761,14 @@ export default function AdvancedCourseCreator() {
   };
 
   const removeLearningObjective = (index: number) => {
-    if (learningObjectives.length > 1) {
+    // İlk 6 satır zorunlu olduğu için silinemez, sadece temizlenir
+    if (learningObjectives.length > MIN_LEARNING_OBJECTIVES) {
       setLearningObjectives(learningObjectives.filter((_, i) => i !== index));
     }
   };
+
+  /** Doldurulmuş (boş olmayan) hedef sayısı */
+  const filledObjectiveCount = learningObjectives.filter(o => o.trim()).length;
 
   // Ön koşullar yönetimi
   const addPrerequisite = () => {
@@ -2161,25 +2316,43 @@ export default function AdvancedCourseCreator() {
                                                                   </div>
                                                                 )}
 
-                                                                {lesson.processingStatus === 'processing' && (
-                                                                  <span className="text-[10px] font-bold text-amber-600 bg-amber-50 rounded-full flex items-center gap-1.5 px-2 py-0.5">
-                                                                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" /> Yükleniyor...
-                                                                  </span>
-                                                                )}
-                                                                {lesson.processingStatus === 'pending' && (
-                                                                  <span className="text-[10px] font-bold text-blue-600 bg-blue-50 rounded-full flex items-center gap-1.5 px-2 py-0.5">
-                                                                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" /> İşleniyor
+                                                                {(lesson.processingStatus === 'processing' || lesson.processingStatus === 'pending') && (
+                                                                  <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-500/10 rounded-full flex items-center gap-1.5 px-2 py-0.5">
+                                                                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+                                                                    {lesson.processingProgress
+                                                                      ? `İşleniyor %${lesson.processingProgress}`
+                                                                      : 'İşleniyor'}
                                                                   </span>
                                                                 )}
                                                                 {(lesson.processingStatus === 'completed' || lesson.processingStatus === 'processed') && (
-                                                                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 rounded-full flex items-center gap-1.5 px-2 py-0.5">
+                                                                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 rounded-full flex items-center gap-1.5 px-2 py-0.5">
                                                                     <Check className="w-3 h-3" /> Hazır
                                                                   </span>
                                                                 )}
                                                                 {lesson.processingStatus === 'error' && (
-                                                                  <span className="text-[10px] font-bold text-red-600 bg-red-50 rounded-full px-2 py-0.5">Hata!</span>
+                                                                  <span className="text-[10px] font-bold text-red-600 bg-red-50 dark:bg-red-500/10 rounded-full px-2 py-0.5">Hata</span>
                                                                 )}
                                                               </div>
+
+                                                              {/* İşleme sürerken: aşama bilgisi + sayfadan çıkılabileceği bilgisi */}
+                                                              {(lesson.processingStatus === 'processing' || lesson.processingStatus === 'pending') && (
+                                                                <div className="mt-2 max-w-[260px]">
+                                                                  <div className="h-1 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                                                    <div
+                                                                      className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                                                                      style={{ width: `${lesson.processingProgress || 5}%` }}
+                                                                    />
+                                                                  </div>
+                                                                  <p className="text-[10px] text-slate-500 mt-1 leading-snug">
+                                                                    {lesson.processingStage || 'Kuyrukta bekliyor'} · Sayfadan çıkabilirsiniz, bitince e-posta gelecek.
+                                                                  </p>
+                                                                </div>
+                                                              )}
+                                                              {lesson.processingStatus === 'error' && lesson.errorMessage && (
+                                                                <p className="text-[10px] text-red-500 mt-1 max-w-[260px] leading-snug">
+                                                                  {lesson.errorMessage}
+                                                                </p>
+                                                              )}
                                                             </div>
                                                           </div>
                                                           <div className="flex items-center gap-2">
@@ -2443,44 +2616,73 @@ export default function AdvancedCourseCreator() {
 
             <div className="space-y-8">
               {/* Öğrenme Hedefleri Kartı */}
-              <Card className="border-none ring-1 ring-slate-200 dark:ring-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none rounded-[32px] overflow-hidden bg-white dark:bg-slate-900">
-                <CardHeader className="p-8 pb-4">
-                  <div>
-                    <CardTitle className="text-lg font-bold">Öğrenme Hedefleri</CardTitle>
-                    <p className="text-xs text-slate-500">Öğrencilerin kurs sonunda kazanacağı beceriler</p>
+              <Card className="border border-slate-200 dark:border-slate-800 shadow-sm rounded-2xl overflow-hidden bg-white dark:bg-slate-900">
+                <CardHeader className="px-6 pt-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <CardTitle className="text-base font-semibold text-slate-900 dark:text-white">
+                        Öğrenme Hedefleri
+                      </CardTitle>
+                      <p className="text-sm text-slate-500 mt-1">
+                        Öğrencilerin kurs sonunda kazanacağı beceriler. En az {MIN_LEARNING_OBJECTIVES} tanesi zorunlu.
+                      </p>
+                    </div>
+                    <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${filledObjectiveCount >= MIN_LEARNING_OBJECTIVES
+                      ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
+                      : 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'
+                      }`}>
+                      {filledObjectiveCount}/{MIN_LEARNING_OBJECTIVES}
+                    </span>
                   </div>
                 </CardHeader>
-                <CardContent className="p-8 pt-4 space-y-4">
-                  {learningObjectives.map((objective, index) => (
-                    <div key={index} className="flex items-center gap-3 group">
-                      <div className="flex-1 relative">
-                        <Input
-                          placeholder="Örn: React ile modern web uygulamaları geliştirebileceksiniz"
-                          value={objective}
-                          onChange={(e) => updateLearningObjective(index, e.target.value)}
-                          className="h-12 px-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all font-medium"
-                          maxLength={160}
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-300">
-                          {objective.length}/160
+                <CardContent className="p-6 space-y-3">
+                  {learningObjectives.map((objective, index) => {
+                    const required = index < MIN_LEARNING_OBJECTIVES;
+                    const empty = !objective.trim();
+                    return (
+                      <div key={index} className="flex items-center gap-3">
+                        <span className={`shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-semibold ${required && empty
+                          ? 'bg-amber-50 text-amber-600 dark:bg-amber-500/10'
+                          : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
+                          }`}>
+                          {index + 1}
                         </span>
+                        <div className="flex-1 relative">
+                          <Input
+                            placeholder={required
+                              ? `${index + 1}. hedef (zorunlu) — örn: React ile modern web uygulamaları geliştirebileceksiniz`
+                              : 'Ek hedef (isteğe bağlı)'}
+                            value={objective}
+                            onChange={(e) => updateLearningObjective(index, e.target.value)}
+                            className={`h-11 pl-4 pr-16 rounded-xl bg-white dark:bg-slate-800/50 transition-all ${required && empty
+                              ? 'border-amber-200 dark:border-amber-500/30 focus-visible:ring-amber-500/20'
+                              : 'border-slate-200 dark:border-slate-700 focus-visible:ring-indigo-500/20'
+                              }`}
+                            maxLength={160}
+                          />
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium text-slate-300 dark:text-slate-600">
+                            {objective.length}/160
+                          </span>
+                        </div>
+                        {!required && (
+                          <Button
+                            variant="ghost" size="icon"
+                            className="shrink-0 text-slate-300 hover:text-red-500 rounded-lg"
+                            onClick={() => removeLearningObjective(index)}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        )}
                       </div>
-                      {learningObjectives.length > 1 && (
-                        <Button
-                          variant="ghost" size="icon" className="text-slate-300 hover:text-red-500 rounded-xl"
-                          onClick={() => removeLearningObjective(index)}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
+
                   <Button
                     onClick={addLearningObjective}
                     variant="ghost"
-                    className="w-full h-12 border-2 border-dashed border-slate-100 dark:border-slate-800 hover:border-indigo-400 hover:bg-indigo-50/50 rounded-xl text-slate-400 hover:text-indigo-600 font-bold transition-all"
+                    className="w-full h-11 border border-dashed border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-500/5 rounded-xl text-slate-500 hover:text-indigo-600 font-medium transition-all"
                   >
-                    <Plus className="w-4 h-4 mr-2" /> Hedef Ekle
+                    <Plus className="w-4 h-4 mr-2" /> Hedef ekle
                   </Button>
                 </CardContent>
               </Card>
@@ -2916,79 +3118,102 @@ export default function AdvancedCourseCreator() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950 transition-colors duration-500">
-      {/* Background Ornaments */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-400/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-400/10 blur-[120px]" />
-      </div>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
 
-      <div className="container mx-auto px-4 py-8 relative">
-        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-2">
-            <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
-              Kurs Oluşturma Stüdyosu
-            </h1>
-            <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl">
-              Kursunuzu profesyonel bir eğitim deneyimine dönüştürmek için ihtiyacınız olan tüm araçlar.
-            </p>
+      {/* Üst bar — kurs adı, durum ve kayıt bilgisi her adımda görünür kalır */}
+      <div className="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800">
+        <div className="container mx-auto px-4">
+          <div className="h-16 flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <h1 className="text-base font-semibold text-slate-900 dark:text-white truncate">
+                  {courseData.title?.trim() || 'Yeni kurs'}
+                </h1>
+                <span className={`shrink-0 text-[11px] font-medium px-2 py-0.5 rounded-full ${(courseData as any).status === 'published'
+                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
+                  : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                  }`}>
+                  {(courseData as any).status === 'published' ? 'Yayında' : 'Taslak'}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 truncate">
+                {savingStep
+                  ? 'Kaydediliyor...'
+                  : lastSavedAt
+                    ? `Son kayıt ${lastSavedAt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`
+                    : 'Her adım ayrı kaydedilir'}
+              </p>
+            </div>
+
+            <div className="hidden sm:flex items-center gap-3 shrink-0">
+              <span className="text-xs text-slate-500">
+                Adım {steps.findIndex(s => s.id === currentStep) + 1}/{steps.length}
+              </span>
+              <div className="w-28 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-indigo-600 rounded-full transition-all duration-300"
+                  style={{ width: `${((steps.findIndex(s => s.id === currentStep) + 1) / steps.length) * 100}%` }}
+                />
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-          {/* Floating Sticky Steps Sidebar */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+          {/* Adım listesi */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24 space-y-6">
-              <Card className="border-none bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-2xl shadow-slate-200/50 dark:shadow-none rounded-3xl overflow-hidden ring-1 ring-white/50 dark:ring-slate-800">
-                <CardContent className="p-3 space-y-1">
-                  {steps.map((step, index) => {
-                    const isActive = currentStep === step.id;
-                    const isCompleted = steps.indexOf(steps.find(s => s.id === currentStep)!) > index;
-                    const Icon = step.icon;
+            <div className="lg:sticky lg:top-24">
+              {/* Mobilde yatay kaydırmalı, masaüstünde dikey liste */}
+              <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+                {steps.map((step, index) => {
+                  const activeIndex = steps.findIndex(s => s.id === currentStep);
+                  const isActive = currentStep === step.id;
+                  const isDone = index < activeIndex;
 
-                    return (
-                      <button
-                        key={step.id}
-                        onClick={() => setCurrentStep(step.id)}
-                        className={`group w-full flex items-center gap-4 p-5 rounded-2xl transition-all duration-300 relative ${isActive
-                          ? 'bg-gradient-to-r from-indigo-600/10 to-transparent text-indigo-700 dark:text-indigo-400 font-bold'
-                          : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-                          }`}
-                      >
-                        {isActive && (
-                          <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-indigo-600 rounded-r-full" />
-                        )}
-                        <div className="text-left">
-                          <p className="text-[10px] font-bold uppercase tracking-widest opacity-50 mb-1">Adım {index + 1}</p>
-                          <p className="text-base leading-none">{step.title}</p>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </CardContent>
-              </Card>
-
+                  return (
+                    <button
+                      key={step.id}
+                      onClick={() => setCurrentStep(step.id)}
+                      className={`shrink-0 lg:w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${isActive
+                        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-200 dark:ring-slate-800'
+                        : 'text-slate-600 dark:text-slate-400 hover:bg-white/60 dark:hover:bg-slate-900/60'
+                        }`}
+                    >
+                      <span className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-semibold ${isActive
+                        ? 'bg-indigo-600 text-white'
+                        : isDone
+                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400'
+                          : 'bg-slate-200 text-slate-500 dark:bg-slate-800 dark:text-slate-500'
+                        }`}>
+                        {isDone ? <Check className="w-3.5 h-3.5" /> : index + 1}
+                      </span>
+                      <span className={`text-sm whitespace-nowrap ${isActive ? 'font-semibold' : 'font-medium'}`}>
+                        {step.title}
+                      </span>
+                    </button>
+                  );
+                })}
+              </nav>
             </div>
           </div>
 
-          {/* Main Content Area */}
-          <div className="lg:col-span-3 space-y-8">
-            <Card className="border-none bg-white dark:bg-slate-900 shadow-2xl shadow-slate-200/50 dark:shadow-none rounded-[40px] overflow-hidden min-h-[600px] flex flex-col transition-all duration-500">
-              <CardHeader className="px-10 pt-12 pb-6 flex-shrink-0">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 hover:bg-indigo-50 px-3 py-1 rounded-full mb-2">
-                      Adım {steps.indexOf(steps.find(s => s.id === currentStep)!) + 1} / {steps.length}
-                    </Badge>
-                    <CardTitle className="text-3xl font-bold text-slate-900 dark:text-white">
-                      {steps.find(s => s.id === currentStep)?.title}
-                    </CardTitle>
-                  </div>
-                </div>
+          {/* İçerik */}
+          <div className="lg:col-span-3 space-y-6">
+            <Card className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm rounded-2xl overflow-hidden flex flex-col">
+              <CardHeader className="px-6 sm:px-8 pt-6 pb-5 border-b border-slate-100 dark:border-slate-800">
+                <CardTitle className="text-xl font-semibold text-slate-900 dark:text-white">
+                  {steps.find(s => s.id === currentStep)?.title}
+                </CardTitle>
+                <p className="text-sm text-slate-500 mt-1">
+                  {STEP_DESCRIPTIONS[currentStep] || 'Bu adımdaki bilgileri doldurun.'}
+                </p>
               </CardHeader>
 
-              <CardContent className="px-10 pb-10 flex-grow">
-                <div className="bg-slate-50/50 dark:bg-slate-950/30 rounded-[32px] p-8 min-h-[400px]">
+              <CardContent className="px-6 sm:px-8 pb-6 pt-6">
+                <div className="min-h-[380px]">
                   {renderStepContent()}
                 </div>
 
@@ -3009,78 +3234,58 @@ export default function AdvancedCourseCreator() {
                     Önceki Adım
                   </Button>
 
+                  {/* Tek kaydet butonu: yalnızca bulunduğun adımın verisini kaydeder.
+                      "Sonraki Adım" gezinme butonudur; veri kaybolmasın diye geçmeden
+                      önce aynı adımı sessizce kaydeder. */}
                   <div className="flex items-center gap-4 w-full sm:w-auto">
-                    {(courseData as any).status === 'published' ? (
-                      /* Kurs zaten yayınlanda → sadece Güncelle butonu */
-                      <>
-                        {steps.findIndex(s => s.id === currentStep) < steps.length - 1 && (
-                          <Button
-                            variant="outline"
-                            className="flex-1 sm:flex-none rounded-xl px-8 h-12 border-slate-200 dark:border-slate-800 hover:bg-slate-50 font-medium transition-all"
-                            onClick={async () => {
-                              const idx = steps.findIndex(s => s.id === currentStep);
-                              await saveCourseToServer(false);
-                              setCurrentStep(steps[idx + 1].id);
-                            }}
-                          >
-                            Sonraki Adım
-                            <ArrowRight className="w-4 h-4 ml-2" />
-                          </Button>
-                        )}
-                        <Button
-                          className="flex-1 sm:flex-none bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg shadow-emerald-200 dark:shadow-none rounded-xl px-10 h-12 font-bold transition-all hover:scale-[1.02] active:scale-95"
-                          onClick={() => saveCourseToServer(false)}
-                        >
+                    <Button
+                      variant="outline"
+                      disabled={savingStep}
+                      className="flex-1 sm:flex-none rounded-xl px-8 h-12 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium transition-all"
+                      onClick={() => saveCurrentStep()}
+                    >
+                      {savingStep ? (
+                        <>
+                          <span className="w-4 h-4 mr-2 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin" />
+                          Kaydediliyor...
+                        </>
+                      ) : (
+                        <>
                           <Save className="w-4 h-4 mr-2" />
-                          Kursu Güncelle
-                        </Button>
-                      </>
-                    ) : (
-                      /* Kurs taslak → normal akış */
-                      <>
-                        <Button
-                          variant="outline"
-                          className="flex-1 sm:flex-none rounded-xl px-8 h-12 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium transition-all"
-                          onClick={() => saveCourseToServer(false)}
-                        >
-                          <Save className="w-4 h-4 mr-2" />
-                          Taslağı Kaydet
-                        </Button>
+                          Kaydet
+                        </>
+                      )}
+                    </Button>
+
+                    {steps.findIndex(s => s.id === currentStep) === steps.length - 1 ? (
+                      (courseData as any).status !== 'published' && (
                         <Button
                           className="flex-1 sm:flex-none bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-200 dark:shadow-none rounded-xl px-10 h-12 font-bold transition-all hover:scale-[1.02] active:scale-95"
-                          onClick={async () => {
-                            const idx = steps.findIndex(s => s.id === currentStep);
-                            const isLast = idx === steps.length - 1;
-                            await saveCourseToServer(isLast);
-                            if (isLast) return;
-                            setCurrentStep(steps[idx + 1].id);
-                          }}
+                          onClick={() => saveCourseToServer(true)}
                         >
-                          {steps.findIndex(s => s.id === currentStep) === steps.length - 1 ? 'Kursu Yayınla' : 'Sonraki Adım'}
+                          Kursu Yayınla
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
-                      </>
+                      )
+                    ) : (
+                      <Button
+                        disabled={savingStep}
+                        className="flex-1 sm:flex-none bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-200 dark:shadow-none rounded-xl px-10 h-12 font-bold transition-all hover:scale-[1.02] active:scale-95"
+                        onClick={async () => {
+                          const idx = steps.findIndex(s => s.id === currentStep);
+                          const ok = await saveCurrentStep({ silent: true });
+                          if (ok) setCurrentStep(steps[idx + 1].id);
+                        }}
+                      >
+                        Sonraki Adım
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
                     )}
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Quick Stats / Info Footer */}
-            <div className="px-6 py-4 rounded-3xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm border border-white/50 dark:border-slate-800 flex flex-wrap items-center justify-center gap-8 text-sm text-slate-500">
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-emerald-500" />
-                <span>Verileriniz güvende</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-amber-500" />
-                <span>Otomatik kayıt aktif</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Globe className="w-4 h-4 text-blue-500" />
-                <span>Global içerik standartları</span>
-              </div>
-            </div>
           </div>
         </div>
 
