@@ -1221,11 +1221,16 @@ export default function AdvancedCourseCreator() {
     const file = event.target.files?.[0];
     if (!file || !selectedLesson) return;
 
-    await processFileUpload(file);
-
+    // Pencereyi ÖNCE kapat, yüklemeyi sonra başlat.
+    // Aksi halde modal yükleme boyunca (büyük videoda dakikalarca) ekranı kaplı
+    // tutuyordu. İlerleme zaten ders satırında görünüyor.
+    const lesson = selectedLesson;
     setShowFileUpload(false);
-    setSelectedLesson(null);
     document.body.style.overflow = 'auto';
+    event.target.value = ''; // aynı dosya tekrar seçilebilsin
+
+    await processFileUpload(file, lesson);
+    setSelectedLesson(null);
   };
 
   // Drag & Drop handlers
@@ -1246,9 +1251,14 @@ export default function AdvancedCourseCreator() {
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0 && selectedLesson) {
       const file = files[0];
+      const lesson = selectedLesson;
 
-      // Process the dropped file directly
-      await processFileUpload(file);
+      // Sürükle-bırakta da pencere önce kapanır
+      setShowFileUpload(false);
+      document.body.style.overflow = 'auto';
+
+      await processFileUpload(file, lesson);
+      setSelectedLesson(null);
     }
   };
 
@@ -1294,8 +1304,10 @@ export default function AdvancedCourseCreator() {
   };
 
   // Extract file processing logic
-  const processFileUpload = async (file: File) => {
-    if (!selectedLesson) return;
+  const processFileUpload = async (file: File, targetLesson?: { sectionId: string; lessonId: string; dbLessonId?: number }) => {
+    // Pencere kapandıktan sonra state temizlenebildiği için hedef ders parametreyle geçilir
+    const activeLesson = targetLesson || selectedLesson;
+    if (!activeLesson) return;
 
     const fileName = file.name;
     const fileType = uploadType;
@@ -1311,11 +1323,11 @@ export default function AdvancedCourseCreator() {
     setCourseData(prev => ({
       ...prev,
       sections: prev.sections.map(s =>
-        s.id === selectedLesson.sectionId
+        s.id === activeLesson.sectionId
           ? {
             ...s,
             lessons: s.lessons.map(l =>
-              l.id === selectedLesson.lessonId
+              l.id === activeLesson.lessonId
                 ? {
                   ...l,
                   type: fileType,
@@ -1331,7 +1343,7 @@ export default function AdvancedCourseCreator() {
     }));
 
     // Video veya diğer işlemler için ID'yi belirle
-    const lessonIdToSend = selectedLesson.dbLessonId?.toString() || selectedLesson.lessonId;
+    const lessonIdToSend = activeLesson.dbLessonId?.toString() || activeLesson.lessonId;
 
     try {
       // Create FormData for file upload
@@ -1364,11 +1376,11 @@ export default function AdvancedCourseCreator() {
               setCourseData(prev => ({
                 ...prev,
                 sections: prev.sections.map(s =>
-                  s.id === selectedLesson.sectionId
+                  s.id === activeLesson.sectionId
                     ? {
                       ...s,
                       lessons: s.lessons.map(l =>
-                        l.id === selectedLesson.lessonId
+                        l.id === activeLesson.lessonId
                           ? { ...l, uploadProgress: progress }
                           : l
                       )
@@ -1403,7 +1415,7 @@ export default function AdvancedCourseCreator() {
       };
 
       if (fileType === 'video') {
-        console.log('Uploading video with Lesson ID:', lessonIdToSend, 'Original lessonId:', selectedLesson.lessonId);
+        console.log('Uploading video with Lesson ID:', lessonIdToSend, 'Original lessonId:', activeLesson.lessonId);
 
         // Video için ayrı endpoint kullan
         formData.append('courseSlug', courseSlug);
@@ -1414,18 +1426,18 @@ export default function AdvancedCourseCreator() {
         // Slayt ve belge için birleştirilmiş endpoint kullan
         formData.append('resourceType', fileType);
 
-        result = await uploadWithProgress(`${API_BASE_URL}/courses/${courseSlug}/lessons/${selectedLesson.lessonId}/upload-resource`, formData);
+        result = await uploadWithProgress(`${API_BASE_URL}/courses/${courseSlug}/lessons/${activeLesson.lessonId}/upload-resource`, formData);
       }
 
       // Update UI with successful upload
       setCourseData(prev => ({
         ...prev,
         sections: prev.sections.map(s =>
-          s.id === selectedLesson.sectionId
+          s.id === activeLesson.sectionId
             ? {
               ...s,
               lessons: s.lessons.map(l =>
-                l.id === selectedLesson.lessonId
+                l.id === activeLesson.lessonId
                   ? {
                     ...l,
                     type: fileType,
@@ -1456,7 +1468,7 @@ export default function AdvancedCourseCreator() {
 
       // Eğer video ise, işleme durumunu kontrol et
       if (fileType === 'video') {
-        pollVideoStatus(lessonIdToSend, selectedLesson.lessonId);
+        pollVideoStatus(lessonIdToSend, activeLesson.lessonId);
       }
 
     } catch (error) {
@@ -1466,11 +1478,11 @@ export default function AdvancedCourseCreator() {
       setCourseData(prev => ({
         ...prev,
         sections: prev.sections.map(s =>
-          s.id === selectedLesson.sectionId
+          s.id === activeLesson.sectionId
             ? {
               ...s,
               lessons: s.lessons.map(l =>
-                l.id === selectedLesson.lessonId
+                l.id === activeLesson.lessonId
                   ? {
                     ...l,
                     fileName: undefined,
