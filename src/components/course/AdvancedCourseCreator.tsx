@@ -2394,6 +2394,24 @@ export default function AdvancedCourseCreator() {
                                                                 )}
                                                               </div>
 
+                                                              {/* Yükleme sürerken: dosyanın sunucuya aktarım yüzdesi */}
+                                                              {lesson.uploadProgress != null && lesson.uploadProgress < 1 && (
+                                                                <div className="mt-2 max-w-[260px]">
+                                                                  <div className="flex items-center justify-between mb-1">
+                                                                    <span className="text-[10px] font-semibold text-violet-600">Yükleniyor</span>
+                                                                    <span className="text-[10px] font-semibold text-violet-600">
+                                                                      %{Math.round(lesson.uploadProgress * 100)}
+                                                                    </span>
+                                                                  </div>
+                                                                  <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                                                    <div
+                                                                      className="h-full bg-violet-500 rounded-full transition-all duration-200"
+                                                                      style={{ width: `${Math.max(2, lesson.uploadProgress * 100)}%` }}
+                                                                    />
+                                                                  </div>
+                                                                </div>
+                                                              )}
+
                                                               {/* İşleme sürerken: aşama bilgisi + sayfadan çıkılabileceği bilgisi */}
                                                               {(lesson.processingStatus === 'processing' || lesson.processingStatus === 'pending') && (
                                                                 <div className="mt-2 max-w-[260px]">

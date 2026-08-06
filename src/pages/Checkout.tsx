@@ -70,8 +70,9 @@ export const Checkout: React.FC = () => {
       return [{
         title: courseData.title,
         price: typeof courseData.price === 'number' ? courseData.price : parseFloat(courseData.price),
+        image: courseData.image,
         image_url: courseData.image,
-        instructor_name: courseData.instructor || 'Neural Akademi Eğitmeni'
+        instructor_name: courseData.instructor || 'Eğitmen'
       }];
     }
     return cartData?.items || [];
@@ -81,7 +82,9 @@ export const Checkout: React.FC = () => {
     if (isDirectBuy && courseData) {
       return typeof courseData.price === 'number' ? courseData.price : parseFloat(courseData.price);
     }
-    return cartData?.total || 0;
+    // Backend `totalPrice` döner; eskiden yalnızca `total` okunduğu için sepet
+    // toplamı hep 0 kalıyor ve ödeme 0₺ ile başlatılmaya çalışılıyordu.
+    return cartData?.totalPrice ?? cartData?.total ?? 0;
   }, [isDirectBuy, courseData, cartData]);
 
   // Calculate discounted price
@@ -269,53 +272,86 @@ export const Checkout: React.FC = () => {
 
   // Main Checkout UI
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
-      {/* Header */}
-      <nav className="h-16 bg-white/80 backdrop-blur-xl border-b border-slate-100 px-6 sticky top-0 z-50 flex items-center">
-        <div className="max-w-[1100px] mx-auto w-full flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate(-1)}
-              className="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </button>
-            <Link to="/" className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                <span className="text-white text-[10px] font-black">NA</span>
-              </div>
-              Neural Akademi
-            </Link>
-          </div>
-          <div className="flex items-center gap-2 text-emerald-600">
-            <Lock className="w-4 h-4" />
-            <span className="text-xs font-bold hidden sm:block">Güvenli Ödeme</span>
+    <div className="min-h-screen bg-slate-50">
+
+      {/* Üst bar */}
+      <nav className="h-16 bg-white border-b border-slate-200 sticky top-0 z-40">
+        <div className="max-w-5xl mx-auto h-full px-4 flex items-center justify-between">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Geri
+          </button>
+          <div className="flex items-center gap-1.5 text-slate-400">
+            <Lock className="w-3.5 h-3.5" />
+            <span className="text-xs font-medium">Güvenli ödeme</span>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-[1100px] mx-auto px-4 py-10 lg:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+      <div className="max-w-5xl mx-auto px-4 py-8 lg:py-12">
+        <h1 className="text-2xl font-bold text-slate-900 mb-8">Ödeme</h1>
 
-          {/* ============ SOL PANEL ============ */}
-          <div className="lg:col-span-7 space-y-8">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 mb-1">Ödeme</h1>
-              <p className="text-sm text-slate-400">Güvenli ödemenizi tamamlayın</p>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-            {/* Ülke Seçimi */}
-            <div className="bg-white rounded-2xl p-6 ring-1 ring-slate-100 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
-                  <Globe className="w-4 h-4 text-indigo-500" />
-                </div>
-                <h2 className="text-sm font-bold text-slate-700">Fatura Adresi</h2>
+          {/* ============ SOL: SİPARİŞ + FATURA + ÖDEME ============ */}
+          <div className="lg:col-span-7 space-y-6">
+
+            {/* Sipariş içeriği */}
+            <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                  <ShoppingBag className="w-4 h-4 text-slate-400" />
+                  Siparişin
+                </h2>
+                <span className="text-xs text-slate-400">
+                  {items.length} {items.length === 1 ? 'kurs' : 'kurs'}
+                </span>
+              </header>
+
+              <div className="divide-y divide-slate-100">
+                {items.length > 0 ? items.map((item: any, idx: number) => (
+                  <div key={item.course_id ?? idx} className="flex gap-4 p-4">
+                    <img
+                      src={item.image || item.image_url || '/placeholder.svg'}
+                      alt={item.title}
+                      loading="lazy"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/placeholder.svg'; }}
+                      className="w-28 h-[70px] rounded-lg object-cover bg-slate-100 shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-semibold text-slate-900 line-clamp-2 leading-snug">
+                        {item.title}
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-1 truncate">{item.instructor_name || 'Eğitmen'}</p>
+                    </div>
+                    <span className="text-sm font-semibold text-slate-900 whitespace-nowrap">
+                      {formatPrice(item.price)}
+                    </span>
+                  </div>
+                )) : (
+                  <div className="px-6 py-12 text-center">
+                    <p className="text-sm text-slate-400 mb-4">Sepetiniz boş</p>
+                    <Link to="/courses">
+                      <Button variant="outline" className="h-10 rounded-xl">Kursları keşfet</Button>
+                    </Link>
+                  </div>
+                )}
               </div>
+            </section>
+
+            {/* Fatura ülkesi */}
+            <section className="bg-white rounded-2xl border border-slate-200 p-6">
+              <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2 mb-4">
+                <Globe className="w-4 h-4 text-slate-400" />
+                Fatura bilgisi
+              </h2>
               <div className="max-w-xs">
-                <Label className="text-xs font-bold text-slate-400 mb-1.5 block">Ülke</Label>
+                <Label className="text-xs text-slate-500 mb-1.5 block">Ülke</Label>
                 <Select value={country} onValueChange={setCountry}>
-                  <SelectTrigger className="h-11 rounded-xl bg-slate-50 border-none ring-1 ring-slate-100 font-medium">
+                  <SelectTrigger className="h-11 rounded-xl border-slate-200">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">
@@ -323,213 +359,144 @@ export const Checkout: React.FC = () => {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
+            </section>
 
-            {/* Kupon */}
-            <div className="bg-white rounded-2xl p-6 ring-1 ring-slate-100 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center">
-                  <Tag className="w-4 h-4 text-orange-500" />
-                </div>
-                <h2 className="text-sm font-bold text-slate-700">İndirim Kuponu</h2>
-              </div>
-              {appliedCoupon ? (
-                <div className="bg-emerald-50 rounded-xl p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Gift className="w-5 h-5 text-emerald-500" />
-                    <div>
-                      <p className="text-sm font-bold text-emerald-700">
-                        <span className="font-mono">{appliedCoupon.code}</span> uygulandı
-                      </p>
-                      <p className="text-xs text-emerald-500">
-                        {discountAmount}₺ indirim
-                      </p>
-                    </div>
-                  </div>
+            {/* Ödeme ekranı — iframe açıldığında burada gösterilir */}
+            {iframeUrl && (
+              <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                  <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-slate-400" />
+                    Kart bilgileri
+                  </h2>
                   <button
-                    onClick={() => { setAppliedCoupon(null); setCouponCode(''); }}
-                    className="w-8 h-8 rounded-lg bg-white hover:bg-emerald-100 flex items-center justify-center text-emerald-600 transition-colors"
+                    onClick={() => setIframeUrl(null)}
+                    className="text-xs text-slate-400 hover:text-slate-700 transition-colors"
                   >
-                    <X className="w-4 h-4" />
+                    Vazgeç
                   </button>
-                </div>
-              ) : (
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Kupon kodunuzu girin"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                    className="h-11 rounded-xl bg-slate-50 border-none ring-1 ring-slate-100 font-mono font-bold tracking-wider text-sm flex-1"
-                  />
-                  <Button
-                    className="h-11 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold"
-                    disabled={!couponCode || couponLoading}
-                    onClick={() => handleApplyCoupon(couponCode)}
-                  >
-                    {couponLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Uygula'}
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* Ödeme Bölümü */}
-            <div className="bg-white rounded-2xl ring-1 ring-slate-100 shadow-sm overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <CreditCard className="w-4 h-4 text-blue-500" />
-                  </div>
-                  <h2 className="text-sm font-bold text-slate-700">Ödeme Yöntemi</h2>
-                </div>
-              </div>
-
-              {iframeUrl ? (
-                <div className="animate-in fade-in duration-500">
-                  <iframe
-                    src={iframeUrl}
-                    style={{ width: '100%', border: 'none', height: '750px' }}
-                    scrolling="yes"
-                    title="Secure Payment"
-                  />
-                  <div className="p-4 border-t border-slate-50">
-                    <Button
-                      variant="ghost"
-                      onClick={() => setIframeUrl(null)}
-                      className="text-xs font-medium text-slate-400 hover:text-slate-600"
-                    >
-                      <ArrowLeft className="w-3 h-3 mr-1.5" /> Geri Dön
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-8 text-center space-y-4">
-                  <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto">
-                    <ShieldCheck className="w-8 h-8 text-blue-500" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-slate-700 mb-1">Güvenli Ödeme</h3>
-                    <p className="text-sm text-slate-400 max-w-sm mx-auto leading-relaxed">
-                      Ödemeyi tamamla butonuna tıkladığınızda PayTR'ın SSL korumalı ödeme ekranına yönlendirileceksiniz.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
+                </header>
+                <iframe
+                  src={iframeUrl}
+                  style={{ width: '100%', border: 'none', height: '750px' }}
+                  scrolling="yes"
+                  title="Güvenli ödeme"
+                />
+              </section>
+            )}
           </div>
 
-          {/* ============ SAĞ PANEL ============ */}
+          {/* ============ SAĞ: TOPLAM + ÖDEME + KUPON ============ */}
           <div className="lg:col-span-5">
-            <div className="bg-white rounded-2xl ring-1 ring-slate-100 shadow-sm sticky top-24 overflow-hidden">
-              {/* Sipariş Başlığı */}
-              <div className="p-6 border-b border-slate-50">
-                <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
-                  <ShoppingBag className="w-4 h-4 text-slate-400" />
-                  Sipariş Özeti
-                </h2>
-              </div>
+            <div className="lg:sticky lg:top-24 bg-white rounded-2xl border border-slate-200 p-6">
 
-              {/* Ürünler */}
-              <div className="p-6 space-y-4 max-h-[300px] overflow-auto">
-                {items.length > 0 ? items.map((item: any, idx: number) => (
-                  <div key={idx} className="flex gap-3 items-start group">
-                    <div className="w-16 h-11 bg-slate-100 rounded-lg flex-shrink-0 overflow-hidden">
-                      <img
-                        src={item.image_url || '/course-default.jpg'}
-                        className="w-full h-full object-cover"
-                        alt={item.title}
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-bold text-slate-700 line-clamp-2 leading-tight">{item.title}</h4>
-                      <p className="text-[10px] text-slate-400 font-medium mt-0.5">{item.instructor_name}</p>
-                    </div>
-                    <span className="text-sm font-bold text-slate-700 whitespace-nowrap">{formatPrice(item.price)}</span>
-                  </div>
-                )) : (
-                  <div className="text-center py-8 text-slate-300 text-sm">Sepetiniz boş</div>
-                )}
-              </div>
-
-              {/* Fiyat Özeti */}
-              <div className="p-6 bg-slate-50/50 border-t border-slate-50 space-y-3">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-slate-400">Ara Toplam</span>
-                  <span className="font-medium text-slate-500">{formatPrice(originalTotalPrice)}</span>
+              <div className="space-y-2.5 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Ara toplam</span>
+                  <span className="text-slate-700">{formatPrice(originalTotalPrice)}</span>
                 </div>
 
                 {appliedCoupon && discountAmount > 0 && (
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-emerald-500 flex items-center gap-1.5">
-                      <Tag className="w-3 h-3" />
-                      Kupon ({appliedCoupon.code})
+                  <div className="flex justify-between">
+                    <span className="text-emerald-600 flex items-center gap-1.5">
+                      <Tag className="w-3.5 h-3.5" />
+                      {appliedCoupon.code}
                     </span>
-                    <span className="font-bold text-emerald-500">-{formatPrice(discountAmount)}</span>
+                    <span className="font-semibold text-emerald-600">-{formatPrice(discountAmount)}</span>
                   </div>
                 )}
+              </div>
 
-                <div className="border-t border-slate-100 pt-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-base font-bold text-slate-800">Toplam</span>
-                    <div className="text-right">
-                      {appliedCoupon && discountAmount > 0 && (
-                        <span className="text-xs text-slate-400 line-through block">{formatPrice(originalTotalPrice)}</span>
-                      )}
-                      <span className="text-2xl font-bold text-slate-900">{formatPrice(totalPrice)}</span>
-                    </div>
-                  </div>
+              <div className="border-t border-slate-100 mt-4 pt-4 flex justify-between items-baseline">
+                <span className="font-semibold text-slate-900">Toplam</span>
+                <div className="text-right">
+                  {appliedCoupon && discountAmount > 0 && (
+                    <span className="block text-xs text-slate-400 line-through">
+                      {formatPrice(originalTotalPrice)}
+                    </span>
+                  )}
+                  <span className="text-2xl font-bold text-slate-900">{formatPrice(totalPrice)}</span>
                 </div>
               </div>
 
-              {/* Aksiyon Alanı */}
-              <div className="p-6 space-y-4">
-                {errorMsg && (
-                  <div className="p-3 bg-red-50 rounded-xl text-red-600 text-xs font-medium flex items-start gap-2 animate-in fade-in slide-in-from-top-2">
-                    <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                    <span>{errorMsg}</span>
+              {errorMsg && (
+                <div className="mt-4 p-3 bg-red-50 rounded-xl text-red-600 text-xs flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
+
+              <Button
+                className="w-full h-12 mt-5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold disabled:bg-slate-200 disabled:text-slate-400"
+                onClick={handlePayment}
+                disabled={isLoading || isProcessing || items.length === 0}
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Hazırlanıyor...
+                  </>
+                ) : (
+                  <>
+                    Ödemeyi tamamla
+                    <ChevronRight className="w-4 h-4 ml-1" />
+                  </>
+                )}
+              </Button>
+
+              {/* KUPON — satın alma butonunun altında */}
+              <div className="mt-4">
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between gap-3 bg-emerald-50 rounded-xl px-3 py-2.5">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Gift className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span className="text-xs text-emerald-700 truncate">
+                        <span className="font-mono font-semibold">{appliedCoupon.code}</span> uygulandı
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => { setAppliedCoupon(null); setCouponCode(''); }}
+                      className="shrink-0 w-6 h-6 rounded-md hover:bg-emerald-100 flex items-center justify-center text-emerald-600 transition-colors"
+                      title="Kuponu kaldır"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Kupon kodu"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      onKeyDown={(e) => { if (e.key === 'Enter' && couponCode) handleApplyCoupon(couponCode); }}
+                      className="h-10 rounded-xl border-slate-200 font-mono text-sm tracking-wider flex-1"
+                    />
+                    <Button
+                      variant="outline"
+                      className="h-10 px-4 rounded-xl border-slate-200 text-sm font-medium"
+                      disabled={!couponCode || couponLoading}
+                      onClick={() => handleApplyCoupon(couponCode)}
+                    >
+                      {couponLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Uygula'}
+                    </Button>
                   </div>
                 )}
+              </div>
 
-                <Button
-                  className="w-full h-13 text-base font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-200/50 transition-all active:scale-[0.98] disabled:bg-slate-300 disabled:shadow-none flex items-center justify-center gap-2"
-                  onClick={handlePayment}
-                  disabled={isLoading || isProcessing || items.length === 0}
-                >
-                  {isProcessing ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Doğrulanıyor...
-                    </>
-                  ) : (
-                    <>
-                      Ödemeyi Tamamla
-                      <ChevronRight className="w-4 h-4" />
-                    </>
-                  )}
-                </Button>
+              <p className="text-[11px] text-center text-slate-400 leading-relaxed mt-4">
+                Satın alarak{' '}
+                <Link to="/terms" className="underline hover:text-slate-600">Kullanım Şartları</Link> ve{' '}
+                <Link to="/privacy" className="underline hover:text-slate-600">Gizlilik Politikası</Link>'nı
+                kabul etmiş olursunuz.
+              </p>
 
-                <p className="text-[10px] text-center text-slate-400 leading-relaxed">
-                  Satın alarak{' '}
-                  <Link to="/terms" className="underline text-indigo-500">Kullanım Şartları</Link> ve{' '}
-                  <Link to="/privacy" className="underline text-indigo-500">Gizlilik Politikası</Link>'nı kabul etmiş olursunuz.
-                </p>
-
-                {/* Güvenlik Bilgisi */}
-                <div className="flex items-center justify-center gap-3 pt-3 border-t border-slate-50">
-                  <div className="flex items-center gap-1.5 text-slate-300">
-                    <Lock className="w-3 h-3" />
-                    <span className="text-[10px] font-bold">256-bit SSL</span>
-                  </div>
-                  <div className="w-px h-3 bg-slate-200"></div>
-                  <div className="flex items-center gap-1.5 text-slate-300">
-                    <ShieldCheck className="w-3 h-3" />
-                    <span className="text-[10px] font-bold">PCI-DSS</span>
-                  </div>
-                  <div className="w-px h-3 bg-slate-200"></div>
-                  <div className="flex items-center gap-1.5 text-slate-300">
-                    <Clock className="w-3 h-3" />
-                    <span className="text-[10px] font-bold">30 Gün İade</span>
-                  </div>
-                </div>
+              <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-slate-100 text-slate-400">
+                <span className="flex items-center gap-1.5 text-[11px]">
+                  <ShieldCheck className="w-3.5 h-3.5" /> SSL korumalı
+                </span>
+                <span className="flex items-center gap-1.5 text-[11px]">
+                  <Clock className="w-3.5 h-3.5" /> Ömür boyu erişim
+                </span>
               </div>
             </div>
           </div>
