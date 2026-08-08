@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 import { DashboardOverview } from './dashboard/DashboardOverview';
 import { CourseList } from './dashboard/CourseList';
 import { StudentList } from './dashboard/StudentList';
-import { InstructorEarnings } from './dashboard/InstructorEarnings';
+import InstructorFinanceReport from './dashboard/InstructorFinanceReport';
 import { InstructorProfileSettings } from './dashboard/InstructorProfileSettings';
 import { InstructorAccountSettings } from './dashboard/InstructorAccountSettings';
 import { PlaceholderSection } from './dashboard/PlaceholderSection';
@@ -26,8 +26,7 @@ import { InstructorMessages } from './dashboard/InstructorMessages';
 import { BookManager } from './dashboard/BookManager';
 import { CreateBook } from './dashboard/CreateBook';
 
-import { InstructorSalesHistory } from './dashboard/InstructorSalesHistory';
-import { InstructorPayoutSettings } from './dashboard/InstructorPayoutSettings';
+import InstructorPayoutSettings from './dashboard/InstructorPayoutSettings';
 
 // Removed unsued DashboardStats interface
 
@@ -82,9 +81,8 @@ export default function ProfessionalInstructorDashboard() {
             label: 'Finansal Yönetim',
             icon: Wallet,
             subItems: [
-                { id: 'earnings', label: 'Gelir Raporu', icon: BarChart3, path: '/instructor/finance/earnings' },
+                { id: 'finance-report', label: 'Satış / Gelir Raporu', icon: BarChart3, path: '/instructor/finance/report' },
                 { id: 'payout-settings', label: 'Ödeme Ayarları', icon: CreditCard, path: '/instructor/finance/payout' },
-                { id: 'sales-history', label: 'Satış Geçmişi', icon: History, path: '/instructor/finance/sales' },
             ]
         },
         {
@@ -218,9 +216,10 @@ export default function ProfessionalInstructorDashboard() {
 
                         <Route path="students/reviews" element={<InstructorReviews />} />
                         <Route path="students/messages" element={<InstructorMessages />} />
-                        <Route path="finance/earnings" element={<InstructorEarnings />} />
+                        <Route path="finance/report" element={<InstructorFinanceReport />} />
+                        <Route path="finance/earnings" element={<InstructorFinanceReport />} />
                         <Route path="finance/payout" element={<InstructorPayoutSettings />} />
-                        <Route path="finance/sales" element={<InstructorSalesHistory />} />
+                        <Route path="finance/sales" element={<InstructorFinanceReport />} />
                         <Route path="settings/profile" element={<InstructorProfileSettings />} />
                         <Route path="settings/account" element={<InstructorAccountSettings />} />
                         <Route path="settings/help" element={<PlaceholderSection title="Yardım & Destek" onBack={() => navigate('/instructor/dashboard')} />} />
