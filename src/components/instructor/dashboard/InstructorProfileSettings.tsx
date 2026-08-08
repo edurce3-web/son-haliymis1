@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { API_BASE_URL } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,6 +29,83 @@ export const InstructorProfileSettings: React.FC = () => {
     });
 
     const [expertiseInput, setExpertiseInput] = useState('');
+
+    // --- Profil fotoğrafı ---------------------------------------------------
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [photoBusy, setPhotoBusy] = useState(false);
+    const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+
+    const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        e.target.value = ''; // aynı dosya tekrar seçilebilsin
+        if (!file) return;
+
+        if (!/^image\/(jpeg|jpg|png|webp)$/.test(file.type)) {
+            return toast.error('Sadece JPEG, PNG veya WebP yükleyebilirsiniz');
+        }
+        if (file.size > 10 * 1024 * 1024) {
+            return toast.error('Fotoğraf en fazla 10 MB olabilir');
+        }
+
+        setPhotoBusy(true);
+        try {
+            const token = localStorage.getItem('token');
+            const fd = new FormData();
+            fd.append('profileImage', file);
+
+            const res = await fetch(`${API_BASE_URL}/instructor/upload-profile-image`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` },
+                body: fd,
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Yüklenemedi');
+
+            // Aynı adrese yazılırsa tarayıcı eski görseli cache'ten gösterebiliyor
+            setPhotoUrl(`${data.url}?v=${Date.now()}`);
+            toast.success('Profil fotoğrafı güncellendi', {
+                description: 'Önceki fotoğrafın depolamadan silindi.',
+            });
+
+            // Menüdeki avatar da tazelensin
+            const stored = localStorage.getItem('user');
+            if (stored) {
+                const u = JSON.parse(stored);
+                u.profile_image = data.url;
+                localStorage.setItem('user', JSON.stringify(u));
+            }
+        } catch (err: any) {
+            toast.error('Fotoğraf yüklenemedi', { description: err.message });
+        } finally {
+            setPhotoBusy(false);
+        }
+    };
+
+    const handlePhotoRemove = async () => {
+        setPhotoBusy(true);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_BASE_URL}/instructor/profile-image`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error('Kaldırılamadı');
+
+            setPhotoUrl(null);
+            toast.success('Profil fotoğrafı kaldırıldı');
+
+            const stored = localStorage.getItem('user');
+            if (stored) {
+                const u = JSON.parse(stored);
+                u.profile_image = null;
+                localStorage.setItem('user', JSON.stringify(u));
+            }
+        } catch (err: any) {
+            toast.error('Kaldırılamadı', { description: err.message });
+        } finally {
+            setPhotoBusy(false);
+        }
+    };
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -138,17 +215,60 @@ export const InstructorProfileSettings: React.FC = () => {
             </div>
 
             <div className='flex flex-col md:flex-row gap-8 items-start'>
-                <div className='flex flex-col items-center space-y-4 shrink-0'>
+                <div className='flex flex-col items-center space-y-3 shrink-0'>
                     <div className='relative'>
                         <Avatar className='h-32 w-32 rounded-2xl border border-zinc-200 shadow-sm'>
-                            <AvatarImage src={profile.profile_image || '/avatar.svg'} className="object-cover" />
-                            <AvatarFallback className='text-3xl font-bold bg-zinc-100 text-zinc-600'>
+                            {(photoUrl ?? profile.profile_image) && (
+                                <AvatarImage src={(photoUrl ?? profile.profile_image) as string} className="object-cover" />
+                            )}
+                            <AvatarFallback className='text-3xl font-bold bg-zinc-100 text-zinc-600 rounded-2xl'>
                                 {formData.first_name?.[0]}{formData.last_name?.[0]}
                             </AvatarFallback>
                         </Avatar>
-                        <button className='absolute -bottom-3 -right-3 w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center border border-zinc-200 hover:bg-zinc-50 transition-colors'>
-                            <Camera className='w-4 h-4 text-zinc-700' />
+
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/jpeg,image/jpg,image/png,image/webp"
+                            onChange={handlePhotoSelect}
+                            className="hidden"
+                        />
+
+                        <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={photoBusy}
+                            title="Fotoğraf yükle"
+                            className='absolute -bottom-3 -right-3 w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center border border-zinc-200 hover:bg-zinc-50 transition-colors disabled:opacity-60'
+                        >
+                            {photoBusy
+                                ? <Loader2 className='w-4 h-4 text-zinc-700 animate-spin' />
+                                : <Camera className='w-4 h-4 text-zinc-700' />}
                         </button>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1">
+                        <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={photoBusy}
+                            className="text-xs font-medium text-zinc-700 hover:text-zinc-900 disabled:opacity-60"
+                        >
+                            {(photoUrl ?? profile.profile_image) ? 'Fotoğrafı değiştir' : 'Fotoğraf yükle'}
+                        </button>
+                        {(photoUrl ?? profile.profile_image) && (
+                            <button
+                                type="button"
+                                onClick={handlePhotoRemove}
+                                disabled={photoBusy}
+                                className="text-xs text-zinc-400 hover:text-red-500 disabled:opacity-60"
+                            >
+                                Kaldır
+                            </button>
+                        )}
+                        <p className="text-[11px] text-zinc-400 text-center mt-1 max-w-[140px]">
+                            JPEG, PNG veya WebP · en fazla 10 MB
+                        </p>
                     </div>
                 </div>
 

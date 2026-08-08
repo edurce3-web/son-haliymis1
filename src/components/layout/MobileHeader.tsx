@@ -222,7 +222,7 @@ export const MobileHeader: React.FC = () => {
                   <div className="px-4 py-3 border-b bg-muted/30">
                     <div className="flex items-center space-x-3">
                       <Avatar className="ring-2 ring-primary/20">
-                        <AvatarImage src="" />
+                        <AvatarImage src={(user as any).profile_image || ''} className="object-cover" />
                         <AvatarFallback className="bg-primary text-primary-foreground">
                           {user.first_name?.[0]}{user.last_name?.[0]}
                         </AvatarFallback>

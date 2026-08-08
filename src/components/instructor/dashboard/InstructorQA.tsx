@@ -1,61 +1,81 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import React, { useMemo, useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { API_BASE_URL } from '@/lib/api';
-import {
-  MessageCircle,
-    Send,
-    CheckCircle2,
-    Clock,
-    User,
-    BookOpen,
-    BadgeCheck,
-    Loader2,
-    Filter,
-    Search,
-    ChevronDown,
-    ChevronUp,
-    ArrowLeft
-} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import { UserAvatar } from '@/components/ui/user-avatar';
 import { toast } from 'sonner';
+import {
+    Loader2, MessageCircle, Search, Send, CheckCircle2,
+    Clock, CornerDownRight, BookOpen,
+} from 'lucide-react';
 
 interface InstructorQAProps {
     onBack?: () => void;
 }
 
+interface Answer {
+    answer_id: number;
+    user_id: number;
+    content: string;
+    is_instructor_answer: boolean | number;
+    first_name?: string;
+    last_name?: string;
+    profile_image?: string | null;
+    created_at: string;
+}
+
+interface Question {
+    question_id: number;
+    user_id: number;
+    title?: string;
+    content: string;
+    is_answered: boolean | number;
+    created_at: string;
+    first_name?: string;
+    last_name?: string;
+    profile_image?: string | null;
+    course_title?: string;
+    lesson_title?: string;
+    answers?: Answer[];
+}
+
+const timeAgo = (date: string) => {
+    const diff = Date.now() - new Date(date).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'az önce';
+    if (mins < 60) return `${mins} dk önce`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours} sa önce`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days} gün önce`;
+    return new Date(date).toLocaleDateString('tr-TR');
+};
+
 export function InstructorQA({ onBack }: InstructorQAProps) {
-    const queryClient = useQueryClient();
     const [answerContent, setAnswerContent] = useState('');
     const [activeQuestionId, setActiveQuestionId] = useState<number | null>(null);
     const [filterStatus, setFilterStatus] = useState<'all' | 'unanswered' | 'answered'>('all');
     const [searchTerm, setSearchTerm] = useState('');
-    const [expandedId, setExpandedId] = useState<number | null>(null);
 
-    // Fetch instructor questions
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['instructor-questions'],
         queryFn: async () => {
             const token = localStorage.getItem('token');
             const res = await fetch(`${API_BASE_URL}/qa/instructor-questions`, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error('Sorular yüklenemedi');
             return res.json();
         },
     });
 
-    // Answer mutation
     const answerMutation = useMutation({
         mutationFn: async (questionId: number) => {
             const token = localStorage.getItem('token');
             const res = await fetch(`${API_BASE_URL}/questions/${questionId}/answers`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                body: JSON.stringify({ content: answerContent })
+                body: JSON.stringify({ content: answerContent }),
             });
             if (!res.ok) throw new Error('Cevap gönderilemedi');
             return res.json();
@@ -63,244 +83,226 @@ export function InstructorQA({ onBack }: InstructorQAProps) {
         onSuccess: () => {
             setAnswerContent('');
             setActiveQuestionId(null);
+            // Sunucu is_answered'ı işaretledi; listeyi tazeleyince rozet güncellenir
             refetch();
-            toast.success('Cevabınız gönderildi!');
+            toast.success('Cevabın gönderildi');
         },
-        onError: () => toast.error('Cevap gönderilemedi.')
+        onError: () => toast.error('Cevap gönderilemedi'),
     });
 
-    const questions = data?.questions || [];
+    const questions: Question[] = data?.questions || [];
 
-    // Filter & search
-    const filteredQuestions = questions.filter((q: any) => {
-        if (filterStatus === 'unanswered' && q.is_answered) return false;
-        if (filterStatus === 'answered' && !q.is_answered) return false;
-        if (searchTerm) {
-            const term = searchTerm.toLowerCase();
-            return q.title?.toLowerCase().includes(term) || q.content?.toLowerCase().includes(term) || q.course_title?.toLowerCase().includes(term);
-        }
-        return true;
-    });
+    const filtered = useMemo(() => {
+        const q = searchTerm.trim().toLowerCase();
+        return questions.filter(item => {
+            if (filterStatus === 'unanswered' && item.is_answered) return false;
+            if (filterStatus === 'answered' && !item.is_answered) return false;
+            if (!q) return true;
+            return (
+                item.content?.toLowerCase().includes(q) ||
+                item.title?.toLowerCase().includes(q) ||
+                item.course_title?.toLowerCase().includes(q) ||
+                `${item.first_name || ''} ${item.last_name || ''}`.toLowerCase().includes(q)
+            );
+        });
+    }, [questions, filterStatus, searchTerm]);
 
-    const unansweredCount = questions.filter((q: any) => !q.is_answered).length;
+    const unansweredCount = questions.filter(q => !q.is_answered).length;
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center py-32">
+                <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+            </div>
+        );
+    }
+
+    const tabs = [
+        { id: 'all' as const, label: 'Tümü', count: questions.length },
+        { id: 'unanswered' as const, label: 'Cevap bekleyen', count: unansweredCount },
+        { id: 'answered' as const, label: 'Cevaplanan', count: questions.length - unansweredCount },
+    ];
 
     return (
-        <div className="space-y-8">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    {onBack && (
-                        <button onClick={onBack} className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors">
-                            <ArrowLeft className="w-4 h-4" />
-                        </button>
-                    )}
-                    <div>
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Soru & Cevap</h1>
-                        <p className="text-sm text-slate-400 mt-1">Öğrencilerinizin sorularını yanıtlayın</p>
-                    </div>
+        <div className="space-y-6">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900">Soru & Cevap</h1>
+                    <p className="text-sm text-slate-500 mt-1">
+                        {unansweredCount > 0
+                            ? `${unansweredCount} soru cevabını bekliyor.`
+                            : 'Bekleyen soru yok, hepsi cevaplanmış.'}
+                    </p>
                 </div>
-                {unansweredCount > 0 && (
-                    <div className="bg-orange-50 text-orange-600 px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
-                        {unansweredCount} cevaplanmamış soru
-                    </div>
+                {onBack && (
+                    <Button variant="ghost" onClick={onBack} className="h-9 rounded-lg text-sm text-slate-500">
+                        Panele dön
+                    </Button>
                 )}
             </div>
 
-            {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-3">
-                <div className="relative flex-1">
-                    <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                    <Input
-                        placeholder="Soru veya kurs ara..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-11 h-11 rounded-xl bg-white border-slate-200 text-sm font-medium"
-                    />
-                </div>
-                <div className="flex gap-2">
-                    {[
-                        { key: 'all', label: 'Tümü', count: questions.length },
-                        { key: 'unanswered', label: 'Cevaplanmamış', count: unansweredCount },
-                        { key: 'answered', label: 'Cevaplanan', count: questions.length - unansweredCount },
-                    ].map(f => (
+            {/* Filtre + arama */}
+            <div className="flex flex-wrap items-center gap-3">
+                <div className="flex gap-1 bg-slate-100 p-1 rounded-xl">
+                    {tabs.map(tab => (
                         <button
-                            key={f.key}
-                            onClick={() => setFilterStatus(f.key as any)}
-                            className={cn(
-                                "px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2",
-                                filterStatus === f.key
-                                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-200"
-                                    : "bg-white text-slate-500 hover:bg-slate-50 border border-slate-200"
-                            )}
+                            key={tab.id}
+                            onClick={() => setFilterStatus(tab.id)}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filterStatus === tab.id
+                                ? 'bg-white text-slate-900 shadow-sm'
+                                : 'text-slate-500 hover:text-slate-700'
+                                }`}
                         >
-                            {f.label}
-                            <span className={cn("px-1.5 py-0.5 rounded-lg text-[10px]", filterStatus === f.key ? "bg-white/20" : "bg-slate-100")}>{f.count}</span>
+                            {tab.label}
+                            <span className="ml-1.5 text-xs text-slate-400">{tab.count}</span>
                         </button>
                     ))}
                 </div>
+
+                <div className="relative flex-1 min-w-[200px] max-w-xs">
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                        placeholder="Soru, kurs veya öğrenci ara"
+                        className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    />
+                </div>
             </div>
 
-            {/* Questions List */}
-            {isLoading ? (
-                <div className="flex items-center justify-center py-20 bg-white rounded-2xl border border-slate-100">
-                    <div className="flex flex-col items-center gap-3">
-                        <Loader2 className="w-7 h-7 text-indigo-500 animate-spin" />
-                        <span className="text-sm text-slate-400 font-medium">Sorular yükleniyor...</span>
+            {filtered.length === 0 ? (
+                <div className="bg-white border border-slate-200 rounded-2xl py-16 text-center">
+                    <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
+                        <MessageCircle className="w-5 h-5 text-slate-400" />
                     </div>
+                    <p className="text-sm text-slate-500">
+                        {questions.length === 0 ? 'Henüz soru sorulmamış.' : 'Bu filtreye uyan soru yok.'}
+                    </p>
                 </div>
-            ) : filteredQuestions.length > 0 ? (
-                <div className="space-y-4">
-                    {filteredQuestions.map((q: any) => {
-                        const isExpanded = expandedId === q.question_id;
+            ) : (
+                <div className="space-y-3">
+                    {filtered.map(q => {
+                        const studentName = `${q.first_name || ''} ${q.last_name || ''}`.trim() || 'Öğrenci';
+                        const answered = Boolean(q.is_answered);
+                        const isReplying = activeQuestionId === q.question_id;
+
                         return (
-                            <div
+                            <article
                                 key={q.question_id}
-                                className={cn(
-                                    "bg-white rounded-2xl border transition-all duration-300 overflow-hidden",
-                                    !q.is_answered ? "border-orange-200 ring-1 ring-orange-100" : "border-slate-100",
-                                    isExpanded && "shadow-lg"
-                                )}
+                                className={`bg-white border rounded-2xl overflow-hidden transition-colors ${answered ? 'border-slate-200' : 'border-amber-200'
+                                    }`}
                             >
-                                {/* Question Header */}
-                                <button
-                                    onClick={() => setExpandedId(isExpanded ? null : q.question_id)}
-                                    className="w-full text-left p-5 hover:bg-slate-50/50 transition-colors"
-                                >
-                                    <div className="flex items-start gap-4">
-                                        <div className={cn(
-                                            "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
-                                            q.is_answered ? "bg-emerald-50" : "bg-orange-50"
-                                        )}>
-                                            {q.is_answered
-                                                ? <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                                                : <Clock className="w-5 h-5 text-orange-500" />
-                                            }
-                                        </div>
+                                <div className="p-5">
+                                    <div className="flex items-start gap-3">
+                                        <UserAvatar src={q.profile_image} name={studentName} size={40} />
+
                                         <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                                <span className="text-sm font-bold text-slate-700">{q.first_name} {q.last_name}</span>
-                                                <span className="text-[10px] text-slate-400">•</span>
-                                                <span className="text-xs text-slate-400">{new Date(q.created_at).toLocaleDateString('tr-TR')}</span>
-                                                {!q.is_answered && <Badge className="bg-orange-100 text-orange-600 border-none text-[10px] px-2 font-bold">Bekliyor</Badge>}
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <span className="font-semibold text-slate-900 text-sm">{studentName}</span>
+                                                <span className="text-xs text-slate-400">{timeAgo(q.created_at)}</span>
+                                                <span className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${answered
+                                                    ? 'bg-emerald-50 text-emerald-700'
+                                                    : 'bg-amber-50 text-amber-700'
+                                                    }`}>
+                                                    {answered
+                                                        ? <><CheckCircle2 className="w-3 h-3" /> Cevaplandı</>
+                                                        : <><Clock className="w-3 h-3" /> Bekliyor</>}
+                                                </span>
                                             </div>
-                                            <h3 className="text-base font-bold text-slate-900 mb-1">{q.title}</h3>
-                                            <div className="flex items-center gap-2 flex-wrap">
-                                                <Badge variant="outline" className="text-[10px] bg-indigo-50 text-indigo-600 border-indigo-100 font-bold">
-                                                    <BookOpen className="w-3 h-3 mr-1" /> {q.course_title}
-                                                </Badge>
-                                                {q.lesson_title && (
-                                                    <Badge variant="outline" className="text-[10px] bg-slate-50 text-slate-500 border-slate-200 font-medium">
-                                                        {q.lesson_title}
-                                                    </Badge>
-                                                )}
-                                                <span className="text-[10px] text-slate-400">{q.answer_count} cevap</span>
-                                            </div>
-                                        </div>
-                                        <div className="shrink-0 text-slate-300">
-                                            {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+
+                                            {q.course_title && (
+                                                <p className="flex items-center gap-1.5 text-xs text-slate-400 mt-1">
+                                                    <BookOpen className="w-3 h-3" />
+                                                    {q.course_title}
+                                                    {q.lesson_title ? ` · ${q.lesson_title}` : ''}
+                                                </p>
+                                            )}
+
+                                            {q.title && (
+                                                <h3 className="font-medium text-slate-900 mt-2">{q.title}</h3>
+                                            )}
+                                            <p className="text-sm text-slate-600 mt-1 leading-relaxed whitespace-pre-wrap">
+                                                {q.content}
+                                            </p>
                                         </div>
                                     </div>
-                                </button>
 
-                                {/* Expanded Content */}
-                                {isExpanded && (
-                                    <div className="px-5 pb-5 border-t border-slate-50 animate-in fade-in slide-in-from-top-2 duration-300">
-                                        {/* Soru İçeriği */}
-                                        <div className="py-4 mb-4 bg-slate-50 rounded-xl p-4 mt-4">
-                                            <p className="text-sm text-slate-600 leading-relaxed">{q.content}</p>
-                                        </div>
-
-                                        {/* Mevcut Cevaplar */}
-                                        {q.answers?.length > 0 && (
-                                            <div className="space-y-3 mb-4">
-                                                <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider">Cevaplar</h4>
-                                                {q.answers.map((a: any) => (
-                                                    <div
-                                                        key={a.answer_id}
-                                                        className={cn(
-                                                            "p-4 rounded-xl",
-                                                            a.is_instructor_answer ? "bg-indigo-50 border border-indigo-100" : "bg-white border border-slate-100"
-                                                        )}
-                                                    >
-                                                        <div className="flex items-center gap-2 mb-2">
-                                                            <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center">
-                                                                <User className="w-3 h-3 text-slate-500" />
+                                    {/* Cevaplar */}
+                                    {(q.answers?.length ?? 0) > 0 && (
+                                        <div className="mt-4 ml-4 pl-6 border-l-2 border-slate-100 space-y-4">
+                                            {q.answers!.map(a => {
+                                                const answerName = `${a.first_name || ''} ${a.last_name || ''}`.trim() || 'Kullanıcı';
+                                                return (
+                                                    <div key={a.answer_id} className="flex items-start gap-3">
+                                                        <UserAvatar src={a.profile_image} name={answerName} size={32} />
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="font-medium text-slate-800 text-sm">{answerName}</span>
+                                                                {Boolean(a.is_instructor_answer) && (
+                                                                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700">
+                                                                        Eğitmen
+                                                                    </span>
+                                                                )}
+                                                                <span className="text-xs text-slate-400">{timeAgo(a.created_at)}</span>
                                                             </div>
-                                                            <span className="text-sm font-bold text-slate-700">{a.first_name} {a.last_name}</span>
-                                                            {a.is_instructor_answer && (
-                                                                <Badge className="bg-indigo-100 text-indigo-600 border-none text-[10px] px-2">
-                                                                    <BadgeCheck className="w-3 h-3 mr-1" /> Eğitmen
-                                                                </Badge>
-                                                            )}
-                                                            <span className="text-[10px] text-slate-400 ml-auto">{new Date(a.created_at).toLocaleDateString('tr-TR')}</span>
+                                                            <p className="text-sm text-slate-600 mt-0.5 leading-relaxed whitespace-pre-wrap">
+                                                                {a.content}
+                                                            </p>
                                                         </div>
-                                                        <p className="text-sm text-slate-600 leading-relaxed">{a.content}</p>
                                                     </div>
-                                                ))}
-                                            </div>
-                                        )}
+                                                );
+                                            })}
+                                        </div>
+                                    )}
 
-                                        {/* Cevap Yaz */}
-                                        {activeQuestionId === q.question_id ? (
-                                            <div className="space-y-3 mt-4 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100">
-                                                <h4 className="text-xs font-black text-indigo-600 uppercase tracking-wider">Cevabınız</h4>
-                                                <Textarea
-                                                    placeholder="Soruyu yanıtlayın..."
+                                    {/* Cevap yaz */}
+                                    <div className="mt-4 ml-4 pl-6 border-l-2 border-transparent">
+                                        {isReplying ? (
+                                            <div className="space-y-2">
+                                                <textarea
                                                     value={answerContent}
-                                                    onChange={(e) => setAnswerContent(e.target.value)}
-                                                    className="bg-white border-indigo-200 min-h-[120px] text-slate-700 rounded-xl resize-none text-sm focus-visible:ring-indigo-500"
+                                                    onChange={e => setAnswerContent(e.target.value)}
+                                                    rows={3}
+                                                    autoFocus
+                                                    placeholder="Cevabını yaz..."
+                                                    className="w-full rounded-xl border border-slate-200 p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
                                                 />
-                                                <div className="flex justify-end gap-2">
+                                                <div className="flex items-center gap-2">
                                                     <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={() => { setActiveQuestionId(null); setAnswerContent(''); }}
-                                                        className="text-slate-400 rounded-xl text-xs font-bold"
-                                                    >
-                                                        İptal
-                                                    </Button>
-                                                    <Button
-                                                        size="sm"
                                                         onClick={() => answerMutation.mutate(q.question_id)}
-                                                        disabled={!answerContent || answerMutation.isPending}
-                                                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-6 text-xs font-bold"
+                                                        disabled={!answerContent.trim() || answerMutation.isPending}
+                                                        className="h-9 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-sm"
                                                     >
-                                                        {answerMutation.isPending ? (
-                                                            <><Loader2 className="w-3 h-3 animate-spin mr-1.5" /> Gönderiliyor</>
-                                                        ) : (
-                                                            <><Send className="w-3 h-3 mr-1.5" /> Cevapla</>
-                                                        )}
+                                                        {answerMutation.isPending
+                                                            ? <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> Gönderiliyor</>
+                                                            : <><Send className="w-3.5 h-3.5 mr-1.5" /> Gönder</>}
                                                     </Button>
+                                                    <button
+                                                        onClick={() => { setActiveQuestionId(null); setAnswerContent(''); }}
+                                                        className="text-sm text-slate-500 hover:text-slate-700"
+                                                    >
+                                                        Vazgeç
+                                                    </button>
                                                 </div>
                                             </div>
                                         ) : (
-                                            <Button
-                                                onClick={() => setActiveQuestionId(q.question_id)}
-                                                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-6 text-xs font-bold mt-2"
+                                            <button
+                                                onClick={() => { setActiveQuestionId(q.question_id); setAnswerContent(''); }}
+                                                className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-700"
                                             >
-                                                <Send className="w-3 h-3 mr-1.5" /> Cevap Yaz
-                                            </Button>
+                                                <CornerDownRight className="w-4 h-4" />
+                                                {answered ? 'Yeni cevap ekle' : 'Cevapla'}
+                                            </button>
                                         )}
                                     </div>
-                                )}
-                            </div>
+                                </div>
+                            </article>
                         );
                     })}
-                </div>
-            ) : (
-                <div className="text-center py-20 bg-white rounded-2xl border border-slate-100">
-                    <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                        <MessageCircle className="w-8 h-8 text-slate-300" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-700 mb-2">
-                        {searchTerm ? 'Arama sonucu bulunamadı' : 'Henüz soru sorulmamış'}
-                    </h3>
-                    <p className="text-sm text-slate-400">
-                        {searchTerm ? 'Farklı anahtar kelimeler deneyin' : 'Öğrencileriniz soru sorduğunda burada göreceksiniz'}
-                    </p>
                 </div>
             )}
         </div>
     );
 }
+
+export default InstructorQA;

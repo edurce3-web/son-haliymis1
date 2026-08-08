@@ -99,8 +99,28 @@ const ProfileSettings: React.FC = () => {
         }
     };
 
-    const handleRemoveImage = () => {
-        setFormData(prev => ({ ...prev, profile_image: '' }));
+    // Sadece formu temizlemek yetmiyor; dosyanın depolamadan da silinmesi gerekiyor.
+    const handleRemoveImage = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_BASE_URL}/instructor/profile-image`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error('Kaldırılamadı');
+
+            setFormData(prev => ({ ...prev, profile_image: '' }));
+
+            const stored = localStorage.getItem('user');
+            if (stored) {
+                const u = JSON.parse(stored);
+                u.profile_image = null;
+                localStorage.setItem('user', JSON.stringify(u));
+            }
+            toast.success('Profil fotoğrafı kaldırıldı');
+        } catch (error: any) {
+            toast.error('Fotoğraf kaldırılamadı', { description: error.message });
+        }
     };
 
     const handleSave = async () => {

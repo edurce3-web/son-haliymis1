@@ -17,6 +17,7 @@ interface Conversation {
     first_name: string;
     last_name: string;
     profile_image_path: string | null;
+    profile_image?: string | null;
     role: string;
     last_message_at: string;
     last_message: string;
@@ -33,6 +34,7 @@ interface Message {
     first_name: string;
     last_name: string;
     profile_image_path: string | null;
+    profile_image?: string | null;
 }
 
 export function InstructorMessages() {
@@ -211,7 +213,7 @@ export function InstructorMessages() {
                                 >
                                     <div className="relative shrink-0">
                                         <Avatar className="h-10 w-10 rounded-xl">
-                                            <AvatarImage src={c.profile_image_path || ''} />
+                                            <AvatarImage src={c.profile_image || c.profile_image_path || ''} />
                                             <AvatarFallback className="bg-indigo-100 text-indigo-700 font-black text-xs rounded-xl">
                                                 {c.first_name[0]}{c.last_name[0]}
                                             </AvatarFallback>
@@ -254,7 +256,7 @@ export function InstructorMessages() {
                                 {otherUser && (
                                     <>
                                         <Avatar className="h-9 w-9 rounded-xl">
-                                            <AvatarImage src={otherUser.profile_image_path} />
+                                            <AvatarImage src={otherUser.profile_image || otherUser.profile_image_path} />
                                             <AvatarFallback className="bg-indigo-100 text-indigo-700 font-black text-xs rounded-xl">
                                                 {otherUser.first_name?.[0]}{otherUser.last_name?.[0]}
                                             </AvatarFallback>
@@ -287,7 +289,7 @@ export function InstructorMessages() {
                                             <div key={m.message_id} className={cn("flex gap-2", isMe ? "justify-end" : "justify-start")}>
                                                 {!isMe && (
                                                     <Avatar className="h-7 w-7 rounded-lg shrink-0 mt-0.5">
-                                                        <AvatarImage src={m.profile_image_path || ''} />
+                                                        <AvatarImage src={m.profile_image || m.profile_image_path || ''} />
                                                         <AvatarFallback className="bg-slate-200 text-slate-600 text-[10px] font-black rounded-lg">
                                                             {m.first_name?.[0]}{m.last_name?.[0]}
                                                         </AvatarFallback>

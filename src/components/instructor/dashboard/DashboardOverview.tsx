@@ -86,7 +86,17 @@ export const DashboardOverview = () => {
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
                 {[
                     { title: 'Toplam Öğrenci', value: stats.totalStudents, icon: Users, desc: `Bu ay ${stats.newStudents} yeni kayıt` },
-                    { title: 'Aylık Kazanç', value: `₺${stats.monthlyRevenue.toLocaleString('tr-TR')}`, icon: DollarSign, desc: `Toplam: ₺${stats.totalRevenue.toLocaleString('tr-TR')}` },
+                    {
+                        title: 'Aylık Kazanç',
+                        value: `₺${Number(stats.monthlyRevenue || 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}`,
+                        icon: DollarSign,
+                        // Vergi sonrası eğitmen payı; parantez içinde bu ayki satış adedi ve değişim
+                        desc: [
+                            `${stats.monthlySales || 0} satış`,
+                            stats.monthlyChange != null ? `${stats.monthlyChange > 0 ? '+' : ''}${stats.monthlyChange}% önceki aya göre` : null,
+                            `Toplam: ₺${Number(stats.totalRevenue || 0).toLocaleString('tr-TR')}`,
+                        ].filter(Boolean).join(' · '),
+                    },
                     { title: 'Öğrenci Puanı', value: `${stats.avgRating} / 5.0`, icon: Star, desc: `${stats.totalReviews} değerlendirme` },
                     { title: 'Aktif Kurslar', value: stats.activeCourses, icon: BookOpen, desc: `Toplam ${stats.totalCourses} kurs` }
                 ].map((item, i) => (
@@ -133,10 +143,25 @@ export const DashboardOverview = () => {
                                     <CartesianGrid strokeDasharray='3 3' vertical={false} stroke='#e4e4e7' />
                                     <XAxis dataKey='month' axisLine={false} tickLine={false} tick={{ fill: '#71717a', fontSize: 12 }} dy={10} />
                                     <YAxis axisLine={false} tickLine={false} tick={{ fill: '#71717a', fontSize: 12 }} tickFormatter={(val) => `₺${val}`} dx={-10} />
+                                    {/* Brüt satış, kesilen vergi ve eğitmenin eline geçen tutar birlikte gösterilir */}
                                     <Tooltip
                                         contentStyle={{ borderRadius: '8px', border: '1px solid #e4e4e7', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', padding: '12px', fontSize: '13px' }}
-                                        itemStyle={{ color: '#18181b', fontWeight: 600 }}
-                                        formatter={(value: number) => [`₺${value}`, 'Gelir']}
+                                        content={({ active, payload, label }: any) => {
+                                            if (!active || !payload?.length) return null;
+                                            const d = payload[0].payload;
+                                            const fmt = (v: number) => `₺${Number(v || 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}`;
+                                            return (
+                                                <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-md text-[13px]">
+                                                    <p className="font-semibold text-zinc-900 mb-1.5">{label}</p>
+                                                    <p className="text-zinc-500">Brüt satış: <span className="text-zinc-800">{fmt(d.gross)}</span></p>
+                                                    <p className="text-zinc-500">Vergi: <span className="text-zinc-800">−{fmt(d.tax)}</span></p>
+                                                    <p className="text-zinc-500 font-medium mt-1 pt-1 border-t border-zinc-100">
+                                                        Net kazancın: <span className="text-emerald-600 font-semibold">{fmt(d.revenue)}</span>
+                                                    </p>
+                                                    <p className="text-zinc-400 text-xs mt-1">{d.sales} satış</p>
+                                                </div>
+                                            );
+                                        }}
                                     />
                                     <Area type='monotone' dataKey='revenue' stroke='#18181b' strokeWidth={2} fill='url(#colorRevenue)' />
                                 </AreaChart>
@@ -155,8 +180,8 @@ export const DashboardOverview = () => {
                             {[
                                 { label: 'Kursları Yönet', desc: 'İçeriklerini düzenle ve yayınla', path: '/instructor/courses/list' },
                                 { label: 'Öğrenci Soruları', desc: 'Soru ve cevaplara yanıt ver', path: '/instructor/students/qa' },
-                                { label: 'Kupon Oluştur', desc: 'İndirim kampanyaları düzenle', path: '/instructor/finance/earnings' },
-                                { label: 'Finansal Rapor', desc: 'Gelirlerini detaylı incele', path: '/instructor/finance/earnings' }
+                                { label: 'Kupon Oluştur', desc: 'İndirim kampanyaları düzenle', path: '/instructor/finance/report' },
+                                { label: 'Finansal Rapor', desc: 'Gelirlerini detaylı incele', path: '/instructor/finance/report' }
                             ].map((action, i) => (
                                 <button key={i} onClick={() => navigate(action.path)} className='flex items-center justify-between p-4 hover:bg-zinc-50 border-b border-zinc-100 last:border-0 transition-colors text-left group'>
                                     <div>

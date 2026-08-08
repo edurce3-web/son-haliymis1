@@ -158,7 +158,7 @@ export function InstructorReviews() {
                         <div key={r.review_id} className="bg-white rounded-2xl border border-slate-100 p-5 hover:shadow-md transition-all">
                             <div className="flex items-start gap-4">
                                 <Avatar className="h-10 w-10 rounded-xl border border-slate-100 shrink-0">
-                                    <AvatarImage src={r.profile_image_path} />
+                                    <AvatarImage src={r.profile_image || r.profile_image_path} />
                                     <AvatarFallback className="bg-indigo-100 text-indigo-700 font-black text-xs rounded-xl">
                                         {(r.first_name || '?')[0]}{(r.last_name || '?')[0]}
                                     </AvatarFallback>
