@@ -1,14 +1,34 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
+# Edurce — robots.txt
+# Kural: herkese açık katalog taranabilir; kişiye özel ve işlem sayfaları değil.
 
 User-agent: *
 Allow: /
+
+# Giriş gerektiren ya da kişiye özel alanlar. Bunlar taranırsa tarama bütçesi
+# boşa gider; giriş ekranına düşen botlar aynı içeriği tekrar tekrar görür.
+Disallow: /instructor/
+Disallow: /home/settings/
+Disallow: /learning
+Disallow: /cart
+Disallow: /checkout
+Disallow: /messages
+Disallow: /notifications
+Disallow: /favorites
+Disallow: /certificates
+Disallow: /my-books
+Disallow: /login
+Disallow: /register
+
+# Arama sonuçları dizine eklenmemeli (ince içerik sayılır) ama içindeki
+# kurs bağlantıları taranmalı — bu yüzden Disallow değil, sayfanın kendi
+# noindex etiketi kullanılıyor. Yalnızca filtreli varyantlar engelleniyor.
+Disallow: /search?*&
+Disallow: /*?sort=
+Disallow: /*?page=
+Disallow: /*?level=
+Disallow: /*?minRating=
+Disallow: /*?free=
+
+# Site haritası API üzerinde üretiliyor: kurslar ve kategoriler
+# veritabanından geldiği için statik dosya güncel kalamıyor.
+Sitemap: https://api.edurce.com/sitemap.xml

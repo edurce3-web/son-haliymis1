@@ -22,16 +22,58 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png" />
 
 
-  <!-- Open Graph -->
+  <meta name="theme-color" content="#4f46e5" />
+  <link rel="canonical" href="https://edurce.com/" />
+
+  <!-- Open Graph. Mutlak adres şart: sosyal medya kazıyıcıları göreli yolu
+       çözemez ve önizleme görselsiz çıkar. -->
+  <meta property="og:site_name" content="Edurce" />
+  <meta property="og:locale" content="tr_TR" />
   <meta property="og:title" content="Edurce — Online Eğitim Platformu" />
   <meta property="og:description" content="Binlerce kurs, sertifika ve eğitmen ile kariyerine yön ver." />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="/logo.png" />
+  <meta property="og:url" content="https://edurce.com/" />
+  <meta property="og:image" content="https://edurce.com/logo.png" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Edurce" />
-  <meta name="twitter:image" content="/logo.png" />
+  <meta name="twitter:description" content="Binlerce kurs, sertifika ve eğitmen ile kariyerine yön ver." />
+  <meta name="twitter:image" content="https://edurce.com/logo.png" />
+
+  <!-- Kuruluş ve site yapısal verisi. SearchAction, Google'ın sonuçlarda
+       site içi arama kutusu göstermesini sağlar. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://edurce.com/#organization",
+        "name": "Edurce",
+        "url": "https://edurce.com/",
+        "logo": "https://edurce.com/logo.png",
+        "description": "Türkçe online kurs ve eğitim platformu."
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://edurce.com/#website",
+        "url": "https://edurce.com/",
+        "name": "Edurce",
+        "inLanguage": "tr-TR",
+        "publisher": { "@id": "https://edurce.com/#organization" },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://edurce.com/search?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>

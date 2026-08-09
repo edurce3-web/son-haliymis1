@@ -9,6 +9,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
 import { VideoPlayer } from '@/components/video/VideoPlayer';
 import { coursesAPI, cartAPI, enrollmentAPI, reviewsAPI, qaAPI, getCourseImageUrl, API_BASE_URL } from '@/lib/api';
+import { useSeo } from '@/hooks/useSeo';
+
+/** Kanonik adreslerin tabanı. */
+const SITE_URL = 'https://edurce.com';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -214,6 +218,80 @@ export const CourseDetailPage = () => {
     }
     addQuestionMutation.mutate({ title: questionTitle, content: questionContent });
   };
+
+  // SEO — kurs sayfaları organik trafiğin asıl geldiği yer. Course yapısal
+  // verisi Google'da puan, fiyat ve eğitmen bilgisiyle zengin sonuç üretir.
+  // Hook olduğu için erken return'lerden ÖNCE çağrılmak zorunda.
+  const seoCourse = courseData?.course;
+  useSeo(
+    seoCourse
+      ? (() => {
+        const url = `${SITE_URL}/course/${seoCourse.slug || seoCourse.course_id || seoCourse.id}`;
+        const desc = String(seoCourse.short_description || seoCourse.description || '')
+          .replace(/<[^>]*>/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+        const description = desc.length > 158
+          ? `${desc.slice(0, 158).replace(/\s+\S*$/, '')}…`
+          : desc || `${seoCourse.title} kursu — Edurce'de online eğitim.`;
+        const rating = Number(seoCourse.rating) || 0;
+        const reviewCount = Number(seoCourse.review_count) || 0;
+        const image = getCourseImageUrl(seoCourse);
+
+        return {
+          title: `${seoCourse.title} · ${seoCourse.instructor_name || 'Edurce'} | Edurce`,
+          description,
+          canonical: url,
+          image,
+          type: 'article',
+          robots: 'index, follow',
+          jsonLd: [{
+            '@context': 'https://schema.org',
+            '@type': 'Course',
+            name: seoCourse.title,
+            description,
+            url,
+            image,
+            inLanguage: seoCourse.language || 'tr',
+            provider: {
+              '@type': 'Organization',
+              name: 'Edurce',
+              sameAs: SITE_URL,
+            },
+            ...(seoCourse.instructor_name && {
+              instructor: { '@type': 'Person', name: seoCourse.instructor_name },
+            }),
+            // Google, aggregateRating için gerçek yorum sayısı ister;
+            // yorum yoksa alanı hiç göndermiyoruz (yoksa uyarı verir).
+            ...(rating > 0 && reviewCount > 0 && {
+              aggregateRating: {
+                '@type': 'AggregateRating',
+                ratingValue: rating.toFixed(1),
+                reviewCount,
+                bestRating: '5',
+                worstRating: '1',
+              },
+            }),
+            offers: {
+              '@type': 'Offer',
+              price: String(Number(seoCourse.price) || 0),
+              priceCurrency: seoCourse.currency || 'TRY',
+              availability: 'https://schema.org/InStock',
+              url,
+            },
+            hasCourseInstance: {
+              '@type': 'CourseInstance',
+              courseMode: 'online',
+              courseWorkload: seoCourse.duration_seconds
+                ? `PT${Math.max(1, Math.round(seoCourse.duration_seconds / 3600))}H`
+                : undefined,
+            },
+          }],
+        };
+      })()
+      : null,
+    [seoCourse?.course_id, seoCourse?.id, seoCourse?.title]
+  );
 
   if (isLoading) {
     return (
