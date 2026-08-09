@@ -11,19 +11,8 @@ import {
     ShoppingBag,
     Download,
     Search,
-    BarChart3,
 } from 'lucide-react';
-import {
-    BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, LabelList, ResponsiveContainer,
-} from 'recharts';
-
-/** Y ekseni ve çubuk etiketi: 12500 -> ₺12,5B */
-const compactMoney = (v: number) => {
-    const n = Number(v) || 0;
-    if (n >= 1_000_000) return `₺${(n / 1_000_000).toFixed(1).replace('.', ',')}M`;
-    if (n >= 1000) return `₺${(n / 1000).toFixed(n >= 10_000 ? 0 : 1).replace('.', ',')}B`;
-    return `₺${Math.round(n)}`;
-};
+import RevenueChart, { type ChartPayload } from './RevenueChart';
 
 interface MonthBucket {
     month: string;
@@ -67,6 +56,8 @@ interface ReportData {
         currentMonth: MonthBucket | null;
     };
     monthly: MonthBucket[];
+    /** Takvim yılı bazlı grafik verisi (Ocak solda) — RevenueChart kullanır */
+    chart: ChartPayload;
     byCourse: CourseRow[];
     sales: SaleRow[];
 }
@@ -108,16 +99,6 @@ const InstructorFinanceReport: React.FC = () => {
             s.reference?.toLowerCase().includes(q)
         );
     }, [data, query]);
-
-    // Grafik verisi. Backend veri olmayan ayları da 0 olarak döndürüyor, bu yüzden
-    // 12 sütun her zaman çizilir; boş aylar da eksende görünür.
-    const chartData = useMemo(() => data?.monthly ?? [], [data]);
-
-    // Hiç kazanç yoksa grafik yerine açıklayıcı boş durum gösteriyoruz
-    const maxMonthly = useMemo(
-        () => (chartData.length ? Math.max(...chartData.map(m => m.instructor), 0) : 0),
-        [chartData]
-    );
 
     const exportCsv = () => {
         if (!data) return;
@@ -191,85 +172,15 @@ const InstructorFinanceReport: React.FC = () => {
                 ))}
             </div>
 
-            {/* Aylık kazanç — x ekseninde ay adı, çubuk yüksekliği o ayın net kazancı */}
+            {/* Net kazanç — Ocak'tan Aralık'a, yıl seçilebilir; yıllık görünüme de geçer */}
             <section className="bg-white border border-slate-200 rounded-2xl p-6">
-                <div className="flex items-baseline justify-between mb-1">
-                    <h2 className="text-sm font-semibold text-slate-900">Aylık net kazanç</h2>
-                    <span className="text-xs text-slate-400">son 12 ay</span>
+                <div className="mb-4">
+                    <h2 className="text-sm font-semibold text-slate-900">Net kazanç</h2>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                        Vergi ve platform payı düşüldükten sonra sana kalan tutar.
+                    </p>
                 </div>
-                <p className="text-xs text-slate-400 mb-5">
-                    Vergi ve platform payı düşüldükten sonra sana kalan tutar.
-                </p>
-
-                {maxMonthly === 0 ? (
-                    <div className="py-14 text-center">
-                        <BarChart3 className="w-9 h-9 text-slate-200 mx-auto mb-3" />
-                        <p className="text-sm font-medium text-slate-600">Henüz satış yok</p>
-                        <p className="text-xs text-slate-400 mt-1">
-                            İlk satışından sonra aylık kazancın burada görünecek.
-                        </p>
-                    </div>
-                ) : (
-                    <div className="h-72 w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={chartData} margin={{ top: 24, right: 8, left: 0, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis
-                                    dataKey="label"
-                                    axisLine={false}
-                                    tickLine={false}
-                                    tick={{ fill: '#64748b', fontSize: 11 }}
-                                    interval={0}
-                                    dy={8}
-                                />
-                                <YAxis
-                                    axisLine={false}
-                                    tickLine={false}
-                                    tick={{ fill: '#94a3b8', fontSize: 11 }}
-                                    tickFormatter={compactMoney}
-                                    width={58}
-                                />
-                                <Tooltip
-                                    cursor={{ fill: '#f8fafc' }}
-                                    content={({ active, payload, label }: any) => {
-                                        if (!active || !payload?.length) return null;
-                                        const d = payload[0].payload;
-                                        return (
-                                            <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg text-[13px] min-w-[180px]">
-                                                <p className="font-semibold text-slate-900 mb-2">{label}</p>
-                                                <div className="flex justify-between gap-6">
-                                                    <span className="text-slate-500">Brüt satış</span>
-                                                    <span className="text-slate-800">{formatPrice(d.gross)}</span>
-                                                </div>
-                                                <div className="flex justify-between gap-6">
-                                                    <span className="text-slate-500">Vergi</span>
-                                                    <span className="text-slate-800">−{formatPrice(d.tax)}</span>
-                                                </div>
-                                                <div className="flex justify-between gap-6 mt-1.5 pt-1.5 border-t border-slate-100">
-                                                    <span className="text-slate-600 font-medium">Net kazancın</span>
-                                                    <span className="text-emerald-600 font-semibold">{formatPrice(d.instructor)}</span>
-                                                </div>
-                                                <p className="text-xs text-slate-400 mt-1.5">{d.count} satış</p>
-                                            </div>
-                                        );
-                                    }}
-                                />
-                                {/* Tutar çubuğun üstünde sabit dursun — üzerine gelmeden de okunsun */}
-                                <Bar dataKey="instructor" radius={[6, 6, 0, 0]} maxBarSize={46}>
-                                    <LabelList
-                                        dataKey="instructor"
-                                        position="top"
-                                        formatter={(v: number) => (v > 0 ? compactMoney(v) : '')}
-                                        style={{ fill: '#475569', fontSize: 10, fontWeight: 600 }}
-                                    />
-                                    {chartData.map((m, i) => (
-                                        <Cell key={m.month} fill={i === chartData.length - 1 ? '#4f46e5' : '#a5b4fc'} />
-                                    ))}
-                                </Bar>
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                )}
+                <RevenueChart chart={data.chart} variant="bars" height={280} />
             </section>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
