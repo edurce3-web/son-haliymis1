@@ -46,17 +46,33 @@ const HoverPopover = ({ children, content, width = 'w-80' }: { children: React.R
 };
 
 // ─── Notification Type Icons ───
+// Türler backend'deki services/notificationService.js TYPES ile aynı
 const getNotificationIcon = (type: string) => {
   switch (type) {
     case 'purchase': return '🛒';
+    case 'sale': return '💰';
     case 'enrollment': return '📚';
     case 'announcement': return '📢';
     case 'message': return '💬';
+    case 'question': return '❓';
+    case 'answer': return '↩️';
     case 'achievement': return '🏆';
     case 'system': return '⚙️';
     case 'review': return '⭐';
     default: return '🔔';
   }
+};
+
+/** "3 dakika önce" — açılır kutuda tam tarihten daha okunur. */
+const notifTimeAgo = (date: string) => {
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return '';
+  const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+  if (diff < 60) return 'az önce';
+  if (diff < 3600) return `${Math.floor(diff / 60)} dk önce`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)} saat önce`;
+  if (diff < 604800) return `${Math.floor(diff / 86400)} gün önce`;
+  return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
 };
 
 export const Header = () => {
@@ -129,8 +145,14 @@ export const Header = () => {
       if (isAuthenticated) fetchFavorites();
     };
 
+    // Bildirim sayfasında okundu/silindi işlemi yapılınca zil rozeti de güncellensin
+    const handleNotificationsUpdate = () => {
+      if (isAuthenticated) fetchNotifications();
+    };
+
     window.addEventListener('cartUpdated', handleCartUpdate);
     window.addEventListener('favoritesUpdated', handleFavoritesUpdate);
+    window.addEventListener('notificationsUpdated', handleNotificationsUpdate);
 
     // Also listen to possible storage changes if token changes
     const handleStorageChange = () => {
@@ -141,10 +163,17 @@ export const Header = () => {
     }
     window.addEventListener('storage', handleStorageChange);
 
+    // Yeni bildirimlerin sayfa yenilemeden düşmesi için düzenli yoklama
+    const notifTimer = isAuthenticated
+      ? setInterval(() => fetchNotifications(), 60_000)
+      : null;
+
     return () => {
       window.removeEventListener('cartUpdated', handleCartUpdate);
       window.removeEventListener('favoritesUpdated', handleFavoritesUpdate);
+      window.removeEventListener('notificationsUpdated', handleNotificationsUpdate);
       window.removeEventListener('storage', handleStorageChange);
+      if (notifTimer) clearInterval(notifTimer);
     };
   }, [isAuthenticated, location.pathname]);
 
@@ -350,7 +379,7 @@ export const Header = () => {
               <div className="flex-1 min-w-0">
                 <p className={cn("text-xs truncate", !notif.is_read ? "font-bold text-slate-900" : "font-medium text-slate-700")}>{notif.title}</p>
                 <p className="text-[11px] text-slate-500 line-clamp-2 mt-0.5">{notif.message}</p>
-                <p className="text-[10px] text-slate-400 mt-1">{new Date(notif.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
+                <p className="text-[10px] text-slate-400 mt-1">{notifTimeAgo(notif.created_at)}</p>
               </div>
               {!notif.is_read && <div className="w-2 h-2 bg-indigo-500 rounded-full mt-2 flex-shrink-0" />}
             </div>
@@ -482,8 +511,8 @@ export const Header = () => {
               <button onClick={() => navigate('/notifications')} className="w-8 h-8 rounded-full flex items-center justify-center relative text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all">
                 <Bell className="w-4.5 h-4.5" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white animate-pulse">
-                    {unreadCount}
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white">
+                    {unreadCount > 9 ? '9+' : unreadCount}
                   </span>
                 )}
               </button>

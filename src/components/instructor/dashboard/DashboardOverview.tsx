@@ -16,7 +16,21 @@ import {
     ArrowRight,
     Loader2
 } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+    ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell,
+} from 'recharts';
+
+/** ₺1.234,56 */
+const money = (v: number) =>
+    `₺${Number(v || 0).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+/** Y ekseni: 12500 -> ₺12,5B — uzun sayılar ekseni şişirmesin */
+const compactMoney = (v: number) => {
+    const n = Number(v) || 0;
+    if (n >= 1_000_000) return `₺${(n / 1_000_000).toFixed(1).replace('.', ',')}M`;
+    if (n >= 1000) return `₺${(n / 1000).toFixed(n >= 10_000 ? 0 : 1).replace('.', ',')}B`;
+    return `₺${n}`;
+};
 
 export const DashboardOverview = () => {
     const navigate = useNavigate();
@@ -63,7 +77,21 @@ export const DashboardOverview = () => {
         return <div className="text-zinc-500">Veri yüklenemedi. Yardım için lütfen destek ile iletişime geçin.</div>;
     }
 
-    const { stats, revenueData } = data;
+    const { stats } = data;
+    const revenueData = (data.revenueData || []) as Array<{
+        month: string; revenue: number; gross: number; tax: number; sales: number;
+    }>;
+
+    // Yıl özeti — grafiğin üstünde tek bakışta durum
+    const yearGross = revenueData.reduce((s, m) => s + (m.gross || 0), 0);
+    const yearNet = revenueData.reduce((s, m) => s + (m.revenue || 0), 0);
+    const yearSales = revenueData.reduce((s, m) => s + (m.sales || 0), 0);
+    const bestMonth = revenueData.reduce(
+        (best, m) => (m.revenue > (best?.revenue ?? -1) ? m : best),
+        null as null | typeof revenueData[number]
+    );
+    const hasRevenue = yearGross > 0;
+    const lastIndex = revenueData.length - 1;
 
     return (
         <div className='space-y-10 animate-in fade-in duration-500'>
@@ -120,53 +148,118 @@ export const DashboardOverview = () => {
             <div className='grid lg:grid-cols-3 gap-6'>
                 <Card className='lg:col-span-2 border border-zinc-200 shadow-sm rounded-xl overflow-hidden bg-white'>
                     <CardHeader className="border-b border-zinc-100 pb-4">
-                        <div className='flex items-center justify-between'>
+                        <div className='flex items-start justify-between gap-4'>
                             <div className="space-y-1">
                                 <CardTitle className="text-lg font-semibold text-zinc-900 tracking-tight">Gelir Trendi</CardTitle>
-                                <CardDescription className="text-zinc-500">Son 6 ayın finansal performansı</CardDescription>
+                                <CardDescription className="text-zinc-500">Son 12 ayın satış ve kazanç dağılımı</CardDescription>
                             </div>
                             <div className='p-2 bg-zinc-50 rounded-md'>
                                 <TrendingUp className='w-4 h-4 text-zinc-700' />
                             </div>
                         </div>
-                    </CardHeader>
-                    <CardContent className="pt-6">
-                        <div className='h-[300px] w-full'>
-                            <ResponsiveContainer width='100%' height='100%'>
-                                <AreaChart data={revenueData} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
-                                    <defs>
-                                        <linearGradient id='colorRevenue' x1='0' y1='0' x2='0' y2='1'>
-                                            <stop offset='5%' stopColor='#18181b' stopOpacity={0.1} />
-                                            <stop offset='95%' stopColor='#18181b' stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray='3 3' vertical={false} stroke='#e4e4e7' />
-                                    <XAxis dataKey='month' axisLine={false} tickLine={false} tick={{ fill: '#71717a', fontSize: 12 }} dy={10} />
-                                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#71717a', fontSize: 12 }} tickFormatter={(val) => `₺${val}`} dx={-10} />
-                                    {/* Brüt satış, kesilen vergi ve eğitmenin eline geçen tutar birlikte gösterilir */}
-                                    <Tooltip
-                                        contentStyle={{ borderRadius: '8px', border: '1px solid #e4e4e7', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', padding: '12px', fontSize: '13px' }}
-                                        content={({ active, payload, label }: any) => {
-                                            if (!active || !payload?.length) return null;
-                                            const d = payload[0].payload;
-                                            const fmt = (v: number) => `₺${Number(v || 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}`;
-                                            return (
-                                                <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-md text-[13px]">
-                                                    <p className="font-semibold text-zinc-900 mb-1.5">{label}</p>
-                                                    <p className="text-zinc-500">Brüt satış: <span className="text-zinc-800">{fmt(d.gross)}</span></p>
-                                                    <p className="text-zinc-500">Vergi: <span className="text-zinc-800">−{fmt(d.tax)}</span></p>
-                                                    <p className="text-zinc-500 font-medium mt-1 pt-1 border-t border-zinc-100">
-                                                        Net kazancın: <span className="text-emerald-600 font-semibold">{fmt(d.revenue)}</span>
-                                                    </p>
-                                                    <p className="text-zinc-400 text-xs mt-1">{d.sales} satış</p>
-                                                </div>
-                                            );
-                                        }}
-                                    />
-                                    <Area type='monotone' dataKey='revenue' stroke='#18181b' strokeWidth={2} fill='url(#colorRevenue)' />
-                                </AreaChart>
-                            </ResponsiveContainer>
+
+                        {/* Grafiğin okunmasını kolaylaştıran yıl özeti */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4">
+                            {[
+                                { label: 'Brüt satış', value: money(yearGross), tone: 'text-zinc-900' },
+                                { label: 'Net kazanç', value: money(yearNet), tone: 'text-emerald-600' },
+                                { label: 'Satış adedi', value: String(yearSales), tone: 'text-zinc-900' },
+                                {
+                                    label: 'En iyi ay',
+                                    value: bestMonth && bestMonth.revenue > 0 ? bestMonth.month : '—',
+                                    tone: 'text-zinc-900',
+                                },
+                            ].map(s => (
+                                <div key={s.label}>
+                                    <p className="text-[11px] text-zinc-500">{s.label}</p>
+                                    <p className={cn('text-sm font-semibold mt-0.5', s.tone)}>{s.value}</p>
+                                </div>
+                            ))}
                         </div>
+                    </CardHeader>
+
+                    <CardContent className="pt-6">
+                        {!hasRevenue ? (
+                            <div className="h-[300px] flex flex-col items-center justify-center text-center">
+                                <BarChart3 className="w-10 h-10 text-zinc-200 mb-3" />
+                                <p className="text-sm font-medium text-zinc-600">Henüz satış verin yok</p>
+                                <p className="text-xs text-zinc-400 mt-1 max-w-xs">
+                                    İlk satışın gerçekleştiğinde aylık brüt satış ve net kazancın burada
+                                    grafiğe dönüşecek.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className='h-[320px] w-full'>
+                                <ResponsiveContainer width='100%' height='100%'>
+                                    <ComposedChart data={revenueData} margin={{ top: 10, right: 8, left: 0, bottom: 0 }}>
+                                        <CartesianGrid strokeDasharray='3 3' vertical={false} stroke='#f4f4f5' />
+                                        <XAxis
+                                            dataKey='month'
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fill: '#71717a', fontSize: 11 }}
+                                            dy={8}
+                                            interval={0}
+                                        />
+                                        <YAxis
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fill: '#a1a1aa', fontSize: 11 }}
+                                            tickFormatter={compactMoney}
+                                            width={58}
+                                        />
+                                        <Tooltip
+                                            cursor={{ fill: '#fafafa' }}
+                                            content={({ active, payload, label }: any) => {
+                                                if (!active || !payload?.length) return null;
+                                                const d = payload[0].payload;
+                                                return (
+                                                    <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-lg text-[13px] min-w-[190px]">
+                                                        <p className="font-semibold text-zinc-900 mb-2">{label}</p>
+                                                        <div className="flex justify-between gap-6">
+                                                            <span className="text-zinc-500">Brüt satış</span>
+                                                            <span className="text-zinc-800 font-medium">{money(d.gross)}</span>
+                                                        </div>
+                                                        <div className="flex justify-between gap-6">
+                                                            <span className="text-zinc-500">Vergi (%20)</span>
+                                                            <span className="text-zinc-800">−{money(d.tax)}</span>
+                                                        </div>
+                                                        <div className="flex justify-between gap-6 mt-1.5 pt-1.5 border-t border-zinc-100">
+                                                            <span className="text-zinc-600 font-medium">Net kazancın</span>
+                                                            <span className="text-emerald-600 font-semibold">{money(d.revenue)}</span>
+                                                        </div>
+                                                        <p className="text-zinc-400 text-xs mt-1.5">{d.sales} satış</p>
+                                                    </div>
+                                                );
+                                            }}
+                                        />
+                                        <Legend
+                                            verticalAlign='top'
+                                            height={32}
+                                            iconType='circle'
+                                            iconSize={8}
+                                            wrapperStyle={{ fontSize: 12, color: '#71717a' }}
+                                        />
+                                        {/* Brüt satış çubuk, net kazanç çizgi: aradaki fark vergi + platform payı */}
+                                        <Bar dataKey='gross' name='Brüt satış' fill='#e4e4e7' radius={[4, 4, 0, 0]} maxBarSize={38}>
+                                            {revenueData.map((_, i) => (
+                                                // İçinde bulunulan ay vurgulansın
+                                                <Cell key={i} fill={i === lastIndex ? '#c7d2fe' : '#e4e4e7'} />
+                                            ))}
+                                        </Bar>
+                                        <Line
+                                            type='monotone'
+                                            dataKey='revenue'
+                                            name='Net kazancın'
+                                            stroke='#059669'
+                                            strokeWidth={2.5}
+                                            dot={{ r: 3, fill: '#059669', strokeWidth: 0 }}
+                                            activeDot={{ r: 5 }}
+                                        />
+                                    </ComposedChart>
+                                </ResponsiveContainer>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
 

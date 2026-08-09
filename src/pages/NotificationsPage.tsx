@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/services/api';
+import { API_BASE_URL } from '@/lib/api';
+import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 import {
-    Bell, Check, CheckCheck, Trash2, Filter, Search,
-    ShoppingCart, BookOpen, MessageSquare, Award, Settings,
-    Star, Users, Megaphone, AlertCircle, ChevronDown, X
+    Bell, Check, CheckCheck, Trash2, Search, Loader2,
+    ShoppingCart, BookOpen, MessageSquare, Megaphone, Star,
+    Settings, TrendingUp, HelpCircle, MessageCircleReply,
 } from 'lucide-react';
 
 interface Notification {
@@ -15,122 +18,189 @@ interface Notification {
     type: string;
     title: string;
     message: string;
-    is_read: boolean;
+    is_read: boolean | number;
     action_url: string | null;
     created_at: string;
 }
 
-const getNotificationMeta = (type: string) => {
-    switch (type) {
-        case 'purchase': return { icon: ShoppingCart, color: 'text-emerald-600', bg: 'bg-emerald-50', label: 'Satın Alma', emoji: '🛒' };
-        case 'enrollment': return { icon: BookOpen, color: 'text-blue-600', bg: 'bg-blue-50', label: 'Kayıt', emoji: '📚' };
-        case 'announcement': return { icon: Megaphone, color: 'text-orange-600', bg: 'bg-orange-50', label: 'Duyuru', emoji: '📢' };
-        case 'message': return { icon: MessageSquare, color: 'text-indigo-600', bg: 'bg-indigo-50', label: 'Mesaj', emoji: '💬' };
-        case 'achievement': return { icon: Award, color: 'text-amber-600', bg: 'bg-amber-50', label: 'Başarı', emoji: '🏆' };
-        case 'review': return { icon: Star, color: 'text-yellow-600', bg: 'bg-yellow-50', label: 'Değerlendirme', emoji: '⭐' };
-        case 'system': return { icon: Settings, color: 'text-slate-600', bg: 'bg-slate-50', label: 'Sistem', emoji: '⚙️' };
-        default: return { icon: Bell, color: 'text-violet-600', bg: 'bg-violet-50', label: 'Bildirim', emoji: '🔔' };
-    }
+interface TypeCount {
+    type: string;
+    total: number;
+    unread: number;
+}
+
+/**
+ * Bildirim türü -> görsel kimlik.
+ * Türler backend'de services/notificationService.js içindeki TYPES ile aynı.
+ */
+const META: Record<string, { icon: React.ElementType; fg: string; bg: string; label: string }> = {
+    purchase: { icon: ShoppingCart, fg: 'text-emerald-600', bg: 'bg-emerald-50', label: 'Satın alma' },
+    sale: { icon: TrendingUp, fg: 'text-emerald-600', bg: 'bg-emerald-50', label: 'Satış' },
+    enrollment: { icon: BookOpen, fg: 'text-blue-600', bg: 'bg-blue-50', label: 'Kayıt' },
+    announcement: { icon: Megaphone, fg: 'text-orange-600', bg: 'bg-orange-50', label: 'Duyuru' },
+    message: { icon: MessageSquare, fg: 'text-indigo-600', bg: 'bg-indigo-50', label: 'Mesaj' },
+    review: { icon: Star, fg: 'text-amber-600', bg: 'bg-amber-50', label: 'Değerlendirme' },
+    question: { icon: HelpCircle, fg: 'text-violet-600', bg: 'bg-violet-50', label: 'Soru' },
+    answer: { icon: MessageCircleReply, fg: 'text-violet-600', bg: 'bg-violet-50', label: 'Cevap' },
+    system: { icon: Settings, fg: 'text-slate-600', bg: 'bg-slate-100', label: 'Sistem' },
 };
 
+const metaFor = (type: string) =>
+    META[type] || { icon: Bell, fg: 'text-slate-600', bg: 'bg-slate-100', label: 'Bildirim' };
+
 const timeAgo = (date: string) => {
-    const now = new Date();
     const d = new Date(date);
-    const diff = Math.floor((now.getTime() - d.getTime()) / 1000);
-    if (diff < 60) return 'Az önce';
+    if (Number.isNaN(d.getTime())) return '';
+    const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+    if (diff < 60) return 'az önce';
     if (diff < 3600) return `${Math.floor(diff / 60)} dakika önce`;
     if (diff < 86400) return `${Math.floor(diff / 3600)} saat önce`;
     if (diff < 604800) return `${Math.floor(diff / 86400)} gün önce`;
     return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
+/** Listeyi Bugün / Dün / Bu hafta / Daha eski başlıklarına ayırır. */
+const bucketFor = (date: string) => {
+    const d = new Date(date);
+    const now = new Date();
+    if (d.toDateString() === now.toDateString()) return 'Bugün';
+    if (d.toDateString() === new Date(now.getTime() - 86_400_000).toDateString()) return 'Dün';
+    if (now.getTime() - d.getTime() < 7 * 86_400_000) return 'Bu hafta';
+    return 'Daha eski';
+};
+
 const NotificationsPage = () => {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
     const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [unreadCount, setUnreadCount] = useState(0);
+    const [byType, setByType] = useState<TypeCount[]>([]);
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState<string>('all');
-    const [searchQuery, setSearchQuery] = useState('');
+    const [busy, setBusy] = useState(false);
+    const [filter, setFilter] = useState('all');
+    const [query, setQuery] = useState('');
 
-    useEffect(() => {
-        if (isAuthenticated) fetchNotifications();
-    }, [isAuthenticated]);
+    const unreadCount = notifications.filter(n => !n.is_read).length;
 
-    const fetchNotifications = async () => {
-        setLoading(true);
+    const load = useCallback(async (silent = false) => {
+        if (!silent) setLoading(true);
         try {
             const data = await api.notifications.getAll();
             setNotifications(data.notifications || []);
-            setUnreadCount(data.unreadCount || 0);
-        } catch (err) {
-            console.error(err);
+            setByType(data.byType || []);
+        } catch {
+            if (!silent) toast.error('Bildirimler yüklenemedi');
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        if (!isAuthenticated) return;
+        load();
+        // Sayfa açıkken arka planda yenile — yeni bildirim için sayfa yenilemek gerekmesin
+        const timer = setInterval(() => load(true), 30_000);
+        return () => clearInterval(timer);
+    }, [isAuthenticated, load]);
+
+    /** Zil ikonundaki rozetin de güncellenmesi için Header'a haber ver. */
+    const announce = () => window.dispatchEvent(new Event('notificationsUpdated'));
 
     const markAsRead = async (id: number) => {
-        try {
-            await api.notifications.markAsRead(id);
-            setNotifications(prev => prev.map(n => n.notification_id === id ? { ...n, is_read: true } : n));
-            setUnreadCount(prev => Math.max(0, prev - 1));
-        } catch { /* silent */ }
+        setNotifications(prev => prev.map(n => (n.notification_id === id ? { ...n, is_read: true } : n)));
+        announce();
+        try { await api.notifications.markAsRead(id); } catch { /* sessiz */ }
     };
 
     const markAllAsRead = async () => {
+        setBusy(true);
+        setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+        announce();
+        try { await api.notifications.markAllAsRead(); }
+        catch { toast.error('İşlem tamamlanamadı'); load(true); }
+        finally { setBusy(false); }
+    };
+
+    const remove = async (id: number) => {
+        const backup = notifications;
+        setNotifications(prev => prev.filter(n => n.notification_id !== id));
+        announce();
+        try { await api.notifications.delete(id); }
+        catch { toast.error('Bildirim silinemedi'); setNotifications(backup); }
+    };
+
+    /** Okunmuşları toplu temizle — biriken listeyi tek hamlede sadeleştirir. */
+    const clearRead = async () => {
+        setBusy(true);
         try {
-            await api.notifications.markAllAsRead();
-            setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
-            setUnreadCount(0);
-        } catch { /* silent */ }
+            const res = await fetch(`${API_BASE_URL}/notifications/read/all`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            });
+            if (!res.ok) throw new Error();
+            const data = await res.json();
+            setNotifications(prev => prev.filter(n => !n.is_read));
+            announce();
+            toast.success(`${data.deleted || 0} okunmuş bildirim temizlendi`);
+        } catch {
+            toast.error('Temizlenemedi');
+        } finally {
+            setBusy(false);
+        }
     };
 
-    const deleteNotification = async (id: number) => {
-        try {
-            await api.notifications.delete(id);
-            const notif = notifications.find(n => n.notification_id === id);
-            setNotifications(prev => prev.filter(n => n.notification_id !== id));
-            if (notif && !notif.is_read) setUnreadCount(prev => Math.max(0, prev - 1));
-        } catch { /* silent */ }
+    const open = (n: Notification) => {
+        if (!n.is_read) markAsRead(n.notification_id);
+        if (n.action_url) navigate(n.action_url);
     };
 
-    const handleNotifClick = (notif: Notification) => {
-        if (!notif.is_read) markAsRead(notif.notification_id);
-        if (notif.action_url) navigate(notif.action_url);
-    };
+    // Filtre sekmeleri: yalnızca kullanıcıda gerçekten bulunan türler gösterilir,
+    // böylece öğrenci hesabında "Satış" gibi boş sekmeler durmaz.
+    const tabs = useMemo(() => {
+        const present = byType
+            .filter(t => t.total > 0)
+            .sort((a, b) => b.total - a.total)
+            .map(t => ({ key: t.type, label: metaFor(t.type).label, badge: t.unread }));
+        return [
+            { key: 'all', label: 'Tümü', badge: 0 },
+            { key: 'unread', label: 'Okunmamış', badge: unreadCount },
+            ...present,
+        ];
+    }, [byType, unreadCount]);
 
-    const filterTypes = [
-        { key: 'all', label: 'Tümü' },
-        { key: 'unread', label: 'Okunmamış' },
-        { key: 'purchase', label: 'Satın Alma' },
-        { key: 'enrollment', label: 'Kayıt' },
-        { key: 'announcement', label: 'Duyurular' },
-        { key: 'message', label: 'Mesajlar' },
-        { key: 'achievement', label: 'Başarılar' },
-        { key: 'system', label: 'Sistem' },
-    ];
-
-    const filteredNotifications = notifications
-        .filter(n => {
-            if (filter === 'unread') return !n.is_read;
-            if (filter !== 'all') return n.type === filter;
-            return true;
-        })
-        .filter(n => {
-            if (!searchQuery) return true;
-            return n.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                n.message.toLowerCase().includes(searchQuery.toLowerCase());
+    const filtered = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        return notifications.filter(n => {
+            if (filter === 'unread' && n.is_read) return false;
+            if (filter !== 'all' && filter !== 'unread' && n.type !== filter) return false;
+            if (!q) return true;
+            return `${n.title} ${n.message}`.toLowerCase().includes(q);
         });
+    }, [notifications, filter, query]);
+
+    const groups = useMemo(() => {
+        const order = ['Bugün', 'Dün', 'Bu hafta', 'Daha eski'];
+        const map = new Map<string, Notification[]>();
+        for (const n of filtered) {
+            const key = bucketFor(n.created_at);
+            if (!map.has(key)) map.set(key, []);
+            map.get(key)!.push(n);
+        }
+        return order.filter(k => map.has(k)).map(k => ({ label: k, items: map.get(k)! }));
+    }, [filtered]);
 
     if (!isAuthenticated) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-violet-50/30 to-indigo-50/30">
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
                 <div className="text-center p-8">
-                    <Bell className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                    <h2 className="text-xl font-bold text-slate-800 mb-2">Bildirimlerinizi görmek için giriş yapın</h2>
-                    <Button onClick={() => navigate('/login')} className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl">
-                        Giriş Yap
+                    <Bell className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                    <h2 className="text-lg font-semibold text-slate-800 mb-1">
+                        Bildirimlerini görmek için giriş yap
+                    </h2>
+                    <p className="text-sm text-slate-500 mb-5">
+                        Satın alma, mesaj ve duyuru bildirimlerin burada toplanır.
+                    </p>
+                    <Button onClick={() => navigate('/login')} className="rounded-xl bg-indigo-600 hover:bg-indigo-700">
+                        Giriş yap
                     </Button>
                 </div>
             </div>
@@ -138,163 +208,197 @@ const NotificationsPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-indigo-50/30">
-            <div className="max-w-4xl mx-auto px-4 py-8">
-                {/* Header Section */}
-                <div className="mb-8">
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h1 className="text-3xl font-extrabold text-slate-900 flex items-center gap-3">
-                                <div className="p-2.5 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl shadow-lg shadow-violet-200">
-                                    <Bell className="w-7 h-7 text-white" />
-                                </div>
-                                Bildirimler
-                                {unreadCount > 0 && (
-                                    <span className="text-sm bg-red-500 text-white px-3 py-1 rounded-full font-bold animate-pulse">
-                                        {unreadCount} yeni
-                                    </span>
-                                )}
-                            </h1>
-                            <p className="text-slate-500 mt-2 text-sm">Tüm bildirimlerinizi buradan yönetebilirsiniz</p>
-                        </div>
+        <div className="min-h-screen bg-slate-50">
+            <div className="max-w-3xl mx-auto px-4 py-8">
+
+                <div className="flex flex-wrap items-end justify-between gap-3 mb-5">
+                    <div>
+                        <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                            Bildirimler
+                            {unreadCount > 0 && (
+                                <span className="text-xs bg-indigo-600 text-white font-semibold px-2 py-0.5 rounded-full">
+                                    {unreadCount}
+                                </span>
+                            )}
+                        </h1>
+                        <p className="text-sm text-slate-500 mt-0.5">
+                            {notifications.length > 0
+                                ? `${notifications.length} bildirim · ${unreadCount} okunmamış`
+                                : 'Satın alma, mesaj ve duyurular burada görünür.'}
+                        </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
                         {unreadCount > 0 && (
-                            <Button onClick={markAllAsRead} variant="outline" className="rounded-xl border-violet-200 text-violet-600 hover:bg-violet-50 text-sm h-10 px-4">
-                                <CheckCheck className="w-4 h-4 mr-2" />
-                                Tümünü Okundu İşaretle
+                            <Button
+                                onClick={markAllAsRead}
+                                disabled={busy}
+                                variant="outline"
+                                className="h-9 rounded-xl gap-2 text-sm"
+                            >
+                                <CheckCheck className="w-4 h-4" /> Tümünü okundu yap
+                            </Button>
+                        )}
+                        {notifications.some(n => n.is_read) && (
+                            <Button
+                                onClick={clearRead}
+                                disabled={busy}
+                                variant="ghost"
+                                className="h-9 rounded-xl gap-2 text-sm text-slate-500 hover:text-red-600"
+                            >
+                                <Trash2 className="w-4 h-4" /> Okunanları temizle
                             </Button>
                         )}
                     </div>
+                </div>
 
-                    {/* Search & Filters */}
-                    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="flex-1 relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                    type="text"
-                                    placeholder="Bildirimlerde ara..."
-                                    value={searchQuery}
-                                    onChange={e => setSearchQuery(e.target.value)}
-                                    className="w-full h-10 pl-10 pr-4 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:bg-white focus:ring-2 focus:ring-violet-200 focus:border-violet-300 outline-none"
-                                />
-                            </div>
+                {notifications.length > 0 && (
+                    <div className="bg-white border border-slate-200 rounded-2xl p-3 mb-4 space-y-3">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                            <input
+                                type="text"
+                                placeholder="Bildirimlerde ara…"
+                                value={query}
+                                onChange={e => setQuery(e.target.value)}
+                                className="w-full h-9 pl-9 pr-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                            />
                         </div>
-                        <div className="flex flex-wrap gap-2">
-                            {filterTypes.map(ft => (
+                        <div className="flex flex-wrap gap-1.5">
+                            {tabs.map(t => (
                                 <button
-                                    key={ft.key}
-                                    onClick={() => setFilter(ft.key)}
-                                    className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${filter === ft.key
-                                            ? 'bg-gradient-to-r from-violet-500 to-indigo-600 text-white shadow-md shadow-violet-200'
+                                    key={t.key}
+                                    onClick={() => setFilter(t.key)}
+                                    className={cn(
+                                        'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
+                                        filter === t.key
+                                            ? 'bg-slate-900 text-white'
                                             : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                                        }`}
+                                    )}
                                 >
-                                    {ft.label}
-                                    {ft.key === 'unread' && unreadCount > 0 && (
-                                        <span className="ml-1.5 bg-white/30 px-1.5 py-0.5 rounded-full text-[10px]">{unreadCount}</span>
+                                    {t.label}
+                                    {t.badge > 0 && (
+                                        <span className={cn(
+                                            'ml-1.5 px-1.5 rounded-full text-[10px]',
+                                            filter === t.key ? 'bg-white/20' : 'bg-indigo-100 text-indigo-700'
+                                        )}>
+                                            {t.badge}
+                                        </span>
                                     )}
                                 </button>
                             ))}
                         </div>
                     </div>
-                </div>
+                )}
 
-                {/* Notifications List */}
                 {loading ? (
-                    <div className="space-y-3">
-                        {[...Array(5)].map((_, i) => (
-                            <div key={i} className="bg-white rounded-2xl border border-slate-100 p-5 animate-pulse">
-                                <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-slate-200 rounded-xl" />
-                                    <div className="flex-1">
-                                        <div className="h-4 bg-slate-200 rounded w-1/3 mb-2" />
-                                        <div className="h-3 bg-slate-100 rounded w-2/3" />
+                    <div className="space-y-2">
+                        {[...Array(4)].map((_, i) => (
+                            <div key={i} className="bg-white rounded-2xl border border-slate-200 p-4 animate-pulse">
+                                <div className="flex items-start gap-3">
+                                    <div className="w-10 h-10 bg-slate-100 rounded-xl shrink-0" />
+                                    <div className="flex-1 space-y-2 pt-1">
+                                        <div className="h-3 bg-slate-100 rounded w-1/3" />
+                                        <div className="h-3 bg-slate-50 rounded w-2/3" />
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
-                ) : filteredNotifications.length === 0 ? (
-                    <div className="bg-white rounded-2xl border border-slate-100 p-16 text-center">
-                        <div className="w-20 h-20 bg-gradient-to-br from-violet-100 to-indigo-100 rounded-3xl flex items-center justify-center mx-auto mb-4">
-                            <Bell className="w-10 h-10 text-violet-400" />
+                ) : filtered.length === 0 ? (
+                    <div className="bg-white rounded-2xl border border-slate-200 py-16 text-center">
+                        <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <Bell className="w-7 h-7 text-slate-300" />
                         </div>
-                        <h3 className="text-lg font-bold text-slate-800 mb-2">
-                            {filter !== 'all' ? 'Bu kategoride bildirim yok' : 'Henüz bildiriminiz yok'}
+                        <h3 className="text-base font-semibold text-slate-700 mb-1">
+                            {notifications.length === 0 ? 'Henüz bildirimin yok' : 'Eşleşen bildirim yok'}
                         </h3>
-                        <p className="text-sm text-slate-500">
-                            {filter !== 'all' ? 'Farklı bir filtre deneyebilirsiniz' : 'Yeni bildirimler geldiğinde burada görünecek'}
+                        <p className="text-sm text-slate-400 max-w-sm mx-auto">
+                            {notifications.length === 0
+                                ? 'Bir kurs satın aldığında, mesaj geldiğinde ya da eğitmenin duyuru yaptığında burada görürsün.'
+                                : 'Farklı bir filtre veya arama deneyebilirsin.'}
                         </p>
                     </div>
                 ) : (
-                    <div className="space-y-2">
-                        {filteredNotifications.map((notif) => {
-                            const meta = getNotificationMeta(notif.type);
-                            const Icon = meta.icon;
-                            return (
-                                <div
-                                    key={notif.notification_id}
-                                    className={`bg-white rounded-2xl border transition-all duration-200 cursor-pointer hover:shadow-md group ${!notif.is_read
-                                            ? 'border-violet-200 bg-gradient-to-r from-violet-50/50 to-white shadow-sm'
-                                            : 'border-slate-100 hover:border-slate-200'
-                                        }`}
-                                    onClick={() => handleNotifClick(notif)}
-                                >
-                                    <div className="flex items-start gap-4 p-5">
-                                        {/* Icon */}
-                                        <div className={`w-12 h-12 ${meta.bg} rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105`}>
-                                            <span className="text-2xl">{meta.emoji}</span>
-                                        </div>
-
-                                        {/* Content */}
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <span className={`text-[10px] font-bold ${meta.color} ${meta.bg} px-2 py-0.5 rounded-full uppercase tracking-wide`}>
-                                                    {meta.label}
-                                                </span>
-                                                {!notif.is_read && (
-                                                    <span className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
+                    <div className="space-y-5">
+                        {groups.map(group => (
+                            <div key={group.label}>
+                                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2 px-1">
+                                    {group.label}
+                                </p>
+                                <div className="bg-white border border-slate-200 rounded-2xl divide-y divide-slate-100 overflow-hidden">
+                                    {group.items.map(n => {
+                                        const meta = metaFor(n.type);
+                                        const Icon = meta.icon;
+                                        const unread = !n.is_read;
+                                        return (
+                                            <div
+                                                key={n.notification_id}
+                                                onClick={() => open(n)}
+                                                role="button"
+                                                tabIndex={0}
+                                                onKeyDown={e => { if (e.key === 'Enter') open(n); }}
+                                                className={cn(
+                                                    'group flex items-start gap-3 p-4 transition-colors cursor-pointer',
+                                                    unread ? 'bg-indigo-50/40 hover:bg-indigo-50/70' : 'hover:bg-slate-50'
                                                 )}
-                                            </div>
-                                            <h3 className={`text-sm mb-1 ${!notif.is_read ? 'font-bold text-slate-900' : 'font-semibold text-slate-700'}`}>
-                                                {notif.title}
-                                            </h3>
-                                            <p className="text-xs text-slate-500 line-clamp-2">{notif.message}</p>
-                                            <p className="text-[11px] text-slate-400 mt-2">{timeAgo(notif.created_at)}</p>
-                                        </div>
-
-                                        {/* Actions */}
-                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                                            {!notif.is_read && (
-                                                <button
-                                                    onClick={(e) => { e.stopPropagation(); markAsRead(notif.notification_id); }}
-                                                    className="p-2 hover:bg-green-50 rounded-lg transition-colors"
-                                                    title="Okundu işaretle"
-                                                >
-                                                    <Check className="w-4 h-4 text-green-500" />
-                                                </button>
-                                            )}
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); deleteNotification(notif.notification_id); }}
-                                                className="p-2 hover:bg-red-50 rounded-lg transition-colors"
-                                                title="Sil"
                                             >
-                                                <Trash2 className="w-4 h-4 text-red-400" />
-                                            </button>
-                                        </div>
-                                    </div>
+                                                <div className={cn(
+                                                    'w-10 h-10 rounded-xl flex items-center justify-center shrink-0',
+                                                    meta.bg
+                                                )}>
+                                                    <Icon className={cn('w-5 h-5', meta.fg)} />
+                                                </div>
+
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-2 mb-0.5">
+                                                        <span className={cn('text-[10px] font-semibold uppercase tracking-wide', meta.fg)}>
+                                                            {meta.label}
+                                                        </span>
+                                                        {unread && <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />}
+                                                    </div>
+                                                    <h3 className={cn(
+                                                        'text-sm leading-snug',
+                                                        unread ? 'font-semibold text-slate-900' : 'font-medium text-slate-700'
+                                                    )}>
+                                                        {n.title}
+                                                    </h3>
+                                                    {n.message && (
+                                                        <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">{n.message}</p>
+                                                    )}
+                                                    <p className="text-[11px] text-slate-400 mt-1.5">{timeAgo(n.created_at)}</p>
+                                                </div>
+
+                                                <div className="flex items-center gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                                                    {unread && (
+                                                        <button
+                                                            onClick={e => { e.stopPropagation(); markAsRead(n.notification_id); }}
+                                                            className="p-1.5 rounded-lg hover:bg-emerald-50 text-slate-400 hover:text-emerald-600"
+                                                            title="Okundu işaretle"
+                                                        >
+                                                            <Check className="w-4 h-4" />
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        onClick={e => { e.stopPropagation(); remove(n.notification_id); }}
+                                                        className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500"
+                                                        title="Sil"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
-                            );
-                        })}
+                            </div>
+                        ))}
                     </div>
                 )}
 
-                {/* Summary Footer */}
-                {notifications.length > 0 && (
-                    <div className="mt-8 text-center">
-                        <p className="text-xs text-slate-400">
-                            Toplam {notifications.length} bildirim · {unreadCount} okunmamış
-                        </p>
+                {busy && (
+                    <div className="flex justify-center mt-4">
+                        <Loader2 className="w-4 h-4 animate-spin text-slate-300" />
                     </div>
                 )}
             </div>
