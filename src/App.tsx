@@ -12,7 +12,6 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Home from "./pages/Home";
 
-import Categories from "./pages/Categories";
 import Learning from "./pages/Learning";
 import CoursePlayer from "./pages/CoursePlayer";
 import { CourseDetailPage } from "./pages/CourseDetailPage";
@@ -124,7 +123,6 @@ const App = () => (
 
                 {/* Public Course Routes */}
                 <Route path="/courses" element={<AllCourses />} />
-                <Route path="/categories" element={<Categories />} />
                 <Route path="/search" element={<SearchResults />} />
                 <Route path="/courses/:categorySlug" element={<CategoryCoursesPage />} />
                 <Route path="/courses/:categorySlug/:subcategorySlug" element={<CategoryCoursesPage />} />

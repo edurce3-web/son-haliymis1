@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
-import { COURSE_CATEGORIES } from '@/constants/categories';
+import CategoryMegaMenu from './CategoryMegaMenu';
 import api from '@/services/api';
 import {
   BookOpen, Menu, Search, Bell, User, Settings, LogOut,
@@ -410,32 +410,10 @@ export const Header = () => {
           />
         </Link>
 
-        {/* Kategori Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="hidden lg:flex items-center gap-1 text-slate-600 hover:text-indigo-600 text-sm font-semibold px-3 h-9">
-              <BookOpen className="w-4 h-4" />
-              Kategoriler
-              <ChevronDown className="w-3 h-3" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-64 p-0 rounded-2xl shadow-xl" align="start">
-            <div className="p-3 bg-gradient-to-br from-indigo-50 to-violet-50 rounded-t-2xl border-b border-indigo-100">
-              <p className="font-bold text-slate-800 text-sm">Tüm Kategoriler</p>
-            </div>
-            <div className="max-h-[420px] overflow-y-auto p-1.5 scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              {COURSE_CATEGORIES.map((cat) => (
-                <DropdownMenuItem
-                  key={cat.id}
-                  className="rounded-lg py-2 px-3 cursor-pointer hover:bg-indigo-50 text-sm"
-                  onSelect={(e) => { e.preventDefault(); navigate(`/courses/${cat.slug}`); }}
-                >
-                  <span className="font-medium text-slate-700 hover:text-indigo-600">{cat.name}</span>
-                </DropdownMenuItem>
-              ))}
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Kategoriler — fareyle üzerine gelince açılan iki sütunlu menü.
+            Veritabanındaki gerçek kategorileri ve kurs sayılarını gösterir;
+            eskiden sabit bir listeden besleniyordu. */}
+        <CategoryMegaMenu />
 
         {/* Search */}
         <form onSubmit={handleSearch} className="flex-1 relative group hidden md:block">

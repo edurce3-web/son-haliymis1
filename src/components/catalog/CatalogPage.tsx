@@ -1,14 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { API_BASE_URL } from '@/lib/api';
 import { useSeo } from '@/hooks/useSeo';
 import { cn } from '@/lib/utils';
 import {
-    Search, SlidersHorizontal, X, Loader2, BookOpen, ChevronRight,
+    Search, SlidersHorizontal, X, BookOpen, ChevronRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CatalogFilters, { type CatalogFacets, type FilterState, type FacetCategory } from './CatalogFilters';
 import CatalogCourseCard, { type CatalogCourse } from './CatalogCourseCard';
+import SubcategoryBar from './SubcategoryBar';
+import { useCategoryNav } from '@/hooks/useCategoryNav';
 
 interface CategoryRef {
     category_id: number;
@@ -50,7 +52,6 @@ interface Props {
 }
 
 export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySlug }) => {
-    const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
 
     const [data, setData] = useState<CatalogResponse | null>(null);
@@ -70,9 +71,11 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
         freeOnly: searchParams.get('free') === '1',
     }), [searchParams]);
 
-    // Arama kutusunun kendi durumu — her tuşta istek atmasın diye ayrı
-    const [searchInput, setSearchInput] = useState(query);
-    useEffect(() => { setSearchInput(query); }, [query]);
+    // Kategori ağacı — yan çubuk ve alt kategori şeridi bunu kullanır.
+    // Katalog yanıtındaki facet'lerden ayrı: facet'ler aktif filtreye göre
+    // daralır, bu ise her zaman tüm kategorileri verir.
+    const { data: navData } = useCategoryNav();
+    const navCategories = navData?.categories || [];
 
     const updateParams = useCallback((changes: Record<string, string | null>, resetPage = true) => {
         const next = new URLSearchParams(searchParams);
@@ -149,15 +152,14 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
 
     const resetFilters = () => updateParams({ level: null, minRating: null, free: null });
 
-    const submitSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        const term = searchInput.trim();
-        if (mode === 'search') {
-            updateParams({ q: term || null });
-        } else {
-            navigate(term ? `/search?q=${encodeURIComponent(term)}` : '/search');
-        }
-    };
+    /** "Tüm kurslar" — aramadayken arama terimini koru */
+    const allCoursesHref = query ? `/search?q=${encodeURIComponent(query)}` : '/courses';
+
+    // Alt kategori şeridi için aktif kategorinin ağaçtaki karşılığı
+    const activeNavCategory = useMemo(
+        () => navCategories.find(c => c.slug === (data?.category?.slug || categorySlug)) || null,
+        [navCategories, data?.category?.slug, categorySlug]
+    );
 
     const heading = data?.subcategory?.name
         || data?.category?.name
@@ -177,9 +179,9 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                     <p className="text-sm text-slate-500 mb-6">
                         Aradığın kategori kaldırılmış ya da adresi değişmiş olabilir.
                     </p>
-                    <Link to="/categories">
+                    <Link to="/courses">
                         <Button className="rounded-xl bg-indigo-600 hover:bg-indigo-700">
-                            Tüm kategorilere göz at
+                            Tüm kurslara göz at
                         </Button>
                     </Link>
                 </div>
@@ -215,38 +217,6 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                     </nav>
                 )}
 
-                {/* Arama kutusu — arama sayfasında her zaman görünür */}
-                {mode === 'search' && (
-                    <form onSubmit={submitSearch} className="mb-6">
-                        <div className="relative max-w-2xl">
-                            <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
-                            <input
-                                value={searchInput}
-                                onChange={e => setSearchInput(e.target.value)}
-                                placeholder="Kurs, kategori veya eğitmen ara…"
-                                aria-label="Kurs ara"
-                                className="w-full h-12 pl-12 pr-28 rounded-xl border border-slate-200 bg-white text-[15px] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400"
-                            />
-                            {searchInput && (
-                                <button
-                                    type="button"
-                                    onClick={() => { setSearchInput(''); updateParams({ q: null }); }}
-                                    className="absolute right-24 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600"
-                                    aria-label="Aramayı temizle"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
-                            )}
-                            <Button
-                                type="submit"
-                                className="absolute right-1.5 top-1.5 h-9 px-5 rounded-lg bg-indigo-600 hover:bg-indigo-700"
-                            >
-                                Ara
-                            </Button>
-                        </div>
-                    </form>
-                )}
-
                 {/* Başlık */}
                 <header className="mb-6">
                     <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">
@@ -266,15 +236,26 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                     )}
                 </header>
 
+                {/* Alt kategori şeridi — kategori sayfasında hızlı geçiş */}
+                {activeNavCategory && (
+                    <SubcategoryBar
+                        category={activeNavCategory}
+                        activeSubcategorySlug={data?.subcategory?.slug || subcategorySlug || null}
+                        categoryHref={`/courses/${activeNavCategory.slug}`}
+                        subcategoryHref={slug => `/courses/${activeNavCategory.slug}/${slug}`}
+                    />
+                )}
+
                 <div className="flex flex-col lg:flex-row gap-8">
 
                     {/* Sol: filtreler */}
                     <div className="hidden lg:block">
                         <CatalogFilters
                             facets={facets}
+                            navCategories={navCategories}
                             activeCategory={data?.category ? { name: data.category.name, slug: data.category.slug } : null}
                             activeSubcategory={data?.subcategory ? { name: data.subcategory.name, slug: data.subcategory.slug } : null}
-                            subcategories={data?.subcategories || []}
+                            allCoursesHref={allCoursesHref}
                             filters={filters}
                             onChange={changes => updateParams({
                                 level: changes.levels !== undefined
@@ -399,9 +380,9 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                                             Filtreleri temizle
                                         </Button>
                                     )}
-                                    <Link to="/categories">
+                                    <Link to="/courses">
                                         <Button className="rounded-xl bg-indigo-600 hover:bg-indigo-700">
-                                            Kategorilere göz at
+                                            Tüm kurslara göz at
                                         </Button>
                                     </Link>
                                 </div>
@@ -451,9 +432,10 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                         </div>
                         <CatalogFilters
                             facets={facets}
+                            navCategories={navCategories}
                             activeCategory={data?.category ? { name: data.category.name, slug: data.category.slug } : null}
                             activeSubcategory={data?.subcategory ? { name: data.subcategory.name, slug: data.subcategory.slug } : null}
-                            subcategories={data?.subcategories || []}
+                            allCoursesHref={allCoursesHref}
                             filters={filters}
                             onChange={changes => updateParams({
                                 level: changes.levels !== undefined

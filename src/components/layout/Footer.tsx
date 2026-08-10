@@ -33,7 +33,7 @@ const Footer = () => {
             <h5 className="font-montserrat font-bold text-white mb-6 text-sm tracking-wider uppercase">Keşfet</h5>
             <ul className="space-y-4 text-sm font-medium">
               <li><Link to="/courses" className="hover:text-[#0D9488] transition-colors inline-block">Katalog</Link></li>
-              <li><Link to="/categories" className="hover:text-[#0D9488] transition-colors inline-block">Kategoriler</Link></li>
+              <li><Link to="/courses" className="hover:text-[#0D9488] transition-colors inline-block">Kategoriler</Link></li>
               {isAuthenticated && (
                 <li><Link to="/learning" className="hover:text-[#0D9488] transition-colors inline-block">Öğrenme Merkezi</Link></li>
               )}

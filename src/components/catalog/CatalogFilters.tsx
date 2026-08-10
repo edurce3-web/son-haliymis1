@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star, X, ChevronRight } from 'lucide-react';
+import { Star, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import type { NavCategory } from '@/hooks/useCategoryNav';
 
 export interface FacetCategory { id: number; name: string; slug: string; count: number; }
 export interface FacetLevel { level: string; count: number; }
@@ -22,16 +23,18 @@ export interface FilterState {
 
 interface Props {
     facets?: CatalogFacets | null;
+    /** Tüm kategoriler — aktif seçimden bağımsız, gezinme için */
+    navCategories?: NavCategory[];
     /** Kategori sayfasındaysak seçili kategori; arama sayfasında null */
     activeCategory?: { name: string; slug: string } | null;
     activeSubcategory?: { name: string; slug: string } | null;
-    subcategories?: FacetCategory[];
     filters: FilterState;
     onChange: (next: Partial<FilterState>) => void;
     onReset: () => void;
-    /** Kategori bağlantılarının tabanı: arama sayfasında filtre, kategori sayfasında gezinme */
     categoryHref: (slug: string) => string;
     subcategoryHref: (slug: string) => string;
+    /** "Tüm kurslar" bağlantısı — aramada aramayı korur */
+    allCoursesHref: string;
     className?: string;
 }
 
@@ -74,14 +77,15 @@ const Checkbox: React.FC<{
 
 export const CatalogFilters: React.FC<Props> = ({
     facets,
+    navCategories = [],
     activeCategory,
     activeSubcategory,
-    subcategories = [],
     filters,
     onChange,
     onReset,
     categoryHref,
     subcategoryHref,
+    allCoursesHref,
     className,
 }) => {
     const toggleLevel = (level: string) => {
@@ -106,69 +110,88 @@ export const CatalogFilters: React.FC<Props> = ({
                     </button>
                 )}
 
-                {/* Kategoriler — kategori sayfasındayken alt kategoriler gösterilir */}
-                <Section title={activeCategory ? 'Alt kategoriler' : 'Kategoriler'}>
-                    {activeCategory ? (
-                        <div className="space-y-0.5">
-                            <Link
-                                to={categoryHref(activeCategory.slug)}
-                                className={cn(
-                                    'flex items-center justify-between text-sm py-1.5 rounded-md transition-colors',
-                                    !activeSubcategory
-                                        ? 'text-indigo-700 font-semibold'
-                                        : 'text-slate-600 hover:text-slate-900'
-                                )}
-                            >
-                                <span>Tümü</span>
-                            </Link>
+                {/*
+                  Kategoriler: aktif kategoriden bağımsız olarak HEPSİ listelenir.
+                  Eskiden bir kategori sayfasındayken yalnızca o kategorinin alt
+                  dalları görünüyordu; kullanıcı başka bir kategoriye geçmek için
+                  başka bir sayfaya gitmek zorunda kalıyordu.
+                  Seçili kategori vurgulanır ve alt dalları hemen altında açılır.
+                */}
+                <Section title="Kategoriler">
+                    <div className="space-y-0.5">
+                        <Link
+                            to={allCoursesHref}
+                            className={cn(
+                                'flex items-center justify-between gap-2 text-sm py-1.5 rounded-md transition-colors',
+                                !activeCategory
+                                    ? 'text-indigo-700 font-semibold'
+                                    : 'text-slate-600 hover:text-indigo-700'
+                            )}
+                        >
+                            <span>Tüm kurslar</span>
+                        </Link>
 
-                            {subcategories.map(sub => {
-                                const active = activeSubcategory?.slug === sub.slug;
-                                return (
+                        {navCategories.map(cat => {
+                            const isActive = activeCategory?.slug === cat.slug;
+                            return (
+                                <div key={cat.id}>
                                     <Link
-                                        key={sub.id}
-                                        to={subcategoryHref(sub.slug)}
+                                        to={categoryHref(cat.slug)}
                                         className={cn(
                                             'flex items-center justify-between gap-2 text-sm py-1.5 rounded-md transition-colors',
-                                            active
+                                            isActive
                                                 ? 'text-indigo-700 font-semibold'
-                                                : 'text-slate-600 hover:text-slate-900'
+                                                : 'text-slate-600 hover:text-indigo-700'
                                         )}
                                     >
-                                        <span className="truncate">{sub.name}</span>
-                                        <span className="text-xs text-slate-400 tabular-nums shrink-0">{sub.count}</span>
+                                        <span className="truncate">{cat.name}</span>
+                                        <span className="text-xs text-slate-400 tabular-nums shrink-0">{cat.count}</span>
                                     </Link>
-                                );
-                            })}
 
-                            {subcategories.length === 0 && (
-                                <p className="text-xs text-slate-400 py-1">Alt kategori yok</p>
-                            )}
+                                    {/* Seçili kategorinin alt dalları burada açılır */}
+                                    {isActive && cat.subcategories.length > 0 && (
+                                        <div className="ml-3 pl-3 border-l border-slate-200 mt-0.5 mb-1.5 space-y-0.5">
+                                            <Link
+                                                to={categoryHref(cat.slug)}
+                                                className={cn(
+                                                    'block text-[13px] py-1 transition-colors',
+                                                    !activeSubcategory
+                                                        ? 'text-indigo-700 font-medium'
+                                                        : 'text-slate-500 hover:text-indigo-700'
+                                                )}
+                                            >
+                                                Tümü
+                                            </Link>
+                                            {cat.subcategories.map(sub => {
+                                                const subActive = activeSubcategory?.slug === sub.slug;
+                                                return (
+                                                    <Link
+                                                        key={sub.id}
+                                                        to={subcategoryHref(sub.slug)}
+                                                        className={cn(
+                                                            'flex items-center justify-between gap-2 text-[13px] py-1 transition-colors',
+                                                            subActive
+                                                                ? 'text-indigo-700 font-medium'
+                                                                : 'text-slate-500 hover:text-indigo-700'
+                                                        )}
+                                                    >
+                                                        <span className="truncate">{sub.name}</span>
+                                                        <span className="text-[11px] text-slate-400 tabular-nums shrink-0">
+                                                            {sub.count}
+                                                        </span>
+                                                    </Link>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
 
-                            <Link
-                                to="/categories"
-                                className="flex items-center gap-1 text-xs text-slate-500 hover:text-indigo-600 pt-2 mt-1 border-t border-slate-100"
-                            >
-                                Tüm kategoriler <ChevronRight className="w-3 h-3" />
-                            </Link>
-                        </div>
-                    ) : (
-                        <div className="space-y-0.5">
-                            {(facets?.categories || []).slice(0, 12).map(cat => (
-                                <Link
-                                    key={cat.id}
-                                    to={categoryHref(cat.slug)}
-                                    className="flex items-center justify-between gap-2 text-sm text-slate-600 hover:text-indigo-700 py-1.5 transition-colors"
-                                >
-                                    <span className="truncate">{cat.name}</span>
-                                    <span className="text-xs text-slate-400 tabular-nums shrink-0">{cat.count}</span>
-                                </Link>
-                            ))}
-                            {(facets?.categories || []).length === 0 && (
-                                <p className="text-xs text-slate-400 py-1">Sonuçlarda kategori yok</p>
-                            )}
-                        </div>
-                    )}
+                        {navCategories.length === 0 && (
+                            <p className="text-xs text-slate-400 py-1">Kategori bulunamadı</p>
+                        )}
+                    </div>
                 </Section>
 
                 {/* Seviye */}
