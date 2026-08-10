@@ -9,7 +9,6 @@ import {
 import { Button } from '@/components/ui/button';
 import CatalogFilters, { type CatalogFacets, type FilterState, type FacetCategory } from './CatalogFilters';
 import CatalogCourseCard, { type CatalogCourse } from './CatalogCourseCard';
-import SubcategoryBar from './SubcategoryBar';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
 
 interface CategoryRef {
@@ -146,20 +145,11 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
         return query ? `/courses/${slug}?q=${encodeURIComponent(query)}` : `/courses/${slug}`;
     }, [mode, query]);
 
-    const subcategoryHref = useCallback((slug: string) =>
-        `/courses/${data?.category?.slug || categorySlug}/${slug}`,
-        [data?.category?.slug, categorySlug]);
-
     const resetFilters = () => updateParams({ level: null, minRating: null, free: null });
 
     /** "Tüm kurslar" — aramadayken arama terimini koru */
     const allCoursesHref = query ? `/search?q=${encodeURIComponent(query)}` : '/courses';
 
-    // Alt kategori şeridi için aktif kategorinin ağaçtaki karşılığı
-    const activeNavCategory = useMemo(
-        () => navCategories.find(c => c.slug === (data?.category?.slug || categorySlug)) || null,
-        [navCategories, data?.category?.slug, categorySlug]
-    );
 
     const heading = data?.subcategory?.name
         || data?.category?.name
@@ -236,16 +226,6 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                     )}
                 </header>
 
-                {/* Alt kategori şeridi — kategori sayfasında hızlı geçiş */}
-                {activeNavCategory && (
-                    <SubcategoryBar
-                        category={activeNavCategory}
-                        activeSubcategorySlug={data?.subcategory?.slug || subcategorySlug || null}
-                        categoryHref={`/courses/${activeNavCategory.slug}`}
-                        subcategoryHref={slug => `/courses/${activeNavCategory.slug}/${slug}`}
-                    />
-                )}
-
                 <div className="flex flex-col lg:flex-row gap-8">
 
                     {/* Sol: filtreler */}
@@ -254,7 +234,6 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                             facets={facets}
                             navCategories={navCategories}
                             activeCategory={data?.category ? { name: data.category.name, slug: data.category.slug } : null}
-                            activeSubcategory={data?.subcategory ? { name: data.subcategory.name, slug: data.subcategory.slug } : null}
                             allCoursesHref={allCoursesHref}
                             filters={filters}
                             onChange={changes => updateParams({
@@ -270,7 +249,6 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                             })}
                             onReset={resetFilters}
                             categoryHref={categoryHref}
-                            subcategoryHref={subcategoryHref}
                         />
                     </div>
 
@@ -434,7 +412,6 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                             facets={facets}
                             navCategories={navCategories}
                             activeCategory={data?.category ? { name: data.category.name, slug: data.category.slug } : null}
-                            activeSubcategory={data?.subcategory ? { name: data.subcategory.name, slug: data.subcategory.slug } : null}
                             allCoursesHref={allCoursesHref}
                             filters={filters}
                             onChange={changes => updateParams({
@@ -450,7 +427,6 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                             })}
                             onReset={resetFilters}
                             categoryHref={categoryHref}
-                            subcategoryHref={subcategoryHref}
                             className="w-full"
                         />
                         <Button

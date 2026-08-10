@@ -27,12 +27,10 @@ interface Props {
     navCategories?: NavCategory[];
     /** Kategori sayfasındaysak seçili kategori; arama sayfasında null */
     activeCategory?: { name: string; slug: string } | null;
-    activeSubcategory?: { name: string; slug: string } | null;
     filters: FilterState;
     onChange: (next: Partial<FilterState>) => void;
     onReset: () => void;
     categoryHref: (slug: string) => string;
-    subcategoryHref: (slug: string) => string;
     /** "Tüm kurslar" bağlantısı — aramada aramayı korur */
     allCoursesHref: string;
     className?: string;
@@ -79,12 +77,10 @@ export const CatalogFilters: React.FC<Props> = ({
     facets,
     navCategories = [],
     activeCategory,
-    activeSubcategory,
     filters,
     onChange,
     onReset,
     categoryHref,
-    subcategoryHref,
     allCoursesHref,
     className,
 }) => {
@@ -111,11 +107,11 @@ export const CatalogFilters: React.FC<Props> = ({
                 )}
 
                 {/*
-                  Kategoriler: aktif kategoriden bağımsız olarak HEPSİ listelenir.
-                  Eskiden bir kategori sayfasındayken yalnızca o kategorinin alt
-                  dalları görünüyordu; kullanıcı başka bir kategoriye geçmek için
-                  başka bir sayfaya gitmek zorunda kalıyordu.
-                  Seçili kategori vurgulanır ve alt dalları hemen altında açılır.
+                  Yalnızca ana kategoriler. Alt kategoriler header'ın altındaki
+                  şeritte duruyor (components/layout/CategoryBar.tsx); burada da
+                  göstermek aynı bağlantıyı iki kez tekrarlamak olurdu.
+                  Liste aktif seçimden bağımsız: kullanıcı bir kategoridayken
+                  diğerlerine tek tıkla geçebilmeli.
                 */}
                 <Section title="Kategoriler">
                     <div className="space-y-0.5">
@@ -134,57 +130,19 @@ export const CatalogFilters: React.FC<Props> = ({
                         {navCategories.map(cat => {
                             const isActive = activeCategory?.slug === cat.slug;
                             return (
-                                <div key={cat.id}>
-                                    <Link
-                                        to={categoryHref(cat.slug)}
-                                        className={cn(
-                                            'flex items-center justify-between gap-2 text-sm py-1.5 rounded-md transition-colors',
-                                            isActive
-                                                ? 'text-indigo-700 font-semibold'
-                                                : 'text-slate-600 hover:text-indigo-700'
-                                        )}
-                                    >
-                                        <span className="truncate">{cat.name}</span>
-                                        <span className="text-xs text-slate-400 tabular-nums shrink-0">{cat.count}</span>
-                                    </Link>
-
-                                    {/* Seçili kategorinin alt dalları burada açılır */}
-                                    {isActive && cat.subcategories.length > 0 && (
-                                        <div className="ml-3 pl-3 border-l border-slate-200 mt-0.5 mb-1.5 space-y-0.5">
-                                            <Link
-                                                to={categoryHref(cat.slug)}
-                                                className={cn(
-                                                    'block text-[13px] py-1 transition-colors',
-                                                    !activeSubcategory
-                                                        ? 'text-indigo-700 font-medium'
-                                                        : 'text-slate-500 hover:text-indigo-700'
-                                                )}
-                                            >
-                                                Tümü
-                                            </Link>
-                                            {cat.subcategories.map(sub => {
-                                                const subActive = activeSubcategory?.slug === sub.slug;
-                                                return (
-                                                    <Link
-                                                        key={sub.id}
-                                                        to={subcategoryHref(sub.slug)}
-                                                        className={cn(
-                                                            'flex items-center justify-between gap-2 text-[13px] py-1 transition-colors',
-                                                            subActive
-                                                                ? 'text-indigo-700 font-medium'
-                                                                : 'text-slate-500 hover:text-indigo-700'
-                                                        )}
-                                                    >
-                                                        <span className="truncate">{sub.name}</span>
-                                                        <span className="text-[11px] text-slate-400 tabular-nums shrink-0">
-                                                            {sub.count}
-                                                        </span>
-                                                    </Link>
-                                                );
-                                            })}
-                                        </div>
+                                <Link
+                                    key={cat.id}
+                                    to={categoryHref(cat.slug)}
+                                    className={cn(
+                                        'flex items-center justify-between gap-2 text-sm py-1.5 rounded-md transition-colors',
+                                        isActive
+                                            ? 'text-indigo-700 font-semibold'
+                                            : 'text-slate-600 hover:text-indigo-700'
                                     )}
-                                </div>
+                                >
+                                    <span className="truncate">{cat.name}</span>
+                                    <span className="text-xs text-slate-400 tabular-nums shrink-0">{cat.count}</span>
+                                </Link>
                             );
                         })}
 

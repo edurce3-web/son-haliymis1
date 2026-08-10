@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import Footer from "@/components/layout/Footer";
-import CategorySubHeader from "@/components/layout/CategorySubHeader";
+import CategoryBar from "@/components/layout/CategoryBar";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -73,6 +73,8 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen bg-background">
       {!hideLayout && <Header />}
+      {/* Kategori sayfalarında alt kategori şeridi — header'ın hemen altında */}
+      {!hideLayout && <CategoryBar />}
       {children}
       {!hideLayout && <Footer />}
       {!hideLayout && <MobileNavigation />}
