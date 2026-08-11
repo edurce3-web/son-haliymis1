@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { TrendingUp, ArrowRight, Sparkles, BookOpen, Layers, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { COURSE_CATEGORIES } from '@/constants/categories';
+import { useCategoryNav } from '@/hooks/useCategoryNav';
 
 export const CreateCourseInitial: React.FC = () => {
     const navigate = useNavigate();
@@ -19,8 +19,11 @@ export const CreateCourseInitial: React.FC = () => {
 
     const apiBase = (window as any)?.__API_BASE__ || (import.meta as any)?.env?.VITE_API_URL || 'https://api.edurce.com';
 
-    const categories = COURSE_CATEGORIES;
-    const selectedCategoryObj = categories.find(c => c.id.toString() === categoryId);
+    // Kategoriler veritabanından gelmeli: sabit listedeki id'ler gerçek
+    // category_id değerleriyle örtüşmüyordu, kurslar yanlış kategoriye yazılıyordu.
+    const { data: navData } = useCategoryNav();
+    const categories = navData?.categories || [];
+    const selectedCategoryObj = categories.find(c => String(c.id) === categoryId);
     const subcategories = selectedCategoryObj ? selectedCategoryObj.subcategories : [];
 
     const handleCreate = async () => {

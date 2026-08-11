@@ -28,7 +28,7 @@ import { Slider } from '@/components/ui/slider';
 import Cropper from 'react-easy-crop';
 import { useCategories, useCourseCreate, useCourseUpdate } from '@/hooks/useApi';
 import { useAuth } from '@/contexts/AuthContext';
-import { COURSE_CATEGORIES } from '@/constants/categories';
+import { useCategoryNav } from '@/hooks/useCategoryNav';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CURRENCY_PRICING, getPriceOptionsForCurrency, getCurrencyInfo, formatCoursePrice, isValidCoursePrice, DEFAULT_CURRENCY } from '@/utils/pricing';
 import {
@@ -463,6 +463,12 @@ export default function AdvancedCourseCreator() {
   const [uploadType, setUploadType] = useState<'video' | 'presentation' | 'document'>('video');
   const [articleContent, setArticleContent] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+
+  // Kategoriler veritabanından. Eskiden sabit bir listeden okunuyordu ve
+  // oradaki id'ler gerçek category_id değerleriyle ilgisizdi; kurslar yanlış
+  // kategoriye kaydediliyordu.
+  const { data: categoryNav } = useCategoryNav();
+  const COURSE_CATEGORIES = categoryNav?.categories || [];
   const [courseImage, setCourseImage] = useState<File | null>(null);
   const [promoVideo, setPromoVideo] = useState<File | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
