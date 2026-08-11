@@ -21,6 +21,24 @@ export default {
         jetbrains: ["JetBrains Mono", "monospace"],
       },
       colors: {
+        /**
+         * Marka paleti — logodaki koyu turkuazdan türetildi (#175D5D).
+         * Ana sayfa ve öne çıkan çağrılar bu ölçeği kullanır; böylece renk
+         * her ekranda tek yerden yönetilir.
+         */
+        brand: {
+          50: "#EFF8F7",
+          100: "#D6EDEB",
+          200: "#AEDBD7",
+          300: "#7CC2BD",
+          400: "#4AA5A0",
+          500: "#2A8580",
+          600: "#1E6E6B",
+          700: "#175D5D", // logo rengi
+          800: "#124A4A",
+          900: "#0D3838",
+          950: "#072424",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

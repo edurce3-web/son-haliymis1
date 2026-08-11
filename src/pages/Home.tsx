@@ -5,7 +5,7 @@ import { API_BASE_URL } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSeo } from '@/hooks/useSeo';
 import { cn } from '@/lib/utils';
-import CatalogCourseCard, { type CatalogCourse } from '@/components/catalog/CatalogCourseCard';
+import { CourseCard } from '@/components/course/CourseCard';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -42,14 +42,13 @@ interface HomeInstructor {
 }
 
 interface HomeData {
-    hero: { title: string; subtitle: string; cta_text: string; cta_link: string };
     stats: HomeStats;
     categories: HomeCategory[];
     instructors: HomeInstructor[];
-    featured_courses: CatalogCourse[];
-    top_selling: CatalogCourse[];
-    new_courses: CatalogCourse[];
-    free_courses: CatalogCourse[];
+    featured_courses: any[];
+    top_selling: any[];
+    new_courses: any[];
+    free_courses: any[];
 }
 
 /** Kategori ikonları — veritabanındaki icon alanı lucide adını tutuyor. */
@@ -57,18 +56,6 @@ const ICONS: Record<string, React.ElementType> = {
     Code2, Cpu, Palette, Briefcase, Sparkles, Languages, Music, HeartPulse,
 };
 const iconFor = (name: string | null) => (name && ICONS[name]) || BookOpen;
-
-/** Her ana kategoriye sabit bir renk — sayfa boyunca tutarlı kalsın. */
-const CATEGORY_TONES = [
-    'from-indigo-500 to-violet-600',
-    'from-sky-500 to-blue-600',
-    'from-rose-500 to-pink-600',
-    'from-amber-500 to-orange-600',
-    'from-emerald-500 to-teal-600',
-    'from-fuchsia-500 to-purple-600',
-    'from-cyan-500 to-sky-600',
-    'from-lime-500 to-green-600',
-];
 
 const compact = (n: number) => {
     if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace('.', ',')}M`;
@@ -78,14 +65,19 @@ const compact = (n: number) => {
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
-/** Yatay kaydırmalı kurs rafı. */
+/**
+ * Yatay kaydırmalı kurs rafı.
+ * Kart olarak platformun her yerinde kullanılan CourseCard'ı kullanır;
+ * ana sayfaya özel bir kart tasarımı tutarlılığı bozardı.
+ */
 const CourseRail: React.FC<{
     title: string;
     subtitle?: string;
-    courses: CatalogCourse[];
+    courses: any[];
     href?: string;
     loading?: boolean;
-}> = ({ title, subtitle, courses, href, loading }) => {
+    isAuthenticated?: boolean;
+}> = ({ title, subtitle, courses, href, loading, isAuthenticated }) => {
     const railRef = useRef<HTMLDivElement>(null);
     const [canLeft, setCanLeft] = useState(false);
     const [canRight, setCanRight] = useState(false);
@@ -112,24 +104,23 @@ const CourseRail: React.FC<{
     const scroll = (dir: 1 | -1) => {
         const el = railRef.current;
         if (!el) return;
-        // Bir kart genişliği kadar kaydır — yarım kart görünüp kalmasın
         el.scrollBy({ left: dir * Math.max(320, el.clientWidth * 0.8), behavior: 'smooth' });
     };
 
     if (!loading && courses.length === 0) return null;
 
     return (
-        <section className="py-10">
+        <section className="py-8">
             <div className="flex items-end justify-between gap-4 mb-5">
                 <div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900">{title}</h2>
+                    <h2 className="text-xl sm:text-[22px] font-bold text-slate-900 tracking-tight">{title}</h2>
                     {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                     {href && (
                         <Link
                             to={href}
-                            className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:gap-2 transition-all"
+                            className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-brand-700 hover:gap-2 transition-all"
                         >
                             Tümünü gör <ArrowRight className="w-4 h-4" />
                         </Link>
@@ -139,7 +130,7 @@ const CourseRail: React.FC<{
                             onClick={() => scroll(-1)}
                             disabled={!canLeft}
                             aria-label="Geri"
-                            className="w-9 h-9 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:border-slate-400 disabled:opacity-30 disabled:hover:border-slate-200 transition-colors"
+                            className="w-9 h-9 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:border-brand-400 hover:text-brand-700 disabled:opacity-30 disabled:hover:border-slate-200 transition-colors"
                         >
                             <ChevronLeft className="w-4 h-4" />
                         </button>
@@ -147,7 +138,7 @@ const CourseRail: React.FC<{
                             onClick={() => scroll(1)}
                             disabled={!canRight}
                             aria-label="İleri"
-                            className="w-9 h-9 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:border-slate-400 disabled:opacity-30 disabled:hover:border-slate-200 transition-colors"
+                            className="w-9 h-9 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:border-brand-400 hover:text-brand-700 disabled:opacity-30 disabled:hover:border-slate-200 transition-colors"
                         >
                             <ChevronRight className="w-4 h-4" />
                         </button>
@@ -161,18 +152,18 @@ const CourseRail: React.FC<{
             >
                 {loading
                     ? Array.from({ length: 4 }).map((_, i) => (
-                        <div key={i} className="w-[300px] shrink-0 bg-white border border-slate-200 rounded-xl overflow-hidden animate-pulse">
-                            <div className="aspect-[16/10] bg-slate-100" />
+                        <div key={i} className="w-[290px] shrink-0 bg-white border border-slate-200 rounded-xl overflow-hidden animate-pulse">
+                            <div className="aspect-video bg-slate-100" />
                             <div className="p-4 space-y-3">
-                                <div className="h-3 bg-slate-100 rounded w-1/3" />
                                 <div className="h-4 bg-slate-100 rounded w-4/5" />
-                                <div className="h-10 bg-slate-100 rounded-lg mt-4" />
+                                <div className="h-3 bg-slate-100 rounded w-1/2" />
+                                <div className="h-5 bg-slate-100 rounded w-1/3 mt-4" />
                             </div>
                         </div>
                     ))
                     : courses.map(course => (
-                        <div key={course.id} className="w-[300px] shrink-0 snap-start">
-                            <CatalogCourseCard course={course} />
+                        <div key={course.id} className="w-[290px] shrink-0 snap-start">
+                            <CourseCard course={course} isAuthenticated={isAuthenticated} />
                         </div>
                     ))}
             </div>
@@ -204,7 +195,6 @@ const Home: React.FC = () => {
     const categories = data?.categories || [];
     const stats = data?.stats;
 
-    // Sekmeli kategori bölümünde açık duran kategori
     const shownCategory = useMemo(
         () => categories.find(c => c.id === activeCategory) || categories[0] || null,
         [categories, activeCategory]
@@ -231,36 +221,33 @@ const Home: React.FC = () => {
         <div className="min-h-screen bg-white">
 
             {/* ── Kahraman bölümü ─────────────────────────────────────────── */}
-            <section className="relative overflow-hidden bg-slate-900">
-                {/* Arka plan ışıkları */}
+            <section className="relative overflow-hidden bg-brand-900">
                 <div className="absolute inset-0 pointer-events-none" aria-hidden>
-                    <div className="absolute -top-32 -left-20 w-[500px] h-[500px] bg-indigo-600/25 rounded-full blur-[120px]" />
-                    <div className="absolute -bottom-40 right-0 w-[520px] h-[520px] bg-violet-600/20 rounded-full blur-[120px]" />
+                    <div className="absolute -top-40 -left-24 w-[520px] h-[520px] bg-brand-500/25 rounded-full blur-[130px]" />
+                    <div className="absolute -bottom-48 right-0 w-[560px] h-[560px] bg-brand-400/15 rounded-full blur-[140px]" />
                     <div
-                        className="absolute inset-0 opacity-[0.06]"
+                        className="absolute inset-0 opacity-[0.05]"
                         style={{
                             backgroundImage:
-                                'linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px)',
+                                'linear-gradient(rgba(255,255,255,.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.7) 1px, transparent 1px)',
                             backgroundSize: '56px 56px',
                         }}
                     />
                 </div>
 
-                <div className="relative container px-4 py-16 lg:py-24">
+                <div className="relative container px-4 py-16 lg:py-20">
                     <div className="max-w-3xl">
                         {isAuthenticated && user?.first_name && (
-                            <p className="text-indigo-300 font-medium mb-3">
+                            <p className="text-brand-200 font-medium mb-3">
                                 Tekrar hoş geldin, {user.first_name}
                             </p>
                         )}
 
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight">
-                            Öğrenmeye
-                            <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent"> bugün </span>
-                            başla
+                        <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-[1.12] tracking-tight">
+                            Öğrenmeye <span className="text-brand-300">bugün</span> başla
                         </h1>
 
-                        <p className="text-lg text-slate-300 mt-5 max-w-2xl leading-relaxed">
+                        <p className="text-[17px] text-brand-100/80 mt-5 max-w-2xl leading-relaxed">
                             Yazılımdan tasarıma, mühendislikten müziğe. Alanında uzman
                             eğitmenlerden Türkçe kurslarla kendi hızında ilerle.
                         </p>
@@ -273,11 +260,11 @@ const Home: React.FC = () => {
                                     onChange={e => setTerm(e.target.value)}
                                     placeholder="Ne öğrenmek istiyorsun?"
                                     aria-label="Kurs ara"
-                                    className="w-full h-14 pl-12 pr-32 rounded-2xl bg-white text-[15px] text-slate-900 placeholder:text-slate-400 shadow-xl shadow-black/20 focus:outline-none focus:ring-4 focus:ring-indigo-500/30"
+                                    className="w-full h-14 pl-12 pr-32 rounded-xl bg-white text-[15px] text-slate-900 placeholder:text-slate-400 shadow-2xl shadow-black/25 focus:outline-none focus:ring-4 focus:ring-brand-400/40"
                                 />
                                 <Button
                                     type="submit"
-                                    className="absolute right-2 top-2 h-10 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-700 font-semibold"
+                                    className="absolute right-2 top-2 h-10 px-6 rounded-lg bg-brand-700 hover:bg-brand-800 font-semibold"
                                 >
                                     Ara
                                 </Button>
@@ -285,12 +272,12 @@ const Home: React.FC = () => {
                         </form>
 
                         <div className="flex flex-wrap items-center gap-2 mt-4">
-                            <span className="text-xs text-slate-400">Popüler:</span>
+                            <span className="text-xs text-brand-200/70">Popüler:</span>
                             {popularSearches.map(s => (
                                 <Link
                                     key={s}
                                     to={`/search?q=${encodeURIComponent(s)}`}
-                                    className="text-xs text-slate-300 hover:text-white border border-white/15 hover:border-white/40 rounded-full px-3 py-1 transition-colors"
+                                    className="text-xs text-brand-100 hover:text-white border border-white/15 hover:border-white/40 rounded-full px-3 py-1 transition-colors"
                                 >
                                     {s}
                                 </Link>
@@ -298,20 +285,20 @@ const Home: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Gerçek sayılar — sabit pazarlama rakamı değil */}
+                    {/* Gerçek platform sayıları */}
                     {stats && (
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px mt-14 bg-white/10 rounded-2xl overflow-hidden">
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px mt-14 bg-white/10 rounded-xl overflow-hidden">
                             {[
                                 { icon: BookOpen, value: compact(stats.courses), label: 'kurs' },
                                 { icon: Users, value: compact(stats.students), label: 'öğrenci' },
                                 { icon: GraduationCap, value: compact(stats.instructors), label: 'eğitmen' },
                                 { icon: Clock, value: compact(stats.hours), label: 'saat içerik' },
                             ].map(s => (
-                                <div key={s.label} className="bg-slate-900/80 backdrop-blur px-5 py-5 flex items-center gap-3">
-                                    <s.icon className="w-5 h-5 text-indigo-400 shrink-0" />
+                                <div key={s.label} className="bg-brand-900/90 px-5 py-5 flex items-center gap-3">
+                                    <s.icon className="w-5 h-5 text-brand-300 shrink-0" />
                                     <div className="min-w-0">
                                         <p className="text-xl font-bold text-white leading-none">{s.value}</p>
-                                        <p className="text-xs text-slate-400 mt-1">{s.label}</p>
+                                        <p className="text-xs text-brand-200/70 mt-1">{s.label}</p>
                                     </div>
                                 </div>
                             ))}
@@ -320,21 +307,20 @@ const Home: React.FC = () => {
                 </div>
             </section>
 
-            {/* ── Kategoriler: sekmeli ────────────────────────────────────── */}
+            {/* ── Kategoriler ─────────────────────────────────────────────── */}
             {categories.length > 0 && (
                 <section className="container px-4 py-14">
-                    <div className="text-center max-w-2xl mx-auto mb-8">
-                        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
+                    <div className="max-w-2xl mb-7">
+                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
                             Ne öğrenmek istersin?
                         </h2>
-                        <p className="text-slate-500 mt-2">
-                            Sekiz ana alanda, doksanı aşkın uzmanlık dalı.
+                        <p className="text-slate-500 mt-1.5">
+                            Sekiz ana alan, doksanı aşkın uzmanlık dalı.
                         </p>
                     </div>
 
-                    {/* Ana kategori sekmeleri */}
-                    <div className="flex gap-2 overflow-x-auto pb-3 mb-6 justify-start lg:justify-center [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                        {categories.map((cat, i) => {
+                    <div className="flex gap-2 overflow-x-auto pb-3 mb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                        {categories.map(cat => {
                             const Icon = iconFor(cat.icon);
                             const active = shownCategory?.id === cat.id;
                             return (
@@ -343,10 +329,10 @@ const Home: React.FC = () => {
                                     onClick={() => setActiveCategory(cat.id)}
                                     onMouseEnter={() => setActiveCategory(cat.id)}
                                     className={cn(
-                                        'shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border transition-all',
+                                        'shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border transition-all',
                                         active
-                                            ? 'bg-slate-900 text-white border-slate-900 shadow-md'
-                                            : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
+                                            ? 'bg-brand-700 text-white border-brand-700'
+                                            : 'bg-white text-slate-600 border-slate-200 hover:border-brand-400 hover:text-brand-800'
                                     )}
                                 >
                                     <Icon className={cn('w-4 h-4', active ? 'text-white' : 'text-slate-400')} />
@@ -356,15 +342,11 @@ const Home: React.FC = () => {
                         })}
                     </div>
 
-                    {/* Seçili kategorinin alt dalları */}
                     {shownCategory && (
-                        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 lg:p-8">
+                        <div className="bg-brand-50/60 border border-brand-100 rounded-2xl p-6 lg:p-8">
                             <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
                                 <div className="flex items-center gap-3">
-                                    <div className={cn(
-                                        'w-11 h-11 rounded-xl bg-gradient-to-br flex items-center justify-center shrink-0',
-                                        CATEGORY_TONES[categories.indexOf(shownCategory) % CATEGORY_TONES.length]
-                                    )}>
+                                    <div className="w-11 h-11 rounded-xl bg-brand-700 flex items-center justify-center shrink-0">
                                         {React.createElement(iconFor(shownCategory.icon), { className: 'w-5 h-5 text-white' })}
                                     </div>
                                     <div>
@@ -376,7 +358,7 @@ const Home: React.FC = () => {
                                 </div>
                                 <Link
                                     to={`/courses/${shownCategory.slug}`}
-                                    className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:gap-2 transition-all"
+                                    className="inline-flex items-center gap-1 text-sm font-semibold text-brand-700 hover:gap-2 transition-all"
                                 >
                                     Kategoriye git <ArrowRight className="w-4 h-4" />
                                 </Link>
@@ -387,9 +369,9 @@ const Home: React.FC = () => {
                                     <Link
                                         key={sub.id}
                                         to={`/courses/${shownCategory.slug}/${sub.slug}`}
-                                        className="group flex items-center justify-between gap-2 bg-white border border-slate-200 rounded-lg px-3.5 py-2.5 hover:border-indigo-300 hover:shadow-sm transition-all"
+                                        className="group flex items-center justify-between gap-2 bg-white border border-brand-100 rounded-lg px-3.5 py-2.5 hover:border-brand-400 hover:shadow-sm transition-all"
                                     >
-                                        <span className="text-sm text-slate-700 group-hover:text-indigo-700 truncate">
+                                        <span className="text-sm text-slate-700 group-hover:text-brand-800 truncate">
                                             {sub.name}
                                         </span>
                                         {sub.count > 0 && (
@@ -418,19 +400,20 @@ const Home: React.FC = () => {
                     courses={data?.top_selling || []}
                     href="/courses?sort=popular"
                     loading={isLoading}
+                    isAuthenticated={isAuthenticated}
                 />
-
                 <CourseRail
                     title="Öne çıkanlar"
                     subtitle="Yüksek puanlı, beğenilen eğitimler"
                     courses={data?.featured_courses || []}
                     href="/courses?sort=rating"
                     loading={isLoading}
+                    isAuthenticated={isAuthenticated}
                 />
             </div>
 
             {/* ── Neden Edurce ────────────────────────────────────────────── */}
-            <section className="bg-slate-50 border-y border-slate-200 py-16 my-6">
+            <section className="bg-brand-900 py-14 my-8">
                 <div className="container px-4">
                     <div className="grid md:grid-cols-3 gap-8">
                         {[
@@ -451,12 +434,12 @@ const Home: React.FC = () => {
                             },
                         ].map(f => (
                             <div key={f.title} className="flex gap-4">
-                                <div className="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center shrink-0">
-                                    <f.icon className="w-5 h-5 text-indigo-600" />
+                                <div className="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
+                                    <f.icon className="w-5 h-5 text-brand-300" />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-slate-900 mb-1.5">{f.title}</h3>
-                                    <p className="text-sm text-slate-600 leading-relaxed">{f.text}</p>
+                                    <h3 className="font-bold text-white mb-1.5">{f.title}</h3>
+                                    <p className="text-sm text-brand-100/70 leading-relaxed">{f.text}</p>
                                 </div>
                             </div>
                         ))}
@@ -471,26 +454,23 @@ const Home: React.FC = () => {
                     courses={data?.new_courses || []}
                     href="/courses?sort=newest"
                     loading={isLoading}
+                    isAuthenticated={isAuthenticated}
                 />
-
                 <CourseRail
                     title="Ücretsiz başla"
                     subtitle="Hiçbir ücret ödemeden erişebileceğin kurslar"
                     courses={data?.free_courses || []}
                     href="/courses?free=1"
+                    isAuthenticated={isAuthenticated}
                 />
             </div>
 
             {/* ── Eğitmenler ──────────────────────────────────────────────── */}
             {(data?.instructors?.length ?? 0) > 0 && (
-                <section className="container px-4 py-14">
-                    <div className="flex items-end justify-between gap-4 mb-6">
-                        <div>
-                            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Eğitmenler</h2>
-                            <p className="text-sm text-slate-500 mt-1">
-                                Kendi alanında üreten, öğreten isimler
-                            </p>
-                        </div>
+                <section className="container px-4 py-12">
+                    <div className="mb-6">
+                        <h2 className="text-xl sm:text-[22px] font-bold text-slate-900 tracking-tight">Eğitmenler</h2>
+                        <p className="text-sm text-slate-500 mt-1">Kendi alanında üreten, öğreten isimler</p>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -498,15 +478,10 @@ const Home: React.FC = () => {
                             <Link
                                 key={ins.id}
                                 to={`/instructors/${ins.id}`}
-                                className="group bg-white border border-slate-200 rounded-xl p-5 text-center hover:border-slate-300 hover:shadow-md transition-all"
+                                className="group bg-white border border-slate-200 rounded-xl p-5 text-center hover:border-brand-300 hover:shadow-md transition-all"
                             >
-                                <UserAvatar
-                                    src={ins.image}
-                                    name={ins.name}
-                                    size={64}
-                                    className="mx-auto mb-3"
-                                />
-                                <h3 className="font-semibold text-slate-900 text-sm truncate group-hover:text-indigo-700">
+                                <UserAvatar src={ins.image} name={ins.name} size={64} className="mx-auto mb-3" />
+                                <h3 className="font-semibold text-slate-900 text-sm truncate group-hover:text-brand-800">
                                     {ins.name}
                                 </h3>
                                 <p className="text-xs text-slate-500 mt-1">
@@ -526,21 +501,21 @@ const Home: React.FC = () => {
 
             {/* ── Eğitmen ol ──────────────────────────────────────────────── */}
             <section className="container px-4 pb-16">
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 to-violet-700 px-8 py-12 lg:px-14 lg:py-16">
-                    <div className="absolute inset-0 opacity-10" aria-hidden>
-                        <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-white blur-3xl" />
+                <div className="relative overflow-hidden rounded-2xl bg-brand-800 px-8 py-12 lg:px-14 lg:py-14">
+                    <div className="absolute inset-0 opacity-20 pointer-events-none" aria-hidden>
+                        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-brand-400 blur-3xl" />
                     </div>
                     <div className="relative max-w-2xl">
-                        <h2 className="text-2xl lg:text-3xl font-bold text-white leading-tight">
+                        <h2 className="text-2xl lg:text-[28px] font-bold text-white leading-tight">
                             Bildiklerini öğret, gelir elde et
                         </h2>
-                        <p className="text-indigo-100 mt-3 leading-relaxed">
+                        <p className="text-brand-100/80 mt-3 leading-relaxed">
                             Kursunu yayınla, öğrencilerine ulaş. Satış tutarından vergi
                             düşüldükten sonra kalanın %55'i senin olur; kazancını panelinden
                             gün gün takip edersin.
                         </p>
                         <Link to="/become-instructor" className="inline-block mt-7">
-                            <Button className="h-12 px-7 rounded-xl bg-white text-indigo-700 hover:bg-indigo-50 font-semibold text-[15px]">
+                            <Button className="h-12 px-7 rounded-xl bg-white text-brand-800 hover:bg-brand-50 font-semibold text-[15px]">
                                 Eğitmen ol
                                 <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>
