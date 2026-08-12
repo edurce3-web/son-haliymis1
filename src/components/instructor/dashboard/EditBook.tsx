@@ -378,8 +378,8 @@ export function EditBook() {
                                             <SelectValue placeholder="Kategori Seçiniz" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {categories.map((c) => (
-                                                <SelectItem key={c.id} value={String(c.id)} className="font-bold py-3">{c.name}</SelectItem>
+                                            {categories.filter(c => c.id != null).map((c) => (
+                                                <SelectItem key={c.slug} value={String(c.id)} className="font-bold py-3">{c.name}</SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
@@ -393,8 +393,8 @@ export function EditBook() {
                                             <SelectValue placeholder="Alt Kategori Seçiniz" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {subcategories.map((c) => (
-                                                <SelectItem key={c.id} value={String(c.id)} className="font-bold py-3">{c.name}</SelectItem>
+                                            {subcategories.filter(c => c.id != null).map((c) => (
+                                                <SelectItem key={c.slug} value={String(c.id)} className="font-bold py-3">{c.name}</SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>

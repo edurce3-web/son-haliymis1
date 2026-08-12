@@ -131,7 +131,7 @@ export const CatalogFilters: React.FC<Props> = ({
                             const isActive = activeCategory?.slug === cat.slug;
                             return (
                                 <Link
-                                    key={cat.id}
+                                    key={cat.slug}
                                     to={categoryHref(cat.slug)}
                                     className={cn(
                                         'flex items-center justify-between gap-2 text-sm py-1.5 rounded-md transition-colors',

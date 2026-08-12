@@ -2097,8 +2097,8 @@ export default function AdvancedCourseCreator() {
                       <SelectValue placeholder="Seçim yapın" />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl shadow-2xl border-none ring-1 ring-slate-100 dark:ring-slate-800">
-                      {COURSE_CATEGORIES.map((cat) => (
-                        <SelectItem key={cat.id} value={String(cat.id)} className="rounded-lg">{cat.name}</SelectItem>
+                      {COURSE_CATEGORIES.filter(cat => cat.id != null).map((cat) => (
+                        <SelectItem key={cat.slug} value={String(cat.id)} className="rounded-lg">{cat.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2111,8 +2111,8 @@ export default function AdvancedCourseCreator() {
                       <SelectValue placeholder="Seçim yapın" />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-none shadow-2xl ring-1 ring-slate-100 dark:ring-slate-800">
-                      {courseData.category && COURSE_CATEGORIES.find(cat => String(cat.id) === String(courseData.category))?.subcategories.map(sub => (
-                        <SelectItem key={sub.id} value={String(sub.id)} className="rounded-lg">{sub.name}</SelectItem>
+                      {courseData.category && COURSE_CATEGORIES.find(cat => String(cat.id) === String(courseData.category))?.subcategories.filter(sub => sub.id != null).map(sub => (
+                        <SelectItem key={sub.slug} value={String(sub.id)} className="rounded-lg">{sub.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>

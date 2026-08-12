@@ -93,10 +93,10 @@ export const CategoryMegaMenu: React.FC = () => {
                         )}
 
                         {categories.map(cat => {
-                            const active = hovered?.id === cat.id;
+                            const active = hovered?.slug === cat.slug;
                             return (
                                 <Link
-                                    key={cat.id}
+                                    key={cat.slug}
                                     to={`/courses/${cat.slug}`}
                                     onMouseEnter={() => setHovered(cat)}
                                     onFocus={() => setHovered(cat)}
@@ -158,7 +158,7 @@ export const CategoryMegaMenu: React.FC = () => {
                                     <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
                                         {hovered.subcategories.map(sub => (
                                             <Link
-                                                key={sub.id}
+                                                key={sub.slug}
                                                 to={`/courses/${hovered.slug}/${sub.slug}`}
                                                 onClick={() => setOpen(false)}
                                                 className="flex items-center justify-between gap-2 py-1.5 text-sm text-slate-600 hover:text-indigo-600 transition-colors"

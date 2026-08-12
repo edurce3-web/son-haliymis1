@@ -23,12 +23,13 @@ interface HomeStats {
 }
 
 interface HomeCategory {
-    id: number;
+    // Kategori tabloya yazilamadiysa null olabilir; gezinme slug ile yapiliyor
+    id: number | null;
     name: string;
     slug: string;
     icon: string | null;
     count: number;
-    subcategories: Array<{ id: number; name: string; slug: string; count: number }>;
+    subcategories: Array<{ id: number | null; name: string; slug: string; count: number }>;
 }
 
 interface HomeInstructor {
@@ -177,7 +178,7 @@ const Home: React.FC = () => {
     const navigate = useNavigate();
     const { isAuthenticated, user } = useAuth();
     const [term, setTerm] = useState('');
-    const [activeCategory, setActiveCategory] = useState<number | null>(null);
+    const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
     const { data, isLoading } = useQuery<HomeData>({
         queryKey: ['home'],
@@ -196,7 +197,7 @@ const Home: React.FC = () => {
     const stats = data?.stats;
 
     const shownCategory = useMemo(
-        () => categories.find(c => c.id === activeCategory) || categories[0] || null,
+        () => categories.find(c => c.slug === activeCategory) || categories[0] || null,
         [categories, activeCategory]
     );
 
@@ -322,12 +323,12 @@ const Home: React.FC = () => {
                     <div className="flex gap-2 overflow-x-auto pb-3 mb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {categories.map(cat => {
                             const Icon = iconFor(cat.icon);
-                            const active = shownCategory?.id === cat.id;
+                            const active = shownCategory?.slug === cat.slug;
                             return (
                                 <button
-                                    key={cat.id}
-                                    onClick={() => setActiveCategory(cat.id)}
-                                    onMouseEnter={() => setActiveCategory(cat.id)}
+                                    key={cat.slug}
+                                    onClick={() => setActiveCategory(cat.slug)}
+                                    onMouseEnter={() => setActiveCategory(cat.slug)}
                                     className={cn(
                                         'shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border transition-all',
                                         active
@@ -367,7 +368,7 @@ const Home: React.FC = () => {
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                                 {shownCategory.subcategories.map(sub => (
                                     <Link
-                                        key={sub.id}
+                                        key={sub.slug}
                                         to={`/courses/${shownCategory.slug}/${sub.slug}`}
                                         className="group flex items-center justify-between gap-2 bg-white border border-brand-100 rounded-lg px-3.5 py-2.5 hover:border-brand-400 hover:shadow-sm transition-all"
                                     >

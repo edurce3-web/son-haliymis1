@@ -108,7 +108,7 @@ export const CategoryBar: React.FC = () => {
                                 const active = route?.subcategorySlug === sub.slug;
                                 return (
                                     <Link
-                                        key={sub.id}
+                                        key={sub.slug}
                                         to={`/courses/${category.slug}/${sub.slug}`}
                                         data-active={active}
                                         className={cn(

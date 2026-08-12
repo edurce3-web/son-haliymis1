@@ -103,7 +103,7 @@ export const CreateCourseInitial: React.FC = () => {
                                         <SelectValue placeholder="Kategori Seç" />
                                     </SelectTrigger>
                                     <SelectContent className="rounded-2xl border-slate-100 shadow-2xl">
-                                        {categories.map((cat) => (
+                                        {categories.filter(c => c.id != null).map((cat) => (
                                             <SelectItem key={cat.id} value={cat.id.toString()} className="font-bold py-3 rounded-xl cursor-pointer">
                                                 {cat.name}
                                             </SelectItem>
@@ -122,7 +122,7 @@ export const CreateCourseInitial: React.FC = () => {
                                         <SelectValue placeholder={subcategories.length === 0 ? "Alt Kategori Yok" : "Alt Kategori Seç"} />
                                     </SelectTrigger>
                                     <SelectContent className="rounded-2xl border-slate-100 shadow-2xl">
-                                        {subcategories.map((sub) => (
+                                        {subcategories.filter(c => c.id != null).map((sub) => (
                                             <SelectItem key={sub.id} value={sub.id.toString()} className="font-bold py-3 rounded-xl cursor-pointer">
                                                 {sub.name}
                                             </SelectItem>
