@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { BookOpen, Users, TrendingUp, Clock, Award, Rocket, CheckCircle2 } from "lucide-react";
+import LearningSceneArt from "@/components/instructor/LearningSceneArt";
 
 const BecomeInstructor = () => {
   const benefits = [
@@ -63,9 +64,15 @@ const BecomeInstructor = () => {
             </div>
             
             <div className="relative animate-in fade-in slide-in-from-right duration-1000 delay-300">
-              <div className="absolute inset-0 bg-gradient-to-r from-brand-400/25 to-brand-600/20 rounded-3xl blur-3xl" />
-              {/* Görsel yerine dekoratif kutu (asset gerektirmez) */}
-              <div className="relative rounded-3xl shadow-2xl w-full aspect-video bg-gradient-to-br from-brand-200 via-brand-100 to-brand-300/60 border border-border" />
+              <div className="absolute -inset-6 bg-gradient-to-r from-brand-400/25 to-brand-600/20 rounded-[2rem] blur-3xl" />
+              {/*
+                Kahraman görseli. Vektör olduğu için her çözünürlükte net;
+                fotoğraf kullanmak istenirse bu bileşen tek bir <img> ile
+                değiştirilebilir, kapsayıcı ölçüleri aynı kalır.
+              */}
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-brand-200/60 aspect-[10/7]">
+                <LearningSceneArt className="w-full h-full" />
+              </div>
             </div>
           </div>
         </div>
