@@ -8,10 +8,7 @@ import { useCategoryNav } from '@/hooks/useCategoryNav';
 import { cn } from '@/lib/utils';
 import { CourseCard } from '@/components/course/CourseCard';
 import { Button } from '@/components/ui/button';
-import {
-    Search, ArrowRight, ChevronLeft, ChevronRight, BookOpen,
-    Code2, Cpu, Palette, Briefcase, Sparkles, Languages, Music, HeartPulse,
-} from 'lucide-react';
+import { Search, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface HomeData {
     featured_courses: any[];
@@ -19,12 +16,6 @@ interface HomeData {
     new_courses: any[];
     free_courses: any[];
 }
-
-/** Kategori ikonları — ağaçtaki icon alanı lucide adını tutuyor. */
-const ICONS: Record<string, React.ElementType> = {
-    Code2, Cpu, Palette, Briefcase, Sparkles, Languages, Music, HeartPulse,
-};
-const iconFor = (name: string | null) => (name && ICONS[name]) || BookOpen;
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -34,12 +25,11 @@ const iconFor = (name: string | null) => (name && ICONS[name]) || BookOpen;
  */
 const CourseRail: React.FC<{
     title: string;
-    subtitle?: string;
     courses: any[];
     href?: string;
     loading?: boolean;
     isAuthenticated?: boolean;
-}> = ({ title, subtitle, courses, href, loading, isAuthenticated }) => {
+}> = ({ title, courses, href, loading, isAuthenticated }) => {
     const railRef = useRef<HTMLDivElement>(null);
     const [canLeft, setCanLeft] = useState(false);
     const [canRight, setCanRight] = useState(false);
@@ -72,11 +62,10 @@ const CourseRail: React.FC<{
     if (!loading && courses.length === 0) return null;
 
     return (
-        <section className="py-7">
-            <div className="flex items-end justify-between gap-4 mb-4">
+        <section className="pt-2 pb-5">
+            <div className="flex items-end justify-between gap-4 mb-3">
                 <div>
                     <h2 className="text-xl sm:text-[22px] font-bold text-slate-900 tracking-tight">{title}</h2>
-                    {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                     {href && (
@@ -256,7 +245,6 @@ const Home: React.FC = () => {
             <div className="container px-4 pt-4">
                 <CourseRail
                     title="En çok tercih edilenler"
-                    subtitle="Öğrencilerin en çok kaydolduğu kurslar"
                     courses={data?.top_selling || []}
                     href="/courses?sort=popular"
                     loading={isLoading}
@@ -264,7 +252,6 @@ const Home: React.FC = () => {
                 />
                 <CourseRail
                     title="Öne çıkanlar"
-                    subtitle="Yüksek puanlı, beğenilen eğitimler"
                     courses={data?.featured_courses || []}
                     href="/courses?sort=rating"
                     loading={isLoading}
@@ -272,7 +259,6 @@ const Home: React.FC = () => {
                 />
                 <CourseRail
                     title="Yeni eklenenler"
-                    subtitle="Platforma en son katılan eğitimler"
                     courses={data?.new_courses || []}
                     href="/courses?sort=newest"
                     loading={isLoading}
@@ -280,7 +266,6 @@ const Home: React.FC = () => {
                 />
                 <CourseRail
                     title="Ücretsiz başla"
-                    subtitle="Hiçbir ücret ödemeden erişebileceğin kurslar"
                     courses={data?.free_courses || []}
                     href="/courses?free=1"
                     isAuthenticated={isAuthenticated}
@@ -289,19 +274,13 @@ const Home: React.FC = () => {
 
             {/* ── Kategoriler (sayfanın sonunda) ──────────────────────────── */}
             {categories.length > 0 && (
-                <section className="container px-4 py-14">
-                    <div className="max-w-2xl mb-7">
-                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
-                            Ne öğrenmek istersin?
-                        </h2>
-                        <p className="text-slate-500 mt-1.5">
-                            Sekiz ana alan, doksanı aşkın uzmanlık dalı.
-                        </p>
-                    </div>
+                <section className="container px-4 pt-6 pb-14">
+                    <h2 className="text-2xl font-bold text-slate-900 tracking-tight mb-4">
+                        Ne öğrenmek istersin?
+                    </h2>
 
-                    <div className="flex gap-2 overflow-x-auto pb-3 mb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                    <div className="flex gap-2 overflow-x-auto pb-3 mb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {categories.map(cat => {
-                            const Icon = iconFor(cat.icon);
                             const active = shownCategory?.slug === cat.slug;
                             return (
                                 <button
@@ -309,14 +288,13 @@ const Home: React.FC = () => {
                                     onClick={() => setActiveCategory(cat.slug)}
                                     onMouseEnter={() => setActiveCategory(cat.slug)}
                                     className={cn(
-                                        'shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border transition-all',
+                                        'shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium border transition-all whitespace-nowrap',
                                         active
                                             ? 'bg-brand-700 text-white border-brand-700'
                                             : 'bg-white text-slate-600 border-slate-200 hover:border-brand-400 hover:text-brand-800'
                                     )}
                                 >
-                                    <Icon className={cn('w-4 h-4', active ? 'text-white' : 'text-slate-400')} />
-                                    <span className="whitespace-nowrap">{cat.name}</span>
+                                    {cat.name}
                                 </button>
                             );
                         })}
@@ -325,16 +303,11 @@ const Home: React.FC = () => {
                     {shownCategory && (
                         <div className="bg-brand-50/60 border border-brand-100 rounded-2xl p-6 lg:p-8">
                             <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-11 h-11 rounded-xl bg-brand-700 flex items-center justify-center shrink-0">
-                                        {React.createElement(iconFor(shownCategory.icon), { className: 'w-5 h-5 text-white' })}
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold text-slate-900">{shownCategory.name}</h3>
-                                        <p className="text-xs text-slate-500">
-                                            {shownCategory.subcategories.length} uzmanlık dalı · {shownCategory.count} kurs
-                                        </p>
-                                    </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-900">{shownCategory.name}</h3>
+                                    <p className="text-xs text-slate-500 mt-0.5">
+                                        {shownCategory.subcategories.length} uzmanlık dalı · {shownCategory.count} kurs
+                                    </p>
                                 </div>
                                 <Link
                                     to={`/courses/${shownCategory.slug}`}
