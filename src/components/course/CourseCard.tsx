@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from '@/lib/api';
 import { Star, Heart, ShoppingCart, TrendingUp, Clock, BookOpen, BarChart2, Check, Users, Loader2, PlayCircle, MoreHorizontal } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { favoritesAPI, cartAPI, getCourseImageUrl } from "@/lib/api";
@@ -83,14 +84,52 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
     staleTime: 5 * 60 * 1000,
   });
 
+  /**
+   * Detay paneli sayfanın en üstüne (portal) çizilir.
+   *
+   * Kartlar yatay kaydırmalı raflarda duruyor; o kapsayıcıda overflow-x
+   * tanımlı olduğu için içine yerleştirilen bir panel kırpılır (CSS'te bir
+   * eksende overflow tanımlıyken diğer eksen görünür kalamaz). Bu yüzden panel
+   * body'ye taşınıp kartın ekrandaki konumuna göre sabit konumlandırılıyor.
+   */
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [panelPos, setPanelPos] = useState<{ top: number; left: number; side: "right" | "left" } | null>(null);
+  const PANEL_WIDTH = 340;
+  const GAP = 12;
+
   const handleMouseEnter = useCallback(() => {
-    hoverTimer.current = setTimeout(() => setIsHovered(true), 250);
+    hoverTimer.current = setTimeout(() => {
+      const rect = wrapRef.current?.getBoundingClientRect();
+      if (rect) {
+        const fitsRight = window.innerWidth - rect.right >= PANEL_WIDTH + GAP + 8;
+        const side: "right" | "left" = fitsRight ? "right" : "left";
+        const left = side === "right" ? rect.right + GAP : rect.left - PANEL_WIDTH - GAP;
+
+        // Panel alt kenardan taşarsa yukarı kaydır
+        const maxTop = window.innerHeight - 24;
+        setPanelPos({
+          top: Math.min(rect.top, Math.max(12, maxTop - 420)),
+          left: Math.max(12, left),
+          side,
+        });
+      }
+      setIsHovered(true);
+    }, 250);
   }, []);
 
   const handleMouseLeave = useCallback(() => {
     clearTimeout(hoverTimer.current);
     setIsHovered(false);
+    setPanelPos(null);
   }, []);
+
+  // Sayfa kaydırılırsa panel kartın yanından ayrılır; kapatmak en doğrusu
+  useEffect(() => {
+    if (!isHovered) return;
+    const close = () => { setIsHovered(false); setPanelPos(null); };
+    window.addEventListener("scroll", close, { passive: true, capture: true });
+    return () => window.removeEventListener("scroll", close, true);
+  }, [isHovered]);
 
   const toggleFavMutation = useMutation({
     mutationFn: favoritesAPI.toggleFavorite,
@@ -139,28 +178,19 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
   return (
     <>
       <div
-        className="relative flex-none w-[270px]"
+        ref={wrapRef}
+        className="relative w-full"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{ zIndex: isHovered ? 50 : 1 }}
       >
-        {/* Base invisible outline to maintain carousel structure */}
-        <div className="invisible w-[270px] flex flex-col pointer-events-none">
-           <div className="aspect-video w-full" />
-           <div className="p-4 flex flex-col pb-8">
-             <div className="h-4 w-full mb-1" />
-             <div className="h-4 w-3/4 mb-1" />
-             <div className="h-3 w-1/2 mb-2" />
-             <div className="h-5 w-1/3 mb-2" />
-             <div className="h-6 w-1/2 mt-auto" />
-           </div>
-        </div>
-
-        {/* The Card (Expands over the container when hovered) */}
+        {/* Kart normal akışta durur. Eskiden detay kartın içinde aşağı doğru
+            açılıyordu; bu yüzden kart uzayıp içerik kayıyormuş gibi
+            görünüyordu. Artık detay yandaki panelde. */}
         <div
           className={cn(
-            "absolute top-0 left-0 w-full bg-white rounded-xl border flex flex-col overflow-hidden transition-all duration-300 transform-gpu",
-            isHovered ? "border-slate-200 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] scale-[1.02]" : "border-slate-100 shadow-sm"
+            "w-full bg-white rounded-xl border flex flex-col overflow-hidden transition-shadow duration-200",
+            isHovered ? "border-slate-200 shadow-lg" : "border-slate-100 shadow-sm"
           )}
         >
           {/* Card Header: Image */}
@@ -220,45 +250,87 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
               )}
             </div>
 
-            {/* EXPANDED SECTION (only visible when hovered) */}
-            <div
-               className={cn(
-                 "grid transition-all duration-300 ease-in-out",
-                 isHovered ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-               )}
-            >
-              <div className="overflow-hidden">
-                <hr className="border-slate-100 mb-3" />
+          </div>
+        </div>
+
+      </div>
+
+      {/* Detay paneli — kartın yanında belirir, sayfa düzeninde yer kaplamaz */}
+      {isHovered && panelPos && createPortal(
+        <div
+          className="hidden lg:block fixed z-[60] pointer-events-auto"
+          style={{ top: panelPos.top, left: panelPos.left, width: PANEL_WIDTH }}
+          onMouseEnter={() => clearTimeout(hoverTimer.current)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="relative bg-white rounded-xl border border-slate-200 shadow-[0_24px_60px_-15px_rgba(15,23,42,0.25)] animate-in fade-in zoom-in-95 duration-150">
+            {/* Panelin kartla bağını gösteren küçük ok */}
+            <span
+              className={cn(
+                "absolute top-8 w-3 h-3 bg-white border-slate-200 rotate-45",
+                panelPos.side === "right"
+                  ? "-left-[7px] border-l border-b"
+                  : "-right-[7px] border-r border-t"
+              )}
+            />
+
+              <div className="p-5">
+                <Link to={courseUrl}>
+                  <h4 className="font-extrabold text-slate-900 text-[17px] leading-snug line-clamp-2 hover:text-brand-700 transition-colors">
+                    {course.title}
+                  </h4>
+                </Link>
 
                 {hoverLoading ? (
-                  <div className="space-y-2 py-2 animate-pulse">
+                  <div className="space-y-2.5 mt-4 animate-pulse">
+                    <div className="h-2.5 bg-slate-100 rounded w-1/3" />
                     <div className="h-2.5 bg-slate-100 rounded w-full" />
-                    <div className="h-2.5 bg-slate-100 rounded w-3/4" />
-                    <div className="h-2.5 bg-slate-100 rounded w-1/2" />
+                    <div className="h-2.5 bg-slate-100 rounded w-4/5" />
+                    <div className="h-2.5 bg-slate-100 rounded w-2/3" />
                   </div>
                 ) : hoverData ? (
                   <>
-                    <div className="text-[11px] font-bold text-emerald-700 mb-2">
-                      Güncellendi {formatDate(hoverData.updated_at)}
-                    </div>
-                    
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-medium text-slate-600 mb-3">
-                      {hoverData.duration_seconds > 0 && <span>Toplam {formatHours(hoverData.duration_seconds / 3600)}</span>}
-                      {hoverData.level && <span className="flex items-center gap-1 before:content-['•'] before:mr-1 before:text-slate-300">{hoverData.level}</span>}
-                      {hoverData.lesson_count > 0 && <span className="flex items-center gap-1 before:content-['•'] before:mr-1 before:text-slate-300">{hoverData.lesson_count} Ders</span>}
+                    <div className="flex flex-wrap items-center gap-1.5 mt-3">
+                      {hoverData.updated_at && (
+                        <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 rounded-full px-2.5 py-1">
+                          {formatDate(hoverData.updated_at)} güncellendi
+                        </span>
+                      )}
+                      {hoverData.level && (
+                        <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 rounded-full px-2.5 py-1">
+                          {hoverData.level}
+                        </span>
+                      )}
                     </div>
 
+                    {(hoverData.duration_seconds > 0 || hoverData.lesson_count > 0) && (
+                      <div className="flex items-center gap-4 mt-3 text-[12px] text-slate-500">
+                        {hoverData.duration_seconds > 0 && (
+                          <span className="flex items-center gap-1.5">
+                            <Clock className="w-3.5 h-3.5 text-slate-400" />
+                            {formatHours(hoverData.duration_seconds / 3600)}
+                          </span>
+                        )}
+                        {hoverData.lesson_count > 0 && (
+                          <span className="flex items-center gap-1.5">
+                            <BookOpen className="w-3.5 h-3.5 text-slate-400" />
+                            {hoverData.lesson_count} ders
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                     {(hoverData.short_description || hoverData.description) && (
-                      <p className="text-[13px] text-slate-700 leading-snug mb-3">
+                      <p className="text-[13px] text-slate-600 leading-relaxed mt-3 line-clamp-3">
                         {hoverData.short_description || hoverData.description}
                       </p>
                     )}
 
                     {hoverData.learning_goals?.length > 0 && (
-                      <ul className="space-y-2 mb-4">
-                        {hoverData.learning_goals.slice(0, 3).map((g: string, i: number) => (
-                          <li key={i} className="flex items-start gap-2 text-[12px] text-slate-600 leading-snug">
-                            <Check className="w-3.5 h-3.5 text-slate-800 shrink-0 mt-[1px]" />
+                      <ul className="mt-4 space-y-2">
+                        {hoverData.learning_goals.slice(0, 4).map((g: string, i: number) => (
+                          <li key={i} className="flex items-start gap-2 text-[12.5px] text-slate-700 leading-snug">
+                            <Check className="w-3.5 h-3.5 text-brand-600 shrink-0 mt-0.5" />
                             <span className="line-clamp-2">{g}</span>
                           </li>
                         ))}
@@ -267,36 +339,39 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
                   </>
                 ) : null}
 
-                {/* Extended Actions */}
-                <div className="flex items-center gap-2 pt-1 border-t border-transparent">
+                <div className="flex items-center gap-2 mt-5">
                   <button
                     onClick={addToCart}
                     disabled={inCart || addToCartMutation.isPending}
                     className={cn(
-                      "flex-1 py-3 text-sm font-black rounded text-center transition-all shadow-sm",
+                      "flex-1 h-11 text-sm font-bold rounded-lg transition-colors",
                       inCart
                         ? "bg-slate-100 text-slate-500 cursor-not-allowed"
-                        : "bg-[#7c3aed] hover:bg-[#6d28d9] text-white active:scale-[0.98]" // Violet-600 close to the original purple
+                        : "bg-brand-700 hover:bg-brand-800 text-white"
                     )}
                   >
-                    {addToCartMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : inCart ? "Sepette" : "Sepete ekle"}
+                    {addToCartMutation.isPending
+                      ? <Loader2 className="w-4 h-4 animate-spin mx-auto" />
+                      : inCart ? "Sepette" : "Sepete ekle"}
                   </button>
                   <button
                     onClick={toggleFav}
+                    aria-label={favorited ? "Favorilerden çıkar" : "Favorilere ekle"}
                     className={cn(
-                      "w-11 h-11 shrink-0 flex items-center justify-center rounded border-2 transition-colors",
-                      favorited ? "border-red-500 bg-red-50 group/fav" : "border-slate-800 bg-white hover:bg-slate-50 group/fav"
+                      "w-11 h-11 shrink-0 flex items-center justify-center rounded-lg border transition-colors",
+                      favorited
+                        ? "border-rose-200 bg-rose-50"
+                        : "border-slate-200 bg-white hover:border-slate-300"
                     )}
                   >
-                    <Heart className={cn("w-5 h-5 transition-colors", favorited ? "fill-red-500 text-red-500" : "text-slate-800")} />
+                    <Heart className={cn("w-[18px] h-[18px]", favorited ? "fill-rose-500 text-rose-500" : "text-slate-600")} />
                   </button>
                 </div>
               </div>
-            </div>
-
           </div>
-        </div>
-      </div>
+        </div>,
+        document.body
+      )}
 
       {addedCourse && (
         <AddedToCartModal

@@ -7,70 +7,30 @@ import { useSeo } from '@/hooks/useSeo';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
 import { cn } from '@/lib/utils';
 import { CourseCard } from '@/components/course/CourseCard';
-import { UserAvatar } from '@/components/ui/user-avatar';
 import { Button } from '@/components/ui/button';
 import {
-    Search, ArrowRight, ChevronLeft, ChevronRight, Users, BookOpen, Clock, Star,
+    Search, ArrowRight, ChevronLeft, ChevronRight, BookOpen,
     Code2, Cpu, Palette, Briefcase, Sparkles, Languages, Music, HeartPulse,
-    GraduationCap, ShieldCheck, Infinity as InfinityIcon, PlayCircle,
 } from 'lucide-react';
 
-interface HomeStats {
-    courses: number;
-    students: number;
-    instructors: number;
-    reviews: number;
-    hours: number;
-}
-
-interface HomeCategory {
-    // Kategori tabloya yazilamadiysa null olabilir; gezinme slug ile yapiliyor
-    id: number | null;
-    name: string;
-    slug: string;
-    icon: string | null;
-    count: number;
-    subcategories: Array<{ id: number | null; name: string; slug: string; count: number }>;
-}
-
-interface HomeInstructor {
-    id: number;
-    name: string;
-    bio: string | null;
-    image: string | null;
-    course_count: number;
-    student_count: number;
-    rating: number;
-}
-
 interface HomeData {
-    stats: HomeStats;
-    categories: HomeCategory[];
-    instructors: HomeInstructor[];
     featured_courses: any[];
     top_selling: any[];
     new_courses: any[];
     free_courses: any[];
 }
 
-/** Kategori ikonları — veritabanındaki icon alanı lucide adını tutuyor. */
+/** Kategori ikonları — ağaçtaki icon alanı lucide adını tutuyor. */
 const ICONS: Record<string, React.ElementType> = {
     Code2, Cpu, Palette, Briefcase, Sparkles, Languages, Music, HeartPulse,
 };
 const iconFor = (name: string | null) => (name && ICONS[name]) || BookOpen;
 
-const compact = (n: number) => {
-    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace('.', ',')}M`;
-    if (n >= 1000) return `${(n / 1000).toFixed(n >= 10_000 ? 0 : 1).replace('.', ',')}B`;
-    return String(n);
-};
-
 /* ────────────────────────────────────────────────────────────────────────── */
 
 /**
  * Yatay kaydırmalı kurs rafı.
- * Kart olarak platformun her yerinde kullanılan CourseCard'ı kullanır;
- * ana sayfaya özel bir kart tasarımı tutarlılığı bozardı.
+ * Kart olarak platformun her yerinde kullanılan CourseCard'ı kullanır.
  */
 const CourseRail: React.FC<{
     title: string;
@@ -112,8 +72,8 @@ const CourseRail: React.FC<{
     if (!loading && courses.length === 0) return null;
 
     return (
-        <section className="py-8">
-            <div className="flex items-end justify-between gap-4 mb-5">
+        <section className="py-7">
+            <div className="flex items-end justify-between gap-4 mb-4">
                 <div>
                     <h2 className="text-xl sm:text-[22px] font-bold text-slate-900 tracking-tight">{title}</h2>
                     {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
@@ -148,13 +108,15 @@ const CourseRail: React.FC<{
                 </div>
             </div>
 
+            {/* Kartlar arası boşluk dar tutuldu; detay paneli kartın yanında
+                açıldığı için taşmayı engellemek adına ray kırpılmıyor. */}
             <div
                 ref={railRef}
-                className="flex gap-5 overflow-x-auto pb-2 -mx-1 px-1 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                className="flex gap-2.5 overflow-x-auto overflow-y-visible pb-3 -mx-1 px-1 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
             >
                 {loading
-                    ? Array.from({ length: 4 }).map((_, i) => (
-                        <div key={i} className="w-[290px] shrink-0 bg-white border border-slate-200 rounded-xl overflow-hidden animate-pulse">
+                    ? Array.from({ length: 5 }).map((_, i) => (
+                        <div key={i} className="w-[262px] shrink-0 bg-white border border-slate-200 rounded-xl overflow-hidden animate-pulse">
                             <div className="aspect-video bg-slate-100" />
                             <div className="p-4 space-y-3">
                                 <div className="h-4 bg-slate-100 rounded w-4/5" />
@@ -164,7 +126,7 @@ const CourseRail: React.FC<{
                         </div>
                     ))
                     : courses.map(course => (
-                        <div key={course.id} className="w-[290px] shrink-0 snap-start">
+                        <div key={course.id} className="w-[262px] shrink-0 snap-start">
                             <CourseCard course={course} isAuthenticated={isAuthenticated} />
                         </div>
                     ))}
@@ -194,11 +156,9 @@ const Home: React.FC = () => {
         staleTime: 5 * 60 * 1000,
     });
 
-    // Kategoriler ana sayfa yanitindan degil, ortak agactan gelir; boylece
-    // menu, yan cubuk ve ana sayfa hicbir kosulda ayrisamaz.
+    // Kategoriler ortak ağaçtan gelir; menü ve ana sayfa hiçbir koşulda ayrışmaz.
     const { data: categoryNav } = useCategoryNav();
     const categories = categoryNav.categories;
-    const stats = data?.stats;
 
     const shownCategory = useMemo(
         () => categories.find(c => c.slug === activeCategory) || categories[0] || null,
@@ -289,30 +249,45 @@ const Home: React.FC = () => {
                             ))}
                         </div>
                     </div>
-
-                    {/* Gerçek platform sayıları */}
-                    {stats && (
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px mt-14 bg-white/10 rounded-xl overflow-hidden">
-                            {[
-                                { icon: BookOpen, value: compact(stats.courses), label: 'kurs' },
-                                { icon: Users, value: compact(stats.students), label: 'öğrenci' },
-                                { icon: GraduationCap, value: compact(stats.instructors), label: 'eğitmen' },
-                                { icon: Clock, value: compact(stats.hours), label: 'saat içerik' },
-                            ].map(s => (
-                                <div key={s.label} className="bg-brand-900/90 px-5 py-5 flex items-center gap-3">
-                                    <s.icon className="w-5 h-5 text-brand-300 shrink-0" />
-                                    <div className="min-w-0">
-                                        <p className="text-xl font-bold text-white leading-none">{s.value}</p>
-                                        <p className="text-xs text-brand-200/70 mt-1">{s.label}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
                 </div>
             </section>
 
-            {/* ── Kategoriler ─────────────────────────────────────────────── */}
+            {/* ── Kurs rafları ────────────────────────────────────────────── */}
+            <div className="container px-4 pt-4">
+                <CourseRail
+                    title="En çok tercih edilenler"
+                    subtitle="Öğrencilerin en çok kaydolduğu kurslar"
+                    courses={data?.top_selling || []}
+                    href="/courses?sort=popular"
+                    loading={isLoading}
+                    isAuthenticated={isAuthenticated}
+                />
+                <CourseRail
+                    title="Öne çıkanlar"
+                    subtitle="Yüksek puanlı, beğenilen eğitimler"
+                    courses={data?.featured_courses || []}
+                    href="/courses?sort=rating"
+                    loading={isLoading}
+                    isAuthenticated={isAuthenticated}
+                />
+                <CourseRail
+                    title="Yeni eklenenler"
+                    subtitle="Platforma en son katılan eğitimler"
+                    courses={data?.new_courses || []}
+                    href="/courses?sort=newest"
+                    loading={isLoading}
+                    isAuthenticated={isAuthenticated}
+                />
+                <CourseRail
+                    title="Ücretsiz başla"
+                    subtitle="Hiçbir ücret ödemeden erişebileceğin kurslar"
+                    courses={data?.free_courses || []}
+                    href="/courses?free=1"
+                    isAuthenticated={isAuthenticated}
+                />
+            </div>
+
+            {/* ── Kategoriler (sayfanın sonunda) ──────────────────────────── */}
             {categories.length > 0 && (
                 <section className="container px-4 py-14">
                     <div className="max-w-2xl mb-7">
@@ -396,138 +371,6 @@ const Home: React.FC = () => {
                     )}
                 </section>
             )}
-
-            {/* ── Kurs rafları ────────────────────────────────────────────── */}
-            <div className="container px-4">
-                <CourseRail
-                    title="En çok tercih edilenler"
-                    subtitle="Öğrencilerin en çok kaydolduğu kurslar"
-                    courses={data?.top_selling || []}
-                    href="/courses?sort=popular"
-                    loading={isLoading}
-                    isAuthenticated={isAuthenticated}
-                />
-                <CourseRail
-                    title="Öne çıkanlar"
-                    subtitle="Yüksek puanlı, beğenilen eğitimler"
-                    courses={data?.featured_courses || []}
-                    href="/courses?sort=rating"
-                    loading={isLoading}
-                    isAuthenticated={isAuthenticated}
-                />
-            </div>
-
-            {/* ── Neden Edurce ────────────────────────────────────────────── */}
-            <section className="bg-brand-900 py-14 my-8">
-                <div className="container px-4">
-                    <div className="grid md:grid-cols-3 gap-8">
-                        {[
-                            {
-                                icon: InfinityIcon,
-                                title: 'Ömür boyu erişim',
-                                text: 'Satın aldığın kursa süresiz erişirsin. İstediğin zaman kaldığın yerden devam et.',
-                            },
-                            {
-                                icon: PlayCircle,
-                                title: 'Kendi hızında öğren',
-                                text: 'Dersler bölüm bölüm işlenir; hızlandır, geri sar, notunu al. Takvim baskısı yok.',
-                            },
-                            {
-                                icon: ShieldCheck,
-                                title: 'Güvenli ödeme',
-                                text: 'Ödemeler 3D Secure ile korunur. Kart bilgilerin sistemimizde saklanmaz.',
-                            },
-                        ].map(f => (
-                            <div key={f.title} className="flex gap-4">
-                                <div className="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
-                                    <f.icon className="w-5 h-5 text-brand-300" />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-white mb-1.5">{f.title}</h3>
-                                    <p className="text-sm text-brand-100/70 leading-relaxed">{f.text}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            <div className="container px-4">
-                <CourseRail
-                    title="Yeni eklenenler"
-                    subtitle="Platforma en son katılan eğitimler"
-                    courses={data?.new_courses || []}
-                    href="/courses?sort=newest"
-                    loading={isLoading}
-                    isAuthenticated={isAuthenticated}
-                />
-                <CourseRail
-                    title="Ücretsiz başla"
-                    subtitle="Hiçbir ücret ödemeden erişebileceğin kurslar"
-                    courses={data?.free_courses || []}
-                    href="/courses?free=1"
-                    isAuthenticated={isAuthenticated}
-                />
-            </div>
-
-            {/* ── Eğitmenler ──────────────────────────────────────────────── */}
-            {(data?.instructors?.length ?? 0) > 0 && (
-                <section className="container px-4 py-12">
-                    <div className="mb-6">
-                        <h2 className="text-xl sm:text-[22px] font-bold text-slate-900 tracking-tight">Eğitmenler</h2>
-                        <p className="text-sm text-slate-500 mt-1">Kendi alanında üreten, öğreten isimler</p>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {data!.instructors.map(ins => (
-                            <Link
-                                key={ins.id}
-                                to={`/instructors/${ins.id}`}
-                                className="group bg-white border border-slate-200 rounded-xl p-5 text-center hover:border-brand-300 hover:shadow-md transition-all"
-                            >
-                                <UserAvatar src={ins.image} name={ins.name} size={64} className="mx-auto mb-3" />
-                                <h3 className="font-semibold text-slate-900 text-sm truncate group-hover:text-brand-800">
-                                    {ins.name}
-                                </h3>
-                                <p className="text-xs text-slate-500 mt-1">
-                                    {ins.course_count} kurs · {compact(ins.student_count)} öğrenci
-                                </p>
-                                {ins.rating > 0 && (
-                                    <p className="inline-flex items-center gap-1 text-xs text-amber-600 mt-2">
-                                        <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                                        {ins.rating.toFixed(1)}
-                                    </p>
-                                )}
-                            </Link>
-                        ))}
-                    </div>
-                </section>
-            )}
-
-            {/* ── Eğitmen ol ──────────────────────────────────────────────── */}
-            <section className="container px-4 pb-16">
-                <div className="relative overflow-hidden rounded-2xl bg-brand-800 px-8 py-12 lg:px-14 lg:py-14">
-                    <div className="absolute inset-0 opacity-20 pointer-events-none" aria-hidden>
-                        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-brand-400 blur-3xl" />
-                    </div>
-                    <div className="relative max-w-2xl">
-                        <h2 className="text-2xl lg:text-[28px] font-bold text-white leading-tight">
-                            Bildiklerini öğret, gelir elde et
-                        </h2>
-                        <p className="text-brand-100/80 mt-3 leading-relaxed">
-                            Kursunu yayınla, öğrencilerine ulaş. Satış tutarından vergi
-                            düşüldükten sonra kalanın %55'i senin olur; kazancını panelinden
-                            gün gün takip edersin.
-                        </p>
-                        <Link to="/become-instructor" className="inline-block mt-7">
-                            <Button className="h-12 px-7 rounded-xl bg-white text-brand-800 hover:bg-brand-50 font-semibold text-[15px]">
-                                Eğitmen ol
-                                <ArrowRight className="w-4 h-4 ml-2" />
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
-            </section>
         </div>
     );
 };
