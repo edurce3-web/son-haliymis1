@@ -401,11 +401,11 @@ export const Header = () => {
 
       <div className="container flex h-16 items-center px-4 gap-3">
         {/* Logo */}
-        <Link to="/" className="flex items-center mr-4 shrink-0">
+        <Link to="/" className="flex items-center mr-4 shrink-0 overflow-hidden h-14">
           <img
             src="/logo.png"
             alt="Edurce"
-            className="h-8 w-auto object-contain"
+            className="h-44 w-auto object-contain"
             style={{ mixBlendMode: 'multiply' }}
           />
         </Link>
