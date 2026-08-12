@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
+import AppErrorBoundary from "@/components/AppErrorBoundary";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import Footer from "@/components/layout/Footer";
 import CategoryBar from "@/components/layout/CategoryBar";
@@ -85,7 +86,10 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
+  // Hata sınırı en dışta: içeride yakalanmayan bir render hatası olursa
+  // kullanıcı beyaz ekran yerine okunur bir mesaj görür.
+  <AppErrorBoundary>
+    <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -210,7 +214,8 @@ const App = () => (
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
-  </QueryClientProvider>
+    </QueryClientProvider>
+  </AppErrorBoundary>
 );
 
 export default App;
