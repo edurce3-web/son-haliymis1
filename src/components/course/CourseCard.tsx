@@ -117,19 +117,41 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
     }, 250);
   }, []);
 
-  const handleMouseLeave = useCallback(() => {
-    clearTimeout(hoverTimer.current);
+  /**
+   * Panel body'ye çizildiği için karta DOM olarak bağlı değil; karttan çıkınca
+   * onMouseLeave hemen tetikleniyordu ve panel imleç oraya varamadan
+   * kapanıyordu. Kapanışı kısa bir süre geciktirip, imleç panele girdiğinde bu
+   * sayacı iptal ediyoruz — böylece sepete ekle ve favori düğmelerine
+   * ulaşılabiliyor.
+   */
+  const closeTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  const cancelClose = useCallback(() => {
+    clearTimeout(closeTimer.current);
+  }, []);
+
+  const closePanel = useCallback(() => {
     setIsHovered(false);
     setPanelPos(null);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    clearTimeout(hoverTimer.current);
+    clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(closePanel, 160);
+  }, [closePanel]);
+
+  useEffect(() => () => {
+    clearTimeout(hoverTimer.current);
+    clearTimeout(closeTimer.current);
   }, []);
 
   // Sayfa kaydırılırsa panel kartın yanından ayrılır; kapatmak en doğrusu
   useEffect(() => {
     if (!isHovered) return;
-    const close = () => { setIsHovered(false); setPanelPos(null); };
-    window.addEventListener("scroll", close, { passive: true, capture: true });
-    return () => window.removeEventListener("scroll", close, true);
-  }, [isHovered]);
+    window.addEventListener("scroll", closePanel, { passive: true, capture: true });
+    return () => window.removeEventListener("scroll", closePanel, true);
+  }, [isHovered, closePanel]);
 
   const toggleFavMutation = useMutation({
     mutationFn: favoritesAPI.toggleFavorite,
@@ -258,11 +280,18 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
       {/* Detay paneli — kartın yanında belirir, sayfa düzeninde yer kaplamaz */}
       {isHovered && panelPos && createPortal(
         <div
-          className="hidden lg:block fixed z-[60] pointer-events-auto"
+          className="hidden lg:block fixed z-[60]"
           style={{ top: panelPos.top, left: panelPos.left, width: PANEL_WIDTH }}
-          onMouseEnter={() => clearTimeout(hoverTimer.current)}
+          onMouseEnter={cancelClose}
           onMouseLeave={handleMouseLeave}
         >
+          {/* Kart ile panel arasındaki boşluğu köprüleyen görünmez şerit:
+              imleç aradan geçerken panel kapanmasın */}
+          <span
+            className="absolute top-0 bottom-0 w-4"
+            style={panelPos.side === "right" ? { left: -16 } : { right: -16 }}
+            aria-hidden
+          />
           <div className="relative bg-white rounded-xl border border-slate-200 shadow-[0_24px_60px_-15px_rgba(15,23,42,0.25)] animate-in fade-in zoom-in-95 duration-150">
             {/* Panelin kartla bağını gösteren küçük ok */}
             <span
