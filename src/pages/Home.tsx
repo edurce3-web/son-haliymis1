@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { API_BASE_URL } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSeo } from '@/hooks/useSeo';
+import { useCategoryNav } from '@/hooks/useCategoryNav';
 import { cn } from '@/lib/utils';
 import { CourseCard } from '@/components/course/CourseCard';
 import { UserAvatar } from '@/components/ui/user-avatar';
@@ -193,7 +194,10 @@ const Home: React.FC = () => {
         staleTime: 5 * 60 * 1000,
     });
 
-    const categories = data?.categories || [];
+    // Kategoriler ana sayfa yanitindan degil, ortak agactan gelir; boylece
+    // menu, yan cubuk ve ana sayfa hicbir kosulda ayrisamaz.
+    const { data: categoryNav } = useCategoryNav();
+    const categories = categoryNav.categories;
     const stats = data?.stats;
 
     const shownCategory = useMemo(

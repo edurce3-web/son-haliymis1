@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Loader2 } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCategoryNav, type NavCategory } from '@/hooks/useCategoryNav';
 
@@ -15,7 +15,8 @@ import { useCategoryNav, type NavCategory } from '@/hooks/useCategoryNav';
  * Böylece tek hamlede alt kategoriye inilebiliyor.
  */
 export const CategoryMegaMenu: React.FC = () => {
-    const { data, isLoading } = useCategoryNav();
+    // Ağaç yerel dosyadan geldiği için liste anında hazır; ağ beklenmiyor.
+    const { data } = useCategoryNav();
     const categories = data?.categories || [];
 
     const [open, setOpen] = useState(false);
@@ -80,13 +81,7 @@ export const CategoryMegaMenu: React.FC = () => {
                 >
                     {/* Sol sütun: kategoriler */}
                     <div className="w-64 py-2 max-h-[70vh] overflow-y-auto border-r border-slate-100">
-                        {isLoading && (
-                            <div className="flex items-center justify-center py-10">
-                                <Loader2 className="w-4 h-4 animate-spin text-slate-300" />
-                            </div>
-                        )}
-
-                        {!isLoading && categories.length === 0 && (
+                        {categories.length === 0 && (
                             <p className="px-4 py-6 text-sm text-slate-400 text-center">
                                 Henüz kategori yok
                             </p>
