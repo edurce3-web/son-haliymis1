@@ -96,11 +96,16 @@ const Footer = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_repeat(4,1fr)] gap-10">
 
                     <div>
-                        <Link to="/" className="inline-block mb-4">
+                        {/* Logo görselinin çevresi büyük oranda boş; bu yüzden
+                            doğrudan yükseklik vermek yazıyı küçültüyor.
+                            Header'daki yöntemin aynısı: görsel büyütülüp dar bir
+                            kutuda kırpılıyor, böylece yazı gerçek boyutunda
+                            oturuyor. */}
+                        <Link to="/" className="flex items-center overflow-hidden h-14 -ml-1 mb-3 w-max">
                             <img
                                 src="/logo.png"
                                 alt="Edurce"
-                                className="h-12 w-auto object-contain"
+                                className="h-44 w-auto object-contain"
                                 style={{ mixBlendMode: 'multiply' }}
                             />
                         </Link>

@@ -30,7 +30,7 @@ const BecomeInstructor = () => {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[var(--gradient-hero)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-brand-100/70" />
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
@@ -38,7 +38,7 @@ const BecomeInstructor = () => {
             <div className="space-y-8 animate-in fade-in slide-in-from-left duration-1000">
               <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
                 Bilginizi Paylaşın,
-                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"> Gelir Elde Edin</span>
+                <span className="bg-gradient-to-r from-brand-600 to-brand-800 bg-clip-text text-transparent"> Gelir Elde Edin</span>
               </h1>
               
               <p className="text-xl text-muted-foreground leading-relaxed">
@@ -47,7 +47,7 @@ const BecomeInstructor = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" variant="hero" className="text-lg px-8 py-6 h-auto" onClick={() => window.location.assign('/instructor-application')}>
+                <Button size="lg" className="bg-brand-700 hover:bg-brand-800 text-white font-semibold shadow-sm transition-colors text-lg px-8 py-6 h-auto" onClick={() => window.location.assign('/instructor-application')}>
                   Hemen Başlayın
                 </Button>
               </div>
@@ -55,7 +55,7 @@ const BecomeInstructor = () => {
               <div className="flex gap-8 pt-4">
                 {stats.slice(0, 2).map((stat, index) => (
                   <div key={index} className="space-y-1">
-                    <div className="text-3xl font-bold text-primary">{stat.number}</div>
+                    <div className="text-3xl font-bold text-brand-700">{stat.number}</div>
                     <div className="text-sm text-muted-foreground">{stat.label}</div>
                   </div>
                 ))}
@@ -63,9 +63,9 @@ const BecomeInstructor = () => {
             </div>
             
             <div className="relative animate-in fade-in slide-in-from-right duration-1000 delay-300">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-3xl" />
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-400/25 to-brand-600/20 rounded-3xl blur-3xl" />
               {/* Görsel yerine dekoratif kutu (asset gerektirmez) */}
-              <div className="relative rounded-3xl shadow-2xl w-full aspect-video bg-gradient-to-br from-primary/20 via-accent/10 to-secondary/20 border border-border" />
+              <div className="relative rounded-3xl shadow-2xl w-full aspect-video bg-gradient-to-br from-brand-200 via-brand-100 to-brand-300/60 border border-border" />
             </div>
           </div>
         </div>
@@ -77,7 +77,7 @@ const BecomeInstructor = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center space-y-2 animate-in fade-in zoom-in duration-700" style={{ animationDelay: `${index * 100}ms` }}>
-                <div className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                <div className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-brand-600 to-brand-800 bg-clip-text text-transparent">
                   {stat.number}
                 </div>
                 <div className="text-muted-foreground font-medium">{stat.label}</div>
@@ -92,7 +92,7 @@ const BecomeInstructor = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
             <h2 className="text-4xl lg:text-5xl font-bold">
-              Neden <span className="text-primary">Edurce</span>?
+              Neden <span className="text-brand-700">Edurce</span>?
             </h2>
             <p className="text-xl text-muted-foreground">
               Binlerce eğitimcinin tercih ettiği platform ile kariyerinizi bir üst seviyeye taşıyın
@@ -109,7 +109,7 @@ const BecomeInstructor = () => {
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="space-y-4">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center">
                       <Icon className="w-7 h-7 text-white" />
                     </div>
                     <h3 className="text-xl font-bold">{benefit.title}</h3>
@@ -127,7 +127,7 @@ const BecomeInstructor = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
             <h2 className="text-4xl lg:text-5xl font-bold">
-              Nasıl <span className="text-secondary">Çalışır</span>?
+              Nasıl <span className="text-brand-700">Çalışır</span>?
             </h2>
             <p className="text-xl text-muted-foreground">
               4 basit adımda eğitimci olun ve kazanmaya başlayın
@@ -142,14 +142,14 @@ const BecomeInstructor = () => {
                 style={{ animationDelay: `${index * 150}ms` }}
               >
                 {index < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-primary to-accent -translate-x-1/2 opacity-30" />
+                  <div className="hidden lg:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-brand-400 to-brand-600 -translate-x-1/2 opacity-30" />
                 )}
-                <div className="relative bg-background rounded-2xl p-8 border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
-                  <div className="text-7xl font-bold text-primary/10 absolute top-4 right-4">
+                <div className="relative bg-background rounded-2xl p-8 border border-border/50 hover:border-brand-400 transition-all duration-300 hover:shadow-lg">
+                  <div className="text-7xl font-bold text-brand-700/10 absolute top-4 right-4">
                     {step.number}
                   </div>
                   <div className="relative space-y-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-secondary to-secondary/70 flex items-center justify-center text-white font-bold text-lg">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center text-white font-bold text-lg">
                       {step.number}
                     </div>
                     <h3 className="text-2xl font-bold">{step.title}</h3>
@@ -165,13 +165,13 @@ const BecomeInstructor = () => {
       {/* CTA Section */}
       <section className="py-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="relative overflow-hidden border-2 border-primary/20">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10" />
+          <Card className="relative overflow-hidden border-2 border-brand-200">
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-brand-100/60" />
             <div className="relative p-12 lg:p-16 text-center space-y-8">
               <div className="space-y-4">
                 <h2 className="text-4xl lg:text-5xl font-bold">
                   Hayalinizdeki Kariyere
-                  <span className="block text-primary mt-2">Bugün Başlayın</span>
+                  <span className="block text-brand-700 mt-2">Bugün Başlayın</span>
                 </h2>
                 <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                   Ücretsiz hesap oluşturun ve eğitmen topluluğumuza katılın. 
@@ -180,11 +180,11 @@ const BecomeInstructor = () => {
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Button size="lg" variant="hero" className="text-lg px-10 py-6 h-auto group" onClick={() => window.location.assign('/instructor-application')}>
+                <Button size="lg" className="bg-brand-700 hover:bg-brand-800 text-white font-semibold shadow-sm transition-colors text-lg px-10 py-6 h-auto group" onClick={() => window.location.assign('/instructor-application')}>
                   <CheckCircle2 className="w-5 h-5 mr-2" />
                   Ücretsiz Başlayın
                 </Button>
-                <Button size="lg" variant="outline" className="text-lg px-10 py-6 h-auto" onClick={() => window.location.assign('/help')}>
+                <Button size="lg" variant="outline" className="text-lg px-10 py-6 h-auto border-brand-300 text-brand-800 hover:bg-brand-50 hover:text-brand-900" onClick={() => window.location.assign('/help')}>
                   Daha Fazla Bilgi
                 </Button>
               </div>
@@ -202,7 +202,7 @@ const BecomeInstructor = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div className="space-y-4">
-              <h3 className="text-2xl font-bold text-primary">Edurce</h3>
+              <h3 className="text-2xl font-bold text-brand-700">Edurce</h3>
               <p className="text-sm text-muted-foreground">
                 Bilginizi paylaşın, gelir elde edin. Türkiye'nin öncü online eğitim platformu.
               </p>
@@ -211,30 +211,30 @@ const BecomeInstructor = () => {
             <div>
               <h4 className="font-bold mb-4">Platform</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">Nasıl Çalışır</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Fiyatlandırma</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Özellikler</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-brand-700 transition-colors">Nasıl Çalışır</a></li>
+                <li><a href="#" className="hover:text-brand-700 transition-colors">Fiyatlandırma</a></li>
+                <li><a href="#" className="hover:text-brand-700 transition-colors">Özellikler</a></li>
+                <li><a href="#" className="hover:text-brand-700 transition-colors">Blog</a></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-bold mb-4">Destek</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">Yardım Merkezi</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">İletişim</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">SSS</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Topluluk</a></li>
+                <li><a href="#" className="hover:text-brand-700 transition-colors">Yardım Merkezi</a></li>
+                <li><a href="#" className="hover:text-brand-700 transition-colors">İletişim</a></li>
+                <li><a href="#" className="hover:text-brand-700 transition-colors">SSS</a></li>
+                <li><a href="#" className="hover:text-brand-700 transition-colors">Topluluk</a></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-bold mb-4">Yasal</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">Kullanım Koşulları</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Gizlilik Politikası</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Çerez Politikası</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">KVKK</a></li>
+                <li><a href="#" className="hover:text-brand-700 transition-colors">Kullanım Koşulları</a></li>
+                <li><a href="#" className="hover:text-brand-700 transition-colors">Gizlilik Politikası</a></li>
+                <li><a href="#" className="hover:text-brand-700 transition-colors">Çerez Politikası</a></li>
+                <li><a href="#" className="hover:text-brand-700 transition-colors">KVKK</a></li>
               </ul>
             </div>
           </div>
