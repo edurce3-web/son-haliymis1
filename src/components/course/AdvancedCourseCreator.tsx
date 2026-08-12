@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Slider } from '@/components/ui/slider';
 import Cropper from 'react-easy-crop';
-import { useCategories, useCourseCreate, useCourseUpdate } from '@/hooks/useApi';
+import { useCourseCreate, useCourseUpdate } from '@/hooks/useApi';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
 import { useNavigate, useParams } from 'react-router-dom';

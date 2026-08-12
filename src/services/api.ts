@@ -82,14 +82,6 @@ const api = {
   },
 
   // Categories APIs
-  categories: {
-    getAll: () => apiRequest('/categories'),
-    getById: (id: number) => apiRequest(`/categories/${id}`),
-    getBySlug: (slug: string) => apiRequest(`/categories/${slug}`),
-    getSubcategoryBySlug: (catSlug: string, subSlug: string) => apiRequest(`/categories/${catSlug}/subcategories/${subSlug}`),
-    getCourses: (id: number) => apiRequest(`/categories/${id}/courses`),
-  },
-
   // Cart APIs
   cart: {
     get: () => apiRequest('/cart'),

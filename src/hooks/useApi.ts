@@ -213,10 +213,6 @@ export const useInstructorStudents = (instructorId: string) => {
 };
 
 // Categories hook
-export const useCategories = () => {
-  return useApiData(() => api.categories.getAll(), [], { immediate: true });
-};
-
 // Bookmarks hooks
 export const useBookmarks = () => {
   return useApiData(() => api.bookmarks.getAll(), [], { immediate: true });

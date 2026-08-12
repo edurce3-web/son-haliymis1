@@ -282,10 +282,6 @@ export const coursesAPI = {
 };
 
 // Categories API
-export const categoriesAPI = {
-  getCategories: () => apiRequest('/categories'),
-};
-
 // Instructors API
 export const instructorsAPI = {
   getInstructors: () => apiRequest('/instructors'),

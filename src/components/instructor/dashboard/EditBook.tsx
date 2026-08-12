@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { useCategoryNav } from '@/hooks/useCategoryNav';
 import { API_BASE_URL } from '@/lib/api';
 
 export function EditBook() {
@@ -20,15 +21,11 @@ export function EditBook() {
 
     const token = () => localStorage.getItem('token');
 
-    // ─── Fetch Categories ──────────────────────────────────────────────────────
-    const [categories, setCategories] = useState<any[]>([]);
-    const [subcategories, setSubcategories] = useState<any[]>([]);
-
-    useEffect(() => {
-        fetch(`${API_BASE_URL}/categories`).then(r => r.json()).then(data => {
-            setCategories(Array.isArray(data) ? data.filter((c: any) => !c.parent_category_id) : []);
-        }).catch(console.error);
-    }, []);
+    // ─── Kategoriler ───────────────────────────────────────────────────────────
+    // Tek kaynak: /api/catalog/navigation. Ana kategoriler ve alt dalları tek
+    // istekte gelir, ayrıca alt kategori için ikinci bir istek gerekmez.
+    const { data: categoryNav } = useCategoryNav();
+    const categories = categoryNav?.categories || [];
 
     // ─── Fetch Book Data ───────────────────────────────────────────────────────
     const { data: bookData, isLoading: bookLoading } = useQuery({
@@ -87,16 +84,11 @@ export function EditBook() {
         }
     }, [book]);
 
-    // Fetch Subcategories when Category changes
-    useEffect(() => {
-        if (!formData.category_id) {
-            setSubcategories([]);
-            return;
-        }
-        fetch(`${API_BASE_URL}/categories/${formData.category_id}/subcategories`).then(r => r.json()).then(data => {
-            setSubcategories(Array.isArray(data) ? data : []);
-        }).catch(console.error);
-    }, [formData.category_id]);
+    // Alt kategoriler seçili ana kategoriden türetilir — ek istek yok
+    const subcategories = React.useMemo(
+        () => categories.find(c => String(c.id) === String(formData.category_id))?.subcategories || [],
+        [categories, formData.category_id]
+    );
 
     // ─── Mutations ─────────────────────────────────────────────────────────────
     const updateDbMutation = useMutation({
@@ -387,7 +379,7 @@ export function EditBook() {
                                         </SelectTrigger>
                                         <SelectContent>
                                             {categories.map((c) => (
-                                                <SelectItem key={c.category_id} value={c.category_id.toString()} className="font-bold py-3">{c.name}</SelectItem>
+                                                <SelectItem key={c.id} value={String(c.id)} className="font-bold py-3">{c.name}</SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
@@ -402,7 +394,7 @@ export function EditBook() {
                                         </SelectTrigger>
                                         <SelectContent>
                                             {subcategories.map((c) => (
-                                                <SelectItem key={c.category_id} value={c.category_id.toString()} className="font-bold py-3">{c.name}</SelectItem>
+                                                <SelectItem key={c.id} value={String(c.id)} className="font-bold py-3">{c.name}</SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
