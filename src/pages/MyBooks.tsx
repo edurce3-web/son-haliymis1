@@ -76,7 +76,7 @@ const MyBooks = () => {
                         </div>
                         <h3 className="text-2xl font-bold text-white mb-3">Henüz Kitabın Yok</h3>
                         <p className="text-slate-400 text-sm max-w-sm mb-8 leading-relaxed">
-                            Mağazadan kitap satın aldığında burada görünecek. Neural Akademi kütüphanesini keşfet!
+                            Mağazadan kitap satın aldığında burada görünecek. Edurce kütüphanesini keşfet!
                         </p>
                         <Link
                             to="/courses"

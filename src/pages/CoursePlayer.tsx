@@ -435,7 +435,7 @@ const CoursePlayer = () => {
 
         try {
             const canvas = canvasRef.current;
-            const instructorName = `${content.course.first_name || ''} ${content.course.last_name || ''}`.trim() || 'Neural Akademi';
+            const instructorName = `${content.course.first_name || ''} ${content.course.last_name || ''}`.trim() || 'Edurce';
             const dateStr = new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
             const certNo = `CERT-${Date.now().toString().slice(-8)}`;
 

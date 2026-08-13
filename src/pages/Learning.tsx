@@ -49,7 +49,7 @@ const Learning = () => {
             await drawCertificate(canvas, {
                 studentName: `${user.first_name} ${user.last_name}`,
                 courseTitle: course.title,
-                instructorName: course.instructor_name || 'Neural Akademi',
+                instructorName: course.instructor_name || 'Edurce',
                 issuedDate: dateStr,
                 certificateId: certNo,
             });
@@ -273,7 +273,7 @@ const CourseCard = ({
                 >
                     {course.title}
                 </h3>
-                <p className="text-xs text-slate-500 mb-4">{course.instructor_name || 'Neural Akademi'}</p>
+                <p className="text-xs text-slate-500 mb-4">{course.instructor_name || 'Edurce'}</p>
 
                 <div className="mt-auto space-y-3">
                     {/* Progress bar */}

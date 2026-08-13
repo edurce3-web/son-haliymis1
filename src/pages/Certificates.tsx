@@ -49,7 +49,7 @@ const Certificates = () => {
             await drawCertificate(canvasRef.current, {
                 studentName: cert.user_name,
                 courseTitle: cert.course_title,
-                instructorName: cert.instructor_name || 'Neural Akademi',
+                instructorName: cert.instructor_name || 'Edurce',
                 issuedDate: dateStr,
                 certificateId: cert.certificate_id,
             });
@@ -76,7 +76,7 @@ const Certificates = () => {
         await drawCertificate(canvasRef.current, {
             studentName: cert.user_name,
             courseTitle: cert.course_title,
-            instructorName: cert.instructor_name || 'Neural Akademi',
+            instructorName: cert.instructor_name || 'Edurce',
             issuedDate: dateStr,
             certificateId: cert.certificate_id,
         });
@@ -209,7 +209,7 @@ const Certificates = () => {
                         </div>
                         <h3 className="text-2xl font-bold text-white mb-3">Henüz Sertifikan Yok</h3>
                         <p className="text-slate-400 text-sm max-w-sm mb-8 leading-relaxed">
-                            Bir kursu %100 tamamladığında Neural Akademi kalitesinde profesyonel sertifikan otomatik hazırlanır.
+                            Bir kursu %100 tamamladığında Edurce kalitesinde profesyonel sertifikan otomatik hazırlanır.
                         </p>
                         <Link
                             to="/home/learning"
