@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { BookOpen, Users, TrendingUp, Clock, Award, Rocket, CheckCircle2 } from "lucide-react";
-import LearningSceneArt from "@/components/instructor/LearningSceneArt";
+import HeroVisual from "@/components/instructor/HeroVisual";
 
 const BecomeInstructor = () => {
   const benefits = [
@@ -29,50 +29,37 @@ const BecomeInstructor = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-brand-100/70" />
-        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-        
+      {/*
+        Kahraman bölümü. Görsel kutu içinde değil: bölümün sağ yarısını
+        kaplayıp sol kenarı maskeyle zemine karışıyor, böylece arka planın
+        doğal bir parçası gibi duruyor.
+      */}
+      <section className="relative overflow-hidden bg-brand-50/70">
+        {/* Sağ yarıdaki görsel — masaüstünde; dar ekranda metnin altında kalmasın */}
+        <div className="hidden lg:block absolute inset-y-0 right-0 w-[58%] pointer-events-none">
+          <HeroVisual />
+        </div>
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8 animate-in fade-in slide-in-from-left duration-1000">
-              <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
-                Bilginizi Paylaşın,
-                <span className="bg-gradient-to-r from-brand-600 to-brand-800 bg-clip-text text-transparent"> Gelir Elde Edin</span>
-              </h1>
-              
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                Edurce ile tutkularınızı kariyere dönüştürün. Binlerce öğrenciye ulaşın, 
-                kendi çalışma saatlerinizi belirleyin ve her derste kazanın.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="bg-brand-700 hover:bg-brand-800 text-white font-semibold shadow-sm transition-colors text-lg px-8 py-6 h-auto" onClick={() => window.location.assign('/instructor-application')}>
-                  Hemen Başlayın
-                </Button>
-              </div>
-              
-              <div className="flex gap-8 pt-4">
-                {stats.slice(0, 2).map((stat, index) => (
-                  <div key={index} className="space-y-1">
-                    <div className="text-3xl font-bold text-brand-700">{stat.number}</div>
-                    <div className="text-sm text-muted-foreground">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            <div className="relative animate-in fade-in slide-in-from-right duration-1000 delay-300">
-              <div className="absolute -inset-6 bg-gradient-to-r from-brand-400/25 to-brand-600/20 rounded-[2rem] blur-3xl" />
-              {/*
-                Kahraman görseli. Vektör olduğu için her çözünürlükte net;
-                fotoğraf kullanmak istenirse bu bileşen tek bir <img> ile
-                değiştirilebilir, kapsayıcı ölçüleri aynı kalır.
-              */}
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-brand-200/60 aspect-[10/7]">
-                <LearningSceneArt className="w-full h-full" />
-              </div>
+          <div className="max-w-xl space-y-7 animate-in fade-in slide-in-from-left duration-1000">
+            <h1 className="text-4xl sm:text-5xl xl:text-6xl font-bold leading-[1.1] tracking-tight">
+              Platformumuzda
+              <span className="block text-brand-700">eğitim verin</span>
+            </h1>
+
+            <p className="text-lg text-muted-foreground leading-relaxed max-w-md">
+              Eğitmen olun, bilginizi paylaşın ve kendi hayatınız başta olmak
+              üzere hayatları değiştirin.
+            </p>
+
+            <div>
+              <Button
+                size="lg"
+                className="bg-brand-700 hover:bg-brand-800 text-white font-semibold shadow-sm transition-colors text-base px-10 py-6 h-auto"
+                onClick={() => window.location.assign('/instructor-application')}
+              >
+                Başlayın
+              </Button>
             </div>
           </div>
         </div>
