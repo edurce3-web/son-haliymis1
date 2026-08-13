@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import CategoryMegaMenu from './CategoryMegaMenu';
 import api from '@/services/api';
+import { API_BASE_URL } from '@/lib/api';
 import {
   BookOpen, Menu, Search, Bell, User, Settings, LogOut,
   ShoppingCart, Heart, GraduationCap, BarChart3,
@@ -201,6 +202,24 @@ export const Header = () => {
       fetchFavorites();
     } catch {
       fetchFavorites();
+    }
+  };
+
+  /**
+   * Kendi genel profiline gider. Slug sunucuda ad-soyaddan üretiliyor ve
+   * kullanıcı nesnesinde tutulmuyor; menüye tıklandığında bir kez sorulup
+   * yönlendiriliyor.
+   */
+  const goToMyProfile = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/users/me/slug`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      const data = await res.json();
+      if (data?.slug) navigate(`/user/${data.slug}`);
+      else navigate('/home/settings/profile');
+    } catch {
+      navigate('/home/settings/profile');
     }
   };
 
@@ -535,6 +554,11 @@ export const Header = () => {
                     </div>
                   </div>
                   <DropdownMenuSeparator className="my-1.5" />
+
+                  {/* Herkese açık profil — slug sunucudan gelir, ada göre üretilir */}
+                  <DropdownMenuItem onClick={goToMyProfile} className="rounded-lg py-2 cursor-pointer text-sm">
+                    <User className="w-4 h-4 mr-3 text-slate-500" /> Profilim
+                  </DropdownMenuItem>
 
                   <DropdownMenuItem onClick={() => navigate('/home/learning')} className="rounded-lg py-2 cursor-pointer font-bold text-indigo-700 hover:bg-indigo-50 text-sm">
                     <PlayCircle className="w-4 h-4 mr-3 text-indigo-500" /> Eğitimlerim
