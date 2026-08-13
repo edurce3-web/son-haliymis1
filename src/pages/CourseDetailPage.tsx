@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -314,6 +314,23 @@ export const CourseDetailPage = () => {
   const currentLesson = selectedLesson || course.sections?.[0]?.lessons?.[0];
   const instructorFullName = course.instructor_name || 'Eğitmen';
   const instructorAvatar = course.instructor_avatar || course.instructor_image || '/placeholder-avatar.jpg';
+  const instructorSlug: string | null = course.instructor_slug || null;
+
+  /**
+   * Eğitmen bilgisini profiline bağlar.
+   *
+   * Slug yoksa (kayıt akışından önce açılmış eski hesaplar) bağlantı yerine
+   * düz kapsayıcı döner — tıklanınca hiçbir yere gitmeyen bir link bırakmak
+   * kullanıcıyı yanıltır.
+   */
+  const InstructorLink: React.FC<{ className?: string; children: React.ReactNode }> = ({ className, children }) =>
+    instructorSlug ? (
+      <Link to={`/user/${instructorSlug}`} className={cn(className, 'cursor-pointer')}>
+        {children}
+      </Link>
+    ) : (
+      <div className={className}>{children}</div>
+    );
   const instructorBio = course.instructor_bio || "Alanında deneyimli eğitmen.";
 
   const instructorExpertiseRaw = course.expertise || course.instructor_expertise;
@@ -519,7 +536,9 @@ export const CourseDetailPage = () => {
 
                   <div className="h-8 w-px bg-gray-700 hidden sm:block"></div>
 
-                  <div className="flex items-center gap-3 group cursor-pointer">
+                  {/* Eğitmen adı profiline götürür; slug yoksa (eski hesap)
+                      düz metin kalır, tıklanamaz bir bağlantı bırakmıyoruz */}
+                  <InstructorLink className="flex items-center gap-3 group">
                     <Avatar className="w-9 h-9 border-2 border-gray-700 shadow-sm">
                       <AvatarImage src={instructorAvatar} alt={instructorFullName} />
                       <AvatarFallback className="bg-gray-800 text-gray-300 font-bold text-xs">
@@ -530,7 +549,7 @@ export const CourseDetailPage = () => {
                       <div className="text-gray-400 text-[10px] uppercase font-bold tracking-wider">Eğitmen</div>
                       <div className="font-bold text-white group-hover:text-teal-400 transition-colors">{instructorFullName}</div>
                     </div>
-                  </div>
+                  </InstructorLink>
                 </div>
               </div>
 
@@ -846,12 +865,14 @@ export const CourseDetailPage = () => {
                     <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start relative z-10">
                       <div className="md:col-span-4 flex flex-col items-center">
                         <div className="relative">
-                          <Avatar className="w-40 h-40 md:w-48 md:h-48 border-8 border-white shadow-xl">
-                            <AvatarImage src={instructorAvatar} alt={instructorFullName} className="object-cover" />
-                            <AvatarFallback className="text-6xl bg-gradient-to-br from-teal-50 to-[#0D9488]/10 text-[#0D9488] font-black">
-                              {instructorFullName.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
+                          <InstructorLink className="block">
+                            <Avatar className="w-40 h-40 md:w-48 md:h-48 border-8 border-white shadow-xl">
+                              <AvatarImage src={instructorAvatar} alt={instructorFullName} className="object-cover" />
+                              <AvatarFallback className="text-6xl bg-gradient-to-br from-teal-50 to-[#0D9488]/10 text-[#0D9488] font-black">
+                                {instructorFullName.charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
+                          </InstructorLink>
                           <div className="absolute -bottom-4 -right-4 bg-white p-2 rounded-2xl shadow-lg border border-slate-100">
                             <div className="bg-amber-50 text-amber-600 font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-sm">
                               <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
@@ -877,7 +898,20 @@ export const CourseDetailPage = () => {
                       <div className="md:col-span-8 space-y-8">
                         <div>
                           <p className="text-[#0D9488] font-bold text-sm tracking-widest uppercase mb-2">{course.instructor_title || 'Uzman Eğitmen'}</p>
-                          <h3 className="text-3xl md:text-4xl font-black text-slate-900 leading-tight">{instructorFullName}</h3>
+                          <InstructorLink className="inline-block">
+                            <h3 className="text-3xl md:text-4xl font-black text-slate-900 leading-tight hover:text-[#0D9488] transition-colors">
+                              {instructorFullName}
+                            </h3>
+                          </InstructorLink>
+                          {instructorSlug && (
+                            <Link
+                              to={`/user/${instructorSlug}`}
+                              className="inline-flex items-center gap-1 text-sm font-semibold text-[#0D9488] hover:gap-2 transition-all mt-3"
+                            >
+                              Profili ve tüm kursları
+                              <ChevronRight className="w-4 h-4" />
+                            </Link>
+                          )}
                         </div>
 
                         <div>
