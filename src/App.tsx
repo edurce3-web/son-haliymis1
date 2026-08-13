@@ -19,6 +19,7 @@ import { CourseDetailPage } from "./pages/CourseDetailPage";
 import Cart from "./pages/Cart";
 import { Checkout } from "./pages/Checkout";
 import Login from "./pages/Login";
+import AuthCallback from "./pages/AuthCallback";
 import Register from "./pages/Register";
 import InstructorApplication from "./pages/InstructorApplication";
 import Pricing from "./pages/Pricing";
@@ -129,6 +130,7 @@ const App = () => (
 
                 {/* Public Course Routes */}
                 <Route path="/courses" element={<AllCourses />} />
+                <Route path="/auth/callback" element={<AuthCallback />} />
                 <Route path="/search" element={<SearchResults />} />
                 <Route path="/courses/:categorySlug" element={<CategoryCoursesPage />} />
                 <Route path="/courses/:categorySlug/:subcategorySlug" element={<CategoryCoursesPage />} />

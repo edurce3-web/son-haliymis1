@@ -7,6 +7,7 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthLayout from "@/components/auth/AuthLayout";
+import SocialLogin from "@/components/auth/SocialLogin";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -68,7 +69,9 @@ const Login = () => {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <SocialLogin redirectAfter={searchParams.get("redirect") || undefined} />
+
+      <form onSubmit={handleSubmit} className="space-y-5 mt-5">
         <div className="space-y-2">
           <Label htmlFor="email" className="text-sm font-medium text-slate-700">
             E-posta

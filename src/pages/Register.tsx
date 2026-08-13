@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, CheckCircle2, Circle, ArrowLeft, Mail } from "lucide-react";
 import AuthLayout from "@/components/auth/AuthLayout";
+import SocialLogin from "@/components/auth/SocialLogin";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -171,12 +172,10 @@ const Register = () => {
   const inputClass = "h-11 rounded-xl border-slate-200 bg-slate-50/60 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition-colors text-sm";
 
   const stepMeta: Record<Step, { title: string; subtitle: string }> = {
-    details: { title: "Hesap Oluşturun", subtitle: "Başlamak için bilgilerinizi girin." },
-    code: { title: "E-postanızı Doğrulayın", subtitle: `${formData.email} adresine 6 haneli bir kod gönderdik.` },
-    password: { title: "Şifrenizi Belirleyin", subtitle: "Hesabınızı güvence altına alan son adım." },
+    details: { title: "Hesap oluştur", subtitle: "Başlamak için bilgilerini gir." },
+    code: { title: "E-postanı doğrula", subtitle: `${formData.email} adresine 6 haneli bir kod gönderdik.` },
+    password: { title: "Şifreni belirle", subtitle: "Hesabını güvence altına alan son adım." },
   };
-
-  const stepIndex = step === "details" ? 0 : step === "code" ? 1 : 2;
 
   return (
     <AuthLayout
@@ -189,15 +188,6 @@ const Register = () => {
       ]}
     >
       <div className="space-y-6">
-            {/* Adım göstergesi */}
-            <div className="flex items-center gap-2" aria-label={`Adım ${stepIndex + 1} / 3`}>
-              {[0, 1, 2].map(i => (
-                <div
-                  key={i}
-                  className={`h-1 flex-1 rounded-full transition-colors ${i <= stepIndex ? "bg-brand-700" : "bg-slate-200"}`}
-                />
-              ))}
-            </div>
 
             <div className="text-center lg:text-left">
               <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
@@ -207,6 +197,8 @@ const Register = () => {
                 {stepMeta[step].subtitle}
               </p>
             </div>
+
+            {step === "details" && <SocialLogin />}
 
             {/* ---------- 1. ADIM: Ad, soyad, e-posta ---------- */}
             {step === "details" && (
