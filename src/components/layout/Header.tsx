@@ -3,13 +3,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import CategoryMegaMenu from './CategoryMegaMenu';
@@ -205,24 +198,6 @@ export const Header = () => {
     }
   };
 
-  /**
-   * Kendi genel profiline gider. Slug sunucuda ad-soyaddan üretiliyor ve
-   * kullanıcı nesnesinde tutulmuyor; menüye tıklandığında bir kez sorulup
-   * yönlendiriliyor.
-   */
-  const goToMyProfile = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/users/me/slug`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      });
-      const data = await res.json();
-      if (data?.slug) navigate(`/user/${data.slug}`);
-      else navigate('/home/settings/profile');
-    } catch {
-      navigate('/home/settings/profile');
-    }
-  };
-
   const handleMarkNotifRead = async (id: number) => {
     try {
       await api.notifications.markAsRead(id);
@@ -413,6 +388,101 @@ export const Header = () => {
     </div>
   );
 
+
+  // ─── Kullanıcı Menüsü İçeriği ───
+  const MenuRow = ({
+    onClick, icon, label, badge, tone = 'default',
+  }: {
+    onClick: () => void; icon: React.ReactNode; label: string;
+    badge?: React.ReactNode; tone?: 'default' | 'primary' | 'danger';
+  }) => (
+    <button
+      onClick={onClick}
+      className={cn(
+        'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-left transition-colors',
+        tone === 'danger' ? 'text-red-600 hover:bg-red-50'
+          : tone === 'primary' ? 'font-bold text-indigo-700 hover:bg-indigo-50'
+            : 'text-slate-700 hover:bg-slate-50'
+      )}
+    >
+      {icon}
+      <span className="flex-1">{label}</span>
+      {badge}
+    </button>
+  );
+
+  const UserMenuContent = () => (
+    <div className="p-2">
+      {isAuthenticated ? (
+        <>
+          <div className="flex items-center gap-3 p-3 bg-indigo-50/60 rounded-xl mb-2">
+            <Avatar className="h-9 w-9 border-2 border-white shadow-sm shrink-0">
+              <AvatarImage src={user?.profile_image || ''} className="object-cover" />
+              <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-xs">
+                {user?.first_name?.[0]}{user?.last_name?.[0]}
+              </AvatarFallback>
+            </Avatar>
+            <div className="overflow-hidden">
+              <p className="font-bold text-sm text-slate-900 truncate">{user?.first_name} {user?.last_name}</p>
+              <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
+            </div>
+          </div>
+
+          <MenuRow onClick={() => navigate('/home/learning')} tone="primary"
+            icon={<PlayCircle className="w-4 h-4 text-indigo-500" />} label="Eğitimlerim" />
+          <MenuRow onClick={() => navigate('/home/gamification')}
+            icon={<Trophy className="w-4 h-4 text-amber-500" />} label="Başarılarım" />
+          <MenuRow onClick={() => navigate('/home/certificates')}
+            icon={<Award className="w-4 h-4 text-emerald-500" />} label="Sertifikalarım" />
+          <MenuRow onClick={() => navigate('/home/books')}
+            icon={<BookMarked className="w-4 h-4 text-violet-500" />} label="Kitaplarım" />
+          <MenuRow onClick={() => navigate('/favorites')}
+            icon={<Heart className="w-4 h-4 text-pink-500" />} label="Favorilerim"
+            badge={favorites.length > 0 && <span className="text-xs bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded-full font-bold">{favorites.length}</span>} />
+          <MenuRow onClick={() => navigate('/cart')}
+            icon={<ShoppingCart className="w-4 h-4 text-blue-500" />} label="Sepetim"
+            badge={cartCount > 0 && <span className="text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full font-bold">{cartCount}</span>} />
+
+          <div className="h-px bg-slate-100 my-1.5" />
+          <p className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">İletişim &amp; Bildirimler</p>
+          <MenuRow onClick={() => navigate('/notifications')}
+            icon={<Bell className="w-4 h-4 text-violet-500" />} label="Bildirimler"
+            badge={unreadCount > 0 && <span className="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full font-bold">{unreadCount}</span>} />
+          <MenuRow onClick={() => navigate('/messages')}
+            icon={<MessageSquare className="w-4 h-4 text-cyan-500" />} label="Mesajlar" />
+
+          {isInstructor && (
+            <>
+              <div className="h-px bg-slate-100 my-1.5" />
+              <MenuRow onClick={() => navigate('/instructor')} tone="primary"
+                icon={<BarChart3 className="w-4 h-4 text-blue-600" />} label="Eğitmen Paneli" />
+              <MenuRow onClick={() => navigate('/instructor/courses/create')}
+                icon={<BookOpen className="w-4 h-4 text-slate-500" />} label="Kurs Oluşturucu" />
+            </>
+          )}
+
+          <div className="h-px bg-slate-100 my-1.5" />
+          <MenuRow onClick={() => navigate('/home/settings/profile')}
+            icon={<Settings className="w-4 h-4 text-slate-400" />} label="Ayarlar" />
+          <MenuRow onClick={() => { logout(); navigate('/login'); }} tone="danger"
+            icon={<LogOut className="w-4 h-4" />} label="Çıkış Yap" />
+        </>
+      ) : (
+        <div className="p-1.5 space-y-2">
+          <p className="px-1.5 pt-1 pb-2 text-sm text-slate-600">
+            Kurslarına erişmek için hesabına gir.
+          </p>
+          <Button onClick={() => navigate('/register')} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm h-9">
+            Kayıt Ol
+          </Button>
+          <Button onClick={() => navigate('/login')} variant="outline" className="w-full rounded-xl text-sm h-9">
+            Giriş Yap
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white/95 backdrop-blur-xl shadow-sm">
       {/* Top gradient line */}
@@ -519,117 +589,28 @@ export const Header = () => {
           {/* Divider */}
           <div className="w-px h-5 bg-slate-200 mx-1" />
 
-          {/* User Menu */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="w-8 h-8 rounded-full border-2 border-slate-200 hover:border-indigo-300 transition-all overflow-hidden">
-                {isAuthenticated && user ? (
-                  <Avatar className="w-full h-full">
-                    <AvatarImage src={user.profile_image || ''} className="object-cover" />
-                    <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-xs">
-                      {user.first_name?.[0]}{user.last_name?.[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                ) : (
-                  <div className="w-full h-full bg-slate-100 flex items-center justify-center">
-                    <User className="w-4 h-4 text-slate-400" />
-                  </div>
-                )}
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-60 mt-2 p-2 rounded-2xl shadow-xl" align="end" forceMount>
-              {isAuthenticated ? (
-                <>
-                  {/* User info */}
-                  <div className="flex items-center gap-3 p-3 bg-indigo-50/60 rounded-xl mb-2">
-                    <Avatar className="h-9 w-9 border-2 border-white shadow-sm shrink-0">
-                      <AvatarImage src={user?.profile_image || ''} className="object-cover" />
-                      <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-xs">
-                        {user?.first_name?.[0]}{user?.last_name?.[0]}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="overflow-hidden">
-                      <p className="font-bold text-sm text-slate-900 truncate">{user?.first_name} {user?.last_name}</p>
-                      <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
-                    </div>
-                  </div>
-                  <DropdownMenuSeparator className="my-1.5" />
-
-                  {/* Herkese açık profil — slug sunucudan gelir, ada göre üretilir */}
-                  <DropdownMenuItem onClick={goToMyProfile} className="rounded-lg py-2 cursor-pointer text-sm">
-                    <User className="w-4 h-4 mr-3 text-slate-500" /> Profilim
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem onClick={() => navigate('/home/learning')} className="rounded-lg py-2 cursor-pointer font-bold text-indigo-700 hover:bg-indigo-50 text-sm">
-                    <PlayCircle className="w-4 h-4 mr-3 text-indigo-500" /> Eğitimlerim
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/home/gamification')} className="rounded-lg py-2 cursor-pointer text-sm">
-                    <Trophy className="w-4 h-4 mr-3 text-amber-500" /> Başarılarım
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/home/certificates')} className="rounded-lg py-2 cursor-pointer text-sm">
-                    <Award className="w-4 h-4 mr-3 text-emerald-500" /> Sertifikalarım
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/home/books')} className="rounded-lg py-2 cursor-pointer text-sm">
-                    <BookMarked className="w-4 h-4 mr-3 text-violet-500" /> Kitaplarım
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/favorites')} className="rounded-lg py-2 cursor-pointer text-sm">
-                    <Heart className="w-4 h-4 mr-3 text-pink-500" /> Favorilerim
-                    {favorites.length > 0 && <span className="ml-auto text-xs bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded-full font-bold">{favorites.length}</span>}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/cart')} className="rounded-lg py-2 cursor-pointer text-sm">
-                    <ShoppingCart className="w-4 h-4 mr-3 text-blue-500" /> Sepetim
-                    {cartCount > 0 && <span className="ml-auto text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full font-bold">{cartCount}</span>}
-                  </DropdownMenuItem>
-
-                  <DropdownMenuSeparator className="my-1.5" />
-                  <div className="px-3 py-1">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">İletişim & Bildirimler</p>
-                  </div>
-                  <DropdownMenuItem onClick={() => navigate('/notifications')} className="rounded-lg py-2 cursor-pointer text-sm">
-                    <Bell className="w-4 h-4 mr-3 text-violet-500" /> Bildirimler
-                    {unreadCount > 0 && <span className="ml-auto text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full font-bold">{unreadCount}</span>}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/messages')} className="rounded-lg py-2 cursor-pointer text-sm">
-                    <MessageSquare className="w-4 h-4 mr-3 text-cyan-500" /> Mesajlar
-                  </DropdownMenuItem>
-
-                  {isInstructor && (
-                    <>
-                      <DropdownMenuSeparator className="my-1.5" />
-                      <DropdownMenuItem onClick={() => navigate('/instructor')} className="rounded-lg py-2 cursor-pointer text-blue-700 font-semibold text-sm">
-                        <BarChart3 className="w-4 h-4 mr-3" /> Eğitmen Paneli
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate('/instructor/courses/create')} className="rounded-lg py-2 cursor-pointer text-sm">
-                        <BookOpen className="w-4 h-4 mr-3" /> Kurs Oluşturucu
-                      </DropdownMenuItem>
-                    </>
-                  )}
-
-                  <DropdownMenuSeparator className="my-1.5" />
-                  <DropdownMenuItem onClick={() => navigate('/home/settings/profile')} className="rounded-lg py-2 cursor-pointer text-sm">
-                    <Settings className="w-4 h-4 mr-3 text-slate-400" /> Ayarlar
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => { logout(); navigate('/login'); }}
-                    className="rounded-lg py-2 cursor-pointer text-red-600 text-sm hover:bg-red-50"
-                  >
-                    <LogOut className="w-4 h-4 mr-3" /> Çıkış Yap
-                  </DropdownMenuItem>
-                </>
+          {/* Kullanıcı menüsü — sepet ve bildirim menüleri gibi FARE ÜZERİNE
+              GELİNCE açılır; tıklamak gerekmiyor. */}
+          <HoverPopover content={<UserMenuContent />} width="w-60">
+            <button
+              onClick={() => navigate(isAuthenticated ? '/home/settings/profile' : '/login')}
+              aria-label={isAuthenticated ? 'Hesap menüsü' : 'Giriş yap'}
+              className="w-8 h-8 rounded-full border-2 border-slate-200 hover:border-indigo-300 transition-all overflow-hidden"
+            >
+              {isAuthenticated && user ? (
+                <Avatar className="w-full h-full">
+                  <AvatarImage src={user.profile_image || ''} className="object-cover" />
+                  <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-xs">
+                    {user.first_name?.[0]}{user.last_name?.[0]}
+                  </AvatarFallback>
+                </Avatar>
               ) : (
-                <>
-                  <DropdownMenuItem onClick={() => navigate('/login')} className="rounded-lg py-2.5 cursor-pointer font-semibold text-center justify-center text-sm">
-                    Giriş Yap
-                  </DropdownMenuItem>
-                  <div className="p-1.5">
-                    <Button onClick={() => navigate('/register')} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm h-9">
-                      Kayıt Ol
-                    </Button>
-                  </div>
-                </>
+                <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+                  <User className="w-4 h-4 text-slate-400" />
+                </div>
               )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </button>
+          </HoverPopover>
         </div>
       </div>
     </header>

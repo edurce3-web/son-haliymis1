@@ -2,19 +2,26 @@ import React, { useState, useEffect, useRef } from 'react';
 import { API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+import { UserAvatar } from '@/components/ui/user-avatar';
+import ImageCropDialog from '@/components/ui/image-crop-dialog';
+import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ProfileSettings: React.FC = () => {
     const { user, refreshUser } = useAuth();
     const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Kırpma penceresine gidecek ham dosya
+    const [pendingFile, setPendingFile] = useState<File | null>(null);
 
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
         bio: '',
-        language: 'tr',
-        profile_image: ''
+        website_url: '',
+        profile_image: '',
     });
 
     useEffect(() => {
@@ -22,90 +29,88 @@ const ProfileSettings: React.FC = () => {
             if (!user) return;
             try {
                 const response = await fetch(`${API_BASE_URL}/users/${user.user_id}`, {
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 if (response.ok) {
                     const result = await response.json();
-                    const userData = result.user;
+                    const u = result.user || {};
                     setFormData({
-                        first_name: userData.first_name || '',
-                        last_name: userData.last_name || '',
-                        bio: userData.bio || '',
-                        language: userData.language || 'tr',
-                        profile_image: userData.profile_image || ''
+                        first_name: u.first_name || '',
+                        last_name: u.last_name || '',
+                        bio: u.bio || '',
+                        website_url: u.website_url || '',
+                        profile_image: u.profile_image || '',
                     });
-                } else {
-                    setFormData(prev => ({
-                        ...prev,
-                        first_name: user.first_name || '',
-                        last_name: user.last_name || '',
-                        profile_image: user.profile_image || ''
-                    }));
+                    return;
                 }
-            } catch (error) {
-                setFormData(prev => ({
-                    ...prev,
-                    first_name: user.first_name || '',
-                    last_name: user.last_name || '',
-                    profile_image: user.profile_image || ''
-                }));
-            }
+            } catch { /* aşağıdaki yedeğe düş */ }
+
+            setFormData(prev => ({
+                ...prev,
+                first_name: user.first_name || '',
+                last_name: user.last_name || '',
+                profile_image: (user as any).profile_image || '',
+            }));
         };
         fetchUserData();
     }, [user]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    /** Dosya seçilince doğrudan yüklemiyoruz; önce kırpma penceresi açılıyor. */
+    const handleFilePick = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
+        e.target.value = '';
         if (!file) return;
 
-        if (file.size > 5 * 1024 * 1024) {
-            toast.error('Dosya boyutu 5MB\'dan küçük olmalıdır');
+        if (!file.type.startsWith('image/')) {
+            toast.error('Lütfen bir görsel dosyası seç');
             return;
         }
+        if (file.size > 10 * 1024 * 1024) {
+            toast.error('Dosya 10MB\'dan küçük olmalı');
+            return;
+        }
+        setPendingFile(file);
+    };
 
+    /** Kırpılmış kare görseli yükler. */
+    const uploadCropped = async (cropped: File) => {
+        setPendingFile(null);
+        setUploading(true);
         try {
-            toast.loading('Profil fotoğrafı yükleniyor...');
-            const formDataUpload = new FormData();
-            formDataUpload.append('profileImage', file, 'profile.jpg');
+            const body = new FormData();
+            body.append('profileImage', cropped, cropped.name);
 
             const response = await fetch(`${API_BASE_URL}/instructor/upload-profile-image`, {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: formDataUpload
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+                body,
             });
-
             const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Yükleme başarısız');
 
-            if (response.ok) {
-                setFormData(prev => ({ ...prev, profile_image: data.url || data.profile_image }));
-                toast.dismiss();
-                toast.success('Profil fotoğrafı başarıyla yüklendi!');
-                if (refreshUser) refreshUser();
-            } else {
-                throw new Error(data.error || 'Yükleme başarısız');
-            }
+            // Aynı adres önbellekten gelmesin diye sürüm damgası
+            const url = `${data.url || data.profile_image}${(data.url || '').includes('?') ? '&' : '?'}v=${Date.now()}`;
+            setFormData(prev => ({ ...prev, profile_image: url }));
+            toast.success('Profil fotoğrafın güncellendi');
+            refreshUser?.();
         } catch (error: any) {
-            toast.dismiss();
-            toast.error(`Bağlantı hatası: ${error.message}`);
+            toast.error('Fotoğraf yüklenemedi', { description: error.message });
         } finally {
-            e.target.value = '';
+            setUploading(false);
         }
     };
 
-    // Sadece formu temizlemek yetmiyor; dosyanın depolamadan da silinmesi gerekiyor.
+    // Formu temizlemek yetmiyor; dosyanın depolamadan da silinmesi gerekiyor.
     const handleRemoveImage = async () => {
         try {
-            const token = localStorage.getItem('token');
             const res = await fetch(`${API_BASE_URL}/instructor/profile-image`, {
                 method: 'DELETE',
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             if (!res.ok) throw new Error('Kaldırılamadı');
 
@@ -117,6 +122,7 @@ const ProfileSettings: React.FC = () => {
                 u.profile_image = null;
                 localStorage.setItem('user', JSON.stringify(u));
             }
+            refreshUser?.();
             toast.success('Profil fotoğrafı kaldırıldı');
         } catch (error: any) {
             toast.error('Fotoğraf kaldırılamadı', { description: error.message });
@@ -124,93 +130,150 @@ const ProfileSettings: React.FC = () => {
     };
 
     const handleSave = async () => {
+        if (!formData.first_name.trim() || !formData.last_name.trim()) {
+            toast.error('Ad ve soyad boş bırakılamaz');
+            return;
+        }
+
         setLoading(true);
         try {
             const response = await fetch(`${API_BASE_URL}/users/${user?.user_id}`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData)
+                // Yalnızca sunucunun kabul ettiği alanlar; profile_image ayrı
+                // uçtan yükleniyor, burada gönderilmiyor.
+                body: JSON.stringify({
+                    first_name: formData.first_name.trim(),
+                    last_name: formData.last_name.trim(),
+                    bio: formData.bio,
+                    website_url: formData.website_url,
+                }),
             });
 
-            if (response.ok) {
-                toast.success('Profil bilgileri güncellendi.');
-                if (refreshUser) refreshUser();
-            } else {
-                const data = await response.json();
-                toast.error(data.error || 'Güncelleme başarısız');
-            }
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Güncelleme başarısız');
+
+            toast.success('Profil bilgilerin güncellendi');
+            refreshUser?.();
         } catch (error: any) {
-            toast.error('Bir hata oluştu.', { description: error.message });
+            toast.error('Kaydedilemedi', { description: error.message });
         } finally {
             setLoading(false);
         }
     };
 
+    const fullName = `${formData.first_name} ${formData.last_name}`.trim();
+    const inputClass =
+        'w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-slate-50/60 text-sm focus:bg-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition-colors';
+
     return (
         <div className="space-y-6 max-w-2xl">
             <div>
-                <h1 className="text-2xl font-bold text-slate-900">Hesap Profili</h1>
-                <p className="text-slate-500 mt-2">Kişisel bilgilerinizi ve profil fotoğrafınızı yönetin.</p>
+                <h1 className="text-2xl font-bold text-slate-900">Hesap profili</h1>
+                <p className="text-slate-500 mt-1.5 text-sm">
+                    Bu bilgiler herkese açık profilinde görünür.
+                </p>
             </div>
 
-            <div className="flex gap-6 items-center border-b border-slate-100 pb-6">
-                <div className="w-24 h-24 rounded-full bg-slate-200 overflow-hidden flex items-center justify-center text-slate-400 font-bold text-2xl shrink-0">
-                    {formData.profile_image ? (
-                        <img src={formData.profile_image} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                        <span>{formData.first_name?.[0]}{formData.last_name?.[0]}</span>
-                    )}
+            {/* Fotoğraf */}
+            <section className="bg-white border border-slate-200 rounded-2xl p-6">
+                <div className="flex flex-wrap items-center gap-6">
+                    <UserAvatar src={formData.profile_image} name={fullName} size={88} />
+
+                    <div className="min-w-0">
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFilePick}
+                            accept="image/*"
+                            className="hidden"
+                        />
+                        <div className="flex flex-wrap gap-2">
+                            <Button
+                                variant="outline"
+                                disabled={uploading}
+                                onClick={() => fileInputRef.current?.click()}
+                                className="rounded-xl"
+                            >
+                                {uploading
+                                    ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Yükleniyor</>
+                                    : 'Fotoğraf seç'}
+                            </Button>
+                            {formData.profile_image && (
+                                <Button
+                                    variant="ghost"
+                                    onClick={handleRemoveImage}
+                                    className="text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl"
+                                >
+                                    Kaldır
+                                </Button>
+                            )}
+                        </div>
+                        <p className="text-xs text-slate-400 mt-2">
+                            Seçtikten sonra kırpma penceresi açılır. JPG veya PNG, en fazla 10MB.
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleImageUpload}
-                        accept="image/*"
-                        className="hidden"
+            </section>
+
+            {/* Bilgiler */}
+            <section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                        <label htmlFor="first_name" className="text-sm font-medium text-slate-700">Ad</label>
+                        <input
+                            id="first_name" name="first_name" type="text"
+                            className={inputClass} value={formData.first_name} onChange={handleChange}
+                        />
+                    </div>
+                    <div className="space-y-1.5">
+                        <label htmlFor="last_name" className="text-sm font-medium text-slate-700">Soyad</label>
+                        <input
+                            id="last_name" name="last_name" type="text"
+                            className={inputClass} value={formData.last_name} onChange={handleChange}
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-1.5">
+                    <label htmlFor="bio" className="text-sm font-medium text-slate-700">Biyografi</label>
+                    <textarea
+                        id="bio" name="bio" rows={4}
+                        placeholder="Kendinden kısaca bahset…"
+                        className="w-full p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 text-sm focus:bg-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition-colors resize-none"
+                        value={formData.bio}
+                        onChange={handleChange}
                     />
-                    <Button variant="outline" className="mr-3 hover:bg-slate-50" onClick={() => fileInputRef.current?.click()}>
-                        Fotoğraf Yükle
-                    </Button>
-                    {formData.profile_image && (
-                        <Button variant="ghost" className="text-red-500 hover:bg-red-50 hover:text-red-600" onClick={handleRemoveImage}>
-                            Sil
-                        </Button>
-                    )}
+                    <p className="text-xs text-slate-400">Profil sayfanda adının altında görünür.</p>
                 </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6 border-b border-slate-100 pb-6">
-                <div className="space-y-2">
-                    <label className="text-sm font-semibold text-slate-700">Ad</label>
-                    <input name="first_name" type="text" className="w-full h-10 px-3 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:outline-none focus:border-indigo-500" value={formData.first_name} onChange={handleChange} />
+                <div className="space-y-1.5">
+                    <label htmlFor="website_url" className="text-sm font-medium text-slate-700">Web sitesi</label>
+                    <input
+                        id="website_url" name="website_url" type="url"
+                        placeholder="https://…"
+                        className={inputClass} value={formData.website_url} onChange={handleChange}
+                    />
                 </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-semibold text-slate-700">Soyad</label>
-                    <input name="last_name" type="text" className="w-full h-10 px-3 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:outline-none focus:border-indigo-500" value={formData.last_name} onChange={handleChange} />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                    <label className="text-sm font-semibold text-slate-700">Biyografi</label>
-                    <textarea name="bio" rows={4} className="w-full p-3 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:outline-none focus:border-indigo-500 resize-none" placeholder="Kendinizden bahsedin..." value={formData.bio} onChange={handleChange}></textarea>
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                    <label className="text-sm font-semibold text-slate-700">Dil</label>
-                    <select name="language" className="w-full h-10 px-3 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:outline-none focus:border-indigo-500" value={formData.language} onChange={handleChange}>
-                        <option value="tr">Türkçe</option>
-                        <option value="en">İngilizce</option>
-                        <option value="de">Almanca</option>
-                    </select>
-                </div>
-            </div>
+            </section>
 
-            <div className="pt-2">
-                <Button onClick={handleSave} disabled={loading} className="bg-indigo-600 text-white hover:bg-indigo-700 px-6 rounded-lg">
-                    {loading ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
-                </Button>
-            </div>
+            <Button
+                onClick={handleSave}
+                disabled={loading}
+                className="h-11 px-6 rounded-xl bg-brand-700 hover:bg-brand-800 font-semibold"
+            >
+                {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Kaydediliyor</> : 'Değişiklikleri kaydet'}
+            </Button>
+
+            <ImageCropDialog
+                file={pendingFile}
+                onCancel={() => setPendingFile(null)}
+                onCropped={uploadCropped}
+                title="Profil fotoğrafını kırp"
+            />
         </div>
     );
 };

@@ -241,21 +241,19 @@ const UserProfile: React.FC = () => {
                     {isInstructor && instructor && (
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-px mt-10 bg-white/10 rounded-xl overflow-hidden">
                             {[
-                                { icon: BookOpen, value: String(instructor.courseCount), label: 'kurs' },
-                                { icon: Users, value: compact(instructor.totalStudents), label: 'öğrenci' },
+                                { value: String(instructor.courseCount), label: 'kurs' },
+                                { value: compact(instructor.totalStudents), label: 'öğrenci' },
                                 {
-                                    icon: Star,
                                     value: instructor.totalReviews > 0 ? instructor.averageRating.toFixed(1) : '—',
-                                    label: instructor.totalReviews > 0 ? `${compact(instructor.totalReviews)} değerlendirme` : 'değerlendirme yok',
+                                    label: instructor.totalReviews > 0
+                                        ? `${compact(instructor.totalReviews)} değerlendirme`
+                                        : 'değerlendirme yok',
                                 },
-                                { icon: Clock, value: String(instructor.totalHours), label: 'saat içerik' },
+                                { value: String(instructor.totalHours), label: 'saat içerik' },
                             ].map(s => (
-                                <div key={s.label} className="bg-brand-900/90 px-5 py-5 flex items-center gap-3">
-                                    <s.icon className="w-5 h-5 text-brand-300 shrink-0" />
-                                    <div className="min-w-0">
-                                        <p className="text-xl font-bold text-white leading-none">{s.value}</p>
-                                        <p className="text-xs text-brand-200/70 mt-1 truncate">{s.label}</p>
-                                    </div>
+                                <div key={s.label} className="bg-brand-900/90 px-5 py-5">
+                                    <p className="text-2xl font-bold text-white leading-none">{s.value}</p>
+                                    <p className="text-xs text-brand-200/70 mt-1.5 truncate">{s.label}</p>
                                 </div>
                             ))}
                         </div>

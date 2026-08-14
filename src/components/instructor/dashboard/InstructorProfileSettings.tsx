@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Camera, Globe, Youtube, Twitter, Facebook, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
+import ImageCropDialog from '@/components/ui/image-crop-dialog';
 
 export const InstructorProfileSettings: React.FC = () => {
     const [profile, setProfile] = useState<any>(null);
@@ -34,8 +35,10 @@ export const InstructorProfileSettings: React.FC = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [photoBusy, setPhotoBusy] = useState(false);
     const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+    // Seçilen dosya önce kırpma penceresine gider, sonra yüklenir
+    const [pendingFile, setPendingFile] = useState<File | null>(null);
 
-    const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         e.target.value = ''; // aynı dosya tekrar seçilebilsin
         if (!file) return;
@@ -46,7 +49,13 @@ export const InstructorProfileSettings: React.FC = () => {
         if (file.size > 10 * 1024 * 1024) {
             return toast.error('Fotoğraf en fazla 10 MB olabilir');
         }
+        // Doğrudan yüklemiyoruz; önce kırpma penceresi açılıyor
+        setPendingFile(file);
+    };
 
+    /** Kırpılmış kare görseli yükler. */
+    const uploadCropped = async (file: File) => {
+        setPendingFile(null);
         setPhotoBusy(true);
         try {
             const token = localStorage.getItem('token');
@@ -398,6 +407,13 @@ export const InstructorProfileSettings: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            <ImageCropDialog
+                file={pendingFile}
+                onCancel={() => setPendingFile(null)}
+                onCropped={uploadCropped}
+                title="Profil fotoğrafını kırp"
+            />
         </div>
     );
 };
