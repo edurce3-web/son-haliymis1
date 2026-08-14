@@ -176,8 +176,33 @@ const Home: React.FC = () => {
 
             {/* ── Kahraman bölümü ─────────────────────────────────────────── */}
             <section className="relative overflow-hidden bg-brand-900">
+                {/*
+                  Soldaki fotoğraf bölümün arka planının parçası: sağ kenarı
+                  maskeyle eriyip koyu zemine karışıyor, üstüne marka rengi
+                  bindiriliyor. Böylece parlak bir fotoğraf koyu bölüme
+                  yapıştırılmış gibi durmuyor, sayfanın kendi dokusu oluyor.
+                */}
+                <div className="hidden lg:block absolute inset-y-0 left-0 w-[52%] pointer-events-none" aria-hidden>
+                    <img
+                        src="/anasayfa.jpg"
+                        alt=""
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{
+                            // Kişi kadrajın sağında; bu kayma onu görünür alanın
+                            // ortasına getiriyor, maskeye denk gelmiyor.
+                            objectPosition: '68% center',
+                            maskImage: 'linear-gradient(to right, #000 0%, #000 58%, transparent 96%)',
+                            WebkitMaskImage: 'linear-gradient(to right, #000 0%, #000 58%, transparent 96%)',
+                        }}
+                    />
+                    {/* Fotoğrafı bölümün rengine boyayan katmanlar */}
+                    <div className="absolute inset-0 bg-brand-900/55" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-brand-900/70 via-transparent to-brand-900" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-900/80 via-transparent to-brand-900/40" />
+                </div>
+
                 <div className="absolute inset-0 pointer-events-none" aria-hidden>
-                    <div className="absolute -top-40 -left-24 w-[520px] h-[520px] bg-brand-500/25 rounded-full blur-[130px]" />
+                    <div className="absolute -top-40 -left-24 w-[520px] h-[520px] bg-brand-500/20 rounded-full blur-[130px]" />
                     <div className="absolute -bottom-48 right-0 w-[560px] h-[560px] bg-brand-400/15 rounded-full blur-[140px]" />
                     <div
                         className="absolute inset-0 opacity-[0.05]"
@@ -189,8 +214,9 @@ const Home: React.FC = () => {
                     />
                 </div>
 
-                <div className="relative container px-4 py-16 lg:py-20">
-                    <div className="max-w-3xl">
+                <div className="relative container px-4 py-16 lg:py-24 lg:min-h-[560px] flex flex-col justify-center">
+                    {/* Metin masaüstünde sağ yarıda; solu fotoğrafa bırakıyor */}
+                    <div className="max-w-3xl lg:max-w-none lg:ml-[52%] lg:pl-10">
                         {isAuthenticated && user?.first_name && (
                             <p className="text-brand-200 font-medium mb-3">
                                 Tekrar hoş geldin, {user.first_name}
