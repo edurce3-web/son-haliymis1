@@ -7,11 +7,11 @@ import React, { useState } from 'react';
  * maskeyle şeffaflaşıp zemine karıştığı için metinle arasında keskin bir sınır
  * oluşmaz — "sanki bu bölümün doğasında varmış" hissi buradan gelir.
  *
- * Gerçek fotoğraf önceliklidir: public/hero-instructor.jpg varsa o kullanılır.
+ * Gerçek fotoğraf önceliklidir: public/gorsel.jpg varsa o kullanılır.
  * Dosya yoksa aşağıdaki çizim devreye girer, böylece sayfa boş kalmaz ve
  * fotoğraf eklemek kod değişikliği gerektirmez.
  */
-const PHOTO_SRC = '/hero-instructor.jpg';
+const PHOTO_SRC = '/gorsel.jpg';
 
 /** Sol kenarı yumuşatan maske — hem fotoğrafa hem çizime uygulanır. */
 const FADE: React.CSSProperties = {
