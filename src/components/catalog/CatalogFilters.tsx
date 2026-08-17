@@ -61,7 +61,7 @@ const Checkbox: React.FC<{
             checked={checked}
             onChange={onChange}
             disabled={disabled}
-            className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500/30 focus:ring-2 shrink-0"
+            className="w-4 h-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500/30 focus:ring-2 shrink-0"
         />
         <span className={cn(
             'text-sm flex-1',
@@ -120,8 +120,8 @@ export const CatalogFilters: React.FC<Props> = ({
                             className={cn(
                                 'flex items-center justify-between gap-2 text-sm py-1.5 rounded-md transition-colors',
                                 !activeCategory
-                                    ? 'text-indigo-700 font-semibold'
-                                    : 'text-slate-600 hover:text-indigo-700'
+                                    ? 'text-brand-700 font-semibold'
+                                    : 'text-slate-600 hover:text-brand-700'
                             )}
                         >
                             <span>Tüm kurslar</span>
@@ -136,8 +136,8 @@ export const CatalogFilters: React.FC<Props> = ({
                                     className={cn(
                                         'flex items-center justify-between gap-2 text-sm py-1.5 rounded-md transition-colors',
                                         isActive
-                                            ? 'text-indigo-700 font-semibold'
-                                            : 'text-slate-600 hover:text-indigo-700'
+                                            ? 'text-brand-700 font-semibold'
+                                            : 'text-slate-600 hover:text-brand-700'
                                     )}
                                 >
                                     <span className="truncate">{cat.name}</span>

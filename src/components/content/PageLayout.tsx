@@ -62,30 +62,7 @@ export const PageLayout: React.FC<Props> = ({
 
     return (
         <div className="min-h-screen bg-white">
-            {/* Başlık */}
-            <header className="border-b border-slate-200 bg-slate-50/70">
-                <div className="container px-4 py-12 lg:py-16">
-                    <nav className="text-xs text-slate-500 mb-4">
-                        <Link to="/" className="hover:text-brand-700">Ana sayfa</Link>
-                        <span className="mx-2 text-slate-300">/</span>
-                        <span className="text-slate-700">{title}</span>
-                    </nav>
-
-                    <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
-                        {title}
-                    </h1>
-                    {lead && (
-                        <p className="text-[17px] text-slate-600 mt-4 max-w-2xl leading-relaxed">
-                            {lead}
-                        </p>
-                    )}
-                    {updatedAt && (
-                        <p className="text-sm text-slate-500 mt-5">
-                            Yürürlük tarihi: {updatedAt}
-                        </p>
-                    )}
-                </div>
-            </header>
+            <PageHeader title={title} lead={lead} updatedAt={updatedAt} />
 
             <div className="container px-4 py-12 lg:py-16">
                 {sections?.length ? (
@@ -135,6 +112,46 @@ export const PageLayout: React.FC<Props> = ({
         </div>
     );
 };
+
+/**
+ * Sayfa başlığı bloğu.
+ *
+ * Ayrı export edilmesinin sebebi: İletişim ve Yardım gibi bölüm listesi
+ * olmayan sayfalar da birebir aynı başlığı kullansın; sayfalar arasında
+ * geçerken başlık zıplamasın.
+ */
+export const PageHeader: React.FC<{
+    title: string;
+    lead?: React.ReactNode;
+    updatedAt?: string;
+    /** Başlığın altına giren ek içerik (ör. arama kutusu) */
+    children?: React.ReactNode;
+}> = ({ title, lead, updatedAt, children }) => (
+    <header className="border-b border-slate-200 bg-slate-50/70">
+        <div className="container px-4 py-12 lg:py-16">
+            <nav className="text-xs text-slate-500 mb-4">
+                <Link to="/" className="hover:text-brand-700">Ana sayfa</Link>
+                <span className="mx-2 text-slate-300">/</span>
+                <span className="text-slate-700">{title}</span>
+            </nav>
+
+            <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
+                {title}
+            </h1>
+            {lead && (
+                <p className="text-[17px] text-slate-600 mt-4 max-w-2xl leading-relaxed">
+                    {lead}
+                </p>
+            )}
+            {updatedAt && (
+                <p className="text-sm text-slate-500 mt-5">
+                    Yürürlük tarihi: {updatedAt}
+                </p>
+            )}
+            {children}
+        </div>
+    </header>
+);
 
 /** Metin bölümlerinde tekrar eden paragraf stili. */
 export const P: React.FC<{ children: React.ReactNode }> = ({ children }) => (

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSeo } from '@/hooks/useSeo';
+import { PageHeader } from '@/components/content/PageLayout';
 import { cn } from '@/lib/utils';
 
 interface Entry {
@@ -371,38 +372,31 @@ const Help: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-white">
-            <header className="border-b border-slate-200 bg-slate-50/70">
-                <div className="container px-4 py-12 lg:py-16">
-                    <nav className="text-xs text-slate-500 mb-4">
-                        <Link to="/" className="hover:text-brand-700">Ana sayfa</Link>
-                        <span className="mx-2 text-slate-300">/</span>
-                        <span className="text-slate-700">Yardım merkezi</span>
-                    </nav>
-                    <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
-                        Yardım merkezi
-                    </h1>
-                    <p className="text-[17px] text-slate-600 mt-4 max-w-2xl leading-relaxed">
+            <PageHeader
+                title="Yardım merkezi"
+                lead={
+                    <>
                         Sık sorulan soruların yanıtları burada. Aradığınızı bulamazsanız{' '}
                         <Link to="/contact" className="text-brand-700 hover:underline">bize yazın</Link>.
-                    </p>
-
-                    <div className="mt-7 max-w-lg">
-                        <label htmlFor="help-search" className="sr-only">Yardım konularında ara</label>
-                        <input
-                            id="help-search"
-                            value={query}
-                            onChange={e => setQuery(e.target.value)}
-                            placeholder="Konu ara — iade, sertifika, video, kredi…"
-                            className="w-full h-11 px-4 rounded-lg border border-slate-300 bg-white text-[15px] focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-500/15 transition-colors"
-                        />
-                        {query && (
-                            <p className="text-sm text-slate-500 mt-2">
-                                {totalHits > 0 ? `${totalHits} sonuç` : 'Sonuç bulunamadı'}
-                            </p>
-                        )}
-                    </div>
+                    </>
+                }
+            >
+                <div className="mt-7 max-w-lg">
+                    <label htmlFor="help-search" className="sr-only">Yardım konularında ara</label>
+                    <input
+                        id="help-search"
+                        value={query}
+                        onChange={e => setQuery(e.target.value)}
+                        placeholder="Konu ara — iade, sertifika, video, kredi…"
+                        className="w-full h-11 px-4 rounded-lg border border-slate-300 bg-white text-[15px] focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-500/15 transition-colors"
+                    />
+                    {query && (
+                        <p className="text-sm text-slate-500 mt-2">
+                            {totalHits > 0 ? `${totalHits} sonuç` : 'Sonuç bulunamadı'}
+                        </p>
+                    )}
                 </div>
-            </header>
+            </PageHeader>
 
             <div className="container px-4 py-12 lg:py-16">
                 <div className="flex flex-col lg:flex-row gap-12">

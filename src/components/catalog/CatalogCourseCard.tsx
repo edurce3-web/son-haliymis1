@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Users, ThumbsUp, ShoppingCart, Loader2, Check, Heart } from 'lucide-react';
+import { Heart, Loader2 } from 'lucide-react';
 import { cartAPI, favoritesAPI } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatPrice } from '@/lib/utils';
@@ -32,14 +32,19 @@ const ratingPercent = (rating?: number) => Math.round(((Number(rating) || 0) / 5
 
 const compactCount = (n?: number) => {
     const v = Number(n) || 0;
-    if (v >= 1000) return v.toLocaleString('tr-TR');
-    return String(v);
+    return v.toLocaleString('tr-TR');
 };
 
 interface Props {
     course: CatalogCourse;
     /** Aranan kelime — başlıkta vurgulanır */
     highlight?: string;
+    /** Kullanıcı bu kursa sahip mi (satın alınmış / kayıtlı) */
+    owned?: boolean;
+    /** Sahipse tamamlama yüzdesi */
+    progress?: number;
+    /** Kurs zaten sepette mi */
+    inCart?: boolean;
 }
 
 /** Aranan kelimeyi başlıkta işaretler. */
@@ -64,17 +69,21 @@ const Highlighted: React.FC<{ text: string; term?: string }> = ({ text, term }) 
     );
 };
 
-export const CatalogCourseCard: React.FC<Props> = ({ course, highlight }) => {
+export const CatalogCourseCard: React.FC<Props> = ({
+    course, highlight, owned = false, progress = 0, inCart: inCartProp = false,
+}) => {
     const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const [adding, setAdding] = useState(false);
-    const [inCart, setInCart] = useState(false);
+    const [addedLocally, setAddedLocally] = useState(false);
     const [favorited, setFavorited] = useState(Boolean(course.is_favorited));
     const [imgFailed, setImgFailed] = useState(false);
 
+    const courseId = course.course_id ?? course.id;
     const href = `/course/${course.slug || course.id}`;
     const price = Number(course.price) || 0;
     const isFree = price === 0;
+    const inCart = inCartProp || addedLocally;
 
     const addToCart = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -91,13 +100,13 @@ export const CatalogCourseCard: React.FC<Props> = ({ course, highlight }) => {
 
         setAdding(true);
         try {
-            await cartAPI.addToCart(course.course_id ?? course.id);
-            setInCart(true);
+            await cartAPI.addToCart(courseId);
+            setAddedLocally(true);
             toast.success('Sepete eklendi', { description: course.title });
         } catch (err: any) {
             // Zaten sepetteyse kullanıcıya hata gibi göstermenin anlamı yok
             if (String(err?.message || '').toLowerCase().includes('zaten')) {
-                setInCart(true);
+                setAddedLocally(true);
                 toast.info('Bu kurs zaten sepetinde');
             } else {
                 toast.error('Sepete eklenemedi');
@@ -117,8 +126,8 @@ export const CatalogCourseCard: React.FC<Props> = ({ course, highlight }) => {
         const next = !favorited;
         setFavorited(next);
         try {
-            if (next) await favoritesAPI.addToFavorites(course.course_id ?? course.id);
-            else await favoritesAPI.removeFromFavorites(course.course_id ?? course.id);
+            if (next) await favoritesAPI.addToFavorites(courseId);
+            else await favoritesAPI.removeFromFavorites(courseId);
         } catch {
             setFavorited(!next);
             toast.error('İşlem tamamlanamadı');
@@ -127,8 +136,15 @@ export const CatalogCourseCard: React.FC<Props> = ({ course, highlight }) => {
 
     const summary = course.short_description || course.description || '';
 
+    // Alt satırdaki bilgiler nokta ile ayrılıyor; ikon kullanılmıyor.
+    const meta = [
+        Number(course.student_count) > 0 && `${compactCount(course.student_count)} öğrenci`,
+        Number(course.review_count) > 0 && `%${ratingPercent(course.rating)} memnuniyet`,
+        Number(course.duration_hours) > 0 && `${Math.round(Number(course.duration_hours))} saat`,
+    ].filter(Boolean) as string[];
+
     return (
-        <article className="group bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col hover:shadow-lg hover:border-slate-300 transition-all duration-200">
+        <article className="group relative bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col transition-all duration-200 hover:border-brand-300 hover:shadow-[0_12px_28px_-14px_rgba(23,93,93,0.35)]">
             <Link to={href} className="block relative aspect-[16/10] bg-slate-100 overflow-hidden">
                 {course.image && !imgFailed ? (
                     <img
@@ -136,7 +152,7 @@ export const CatalogCourseCard: React.FC<Props> = ({ course, highlight }) => {
                         alt={course.title}
                         loading="lazy"
                         onError={() => setImgFailed(true)}
-                        className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+                        className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                     />
                 ) : (
                     <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
@@ -146,88 +162,116 @@ export const CatalogCourseCard: React.FC<Props> = ({ course, highlight }) => {
                     </div>
                 )}
 
+                {/* Sahip olunan kurs görselin üstünde işaretleniyor */}
+                {owned && (
+                    <span className="absolute top-2.5 left-2.5 bg-brand-700 text-white text-[11px] font-semibold rounded-md px-2 py-1">
+                        Kayıtlısınız
+                    </span>
+                )}
+                {!owned && course.level && (
+                    <span className="absolute bottom-2.5 left-2.5 bg-white/95 text-slate-700 text-[11px] font-semibold rounded-md px-2 py-1">
+                        {course.level}
+                    </span>
+                )}
+
                 <button
                     onClick={toggleFavorite}
                     aria-label={favorited ? 'Favorilerden çıkar' : 'Favorilere ekle'}
-                    className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity hover:bg-white"
+                    className={cn(
+                        'absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur flex items-center justify-center transition-opacity hover:bg-white',
+                        favorited ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 focus:opacity-100'
+                    )}
                 >
                     <Heart className={cn('w-4 h-4', favorited ? 'fill-rose-500 text-rose-500' : 'text-slate-600')} />
                 </button>
+
+                {/* Sahip olunan kursta ilerleme çubuğu görselin altına yapışıyor */}
+                {owned && progress > 0 && (
+                    <span className="absolute inset-x-0 bottom-0 h-1 bg-black/15">
+                        <span
+                            className="block h-full bg-brand-500"
+                            style={{ width: `${Math.min(100, progress)}%` }}
+                        />
+                    </span>
+                )}
             </Link>
 
             <div className="p-4 flex flex-col flex-1">
-                {/* Kategori rozetleri */}
-                <div className="flex flex-wrap gap-1.5 mb-2.5">
-                    {course.category_name && (
-                        <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-600 border border-slate-300 rounded-full px-2 py-0.5">
-                            {course.category_name}
-                        </span>
-                    )}
-                    {course.subcategory_name && course.subcategory_name !== course.category_name && (
-                        <span className="text-[10px] font-semibold uppercase tracking-wide text-indigo-600 border border-indigo-200 rounded-full px-2 py-0.5">
-                            {course.subcategory_name}
-                        </span>
-                    )}
-                </div>
+                {/* Kategori — tek satır, sade */}
+                {(course.subcategory_name || course.category_name) && (
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-brand-700 mb-2">
+                        {course.subcategory_name || course.category_name}
+                    </p>
+                )}
 
-                <h3 className="font-bold text-slate-900 leading-snug line-clamp-2 mb-1.5">
-                    <Link to={href} className="hover:text-indigo-700 transition-colors">
+                <h3 className="font-bold text-[15px] text-slate-900 leading-snug line-clamp-2 mb-1.5">
+                    <Link to={href} className="hover:text-brand-800 transition-colors">
                         <Highlighted text={course.title} term={highlight} />
                     </Link>
                 </h3>
 
                 {course.instructor_name && (
-                    <p className="text-sm text-slate-700 mb-2">
-                        Eğitmen: <span className="font-medium">{course.instructor_name}</span>
-                    </p>
+                    <p className="text-[13px] text-slate-500 mb-2">{course.instructor_name}</p>
                 )}
 
                 {summary && (
-                    <p className="text-sm text-slate-500 line-clamp-2 mb-3">{summary}</p>
+                    <p className="text-[13.5px] text-slate-600 leading-relaxed line-clamp-2 mb-3">
+                        {summary}
+                    </p>
                 )}
 
-                {/* Öğrenci sayısı ve memnuniyet */}
-                <div className="flex items-center gap-4 text-xs text-slate-500 mb-3">
-                    <span className="flex items-center gap-1">
-                        <Users className="w-3.5 h-3.5" />
-                        {compactCount(course.student_count)}
-                    </span>
-                    {Number(course.review_count) > 0 && (
-                        <span className="flex items-center gap-1">
-                            <ThumbsUp className="w-3.5 h-3.5" />
-                            %{ratingPercent(course.rating)} ({course.review_count})
-                        </span>
-                    )}
-                    {course.level && (
-                        <span className="ml-auto text-slate-400">{course.level}</span>
-                    )}
-                </div>
-
-                {/* Fiyat ve satın alma — kartın en altına yapışsın */}
-                <div className="mt-auto pt-1">
-                    <p className="text-lg font-bold text-slate-900 mb-2.5">
-                        {isFree ? 'Ücretsiz' : formatPrice(price)}
+                {meta.length > 0 && (
+                    <p className="text-xs text-slate-500 mb-3">
+                        {meta.join(' · ')}
                     </p>
+                )}
 
-                    <button
-                        onClick={addToCart}
-                        disabled={adding}
-                        className={cn(
-                            'w-full h-11 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors',
-                            inCart
-                                ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                                : 'bg-teal-700 hover:bg-teal-800 text-white',
-                            adding && 'opacity-70 cursor-wait'
-                        )}
-                    >
-                        {adding ? (
-                            <><Loader2 className="w-4 h-4 animate-spin" /> Ekleniyor</>
-                        ) : inCart ? (
-                            <><Check className="w-4 h-4" /> Sepete git</>
-                        ) : (
-                            <><ShoppingCart className="w-4 h-4" /> {isFree ? 'Kursa başla' : `Satın al ${formatPrice(price)}`}</>
-                        )}
-                    </button>
+                {/* Fiyat ve eylem — kartın en altına yapışsın */}
+                <div className="mt-auto pt-3 border-t border-slate-100">
+                    {owned ? (
+                        <>
+                            <p className="text-[13px] text-slate-600 mb-2.5">
+                                {progress >= 100
+                                    ? 'Bu kursu tamamladınız'
+                                    : progress > 0
+                                        ? `%${progress} tamamlandı`
+                                        : 'Bu kurs kitaplığınızda'}
+                            </p>
+                            <Link
+                                to={`/learning/${courseId}`}
+                                className="w-full h-11 rounded-lg font-semibold text-sm flex items-center justify-center bg-brand-700 hover:bg-brand-800 text-white transition-colors"
+                            >
+                                {progress >= 100 ? 'Kursu tekrar izle' : progress > 0 ? 'Devam et' : 'Eğitime git'}
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            <p className="text-[17px] font-bold text-slate-900 mb-2.5">
+                                {isFree ? 'Ücretsiz' : formatPrice(price)}
+                            </p>
+                            <button
+                                onClick={addToCart}
+                                disabled={adding}
+                                className={cn(
+                                    'w-full h-11 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors',
+                                    inCart
+                                        ? 'bg-white border border-brand-600 text-brand-800 hover:bg-brand-50'
+                                        : 'bg-brand-700 hover:bg-brand-800 text-white',
+                                    adding && 'opacity-70 cursor-wait'
+                                )}
+                            >
+                                {adding ? (
+                                    <><Loader2 className="w-4 h-4 animate-spin" /> Ekleniyor</>
+                                ) : inCart ? (
+                                    'Sepete git'
+                                ) : isFree ? (
+                                    'Ücretsiz kaydol'
+                                ) : (
+                                    'Sepete ekle'
+                                )}
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
         </article>

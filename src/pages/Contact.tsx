@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { API_BASE_URL } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSeo } from '@/hooks/useSeo';
+import { PageHeader } from '@/components/content/PageLayout';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -82,20 +83,10 @@ const Contact: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-white">
-            <header className="border-b border-slate-200 bg-slate-50/70">
-                <div className="container px-4 py-12 lg:py-16">
-                    <nav className="text-xs text-slate-500 mb-4">
-                        <Link to="/" className="hover:text-brand-700">Ana sayfa</Link>
-                        <span className="mx-2 text-slate-300">/</span>
-                        <span className="text-slate-700">İletişim</span>
-                    </nav>
-                    <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">İletişim</h1>
-                    <p className="text-[17px] text-slate-600 mt-4 max-w-2xl leading-relaxed">
-                        Sorunuzu aşağıdaki formdan iletin. Mesajınız kayda alınır, size bir talep
-                        numarası verilir ve en geç iki iş günü içinde dönüş yapılır.
-                    </p>
-                </div>
-            </header>
+            <PageHeader
+                title="İletişim"
+                lead="Sorunuzu aşağıdaki formdan iletin. Mesajınız kayda alınır, size bir talep numarası verilir ve en geç iki iş günü içinde dönüş yapılır."
+            />
 
             <div className="container px-4 py-12 lg:py-16">
                 <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">

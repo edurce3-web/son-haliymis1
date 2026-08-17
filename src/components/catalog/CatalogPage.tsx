@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import CatalogFilters, { type CatalogFacets, type FilterState, type FacetCategory } from './CatalogFilters';
 import CatalogCourseCard, { type CatalogCourse } from './CatalogCourseCard';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
+import { useOwnedCourses } from '@/hooks/useOwnedCourses';
 
 interface CategoryRef {
     category_id: number;
@@ -57,6 +58,9 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
     const [loading, setLoading] = useState(true);
     const [notFound, setNotFound] = useState(false);
     const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+    // Sahip olunan ve sepetteki kurslar — kartın doğru butonu göstermesi için
+    const { ownedIds, cartIds, progressById } = useOwnedCourses();
 
     // URL tek gerçek kaynak: filtreler adres çubuğunda durur ki sayfa
     // paylaşılabilsin, geri tuşu çalışsın ve arama motoru varyantları görsün.
@@ -170,7 +174,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                         Aradığın kategori kaldırılmış ya da adresi değişmiş olabilir.
                     </p>
                     <Link to="/courses">
-                        <Button className="rounded-xl bg-indigo-600 hover:bg-indigo-700">
+                        <Button className="rounded-xl bg-brand-600 hover:bg-brand-700">
                             Tüm kurslara göz at
                         </Button>
                     </Link>
@@ -196,7 +200,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                                             <span className="text-slate-800 font-medium">{b.name}</span>
                                         ) : (
                                             <>
-                                                <Link to={path} className="hover:text-indigo-600">{b.name}</Link>
+                                                <Link to={path} className="hover:text-brand-600">{b.name}</Link>
                                                 <ChevronRight className="w-3 h-3 text-slate-300" />
                                             </>
                                         )}
@@ -264,7 +268,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                                 <SlidersHorizontal className="w-4 h-4" />
                                 Filtrele
                                 {activeFilterCount > 0 && (
-                                    <span className="bg-indigo-600 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                                    <span className="bg-brand-600 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
                                         {activeFilterCount}
                                     </span>
                                 )}
@@ -278,7 +282,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                                     id="sort"
                                     value={data?.sort || sort || (query ? 'relevance' : 'popular')}
                                     onChange={e => updateParams({ sort: e.target.value })}
-                                    className="h-10 px-3 pr-8 rounded-xl border border-slate-200 bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer"
+                                    className="h-10 px-3 pr-8 rounded-xl border border-slate-200 bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500/20 cursor-pointer"
                                 >
                                     {SORT_OPTIONS
                                         // Arama yokken "en ilgili" anlamsız
@@ -359,7 +363,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                                         </Button>
                                     )}
                                     <Link to="/courses">
-                                        <Button className="rounded-xl bg-indigo-600 hover:bg-indigo-700">
+                                        <Button className="rounded-xl bg-brand-600 hover:bg-brand-700">
                                             Tüm kurslara göz at
                                         </Button>
                                     </Link>
@@ -368,13 +372,19 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                         ) : (
                             <>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                                    {courses.map(course => (
-                                        <CatalogCourseCard
-                                            key={course.id}
-                                            course={course}
-                                            highlight={query}
-                                        />
-                                    ))}
+                                    {courses.map(course => {
+                                        const id = course.course_id ?? course.id;
+                                        return (
+                                            <CatalogCourseCard
+                                                key={course.id}
+                                                course={course}
+                                                highlight={query}
+                                                owned={ownedIds.has(id)}
+                                                progress={progressById.get(id) ?? 0}
+                                                inCart={cartIds.has(id)}
+                                            />
+                                        );
+                                    })}
                                 </div>
 
                                 {pagination && pagination.totalPages > 1 && (
@@ -431,7 +441,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                         />
                         <Button
                             onClick={() => setShowMobileFilters(false)}
-                            className="w-full mt-6 h-11 rounded-xl bg-indigo-600 hover:bg-indigo-700"
+                            className="w-full mt-6 h-11 rounded-xl bg-brand-600 hover:bg-brand-700"
                         >
                             {pagination?.total ?? 0} kursu göster
                         </Button>
