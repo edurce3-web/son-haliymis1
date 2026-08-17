@@ -36,6 +36,7 @@ const LINK_COLUMNS: Array<{ title: string; links: Array<{ label: string; to: str
         title: 'Destek',
         links: [
             { label: 'Yardım merkezi', to: '/help' },
+            { label: 'İade koşulları', to: '/pricing#iade' },
             { label: 'Kullanım şartları', to: '/terms' },
             { label: 'Gizlilik politikası', to: '/privacy' },
         ],

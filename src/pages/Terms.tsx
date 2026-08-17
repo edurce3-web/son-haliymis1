@@ -1,316 +1,349 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { 
-  FileText, 
-  Scale, 
-  Shield, 
-  Users, 
-  CreditCard, 
-  Globe,
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  Mail,
-  BookOpen
-} from "lucide-react";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import PageLayout, { P, UL, H3, Note, Table } from '@/components/content/PageLayout';
 
-const Terms = () => {
-  const lastUpdated = "15 Eylül 2024";
+const UPDATED = '17 Ağustos 2026';
 
-  const sections = [
-    {
-      icon: Users,
-      title: "Hesap ve Kullanıcı Sorumlulukları",
-      items: [
-        "Hesap oluştururken doğru bilgiler vermelisiniz",
-        "Hesap güvenliğinden siz sorumlusunuz",
-        "Bir hesap sadece bir kişi tarafından kullanılabilir",
-        "Yasadışı faaliyetlerde hesabınızı kullanamazsınız"
-      ]
-    },
-    {
-      icon: BookOpen,
-      title: "Kurs ve İçerik Kullanımı",
-      items: [
-        "Kurslar sadece kişisel öğrenme amaçlı kullanılabilir",
-        "İçerikleri üçüncü taraflarla paylaşamazsınız",
-        "Telif hakkı korumalı materyalleri izinsiz kullanamazsınız",
-        "Kurs içeriklerini indirme hakları sınırlıdır"
-      ]
-    },
-    {
-      icon: CreditCard,
-      title: "Ödeme ve İade Koşulları",
-      items: [
-        "Ödemeler güvenli ödeme sistemleri üzerinden yapılır",
-        "İade talepleri 14 gün içinde yapılmalıdır",
-        "Kursun %20'sinden fazlası tamamlanmışsa iade yapılmaz",
-        "İade işlemleri 5-10 iş günü sürebilir"
-      ]
-    },
-    {
-      icon: Shield,
-      title: "Fikri Mülkiyet Hakları",
-      items: [
-        "Tüm içerikler telif hakkı ile korunmaktadır",
-        "Platform logosu ve markası kullanılamaz",
-        "Kullanıcı içerikleri için lisans verilir",
-        "İhlal durumunda yasal işlem başlatılabilir"
-      ]
-    }
-  ];
+/**
+ * Kullanım şartları.
+ *
+ * Metin platformun gerçek işleyişine göre yazıldı (tek seferlik satın alma,
+ * süresiz erişim, %20 vergi + %55 eğitmen payı, kredi programı, video işleme).
+ * Genel geçer şablon cümleler yerine burada gerçekten geçerli olan kurallar var.
+ */
+const Terms: React.FC = () => (
+    <PageLayout
+        title="Kullanım Şartları"
+        lead="Bu şartlar, Edurce'yi kullanan herkes için geçerlidir. Hesap açarak veya kurs satın alarak bu şartları kabul etmiş olursunuz."
+        updatedAt={UPDATED}
+        seo={{
+            title: 'Kullanım Şartları | Edurce',
+            description: 'Edurce kullanım şartları: hesap kuralları, satın alma ve iade, eğitmen yükümlülükleri, içerik hakları ve sorumluluk sınırları.',
+            canonical: 'https://edurce.com/terms',
+        }}
+        sections={[
+            {
+                id: 'taraflar',
+                title: 'Taraflar ve kapsam',
+                body: (
+                    <>
+                        <P>
+                            Bu sözleşme, Edurce platformunu işleten taraf ("Edurce", "biz") ile
+                            platformu kullanan gerçek veya tüzel kişi ("kullanıcı", "siz") arasındadır.
+                        </P>
+                        <P>
+                            Platformda iki tür kullanıcı vardır: kurs satın alıp izleyen
+                            <strong> öğrenciler</strong> ve kurs hazırlayıp yayınlayan
+                            <strong> eğitmenler</strong>. Bir kullanıcı aynı anda her ikisi de olabilir.
+                            Bazı maddeler yalnızca eğitmenler için geçerlidir ve açıkça belirtilmiştir.
+                        </P>
+                        <P>
+                            Edurce, eğitmenlerle öğrencileri buluşturan bir aracıdır. Kurs içeriğini
+                            Edurce üretmez; içerik eğitmene aittir ve sorumluluğu eğitmendedir.
+                        </P>
+                    </>
+                ),
+            },
+            {
+                id: 'hesap',
+                title: 'Hesap açma ve kullanım',
+                body: (
+                    <>
+                        <P>
+                            Hesap açmak için geçerli bir e-posta adresi gerekir ve adres doğrulama
+                            koduyla teyit edilir. Google, Facebook veya Apple hesabıyla da giriş
+                            yapılabilir; bu durumda ilgili sağlayıcıdan yalnızca ad ve e-posta bilgisi
+                            alınır.
+                        </P>
+                        <P>
+                            18 yaşından küçükseniz platformu ancak veli veya vasinizin izniyle
+                            kullanabilirsiniz.
+                        </P>
+                        <H3>Sizin sorumluluğunuz</H3>
+                        <UL
+                            items={[
+                                'Kayıt sırasında verdiğiniz bilgilerin doğru olması.',
+                                'Hesap parolanızı gizli tutmak ve başkasıyla paylaşmamak.',
+                                'Hesabınızdan yapılan tüm işlemler — yetkisiz bir erişim fark ederseniz derhal bize bildirin.',
+                                'Aynı hesabı birden fazla kişiyle paylaşmamak.',
+                            ]}
+                        />
+                        <P>
+                            Bir hesabın çok sayıda kişi tarafından paylaşıldığını tespit edersek
+                            hesabı askıya alabiliriz.
+                        </P>
+                    </>
+                ),
+            },
+            {
+                id: 'satin-alma',
+                title: 'Satın alma ve ödeme',
+                body: (
+                    <>
+                        <P>
+                            Kurslar tek seferlik ödemeyle satın alınır; otomatik yenilenen bir
+                            abonelik yoktur. Satın alınan kursa süresiz erişirsiniz. Eğitmen kursu
+                            güncellerse güncellemelere ek ücret ödemeden erişirsiniz.
+                        </P>
+                        <P>
+                            Kursun fiyatını eğitmen belirler ve değiştirebilir. Sizin için geçerli
+                            olan fiyat, satın alma anında ödeme ekranında gösterilen tutardır. Sonradan
+                            yapılan fiyat değişiklikleri geçmiş satın almaları etkilemez.
+                        </P>
+                        <P>
+                            Ödemeler 3D Secure destekli ödeme altyapısı üzerinden alınır. Kart
+                            bilgileriniz Edurce sistemlerinde saklanmaz.
+                        </P>
+                        <H3>Erişimin başlaması</H3>
+                        <P>
+                            Ödeme onaylandığı anda kurs Eğitimlerim sayfanıza eklenir. Ödeme
+                            onaylanmadıysa erişim açılmaz; bankanızdan provizyon görünüyor olsa dahi
+                            tutar tahsil edilmemiştir.
+                        </P>
+                    </>
+                ),
+            },
+            {
+                id: 'iade',
+                title: 'Cayma hakkı ve iade',
+                body: (
+                    <>
+                        <P>
+                            Dijital içerik satışlarında, içerik anında erişime açıldığı için mesafeli
+                            sözleşmelere ilişkin mevzuat uyarınca cayma hakkı sınırlıdır. Buna rağmen
+                            aşağıdaki durumlarda iade talebinizi değerlendiriyoruz:
+                        </P>
+                        <UL
+                            items={[
+                                'Kursun tanıtımında belirtilen içerikle gerçek içeriğin belirgin biçimde uyuşmaması.',
+                                'Teknik bir arıza nedeniyle kursa erişememeniz ve sorunun makul sürede çözülememesi.',
+                                'Yanlışlıkla aynı kursu iki kez satın almanız.',
+                                'Satın almadan sonraki 14 gün içinde ve kursun %20\'sinden azını izlemiş olmanız.',
+                            ]}
+                        />
+                        <P>
+                            Talebinizi{' '}
+                            <Link to="/contact" className="text-brand-700 hover:underline">iletişim sayfasından</Link>{' '}
+                            iletebilirsiniz. Onaylanan iadeler ödeme yaptığınız yönteme yapılır ve
+                            bankanıza bağlı olarak hesabınıza geçmesi birkaç iş günü sürebilir.
+                            İade edilen kursa erişiminiz sonlandırılır.
+                        </P>
+                        <Note>
+                            İade işlemi tamamlandığında, o satın almadan kazandığınız Edurce Kredi de
+                            geri alınır.
+                        </Note>
+                    </>
+                ),
+            },
+            {
+                id: 'kredi',
+                title: 'Edurce Kredi',
+                body: (
+                    <>
+                        <P>
+                            Edurce Kredi, platformda geçirdiğiniz zamanın karşılığı olarak kazandığınız
+                            ve kurs alırken indirim olarak kullanabildiğiniz bir sadakat programıdır.
+                        </P>
+                        <UL
+                            items={[
+                                'Kredinin nakit karşılığı yoktur; paraya çevrilemez, banka hesabına aktarılamaz.',
+                                'Krediler başka bir kullanıcıya devredilemez.',
+                                'Bir siparişin en fazla %50\'si krediyle ödenebilir.',
+                                'Kredi kazanma kuralları ve seviye eşikleri önceden bildirilerek değiştirilebilir.',
+                                'Hesabın kapatılması durumunda birikmiş krediler silinir.',
+                            ]}
+                        />
+                        <P>
+                            Sistemi yanıltarak kredi biriktirdiği tespit edilen hesapların kredileri
+                            iptal edilir.
+                        </P>
+                    </>
+                ),
+            },
+            {
+                id: 'kullanim-kurallari',
+                title: 'Yasak kullanım',
+                body: (
+                    <>
+                        <P>Platformu kullanırken aşağıdakileri yapamazsınız:</P>
+                        <UL
+                            items={[
+                                'Kurs içeriğini indirmek, kaydetmek, çoğaltmak veya üçüncü kişilerle paylaşmak.',
+                                'İçeriği başka bir platformda yeniden yayınlamak veya satmak.',
+                                'Hesap bilgilerinizi paylaşarak başkalarının erişimini sağlamak.',
+                                'Platformun teknik korumalarını aşmaya çalışmak, tersine mühendislik yapmak.',
+                                'Otomatik araçlarla toplu veri çekmek veya sisteme aşırı yük bindirmek.',
+                                'Başka kullanıcıları taciz etmek, hakaret içeren mesaj veya yorum yazmak.',
+                                'Yanıltıcı, sahte veya spam nitelikli içerik ve değerlendirme göndermek.',
+                            ]}
+                        />
+                        <P>
+                            Bu kuralların ihlali hâlinde içeriği kaldırabilir, hesabı askıya alabilir
+                            veya kapatabiliriz. Ağır ihlallerde yasal yollara başvurma hakkımız saklıdır.
+                        </P>
+                    </>
+                ),
+            },
+            {
+                id: 'egitmen',
+                title: 'Eğitmen yükümlülükleri',
+                body: (
+                    <>
+                        <P><strong>Bu bölüm yalnızca eğitmenler için geçerlidir.</strong></P>
+                        <H3>İçerik sorumluluğu</H3>
+                        <UL
+                            items={[
+                                'Yayınladığınız içeriğin size ait olduğunu veya yayınlama hakkına sahip olduğunuzu taahhüt edersiniz.',
+                                'Üçüncü kişilere ait müzik, görsel, video veya metin kullanıyorsanız gerekli izinleri almış olmalısınız.',
+                                'Kurs tanıtımında verdiğiniz bilgiler (süre, kapsam, seviye) gerçeği yansıtmalıdır.',
+                                'Öğrenci sorularına makul sürede yanıt vermeye çalışmalısınız.',
+                            ]}
+                        />
+                        <P>
+                            Telif ihlali bildirimi aldığımızda içeriği geçici olarak yayından
+                            kaldırır ve size bildiririz. İtiraz hakkınız vardır.
+                        </P>
 
-  const prohibitedActivities = [
-    "Platform güvenliğini tehdit edici faaliyetler",
-    "Diğer kullanıcıları rahatsız edici davranışlar",
-    "Spam, reklam veya istenmeyen içerik paylaşımı",
-    "Sahte hesap oluşturma veya kimlik hırsızlığı",
-    "Teknik sistemleri manipüle etme girişimleri",
-    "Telif hakkı ihlali yapıcı içerik paylaşımı"
-  ];
+                        <H3>Gelir paylaşımı ve ödeme</H3>
+                        <P>
+                            Brüt satış tutarından önce yasal vergi (%20) düşülür, kalan tutarın
+                            %55'i eğitmene aittir.
+                        </P>
+                        <Table
+                            head={['Kalem', '1.000 ₺ satışta']}
+                            rows={[
+                                ['Brüt satış', '1.000,00 ₺'],
+                                ['Vergi (%20)', '−200,00 ₺'],
+                                ['Eğitmen payı (kalanın %55\'i)', '440,00 ₺'],
+                                ['Platform payı', '360,00 ₺'],
+                            ]}
+                        />
+                        <P>
+                            Ödemeler, eğitmen panelinde belirttiğiniz IBAN'a ve seçtiğiniz ödeme
+                            gününde yapılır. Ödeme yapılabilmesi için hesap bilgilerinizin eksiksiz
+                            ve doğru olması gerekir. Vergisel yükümlülükleriniz size aittir.
+                        </P>
+                        <P>
+                            İade edilen bir satışın eğitmen payı, sonraki ödeme döneminde bakiyenizden
+                            mahsup edilir.
+                        </P>
 
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-6 bg-blue-100 text-blue-800 hover:bg-blue-200">
-              Kullanım Koşulları
-            </Badge>
-            <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Kullanım Koşulları ve Şartları
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-              EduPlatform hizmetlerini kullanarak aşağıdaki koşul ve şartları kabul etmiş olursunuz. 
-              Lütfen dikkatlice okuyunuz.
-            </p>
-            <div className="flex items-center justify-center space-x-4 text-sm text-muted-foreground">
-              <Clock className="w-4 h-4" />
-              <span>Son güncelleme: {lastUpdated}</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Introduction */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center text-2xl">
-                  <Scale className="w-6 h-6 mr-3 text-blue-500" />
-                  Giriş ve Genel Hükümler
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-                <p>
-                  Bu kullanım koşulları ("Koşullar"), EduPlatform ("Platform", "Biz", "Bizim") 
-                  tarafından sunulan online eğitim hizmetlerinin kullanımını düzenler.
-                </p>
-                <p>
-                  Platformumuzu kullanarak, bu koşulları tamamen okuduğunuzu, anladığınızı ve 
-                  kabul ettiğinizi beyan edersiniz. Bu koşulları kabul etmiyorsanız, 
-                  lütfen platformumuzu kullanmayınız.
-                </p>
-                <p>
-                  Bu koşullar zaman zaman güncellenebilir. Önemli değişiklikler hakkında 
-                  kullanıcılarımızı bilgilendireceğiz.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Main Sections */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-6">Temel Koşullar ve Sorumluluklar</h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Platform kullanımında uyulması gereken temel kurallar ve sorumluluklar
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {sections.map((section, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
-                      <section.icon className="w-5 h-5 text-white" />
-                    </div>
-                    {section.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
-                    {section.items.map((item, itemIndex) => (
-                      <li key={itemIndex} className="flex items-start">
-                        <CheckCircle className="w-4 h-4 mr-3 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-muted-foreground">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Prohibited Activities */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-6">Yasaklı Faaliyetler</h2>
-              <p className="text-lg text-muted-foreground">
-                Aşağıdaki faaliyetler kesinlikle yasaktır ve hesap kapatılmasına neden olabilir
-              </p>
-            </div>
-            
-            <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center text-red-600">
-                  <AlertCircle className="w-6 h-6 mr-3" />
-                  Yasak Davranışlar
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {prohibitedActivities.map((activity, index) => (
-                    <div key={index} className="flex items-start p-3 bg-red-50 rounded-lg">
-                      <AlertCircle className="w-4 h-4 mr-3 text-red-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-red-800">{activity}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <div className="flex items-start">
-                    <AlertCircle className="w-5 h-5 mr-3 text-yellow-600 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-yellow-800 mb-2">Önemli Uyarı</h4>
-                      <p className="text-sm text-yellow-700">
-                        Bu kurallara uymayan kullanıcıların hesapları uyarı verilmeksizin 
-                        askıya alınabilir veya tamamen kapatılabilir.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Liability and Disclaimers */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-6">Sorumluluk Reddi ve Sınırlamalar</h2>
-              <p className="text-lg text-muted-foreground">
-                Platform kullanımında sorumluluk sınırları ve yasal uyarılar
-              </p>
-            </div>
-            
-            <div className="space-y-8">
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Shield className="w-5 h-5 mr-2 text-blue-500" />
-                    Hizmet Garantisi
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-muted-foreground">
-                  <p className="mb-4">
-                    Platform hizmetleri "olduğu gibi" sunulmaktadır. Hizmetin kesintisiz, 
-                    hatasız veya güvenli olacağına dair garanti verilmemektedir.
-                  </p>
-                  <p>
-                    Teknik sorunlar, bakım çalışmaları veya üçüncü taraf kaynaklı problemler 
-                    nedeniyle hizmet kesintileri yaşanabilir.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Scale className="w-5 h-5 mr-2 text-purple-500" />
-                    Sorumluluk Sınırları
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-muted-foreground">
-                  <p className="mb-4">
-                    EduPlatform, platform kullanımından kaynaklanan dolaylı, özel veya 
-                    sonuçsal zararlardan sorumlu değildir.
-                  </p>
-                  <p>
-                    Toplam sorumluluk miktarı, kullanıcının son 12 ayda platforma ödediği 
-                    toplam tutarla sınırlıdır.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Globe className="w-5 h-5 mr-2 text-green-500" />
-                    Geçerli Hukuk
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-muted-foreground">
-                  <p className="mb-4">
-                    Bu koşullar Türkiye Cumhuriyeti hukukuna tabidir ve Türk mahkemeleri 
-                    yetkilidir.
-                  </p>
-                  <p>
-                    Uyuşmazlıklar öncelikle dostane çözüm yolları ile çözülmeye çalışılacaktır.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">Sorularınız mı Var?</h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              Kullanım koşulları hakkında sorularınız varsa bizimle iletişime geçebilirsiniz
-            </p>
-            <div className="space-y-4 mb-8">
-              <div className="flex items-center justify-center">
-                <Mail className="w-5 h-5 mr-3 text-blue-500" />
-                <span>legal@eduplatform.com</span>
-              </div>
-              <div className="flex items-center justify-center">
-                <FileText className="w-5 h-5 mr-3 text-blue-500" />
-                <span>Hukuk İşleri Departmanı</span>
-              </div>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                <Mail className="w-5 h-5 mr-2" />
-                İletişime Geç
-              </Button>
-              <Button variant="outline" size="lg">
-                <FileText className="w-5 h-5 mr-2" />
-                PDF İndir
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-};
+                        <H3>İçerik hakları</H3>
+                        <P>
+                            İçeriğinizin tüm hakları sizde kalır. Edurce'ye yalnızca içeriği platformda
+                            barındırmak, öğrencilere sunmak ve platformu tanıtmak amacıyla kullanma
+                            lisansı vermiş olursunuz. Kursunuzu yayından kaldırırsanız bu lisans sona
+                            erer; ancak kursu daha önce satın almış öğrencilerin erişimi devam eder.
+                        </P>
+                    </>
+                ),
+            },
+            {
+                id: 'hizmet',
+                title: 'Hizmetin sürekliliği',
+                body: (
+                    <>
+                        <P>
+                            Platformu kesintisiz çalıştırmak için makul çabayı gösteriyoruz ancak
+                            kesintisiz erişim garantisi vermiyoruz. Bakım, güncelleme veya
+                            beklenmedik arızalar nedeniyle geçici kesintiler olabilir. Planlı
+                            bakımları önceden duyurmaya çalışırız.
+                        </P>
+                        <P>
+                            Platformun özelliklerini geliştirebilir, değiştirebilir veya
+                            kaldırabiliriz. Satın aldığınız kursa erişiminizi ortadan kaldıracak
+                            değişiklikleri önceden bildiririz.
+                        </P>
+                    </>
+                ),
+            },
+            {
+                id: 'sorumluluk',
+                title: 'Sorumluluğun sınırı',
+                body: (
+                    <>
+                        <P>
+                            Kurs içeriğinin doğruluğu, güncelliği ve size uygunluğu konusunda garanti
+                            vermiyoruz. İçerik eğitmene aittir; eğitim amaçlıdır ve profesyonel
+                            danışmanlık yerine geçmez.
+                        </P>
+                        <P>
+                            Bir kursu izleyerek belirli bir sonuca (iş bulma, gelir elde etme,
+                            sınav başarısı) ulaşacağınıza dair taahhütte bulunmuyoruz.
+                        </P>
+                        <P>
+                            Edurce'nin sorumluluğu, her hâlükârda ilgili işlem için ödediğiniz tutarla
+                            sınırlıdır. Dolaylı zararlardan, kâr kaybından veya veri kaybından
+                            sorumlu değiliz. Bu sınırlama, tüketici mevzuatının emredici hükümlerini
+                            ortadan kaldırmaz.
+                        </P>
+                    </>
+                ),
+            },
+            {
+                id: 'fesih',
+                title: 'Hesabın kapatılması',
+                body: (
+                    <>
+                        <P>
+                            Hesabınızı dilediğiniz zaman ayarlar sayfasından kapatabilirsiniz.
+                            Hesap kapatıldığında satın aldığınız kurslara erişiminiz sona erer ve
+                            birikmiş krediler silinir; bu işlem geri alınamaz.
+                        </P>
+                        <P>
+                            Bu şartların ihlali hâlinde hesabınızı askıya alabilir veya
+                            kapatabiliriz. Bu durumda, ihlalle ilgisi olmayan satın almalarınız için
+                            iade talebinde bulunabilirsiniz.
+                        </P>
+                        <P>
+                            Hesap kapatıldıktan sonra verilerinizin ne kadar süre saklandığı{' '}
+                            <Link to="/privacy" className="text-brand-700 hover:underline">gizlilik politikasında</Link>{' '}
+                            açıklanmıştır.
+                        </P>
+                    </>
+                ),
+            },
+            {
+                id: 'degisiklik',
+                title: 'Şartlarda değişiklik',
+                body: (
+                    <>
+                        <P>
+                            Bu şartları güncelleyebiliriz. Önemli değişiklikleri yürürlüğe girmeden
+                            en az 15 gün önce e-posta ile veya platform üzerinden bildiririz.
+                            Değişiklikten sonra platformu kullanmaya devam etmeniz yeni şartları
+                            kabul ettiğiniz anlamına gelir.
+                        </P>
+                        <P>
+                            Sayfanın başındaki yürürlük tarihi, metnin en son ne zaman güncellendiğini
+                            gösterir.
+                        </P>
+                    </>
+                ),
+            },
+            {
+                id: 'uygulanacak-hukuk',
+                title: 'Uygulanacak hukuk ve uyuşmazlık',
+                body: (
+                    <>
+                        <P>
+                            Bu sözleşmeye Türkiye Cumhuriyeti hukuku uygulanır. Uyuşmazlıklarda
+                            Türkiye Cumhuriyeti mahkemeleri ve icra daireleri yetkilidir.
+                        </P>
+                        <P>
+                            Tüketici sıfatıyla, parasal sınırlar dâhilinde bulunduğunuz yerdeki
+                            Tüketici Hakem Heyetine veya Tüketici Mahkemesine başvurma hakkınız saklıdır.
+                        </P>
+                        <P>
+                            Her türlü soru ve talebiniz için önce{' '}
+                            <Link to="/contact" className="text-brand-700 hover:underline">bizimle iletişime geçmenizi</Link>{' '}
+                            rica ederiz; sorunların çoğu bu aşamada çözülüyor.
+                        </P>
+                    </>
+                ),
+            },
+        ]}
+    />
+);
 
 export default Terms;
