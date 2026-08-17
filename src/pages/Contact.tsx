@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { API_BASE_URL } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSeo } from '@/hooks/useSeo';
-import { PageHeader } from '@/components/content/PageLayout';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -79,48 +78,46 @@ const Contact: React.FC = () => {
     };
 
     const inputClass =
-        'w-full h-11 px-3.5 rounded-lg border border-slate-300 bg-white text-[15px] placeholder:text-slate-400 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all';
+        'w-full h-11 px-3.5 rounded-lg border border-slate-300 bg-white text-[15px] focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-500/15 transition-colors';
 
     return (
         <div className="min-h-screen bg-white">
-            <PageHeader
-                title="İletişim"
-                lead="Sorunuzu aşağıdaki formdan iletin. Mesajınız kayda alınır, size bir talep numarası verilir ve en geç iki iş günü içinde dönüş yapılır."
-            />
+            <header className="border-b border-slate-200 bg-slate-50/70">
+                <div className="container px-4 py-12 lg:py-16">
+                    <nav className="text-xs text-slate-500 mb-4">
+                        <Link to="/" className="hover:text-brand-700">Ana sayfa</Link>
+                        <span className="mx-2 text-slate-300">/</span>
+                        <span className="text-slate-700">İletişim</span>
+                    </nav>
+                    <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">İletişim</h1>
+                    <p className="text-[17px] text-slate-600 mt-4 max-w-2xl leading-relaxed">
+                        Sorunuzu aşağıdaki formdan iletin. Mesajınız kayda alınır, size bir talep
+                        numarası verilir ve en geç iki iş günü içinde dönüş yapılır.
+                    </p>
+                </div>
+            </header>
 
-            <div className="container px-4 py-14 lg:py-20">
+            <div className="container px-4 py-12 lg:py-16">
                 <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
 
                     {/* Form */}
                     <div className="flex-1 max-w-2xl">
                         {ticketId !== null ? (
-                            <div className="rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 to-brand-50/20 px-7 py-8">
-                                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand-700/70">
-                                    Talep numarası
-                                </p>
-                                <div className="text-[40px] font-bold text-brand-800 tabular-nums leading-none mt-2">
-                                    #{ticketId}
-                                </div>
-                                <span className="block w-10 h-[3px] rounded-full bg-brand-600 mt-5 mb-4" />
-                                <h2 className="text-[19px] font-bold text-slate-900 tracking-tight">
-                                    Mesajınız alındı
-                                </h2>
-                                <p className="text-[15.5px] text-slate-700 mt-2 leading-[1.75] max-w-md">
-                                    Onay e-postası gönderdik; dönüşü de aynı adrese yapacağız. Bu
-                                    numarayı saklarsanız takip etmek kolaylaşır.
+                            <div className="border border-brand-200 bg-brand-50/60 rounded-xl p-6">
+                                <h2 className="text-lg font-bold text-slate-900">Mesajınız alındı</h2>
+                                <p className="text-[15px] text-slate-700 mt-2 leading-relaxed">
+                                    Talep numaranız <strong>#{ticketId}</strong>. Onay e-postası
+                                    gönderdik; dönüşü de aynı adrese yapacağız.
                                 </p>
                                 <button
                                     onClick={() => setTicketId(null)}
-                                    className="text-sm font-semibold text-brand-700 hover:text-brand-900 hover:underline mt-5"
+                                    className="text-sm font-semibold text-brand-700 hover:underline mt-4"
                                 >
                                     Yeni mesaj gönder
                                 </button>
                             </div>
                         ) : (
-                            <form
-                                onSubmit={submit}
-                                className="space-y-5 rounded-2xl border border-slate-200 bg-white px-6 py-7 sm:px-8 sm:py-8 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_12px_32px_-16px_rgba(23,93,93,0.18)]"
-                            >
+                            <form onSubmit={submit} className="space-y-5">
                                 <div className="grid sm:grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
                                         <label htmlFor="name" className="text-sm font-medium text-slate-700">
@@ -177,14 +174,14 @@ const Contact: React.FC = () => {
                                         id="message" required rows={7} value={form.message}
                                         onChange={e => set('message', e.target.value)}
                                         placeholder="Sorununuzu mümkün olduğunca açık anlatın. Bir kursla ilgiliyse kursun adını, hata alıyorsanız hatanın tam metnini yazmanız çözümü hızlandırır."
-                                        className="w-full p-3.5 rounded-lg border border-slate-300 bg-white text-[15px] leading-relaxed placeholder:text-slate-400 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all resize-y"
+                                        className="w-full p-3.5 rounded-lg border border-slate-300 bg-white text-[15px] leading-relaxed focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-500/15 transition-colors resize-y"
                                     />
-                                    <p className="text-xs text-slate-500 tabular-nums">
+                                    <p className="text-xs text-slate-500">
                                         {form.message.length} / 5000 karakter
                                     </p>
                                 </div>
 
-                                <div className="flex flex-wrap items-center gap-4 border-t border-slate-100 mt-6 -mx-6 sm:-mx-8 px-6 sm:px-8 pt-5">
+                                <div className="flex flex-wrap items-center gap-4 pt-1">
                                     <Button
                                         type="submit"
                                         disabled={sending}
@@ -204,58 +201,55 @@ const Contact: React.FC = () => {
                     </div>
 
                     {/* Yan bilgi */}
-                    <aside className="lg:w-80 shrink-0 space-y-6">
-                        <div className="rounded-2xl border border-slate-200 px-6 py-6">
-                            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand-700/70">
-                                Yanıt süresi
-                            </p>
-                            <div className="text-[34px] font-bold text-brand-800 tabular-nums leading-none mt-2.5">
-                                2 <span className="text-[15px] font-semibold text-slate-500">iş günü</span>
-                            </div>
-                            <p className="text-[14.5px] text-slate-600 leading-[1.7] mt-3">
-                                En geç yanıt süremiz bu. Hafta içi gelen mesajlara genellikle aynı
-                                gün, hafta sonu gelenlere pazartesi dönüş yapıyoruz.
-                            </p>
-                        </div>
-
-                        <div className="rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 to-brand-50/20 px-6 py-6">
-                            <h2 className="text-[15px] font-bold text-slate-900">Önce buraya bakın</h2>
-                            <span className="block w-8 h-[3px] rounded-full bg-brand-600 mt-2.5 mb-3" />
-                            <p className="text-[14.5px] text-slate-600 leading-[1.7]">
+                    <aside className="lg:w-72 shrink-0 space-y-8">
+                        <div>
+                            <h2 className="text-sm font-bold text-slate-900 mb-3">Önce buraya bakın</h2>
+                            <p className="text-[15px] text-slate-600 leading-relaxed">
                                 Soruların çoğunun yanıtı{' '}
-                                <Link to="/help" className="text-brand-700 font-medium hover:underline">yardım merkezinde</Link>{' '}
+                                <Link to="/help" className="text-brand-700 hover:underline">yardım merkezinde</Link>{' '}
                                 var. Oradan çözemezseniz formu doldurun.
                             </p>
                         </div>
 
-                        <div className="px-1">
-                            <h2 className="text-[15px] font-bold text-slate-900">Özel konular</h2>
-                            <span className="block w-8 h-[3px] rounded-full bg-brand-600 mt-2.5 mb-4" />
-                            <dl className="space-y-4">
-                                {[
-                                    {
-                                        t: 'Telif hakkı bildirimi',
-                                        d: <>Hakkınızı ihlal eden içeriğin bağlantısını ve hak sahipliğinizi gösteren belgeyi ekleyin.</>,
-                                    },
-                                    {
-                                        t: 'Kişisel veri talebi',
-                                        d: <>KVKK kapsamındaki taleplerinizi 30 gün içinde ücretsiz sonuçlandırıyoruz. Ayrıntılar <Link to="/privacy" className="text-brand-700 font-medium hover:underline">gizlilik politikasında</Link>.</>,
-                                    },
-                                    {
-                                        t: 'Güvenlik açığı',
-                                        d: <>Bulduğunuz açığı yayınlamadan önce bize bildirin; hızlıca kapatıp size dönüş yapalım.</>,
-                                    },
-                                    {
-                                        t: 'Eğitmen olmak',
-                                        d: <>Süreç ve kazanç modeli <Link to="/become-instructor" className="text-brand-700 font-medium hover:underline">eğitmen sayfasında</Link> anlatılıyor.</>,
-                                    },
-                                ].map(item => (
-                                    <div key={item.t} className="pl-4 border-l-2 border-slate-200 hover:border-brand-400 transition-colors">
-                                        <dt className="text-[14px] font-semibold text-slate-800">{item.t}</dt>
-                                        <dd className="text-[14.5px] text-slate-600 leading-[1.7] mt-1">{item.d}</dd>
-                                    </div>
-                                ))}
-                            </dl>
+                        <div>
+                            <h2 className="text-sm font-bold text-slate-900 mb-3">Yanıt süresi</h2>
+                            <p className="text-[15px] text-slate-600 leading-relaxed">
+                                Hafta içi mesajlara aynı gün, hafta sonu gelenlere pazartesi dönüş
+                                yapmaya çalışıyoruz. En geç yanıt süremiz iki iş günüdür.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h2 className="text-sm font-bold text-slate-900 mb-3">Özel konular</h2>
+                            <ul className="space-y-3 text-[15px] text-slate-600 leading-relaxed">
+                                <li>
+                                    <strong className="text-slate-800">Telif hakkı bildirimi:</strong>{' '}
+                                    Hakkınızı ihlal eden içeriğin bağlantısını ve hak sahipliğinizi
+                                    gösteren belgeyi ekleyin.
+                                </li>
+                                <li>
+                                    <strong className="text-slate-800">Kişisel veri talebi:</strong>{' '}
+                                    KVKK kapsamındaki taleplerinizi 30 gün içinde ücretsiz
+                                    sonuçlandırıyoruz. Ayrıntılar{' '}
+                                    <Link to="/privacy" className="text-brand-700 hover:underline">gizlilik politikasında</Link>.
+                                </li>
+                                <li>
+                                    <strong className="text-slate-800">Güvenlik açığı:</strong>{' '}
+                                    Bulduğunuz açığı yayınlamadan önce bize bildirin; hızlıca
+                                    kapatıp size dönüş yapalım.
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h2 className="text-sm font-bold text-slate-900 mb-3">Eğitmen olmak</h2>
+                            <p className="text-[15px] text-slate-600 leading-relaxed">
+                                Süreç ve kazanç modeli{' '}
+                                <Link to="/become-instructor" className="text-brand-700 hover:underline">
+                                    eğitmen sayfasında
+                                </Link>{' '}
+                                anlatılıyor.
+                            </p>
                         </div>
                     </aside>
                 </div>

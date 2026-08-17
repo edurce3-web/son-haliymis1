@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSeo } from '@/hooks/useSeo';
-import { PageHeader } from '@/components/content/PageLayout';
 import { cn } from '@/lib/utils';
 
 interface Entry {
@@ -372,55 +371,57 @@ const Help: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-white">
-            <PageHeader
-                title="Yardım merkezi"
-                lead={
-                    <>
+            <header className="border-b border-slate-200 bg-slate-50/70">
+                <div className="container px-4 py-12 lg:py-16">
+                    <nav className="text-xs text-slate-500 mb-4">
+                        <Link to="/" className="hover:text-brand-700">Ana sayfa</Link>
+                        <span className="mx-2 text-slate-300">/</span>
+                        <span className="text-slate-700">Yardım merkezi</span>
+                    </nav>
+                    <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
+                        Yardım merkezi
+                    </h1>
+                    <p className="text-[17px] text-slate-600 mt-4 max-w-2xl leading-relaxed">
                         Sık sorulan soruların yanıtları burada. Aradığınızı bulamazsanız{' '}
-                        <Link to="/contact" className="text-brand-700 font-medium hover:underline">bize yazın</Link>.
-                    </>
-                }
-            >
-                <div className="mt-8 max-w-xl">
-                    <label htmlFor="help-search" className="sr-only">Yardım konularında ara</label>
-                    <input
-                        id="help-search"
-                        value={query}
-                        onChange={e => setQuery(e.target.value)}
-                        placeholder="Konu ara — iade, sertifika, video, kredi…"
-                        className="w-full py-3.5 px-5 rounded-xl border border-brand-200/80 bg-white text-[15.5px] shadow-sm placeholder:text-slate-400 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all"
-                    />
-                    {query && (
-                        <p className="text-sm text-slate-500 mt-2.5 pl-1">
-                            {totalHits > 0
-                                ? <><span className="font-semibold text-brand-800 tabular-nums">{totalHits}</span> sonuç bulundu</>
-                                : 'Sonuç bulunamadı'}
-                        </p>
-                    )}
-                </div>
-            </PageHeader>
+                        <Link to="/contact" className="text-brand-700 hover:underline">bize yazın</Link>.
+                    </p>
 
-            <div className="container px-4 py-14 lg:py-20">
-                <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+                    <div className="mt-7 max-w-lg">
+                        <label htmlFor="help-search" className="sr-only">Yardım konularında ara</label>
+                        <input
+                            id="help-search"
+                            value={query}
+                            onChange={e => setQuery(e.target.value)}
+                            placeholder="Konu ara — iade, sertifika, video, kredi…"
+                            className="w-full h-11 px-4 rounded-lg border border-slate-300 bg-white text-[15px] focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-500/15 transition-colors"
+                        />
+                        {query && (
+                            <p className="text-sm text-slate-500 mt-2">
+                                {totalHits > 0 ? `${totalHits} sonuç` : 'Sonuç bulunamadı'}
+                            </p>
+                        )}
+                    </div>
+                </div>
+            </header>
+
+            <div className="container px-4 py-12 lg:py-16">
+                <div className="flex flex-col lg:flex-row gap-12">
 
                     {/* Bölüm listesi */}
                     {!query && (
-                        <nav className="lg:w-60 shrink-0" aria-label="Bölümler">
+                        <nav className="lg:w-56 shrink-0" aria-label="Bölümler">
                             <div className="lg:sticky lg:top-24">
-                                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand-700/70 mb-4">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-3">
                                     Bölümler
                                 </p>
-                                <ol className="space-y-0.5">
-                                    {GROUPS.map((g, i) => (
+                                <ol className="space-y-1 border-l border-slate-200">
+                                    {GROUPS.map(g => (
                                         <li key={g.id}>
                                             <a
                                                 href={`#${g.id}`}
-                                                className="group flex items-baseline gap-2.5 rounded-md px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all duration-200"
+                                                className="-ml-px block border-l-2 border-transparent pl-3 py-1 text-sm text-slate-500 hover:text-slate-800 hover:border-slate-300 transition-colors"
                                             >
-                                                <span className="text-[11px] tabular-nums font-semibold text-slate-300 group-hover:text-brand-500 transition-colors">
-                                                    {String(i + 1).padStart(2, '0')}
-                                                </span>
-                                                <span className="leading-snug">{g.title}</span>
+                                                {g.title}
                                             </a>
                                         </li>
                                     ))}
@@ -431,70 +432,49 @@ const Help: React.FC = () => {
 
                     <div className="flex-1 min-w-0 max-w-3xl">
                         {totalHits === 0 ? (
-                            <div className="rounded-2xl border border-slate-200 bg-slate-50/60 py-16 px-6 text-center">
-                                <p className="text-[17px] font-semibold text-slate-800">
+                            <div className="border border-slate-200 rounded-xl py-14 px-6 text-center">
+                                <p className="text-[15px] font-medium text-slate-800">
                                     "{query}" için sonuç bulunamadı
                                 </p>
-                                <p className="text-[15.5px] text-slate-600 mt-2.5 max-w-md mx-auto leading-relaxed">
+                                <p className="text-[15px] text-slate-600 mt-2 max-w-md mx-auto leading-relaxed">
                                     Farklı bir kelime deneyin ya da{' '}
-                                    <Link to="/contact" className="text-brand-700 font-medium hover:underline">
+                                    <Link to="/contact" className="text-brand-700 hover:underline">
                                         doğrudan bize yazın
                                     </Link>
                                     .
                                 </p>
                             </div>
                         ) : (
-                            filtered.map((group, gi) => (
-                                <section key={group.id} id={group.id} className="scroll-mt-24 mb-14 last:mb-0 relative">
-                                    <span
-                                        aria-hidden
-                                        className="hidden xl:block absolute -left-20 top-0 text-5xl font-bold tabular-nums text-brand-100 select-none leading-none"
-                                    >
-                                        {String(gi + 1).padStart(2, '0')}
-                                    </span>
+                            filtered.map(group => (
+                                <section key={group.id} id={group.id} className="scroll-mt-24 mb-12 last:mb-0">
+                                    <h2 className="text-xl font-bold text-slate-900 mb-4">{group.title}</h2>
 
-                                    <h2 className="text-[22px] font-bold text-slate-900 tracking-tight">
-                                        {group.title}
-                                    </h2>
-                                    <span className="block w-10 h-[3px] rounded-full bg-brand-600 mt-3 mb-6" />
-
-                                    <div className="rounded-2xl border border-slate-200 divide-y divide-slate-100 overflow-hidden">
+                                    <div className="border-y border-slate-200 divide-y divide-slate-200">
                                         {group.entries.map(entry => {
                                             const key = `${group.id}-${entry.q}`;
                                             const isOpen = open === key || Boolean(query);
                                             return (
-                                                <div
-                                                    key={key}
-                                                    className={cn(
-                                                        'transition-colors',
-                                                        isOpen ? 'bg-brand-50/40' : 'hover:bg-slate-50/70'
-                                                    )}
-                                                >
+                                                <div key={key}>
                                                     <button
                                                         onClick={() => setOpen(isOpen && !query ? null : key)}
                                                         aria-expanded={isOpen}
-                                                        className="w-full flex items-start justify-between gap-5 px-5 py-4 text-left group"
+                                                        className="w-full flex items-start justify-between gap-4 py-4 text-left group"
                                                     >
-                                                        <span className={cn(
-                                                            'text-[15.5px] font-medium leading-snug transition-colors',
-                                                            isOpen ? 'text-brand-900' : 'text-slate-800 group-hover:text-brand-800'
-                                                        )}>
+                                                        <span className="text-[15px] font-medium text-slate-800 group-hover:text-brand-800 transition-colors">
                                                             {entry.q}
                                                         </span>
                                                         {!query && (
                                                             <span className={cn(
-                                                                'shrink-0 mt-0.5 w-6 h-6 rounded-full border flex items-center justify-center text-lg leading-none transition-all duration-200',
-                                                                isOpen
-                                                                    ? 'rotate-45 border-brand-500 bg-brand-600 text-white'
-                                                                    : 'border-slate-200 text-slate-400 group-hover:border-brand-300 group-hover:text-brand-600'
+                                                                'text-slate-400 text-xl leading-none shrink-0 transition-transform mt-0.5',
+                                                                isOpen && 'rotate-45'
                                                             )}>
-                                                                <span className="-mt-px">+</span>
+                                                                +
                                                             </span>
                                                         )}
                                                     </button>
                                                     {isOpen && (
-                                                        <div className="px-5 pb-5 pr-10 -mt-1">
-                                                            <p className="text-[15.5px] text-slate-600 leading-[1.8]">
+                                                        <div className="pb-5 pr-8 -mt-1">
+                                                            <p className="text-[15px] text-slate-600 leading-[1.75]">
                                                                 {entry.a}
                                                             </p>
                                                         </div>
@@ -507,17 +487,15 @@ const Help: React.FC = () => {
                             ))
                         )}
 
-                        <div className="mt-16 rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 to-brand-50/20 px-7 py-8">
-                            <h2 className="text-[19px] font-bold text-slate-900 tracking-tight">
-                                Aradığınızı bulamadınız mı?
-                            </h2>
-                            <p className="text-[15.5px] text-slate-600 mt-2.5 leading-[1.75] max-w-xl">
+                        <div className="mt-14 border-t border-slate-200 pt-8">
+                            <h2 className="text-lg font-bold text-slate-900">Aradığınızı bulamadınız mı?</h2>
+                            <p className="text-[15px] text-slate-600 mt-2 leading-relaxed max-w-xl">
                                 İletişim formundan yazın. Mesajınıza bir talep numarası verilir ve
                                 en geç iki iş günü içinde dönüş yapılır.
                             </p>
                             <Link
                                 to="/contact"
-                                className="inline-block mt-5 h-11 px-7 leading-[44px] rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-sm font-semibold shadow-sm hover:shadow transition-all"
+                                className="inline-block mt-4 h-11 px-6 leading-[44px] rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-sm font-semibold transition-colors"
                             >
                                 İletişime geç
                             </Link>

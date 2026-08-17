@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import PageLayout, { P, UL, H3, Note, Table, Stats } from '@/components/content/PageLayout';
+import PageLayout, { P, UL, H3, Note, Table } from '@/components/content/PageLayout';
 
 /**
  * Fiyatlandırma.
@@ -30,13 +30,6 @@ const Pricing: React.FC = () => (
                             iptal edilmesi gereken bir üyelik veya kullanılmadığında boşa giden bir
                             aidat söz konusu değildir.
                         </P>
-                        <Stats
-                            items={[
-                                { value: 'Tek', label: 'Seferlik ödeme — abonelik yok' },
-                                { value: 'Süresiz', label: 'Erişim — kurs hesabınızda kalır' },
-                                { value: '0 ₺', label: 'Ek ücret — sertifika ve kaynaklar dahil' },
-                            ]}
-                        />
                         <UL
                             items={[
                                 <><strong>Tek seferlik ödeme.</strong> Kursun fiyatını bir kez ödersiniz.</>,
@@ -103,7 +96,6 @@ const Pricing: React.FC = () => (
                                 ['Platin', '15.000+', '×1,50', '14,29 ₺'],
                                 ['Elmas', '40.000+', '×1,75', '16,67 ₺'],
                             ]}
-                            emphasizeLast
                         />
                         <P>
                             Bir siparişin en fazla yarısı krediyle ödenebilir; kalan tutarı kartla
@@ -175,22 +167,14 @@ const Pricing: React.FC = () => (
                             Brüt satış tutarından önce yasal vergi (%20) düşülür. Kalan tutarın
                             %55'i eğitmene, %45'i platforma aittir.
                         </P>
-                        <Stats
-                            items={[
-                                { value: '0 ₺', label: 'Kurs açma, yükleme ve yayınlama' },
-                                { value: '%55', label: 'Vergi sonrası tutardan eğitmen payı' },
-                                { value: '440 ₺', label: '1.000 ₺\'lik satışta eline geçen' },
-                            ]}
-                        />
                         <Table
                             head={['Kalem', 'Oran', '1.000 ₺ satışta']}
                             rows={[
                                 ['Brüt satış', '—', '1.000,00 ₺'],
                                 ['Yasal vergi', '%20', '−200,00 ₺'],
-                                ['Platform payı', 'Net tutarın %45\'i', '−360,00 ₺'],
-                                ['Eğitmenin kazancı', 'Net tutarın %55\'i', '440,00 ₺'],
+                                ['Eğitmen payı', 'Net tutarın %55\'i', '440,00 ₺'],
+                                ['Platform payı', 'Net tutarın %45\'i', '360,00 ₺'],
                             ]}
-                            emphasizeLast
                         />
                         <P>
                             Platform payı; barındırma, video işleme, dağıtım ağı, ödeme altyapısı
