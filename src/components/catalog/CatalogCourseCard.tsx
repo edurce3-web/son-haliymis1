@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Heart, Loader2 } from 'lucide-react';
-import { cartAPI, favoritesAPI } from '@/lib/api';
+import { useQueryClient } from '@tanstack/react-query';
+import { cartAPI, favoritesAPI, enrollmentAPI } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatPrice } from '@/lib/utils';
 import { cn } from '@/lib/utils';
@@ -74,6 +75,7 @@ export const CatalogCourseCard: React.FC<Props> = ({
 }) => {
     const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const [adding, setAdding] = useState(false);
     const [addedLocally, setAddedLocally] = useState(false);
     const [favorited, setFavorited] = useState(Boolean(course.is_favorited));
@@ -100,12 +102,26 @@ export const CatalogCourseCard: React.FC<Props> = ({
 
         setAdding(true);
         try {
+            // Ücretsiz kursu sepetten geçirmenin anlamı yok; doğrudan kaydet
+            // ve derse gönder.
+            if (isFree) {
+                await enrollmentAPI.enrollInCourse(courseId);
+                queryClient.invalidateQueries({ queryKey: ['enrolled-courses'] });
+                navigate(`/learning/${courseId}`);
+                return;
+            }
+
             await cartAPI.addToCart(courseId);
             setAddedLocally(true);
             toast.success('Sepete eklendi', { description: course.title });
         } catch (err: any) {
             // Zaten sepetteyse kullanıcıya hata gibi göstermenin anlamı yok
-            if (String(err?.message || '').toLowerCase().includes('zaten')) {
+            const message = String(err?.message || '').toLowerCase();
+            if (isFree) {
+                // Zaten kayıtlıysa hata göstermek yerine derse götür
+                if (message.includes('zaten')) navigate(`/learning/${courseId}`);
+                else toast.error('Kursa kaydolunamadı');
+            } else if (message.includes('zaten')) {
                 setAddedLocally(true);
                 toast.info('Bu kurs zaten sepetinde');
             } else {
