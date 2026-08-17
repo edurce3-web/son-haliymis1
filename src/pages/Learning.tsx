@@ -67,43 +67,43 @@ const Learning = () => {
     };
 
     if (isLoading) return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 flex items-center justify-center">
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
             <div className="flex flex-col items-center gap-4">
-                <div className="w-14 h-14 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
-                <p className="text-slate-400 text-sm animate-pulse">Kurslar yükleniyor...</p>
+                <div className="w-14 h-14 border-4 border-brand-300 border-t-brand-600 rounded-full animate-spin" />
+                <p className="text-slate-500 text-sm animate-pulse">Kurslar yükleniyor...</p>
             </div>
         </div>
     );
 
     const stats = [
-        { label: 'Toplam Kurs', value: courses.length, icon: BookOpen, gradient: 'from-indigo-500 to-blue-600', glow: 'shadow-indigo-500/25' },
-        { label: 'Devam Eden', value: inProgress, icon: PlayCircle, gradient: 'from-violet-500 to-purple-600', glow: 'shadow-violet-500/25' },
+        { label: 'Toplam Kurs', value: courses.length, icon: BookOpen, gradient: 'from-brand-600 to-blue-600', glow: 'shadow-brand-600/25' },
+        { label: 'Devam Eden', value: inProgress, icon: PlayCircle, gradient: 'from-brand-600 to-brand-800', glow: 'shadow-brand-600/25' },
         { label: 'Tamamlanan', value: totalCompleted, icon: CheckCircle, gradient: 'from-emerald-500 to-teal-600', glow: 'shadow-emerald-500/25' },
         { label: 'Ort. İlerleme', value: `%${avgProgress}`, icon: BarChart2, gradient: 'from-amber-500 to-orange-600', glow: 'shadow-amber-500/25' },
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950">
+        <div className="min-h-screen bg-slate-50">
             <canvas ref={canvasRef} className="hidden" />
 
             {/* Header */}
-            <div className="border-b border-white/5 bg-black/20 backdrop-blur-sm">
+            <div className="border-b border-slate-200 bg-black/20 backdrop-blur-sm">
                 <div className="max-w-7xl mx-auto px-6 py-8">
                     <nav className="flex items-center gap-2 text-xs text-slate-500 mb-5">
-                        <Link to="/" className="hover:text-indigo-400 transition-colors">Ana Sayfa</Link>
+                        <Link to="/" className="hover:text-brand-500 transition-colors">Ana Sayfa</Link>
                         <ChevronRight className="w-3 h-3" />
-                        <span className="text-slate-300 font-medium">Öğrenim Alanım</span>
+                        <span className="text-slate-600 font-medium">Öğrenim Alanım</span>
                     </nav>
 
                     <div className="flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
                         <div>
                             <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-                                    <GraduationCap className="w-5 h-5 text-white" />
+                                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center shadow-lg shadow-brand-600/25">
+                                    <GraduationCap className="w-5 h-5 text-slate-900" />
                                 </div>
-                                <h1 className="text-2xl font-black text-white tracking-tight">Öğrenim Alanım</h1>
+                                <h1 className="text-2xl font-black text-slate-900 tracking-tight">Öğrenim Alanım</h1>
                             </div>
-                            <p className="text-slate-400 text-sm pl-1">Tüm kurslarını buradan takip et, sertifika al.</p>
+                            <p className="text-slate-500 text-sm pl-1">Tüm kurslarını buradan takip et, sertifika al.</p>
                         </div>
 
                         <div className="flex gap-3">
@@ -115,7 +115,7 @@ const Learning = () => {
                             </Link>
                             <Link
                                 to="/home/certificates"
-                                className="flex items-center gap-2 px-4 py-2.5 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-300 rounded-2xl text-sm font-bold transition-all"
+                                className="flex items-center gap-2 px-4 py-2.5 bg-brand-500/10 hover:bg-brand-500/20 border border-brand-200 text-brand-700 rounded-2xl text-sm font-bold transition-all"
                             >
                                 <Award className="w-4 h-4" /> Sertifikalarım
                             </Link>
@@ -130,18 +130,18 @@ const Learning = () => {
                     {stats.map(stat => (
                         <div
                             key={stat.label}
-                            className="relative bg-slate-800/40 border border-white/8 rounded-2xl p-5 overflow-hidden group hover:border-white/15 transition-all duration-300"
+                            className="relative bg-white border border-slate-200 rounded-2xl p-5 overflow-hidden group hover:border-slate-200 transition-all duration-300"
                         >
                             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-5`} />
                             </div>
                             <div className="relative flex items-center gap-4">
                                 <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-lg ${stat.glow} shrink-0`}>
-                                    <stat.icon className="w-6 h-6 text-white" />
+                                    <stat.icon className="w-6 h-6 text-slate-900" />
                                 </div>
                                 <div>
-                                    <div className="text-2xl font-black text-white">{stat.value}</div>
-                                    <div className="text-xs text-slate-400 font-medium mt-0.5">{stat.label}</div>
+                                    <div className="text-2xl font-black text-slate-900">{stat.value}</div>
+                                    <div className="text-xs text-slate-500 font-medium mt-0.5">{stat.label}</div>
                                 </div>
                             </div>
                         </div>
@@ -157,18 +157,18 @@ const Learning = () => {
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             placeholder="Kurs ara..."
-                            className="w-full pl-11 pr-4 py-3 bg-slate-800/40 border border-white/8 rounded-2xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/25 transition-all"
+                            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/25 transition-all"
                         />
                     </div>
-                    <div className="flex rounded-2xl overflow-hidden border border-white/8 bg-slate-800/40">
+                    <div className="flex rounded-2xl overflow-hidden border border-slate-200 bg-white">
                         {(['all', 'ongoing', 'completed'] as const).map(f => (
                             <button
                                 key={f}
                                 onClick={() => setFilter(f)}
                                 className={`px-5 py-3 text-sm font-semibold transition-all ${
                                     filter === f
-                                        ? 'bg-indigo-600 text-white shadow-lg' 
-                                        : 'text-slate-400 hover:text-slate-200'
+                                        ? 'bg-brand-700 text-slate-900 shadow-lg' 
+                                        : 'text-slate-500 hover:text-slate-200'
                                 }`}
                             >
                                 {f === 'all' ? 'Tümü' : f === 'ongoing' ? 'Devam Eden' : 'Tamamlanan'}
@@ -193,19 +193,19 @@ const Learning = () => {
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-32 text-center">
-                        <div className="w-24 h-24 rounded-3xl bg-slate-800/60 border border-white/5 flex items-center justify-center mb-6 shadow-2xl">
+                        <div className="w-24 h-24 rounded-3xl bg-white border border-slate-200 flex items-center justify-center mb-6 shadow-2xl">
                             <GraduationCap className="w-12 h-12 text-slate-600" />
                         </div>
-                        <h3 className="text-xl font-bold text-white mb-2">
+                        <h3 className="text-xl font-bold text-slate-900 mb-2">
                             {search ? 'Sonuç Bulunamadı' : 'Henüz Kursun Yok'}
                         </h3>
-                        <p className="text-slate-400 text-sm mb-8 max-w-sm">
+                        <p className="text-slate-500 text-sm mb-8 max-w-sm">
                             {search ? 'Farklı bir kelime deneyin.' : 'Kurslarını keşfetmek için alttaki butona tıkla.'}
                         </p>
                         {!search && (
                             <button
                                 onClick={() => navigate('/courses')}
-                                className="flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-indigo-500/25 hover:-translate-y-0.5"
+                                className="flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-brand-600 to-brand-800 hover:from-brand-600 hover:to-brand-800 text-slate-900 font-bold rounded-2xl transition-all shadow-lg shadow-brand-600/25 hover:-translate-y-0.5"
                             >
                                 <BookOpen className="w-4 h-4" />
                                 Kursları Keşfet
@@ -231,7 +231,7 @@ const CourseCard = ({
     const progress = course.progress || 0;
 
     return (
-        <div className="group relative bg-slate-800/40 border border-white/8 rounded-3xl overflow-hidden hover:border-indigo-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 flex flex-col">
+        <div className="group relative bg-white border border-slate-200 rounded-3xl overflow-hidden hover:border-brand-300 transition-all duration-300 hover:shadow-xl hover:shadow-brand-500/10 hover:-translate-y-1 flex flex-col">
             {/* Thumbnail */}
             <div className="relative aspect-video overflow-hidden cursor-pointer shrink-0" onClick={onNavigate}>
                 <img
@@ -241,19 +241,19 @@ const CourseCard = ({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
-                        <PlayCircle className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center border border-slate-200">
+                        <PlayCircle className="w-6 h-6 text-slate-900" />
                     </div>
                 </div>
                 {isCompleted && (
-                    <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-emerald-500 text-white px-2.5 py-1 rounded-full text-[10px] font-bold shadow-lg">
+                    <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-emerald-500 text-slate-900 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-lg">
                         <CheckCircle className="w-3 h-3" /> Tamamlandı
                     </div>
                 )}
                 {/* Progress overlay on thumb */}
                 <div className="absolute bottom-0 left-0 right-0 h-1">
                     <div
-                        className={`h-full transition-all ${isCompleted ? 'bg-emerald-400' : 'bg-indigo-400'}`}
+                        className={`h-full transition-all ${isCompleted ? 'bg-emerald-500' : 'bg-brand-500'}`}
                         style={{ width: `${progress}%` }}
                     />
                 </div>
@@ -262,13 +262,13 @@ const CourseCard = ({
             {/* Content */}
             <div className="p-4 flex flex-col flex-1">
                 {course.category_name && (
-                    <span className="inline-block mb-2 text-[10px] font-bold uppercase tracking-widest text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-1 rounded-full w-fit">
+                    <span className="inline-block mb-2 text-[10px] font-bold uppercase tracking-widest text-brand-500 bg-brand-500/10 border border-brand-200 px-2.5 py-1 rounded-full w-fit">
                         {course.category_name}
                     </span>
                 )}
 
                 <h3
-                    className="font-bold text-white text-sm line-clamp-2 mb-1 cursor-pointer hover:text-indigo-300 transition-colors leading-snug"
+                    className="font-bold text-slate-900 text-sm line-clamp-2 mb-1 cursor-pointer hover:text-brand-700 transition-colors leading-snug"
                     onClick={onNavigate}
                 >
                     {course.title}
@@ -280,13 +280,13 @@ const CourseCard = ({
                     <div className="space-y-1.5">
                         <div className="flex justify-between text-xs font-medium">
                             <span className="text-slate-500">İlerleme</span>
-                            <span className={isCompleted ? 'text-emerald-400 font-bold' : 'text-indigo-400 font-bold'}>
+                            <span className={isCompleted ? 'text-emerald-600 font-bold' : 'text-brand-500 font-bold'}>
                                 %{progress}
                             </span>
                         </div>
-                        <div className="h-1.5 bg-slate-700/60 rounded-full overflow-hidden">
+                        <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
                             <div
-                                className={`h-full rounded-full transition-all duration-700 ${isCompleted ? 'bg-gradient-to-r from-emerald-400 to-teal-400' : 'bg-gradient-to-r from-indigo-400 to-violet-400'}`}
+                                className={`h-full rounded-full transition-all duration-700 ${isCompleted ? 'bg-gradient-to-r from-emerald-500 to-emerald-600' : 'bg-gradient-to-r from-brand-600 to-brand-800'}`}
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
@@ -298,8 +298,8 @@ const CourseCard = ({
                             onClick={onNavigate}
                             className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${
                                 isCompleted
-                                    ? 'bg-slate-700/60 hover:bg-slate-700 text-slate-200'
-                                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20'
+                                    ? 'bg-slate-200 hover:bg-slate-200 text-slate-200'
+                                    : 'bg-brand-700 hover:bg-brand-500 text-slate-900 shadow-lg shadow-brand-200'
                             }`}
                         >
                             {isCompleted ? 'Tekrar İzle' : 'Devam Et'}
@@ -317,7 +317,7 @@ const CourseCard = ({
                                 <button
                                     disabled={isClaiming === course.course_id}
                                     onClick={onClaim}
-                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 text-xs font-bold rounded-xl transition-all disabled:opacity-50"
+                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-600 text-xs font-bold rounded-xl transition-all disabled:opacity-50"
                                 >
                                     {isClaiming === course.course_id
                                         ? <Loader2 className="w-3.5 h-3.5 animate-spin" />

@@ -125,7 +125,7 @@ const Favorites = () => {
     <div className="container mx-auto px-4 py-10">
       <div className="flex items-center gap-3 mb-8">
         <Heart className="w-8 h-8 text-pink-500 fill-pink-500" />
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-brand-800 bg-clip-text text-transparent">
           Favorilerim
         </h1>
       </div>
@@ -139,7 +139,7 @@ const Favorites = () => {
               Beğendiğiniz kursları favorilere ekleyerek daha sonra kolayca bulabilirsiniz.
             </p>
             <Link to="/courses">
-              <Button className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700">
+              <Button className="bg-gradient-to-r from-pink-500 to-brand-800 hover:from-pink-600 hover:to-brand-800">
                 <BookOpen className="w-4 h-4 mr-2" />
                 Kursları Keşfet
               </Button>

@@ -9,6 +9,59 @@ export interface CertificateData {
 }
 
 // ─── Draw the professional certificate on a canvas ─────────────────────────
+
+/**
+ * Logoyu canvas'a ortalayarak çizer.
+ *
+ * Logo koyu turkuaz olduğu için koyu sertifika zemininde okunmaz; bu yüzden
+ * beyaza çevriliyor: görsel ara bir canvas'a çizilip 'source-in' ile
+ * boyanıyor. Böylece yalnızca harflerin olduğu pikseller beyaz oluyor,
+ * arka plan saydam kalıyor.
+ *
+ * @returns başarıyla çizildiyse true
+ */
+async function drawLogo(
+  ctx: CanvasRenderingContext2D,
+  centerX: number,
+  centerY: number,
+  maxW: number,
+  maxH: number
+): Promise<boolean> {
+  try {
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const image = new Image();
+      // Dosya aynı kökten geldiği için CORS sorunu yok; yine de canvas'ın
+      // kirlenmemesi (tainted) adına açıkça belirtiyoruz.
+      image.crossOrigin = 'anonymous';
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error('logo yüklenemedi'));
+      image.src = '/logo.png';
+    });
+
+    // Oranı koruyarak sığdır
+    const scale = Math.min(maxW / img.naturalWidth, maxH / img.naturalHeight);
+    const w = img.naturalWidth * scale;
+    const h = img.naturalHeight * scale;
+
+    // Beyaza boyama için ara canvas
+    const tint = document.createElement('canvas');
+    tint.width = Math.max(1, Math.round(w));
+    tint.height = Math.max(1, Math.round(h));
+    const tctx = tint.getContext('2d');
+    if (!tctx) return false;
+
+    tctx.drawImage(img, 0, 0, tint.width, tint.height);
+    tctx.globalCompositeOperation = 'source-in';
+    tctx.fillStyle = '#ffffff';
+    tctx.fillRect(0, 0, tint.width, tint.height);
+
+    ctx.drawImage(tint, centerX - w / 2, centerY - h / 2, w, h);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function drawCertificate(
   canvas: HTMLCanvasElement,
   data: CertificateData
@@ -22,22 +75,22 @@ export async function drawCertificate(
 
   // ── Background: deep navy gradient ────────────────────────────────────────
   const bgGrad = ctx.createLinearGradient(0, 0, W, H);
-  bgGrad.addColorStop(0,   '#0f0c29');
-  bgGrad.addColorStop(0.5, '#1a1a2e');
-  bgGrad.addColorStop(1,   '#16213e');
+  bgGrad.addColorStop(0,   '#072424');
+  bgGrad.addColorStop(0.5, '#0D3838');
+  bgGrad.addColorStop(1,   '#124A4A');
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, W, H);
 
   // ── Decorative radial glow (top-left) ─────────────────────────────────────
   const glow1 = ctx.createRadialGradient(0, 0, 0, 0, 0, 600);
-  glow1.addColorStop(0, 'rgba(99,102,241,0.25)');
+  glow1.addColorStop(0, 'rgba(42,133,128,0.30)');
   glow1.addColorStop(1, 'transparent');
   ctx.fillStyle = glow1;
   ctx.fillRect(0, 0, W, H);
 
   // ── Decorative radial glow (bottom-right) ─────────────────────────────────
   const glow2 = ctx.createRadialGradient(W, H, 0, W, H, 700);
-  glow2.addColorStop(0, 'rgba(139,92,246,0.20)');
+  glow2.addColorStop(0, 'rgba(124,194,189,0.18)');
   glow2.addColorStop(1, 'transparent');
   ctx.fillStyle = glow2;
   ctx.fillRect(0, 0, W, H);
@@ -53,7 +106,7 @@ export async function drawCertificate(
   ctx.stroke();
 
   // ── Inner border (thin purple) ────────────────────────────────────────────
-  ctx.strokeStyle = 'rgba(139,92,246,0.5)';
+  ctx.strokeStyle = 'rgba(124,194,189,0.45)';
   ctx.lineWidth = 2;
   roundRect(ctx, 52, 52, W - 104, H - 104, 14);
   ctx.stroke();
@@ -77,37 +130,29 @@ export async function drawCertificate(
   ctx.lineTo(W - 200, 145);
   ctx.stroke();
 
-  // ── Brand / Logo area ─────────────────────────────────────────────────────
-  // Logo circle
-  const logoX = W / 2;
-  const logoY = 108;
-  const logoR = 38;
-  const logoCircleGrad = ctx.createRadialGradient(logoX, logoY, 0, logoX, logoY, logoR);
-  logoCircleGrad.addColorStop(0, '#6366f1');
-  logoCircleGrad.addColorStop(1, '#4f46e5');
-  ctx.fillStyle = logoCircleGrad;
-  ctx.beginPath();
-  ctx.arc(logoX, logoY, logoR, 0, Math.PI * 2);
-  ctx.fill();
+  // ── Marka / logo alanı ────────────────────────────────────────────────────
+  // Gerçek logo görseli çizilir. Görsel yüklenemezse (ağ hatası, dosya yok)
+  // sertifikanın tamamı boş çıkmasın diye yazıyla yedeğe düşülür.
+  const logoY = 112;
+  const logoDrawn = await drawLogo(ctx, W / 2, logoY, 320, 92);
 
-  // "N" letter inside logo circle
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 38px Georgia, serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('N', logoX, logoY + 2);
-  ctx.textBaseline = 'alphabetic';
+  if (!logoDrawn) {
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 44px Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.letterSpacing = '0.08em';
+    ctx.fillText('edurce', W / 2, logoY);
+    ctx.textBaseline = 'alphabetic';
+    ctx.letterSpacing = '0px';
+  }
 
-  // Platform name
-  ctx.fillStyle = '#e2e8f0';
-  ctx.font = 'bold 22px Georgia, serif';
-  ctx.textAlign = 'center';
-  ctx.letterSpacing = '0.15em';
-  ctx.fillText('NEURAL AKADEMİ', W / 2, 170);
-
-  ctx.fillStyle = 'rgba(251,191,36,0.8)';
+  ctx.fillStyle = 'rgba(174,219,215,0.85)';
   ctx.font = '13px Georgia, serif';
-  ctx.fillText('— Geleceğin Eğitim Platformu —', W / 2, 195);
+  ctx.textAlign = 'center';
+  ctx.letterSpacing = '0.18em';
+  ctx.fillText('ONLINE EĞİTİM PLATFORMU', W / 2, 186);
+  ctx.letterSpacing = '0px';
 
   // ── Bottom decorative line ────────────────────────────────────────────────
   ctx.strokeStyle = lineGrad;
@@ -142,8 +187,8 @@ export async function drawCertificate(
   // Underline bar
   const nameGrad = ctx.createLinearGradient(W / 2 - 280, 0, W / 2 + 280, 0);
   nameGrad.addColorStop(0,    'transparent');
-  nameGrad.addColorStop(0.15, 'rgba(99,102,241,0.5)');
-  nameGrad.addColorStop(0.85, 'rgba(99,102,241,0.5)');
+  nameGrad.addColorStop(0.15, 'rgba(42,133,128,0.5)');
+  nameGrad.addColorStop(0.85, 'rgba(42,133,128,0.5)');
   nameGrad.addColorStop(1,    'transparent');
   ctx.fillStyle = nameGrad;
   ctx.fillRect(W / 2 - 280, 478, 560, 52);
@@ -183,7 +228,7 @@ export async function drawCertificate(
   ctx.fillStyle = 'rgba(148,163,184,0.8)';
   ctx.font = '13px Georgia, serif';
   ctx.fillText('EĞİTMEN', 260, 695);
-  ctx.strokeStyle = 'rgba(99,102,241,0.5)';
+  ctx.strokeStyle = 'rgba(42,133,128,0.5)';
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(120, 705);
@@ -199,8 +244,8 @@ export async function drawCertificate(
   const sealR = 48;
   // Outer ring
   const sealGrad = ctx.createRadialGradient(sealX, sealY, sealR * 0.5, sealX, sealY, sealR);
-  sealGrad.addColorStop(0, 'rgba(99,102,241,0.3)');
-  sealGrad.addColorStop(1, 'rgba(99,102,241,0.1)');
+  sealGrad.addColorStop(0, 'rgba(42,133,128,0.3)');
+  sealGrad.addColorStop(1, 'rgba(42,133,128,0.1)');
   ctx.fillStyle = sealGrad;
   ctx.beginPath();
   ctx.arc(sealX, sealY, sealR, 0, Math.PI * 2);
@@ -227,7 +272,7 @@ export async function drawCertificate(
   ctx.fillStyle = 'rgba(148,163,184,0.8)';
   ctx.font = '13px Georgia, serif';
   ctx.fillText('VERİLDİĞİ TARİH', W - 260, 695);
-  ctx.strokeStyle = 'rgba(99,102,241,0.5)';
+  ctx.strokeStyle = 'rgba(42,133,128,0.5)';
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(W - 400, 705);
@@ -245,9 +290,9 @@ export async function drawCertificate(
 
   // ── Bottom bar ─────────────────────────────────────────────────────────────
   const bottomBarGrad = ctx.createLinearGradient(0, 820, W, 840);
-  bottomBarGrad.addColorStop(0,   '#6366f1');
-  bottomBarGrad.addColorStop(0.5, '#8b5cf6');
-  bottomBarGrad.addColorStop(1,   '#6366f1');
+  bottomBarGrad.addColorStop(0,   '#2A8580');
+  bottomBarGrad.addColorStop(0.5, '#7CC2BD');
+  bottomBarGrad.addColorStop(1,   '#2A8580');
   ctx.fillStyle = bottomBarGrad;
   roundRect(ctx, 30, 820, W - 60, 28, { tl: 0, tr: 0, br: 14, bl: 14 });
   ctx.fill();
@@ -255,7 +300,7 @@ export async function drawCertificate(
   ctx.fillStyle = 'rgba(255,255,255,0.85)';
   ctx.font = '11px Georgia, serif';
   ctx.textAlign = 'center';
-  ctx.fillText('Neural Akademi  •  neuralakademi.com  •  Bu sertifika dijital olarak imzalanmıştır.', W / 2, 839);
+  ctx.fillText('Edurce  •  neuralakademi.com  •  Bu sertifika dijital olarak imzalanmıştır.', W / 2, 839);
 }
 
 // ─── Export as PNG (download) ───────────────────────────────────────────────
