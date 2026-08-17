@@ -376,17 +376,17 @@ const Help: React.FC = () => {
                 title="Yardım merkezi"
                 lead="Hesap, satın alma, kurslar, Edurce Kredi ve eğitmenlik hakkında en sık sorulan soruların yanıtları. Aramak için yazmaya başlayın."
             >
-                <div className="mt-9 max-w-xl">
+                <div className="mt-8 max-w-lg">
                     <label htmlFor="help-search" className="sr-only">Yardım konularında ara</label>
                     <input
                         id="help-search"
                         value={query}
                         onChange={e => setQuery(e.target.value)}
                         placeholder="Konu ara — iade, sertifika, video, kredi…"
-                        className="w-full py-4 px-5 rounded-xl bg-white/10 border border-brand-600 text-white text-[16px] placeholder:text-brand-300 backdrop-blur focus:outline-none focus:bg-white focus:text-slate-900 focus:placeholder:text-slate-400 focus:border-white transition-colors"
+                        className="w-full h-12 px-4 rounded-lg border border-slate-300 bg-white text-[15.5px] placeholder:text-slate-400 focus:outline-none focus:border-brand-600 focus:ring-4 focus:ring-brand-500/10 transition-all"
                     />
                     {query && (
-                        <p className="text-[14px] text-brand-200 mt-3">
+                        <p className="text-[14px] text-slate-500 mt-2.5">
                             {totalHits > 0 ? `${totalHits} sonuç bulundu` : 'Sonuç bulunamadı'}
                         </p>
                     )}

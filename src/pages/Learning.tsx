@@ -33,12 +33,6 @@ const Learning = () => {
         return matchSearch;
     });
 
-    const totalCompleted = courses.filter((c: any) => c.progress === 100).length;
-    const inProgress = courses.filter((c: any) => (c.progress || 0) > 0 && c.progress < 100).length;
-    const avgProgress = courses.length
-        ? Math.round(courses.reduce((s: number, c: any) => s + (c.progress || 0), 0) / courses.length)
-        : 0;
-
     const generateCertificate = async (course: any) => {
         if (!canvasRef.current || !user) return;
         setIsClaiming(course.course_id);
@@ -75,49 +69,39 @@ const Learning = () => {
         </div>
     );
 
-    const stats = [
-        { label: 'Toplam Kurs', value: courses.length, icon: BookOpen, gradient: 'from-brand-600 to-blue-600', glow: 'shadow-brand-600/25' },
-        { label: 'Devam Eden', value: inProgress, icon: PlayCircle, gradient: 'from-brand-600 to-brand-800', glow: 'shadow-brand-600/25' },
-        { label: 'Tamamlanan', value: totalCompleted, icon: CheckCircle, gradient: 'from-emerald-500 to-teal-600', glow: 'shadow-emerald-500/25' },
-        { label: 'Ort. İlerleme', value: `%${avgProgress}`, icon: BarChart2, gradient: 'from-amber-500 to-orange-600', glow: 'shadow-amber-500/25' },
-    ];
-
     return (
         <div className="min-h-screen bg-slate-50">
             <canvas ref={canvasRef} className="hidden" />
 
             {/* Header */}
-            <div className="border-b border-slate-200 bg-black/20 backdrop-blur-sm">
+            <div className="border-b border-slate-200 bg-white">
                 <div className="max-w-7xl mx-auto px-6 py-8">
                     <nav className="flex items-center gap-2 text-xs text-slate-500 mb-5">
-                        <Link to="/" className="hover:text-brand-500 transition-colors">Ana Sayfa</Link>
+                        <Link to="/" className="hover:text-brand-700 transition-colors">Ana Sayfa</Link>
                         <ChevronRight className="w-3 h-3" />
-                        <span className="text-slate-600 font-medium">Öğrenim Alanım</span>
+                        <span className="text-slate-700 font-medium">Eğitimlerim</span>
                     </nav>
 
                     <div className="flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
                         <div>
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center shadow-lg shadow-brand-600/25">
-                                    <GraduationCap className="w-5 h-5 text-slate-900" />
-                                </div>
-                                <h1 className="text-2xl font-black text-slate-900 tracking-tight">Öğrenim Alanım</h1>
-                            </div>
-                            <p className="text-slate-500 text-sm pl-1">Tüm kurslarını buradan takip et, sertifika al.</p>
+                            <h1 className="text-[28px] font-bold text-slate-900 tracking-tight">Eğitimlerim</h1>
+                            <p className="text-slate-500 text-[15px] mt-1.5">
+                                Tüm kurslarını buradan takip et, sertifikanı al.
+                            </p>
                         </div>
 
                         <div className="flex gap-3">
                             <Link
                                 to="/home/gamification"
-                                className="flex items-center gap-2 px-4 py-2.5 bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/20 text-amber-300 rounded-2xl text-sm font-bold transition-all"
+                                className="px-4 py-2.5 border border-slate-200 bg-white hover:border-brand-300 hover:text-brand-800 text-slate-700 rounded-xl text-sm font-semibold transition-colors"
                             >
-                                <Flame className="w-4 h-4" /> Başarılarım
+                                Başarılarım
                             </Link>
                             <Link
                                 to="/home/certificates"
-                                className="flex items-center gap-2 px-4 py-2.5 bg-brand-500/10 hover:bg-brand-500/20 border border-brand-200 text-brand-700 rounded-2xl text-sm font-bold transition-all"
+                                className="px-4 py-2.5 border border-slate-200 bg-white hover:border-brand-300 hover:text-brand-800 text-slate-700 rounded-xl text-sm font-semibold transition-colors"
                             >
-                                <Award className="w-4 h-4" /> Sertifikalarım
+                                Sertifikalarım
                             </Link>
                         </div>
                     </div>
@@ -125,28 +109,6 @@ const Learning = () => {
             </div>
 
             <div className="max-w-7xl mx-auto px-6 py-8">
-                {/* Stats */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    {stats.map(stat => (
-                        <div
-                            key={stat.label}
-                            className="relative bg-white border border-slate-200 rounded-2xl p-5 overflow-hidden group hover:border-slate-200 transition-all duration-300"
-                        >
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-5`} />
-                            </div>
-                            <div className="relative flex items-center gap-4">
-                                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-lg ${stat.glow} shrink-0`}>
-                                    <stat.icon className="w-6 h-6 text-slate-900" />
-                                </div>
-                                <div>
-                                    <div className="text-2xl font-black text-slate-900">{stat.value}</div>
-                                    <div className="text-xs text-slate-500 font-medium mt-0.5">{stat.label}</div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
 
                 {/* Filters & Search */}
                 <div className="flex flex-col sm:flex-row gap-3 mb-7">
@@ -246,7 +208,7 @@ const CourseCard = ({
                     </div>
                 </div>
                 {isCompleted && (
-                    <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-emerald-500 text-slate-900 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-lg">
+                    <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-emerald-600 text-white px-2.5 py-1 rounded-full text-[10px] font-bold shadow-lg">
                         <CheckCircle className="w-3 h-3" /> Tamamlandı
                     </div>
                 )}
@@ -296,10 +258,10 @@ const CourseCard = ({
                     <div className="flex gap-2">
                         <button
                             onClick={onNavigate}
-                            className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${
+                            className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-colors ${
                                 isCompleted
-                                    ? 'bg-slate-200 hover:bg-slate-200 text-slate-200'
-                                    : 'bg-brand-700 hover:bg-brand-500 text-slate-900 shadow-lg shadow-brand-200'
+                                    ? 'bg-white border border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-700'
+                                    : 'bg-brand-700 hover:bg-brand-800 text-white'
                             }`}
                         >
                             {isCompleted ? 'Tekrar İzle' : 'Devam Et'}
@@ -309,7 +271,7 @@ const CourseCard = ({
                             course.certificate_id ? (
                                 <button
                                     onClick={onCertificate}
-                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 text-xs font-bold rounded-xl transition-all"
+                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold rounded-xl transition-colors"
                                 >
                                     <Award className="w-3.5 h-3.5" /> Sertifika
                                 </button>
@@ -317,7 +279,7 @@ const CourseCard = ({
                                 <button
                                     disabled={isClaiming === course.course_id}
                                     onClick={onClaim}
-                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-600 text-xs font-bold rounded-xl transition-all disabled:opacity-50"
+                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl transition-colors disabled:opacity-50"
                                 >
                                     {isClaiming === course.course_id
                                         ? <Loader2 className="w-3.5 h-3.5 animate-spin" />

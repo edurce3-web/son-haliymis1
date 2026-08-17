@@ -469,10 +469,7 @@ export const Header = () => {
         </>
       ) : (
         <div className="p-1.5 space-y-2">
-          <p className="px-1.5 pt-1 pb-2 text-sm text-slate-600">
-            Kurslarına erişmek için hesabına gir.
-          </p>
-          <Button onClick={() => navigate('/register')} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm h-9">
+          <Button onClick={() => navigate('/register')} className="w-full bg-brand-700 hover:bg-brand-800 text-white rounded-xl text-sm h-9">
             Kayıt Ol
           </Button>
           <Button onClick={() => navigate('/login')} variant="outline" className="w-full rounded-xl text-sm h-9">

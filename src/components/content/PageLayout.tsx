@@ -152,34 +152,28 @@ export const PageHeader: React.FC<{
     /** Başlığın altına giren ek içerik (ör. arama kutusu) */
     children?: React.ReactNode;
 }> = ({ title, lead, updatedAt, children }) => (
-    <header className="relative overflow-hidden bg-brand-900">
-        {/* Zemine derinlik veren iki yumuşak ışık — düz renk düz duruyor */}
-        <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_120%_at_85%_-10%,rgba(74,165,160,0.35),transparent_55%),radial-gradient(90%_90%_at_-10%_110%,rgba(18,74,74,0.6),transparent_60%)]"
-        />
-
-        <div className="container relative px-4 pt-14 pb-16 lg:pt-20 lg:pb-24">
-            <nav className="text-[13px] mb-7">
-                <Link to="/" className="text-brand-200 hover:text-white transition-colors">
+    <header className="border-b border-slate-200 bg-white">
+        <div className="container px-4 pt-12 pb-12 lg:pt-16 lg:pb-14">
+            <nav className="text-[13px] mb-6">
+                <Link to="/" className="text-slate-500 hover:text-brand-700 transition-colors">
                     Ana sayfa
                 </Link>
-                <span className="mx-2.5 text-brand-500">/</span>
-                <span className="text-white/80">{title}</span>
+                <span className="mx-2.5 text-slate-300">/</span>
+                <span className="text-slate-700">{title}</span>
             </nav>
 
-            <h1 className="font-montserrat text-[38px] sm:text-[46px] lg:text-[56px] font-extrabold text-white tracking-[-0.03em] leading-[1.02] max-w-4xl">
+            <h1 className="font-montserrat text-[34px] sm:text-[40px] lg:text-[48px] font-extrabold text-slate-900 tracking-[-0.03em] leading-[1.05] max-w-4xl">
                 {title}
             </h1>
 
             {lead && (
-                <p className="text-[17px] lg:text-[19px] text-brand-100 mt-6 max-w-2xl leading-[1.65]">
+                <p className="text-[17px] lg:text-[18px] text-slate-600 mt-5 max-w-2xl leading-[1.7]">
                     {lead}
                 </p>
             )}
 
             {updatedAt && (
-                <p className="inline-block text-[12.5px] font-medium text-brand-100 border border-brand-600 rounded-full px-4 py-1.5 mt-8">
+                <p className="text-[13.5px] text-slate-500 mt-7">
                     Yürürlük tarihi: {updatedAt}
                 </p>
             )}
@@ -306,11 +300,11 @@ export const Table: React.FC<{
     <div className="my-7 overflow-x-auto rounded-xl border border-slate-200">
         <table className="w-full text-[15px] min-w-[440px]">
             <thead>
-                <tr className="bg-brand-900 text-left">
+                <tr className="bg-slate-50 border-b border-slate-200 text-left">
                     {head.map(h => (
                         <th
                             key={h}
-                            className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.12em] text-brand-100 px-5 py-3.5 whitespace-nowrap"
+                            className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.12em] text-slate-600 px-5 py-3.5 whitespace-nowrap"
                         >
                             {h}
                         </th>
