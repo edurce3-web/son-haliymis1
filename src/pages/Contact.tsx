@@ -79,7 +79,7 @@ const Contact: React.FC = () => {
     };
 
     const inputClass =
-        'w-full h-11 px-3.5 rounded-lg border border-slate-300 bg-white text-[15px] focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-500/15 transition-colors';
+        'w-full h-12 px-4 rounded-lg border border-slate-300 bg-white text-[15.5px] placeholder:text-slate-400 focus:outline-none focus:border-brand-600 focus:ring-4 focus:ring-brand-500/10 transition-all';
 
     return (
         <div className="min-h-screen bg-white">
@@ -88,21 +88,29 @@ const Contact: React.FC = () => {
                 lead="Sorunuzu aşağıdaki formdan iletin. Mesajınız kayda alınır, size bir talep numarası verilir ve en geç iki iş günü içinde dönüş yapılır."
             />
 
-            <div className="container px-4 py-12 lg:py-16">
-                <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+            <div className="container px-4 py-16 lg:py-24">
+                <div className="flex flex-col lg:flex-row gap-14 lg:gap-20">
 
                     {/* Form */}
                     <div className="flex-1 max-w-2xl">
                         {ticketId !== null ? (
-                            <div className="border border-brand-200 bg-brand-50/60 rounded-xl p-6">
-                                <h2 className="text-lg font-bold text-slate-900">Mesajınız alındı</h2>
-                                <p className="text-[15px] text-slate-700 mt-2 leading-relaxed">
-                                    Talep numaranız <strong>#{ticketId}</strong>. Onay e-postası
-                                    gönderdik; dönüşü de aynı adrese yapacağız.
+                            <div className="rounded-xl border border-slate-200 px-8 py-10">
+                                <p className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">
+                                    Talep numaranız
+                                </p>
+                                <p className="font-montserrat text-[44px] font-extrabold text-brand-800 tracking-[-0.03em] leading-none mt-3">
+                                    #{ticketId}
+                                </p>
+                                <h2 className="font-montserrat text-[20px] font-extrabold text-slate-900 tracking-tight mt-8">
+                                    Mesajınız alındı
+                                </h2>
+                                <p className="text-[16px] text-slate-600 mt-3 leading-[1.8] max-w-md">
+                                    Onay e-postası gönderdik; dönüşü de aynı adrese yapacağız. Bu
+                                    numarayı saklarsanız takip etmek kolaylaşır.
                                 </p>
                                 <button
                                     onClick={() => setTicketId(null)}
-                                    className="text-sm font-semibold text-brand-700 hover:underline mt-4"
+                                    className="text-[15px] font-semibold text-brand-700 hover:text-brand-900 hover:underline mt-6"
                                 >
                                     Yeni mesaj gönder
                                 </button>
@@ -111,7 +119,7 @@ const Contact: React.FC = () => {
                             <form onSubmit={submit} className="space-y-5">
                                 <div className="grid sm:grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
-                                        <label htmlFor="name" className="text-sm font-medium text-slate-700">
+                                        <label htmlFor="name" className="text-[14px] font-semibold text-slate-800">
                                             Ad soyad <span className="text-red-500">*</span>
                                         </label>
                                         <input
@@ -121,7 +129,7 @@ const Contact: React.FC = () => {
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <label htmlFor="email" className="text-sm font-medium text-slate-700">
+                                        <label htmlFor="email" className="text-[14px] font-semibold text-slate-800">
                                             E-posta <span className="text-red-500">*</span>
                                         </label>
                                         <input
@@ -134,7 +142,7 @@ const Contact: React.FC = () => {
 
                                 <div className="grid sm:grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
-                                        <label htmlFor="subject" className="text-sm font-medium text-slate-700">
+                                        <label htmlFor="subject" className="text-[14px] font-semibold text-slate-800">
                                             Konu <span className="text-red-500">*</span>
                                         </label>
                                         <select
@@ -146,7 +154,7 @@ const Contact: React.FC = () => {
                                         </select>
                                     </div>
                                     <div className="space-y-1.5">
-                                        <label htmlFor="phone" className="text-sm font-medium text-slate-700">
+                                        <label htmlFor="phone" className="text-[14px] font-semibold text-slate-800">
                                             Telefon <span className="text-slate-400 font-normal">(isteğe bağlı)</span>
                                         </label>
                                         <input
@@ -158,14 +166,14 @@ const Contact: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label htmlFor="message" className="text-sm font-medium text-slate-700">
+                                    <label htmlFor="message" className="text-[14px] font-semibold text-slate-800">
                                         Mesajınız <span className="text-red-500">*</span>
                                     </label>
                                     <textarea
                                         id="message" required rows={7} value={form.message}
                                         onChange={e => set('message', e.target.value)}
                                         placeholder="Sorununuzu mümkün olduğunca açık anlatın. Bir kursla ilgiliyse kursun adını, hata alıyorsanız hatanın tam metnini yazmanız çözümü hızlandırır."
-                                        className="w-full p-3.5 rounded-lg border border-slate-300 bg-white text-[15px] leading-relaxed focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-500/15 transition-colors resize-y"
+                                        className="w-full p-4 rounded-lg border border-slate-300 bg-white text-[15.5px] leading-[1.7] placeholder:text-slate-400 focus:outline-none focus:border-brand-600 focus:ring-4 focus:ring-brand-500/10 transition-all resize-y"
                                     />
                                     <p className="text-xs text-slate-500">
                                         {form.message.length} / 5000 karakter
@@ -176,7 +184,7 @@ const Contact: React.FC = () => {
                                     <Button
                                         type="submit"
                                         disabled={sending}
-                                        className="h-11 px-7 rounded-lg bg-brand-700 hover:bg-brand-800 font-semibold"
+                                        className="h-12 px-8 rounded-lg bg-brand-700 hover:bg-brand-800 font-semibold text-[15px]"
                                     >
                                         {sending
                                             ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Gönderiliyor</>
@@ -192,55 +200,50 @@ const Contact: React.FC = () => {
                     </div>
 
                     {/* Yan bilgi */}
-                    <aside className="lg:w-72 shrink-0 space-y-8">
-                        <div>
-                            <h2 className="text-sm font-bold text-slate-900 mb-3">Önce buraya bakın</h2>
-                            <p className="text-[15px] text-slate-600 leading-relaxed">
-                                Soruların çoğunun yanıtı{' '}
-                                <Link to="/help" className="text-brand-700 hover:underline">yardım merkezinde</Link>{' '}
-                                var. Oradan çözemezseniz formu doldurun.
-                            </p>
-                        </div>
+                    <aside className="lg:w-72 shrink-0">
+                        <div className="lg:sticky lg:top-28 space-y-9">
+                            <div>
+                                <p className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400 mb-3">
+                                    Yanıt süresi
+                                </p>
+                                <p className="font-montserrat text-[34px] font-extrabold text-brand-800 tracking-[-0.03em] leading-none">
+                                    2 iş günü
+                                </p>
+                                <p className="text-[15px] text-slate-600 leading-[1.75] mt-3">
+                                    En geç yanıt süremiz. Hafta içi gelen mesajlara genellikle aynı
+                                    gün, hafta sonu gelenlere pazartesi dönüş yapıyoruz.
+                                </p>
+                            </div>
 
-                        <div>
-                            <h2 className="text-sm font-bold text-slate-900 mb-3">Yanıt süresi</h2>
-                            <p className="text-[15px] text-slate-600 leading-relaxed">
-                                Hafta içi mesajlara aynı gün, hafta sonu gelenlere pazartesi dönüş
-                                yapmaya çalışıyoruz. En geç yanıt süremiz iki iş günüdür.
-                            </p>
-                        </div>
+                            <div className="border-t border-slate-200 pt-8">
+                                <p className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400 mb-3">
+                                    Önce buraya bakın
+                                </p>
+                                <p className="text-[15px] text-slate-600 leading-[1.75]">
+                                    Soruların çoğunun yanıtı{' '}
+                                    <Link to="/help" className="text-brand-700 font-medium hover:underline">yardım merkezinde</Link>{' '}
+                                    var. Oradan çözemezseniz formu doldurun.
+                                </p>
+                            </div>
 
-                        <div>
-                            <h2 className="text-sm font-bold text-slate-900 mb-3">Özel konular</h2>
-                            <ul className="space-y-3 text-[15px] text-slate-600 leading-relaxed">
-                                <li>
-                                    <strong className="text-slate-800">Telif hakkı bildirimi:</strong>{' '}
-                                    Hakkınızı ihlal eden içeriğin bağlantısını ve hak sahipliğinizi
-                                    gösteren belgeyi ekleyin.
-                                </li>
-                                <li>
-                                    <strong className="text-slate-800">Kişisel veri talebi:</strong>{' '}
-                                    KVKK kapsamındaki taleplerinizi 30 gün içinde ücretsiz
-                                    sonuçlandırıyoruz. Ayrıntılar{' '}
-                                    <Link to="/privacy" className="text-brand-700 hover:underline">gizlilik politikasında</Link>.
-                                </li>
-                                <li>
-                                    <strong className="text-slate-800">Güvenlik açığı:</strong>{' '}
-                                    Bulduğunuz açığı yayınlamadan önce bize bildirin; hızlıca
-                                    kapatıp size dönüş yapalım.
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h2 className="text-sm font-bold text-slate-900 mb-3">Eğitmen olmak</h2>
-                            <p className="text-[15px] text-slate-600 leading-relaxed">
-                                Süreç ve kazanç modeli{' '}
-                                <Link to="/become-instructor" className="text-brand-700 hover:underline">
-                                    eğitmen sayfasında
-                                </Link>{' '}
-                                anlatılıyor.
-                            </p>
+                            <div className="border-t border-slate-200 pt-8">
+                                <p className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400 mb-4">
+                                    Özel konular
+                                </p>
+                                <dl className="space-y-5">
+                                    {[
+                                        { t: 'Telif hakkı bildirimi', d: <>Hakkınızı ihlal eden içeriğin bağlantısını ve hak sahipliğinizi gösteren belgeyi ekleyin.</> },
+                                        { t: 'Kişisel veri talebi', d: <>KVKK kapsamındaki talepler 30 gün içinde ücretsiz sonuçlandırılır. Ayrıntılar <Link to="/privacy" className="text-brand-700 font-medium hover:underline">gizlilik politikasında</Link>.</> },
+                                        { t: 'Güvenlik açığı', d: <>Bulduğunuz açığı yayınlamadan önce bize bildirin; hızlıca kapatıp size dönüş yapalım.</> },
+                                        { t: 'Eğitmen olmak', d: <>Süreç ve kazanç modeli <Link to="/become-instructor" className="text-brand-700 font-medium hover:underline">eğitmen sayfasında</Link> anlatılıyor.</> },
+                                    ].map(item => (
+                                        <div key={item.t}>
+                                            <dt className="text-[15px] font-semibold text-slate-900">{item.t}</dt>
+                                            <dd className="text-[15px] text-slate-600 leading-[1.75] mt-1">{item.d}</dd>
+                                        </div>
+                                    ))}
+                                </dl>
+                            </div>
                         </div>
                     </aside>
                 </div>

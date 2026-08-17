@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSeo } from '@/hooks/useSeo';
-import { PageHeader } from '@/components/content/PageLayout';
+import { PageHeader, ContactBand } from '@/components/content/PageLayout';
 import { cn } from '@/lib/utils';
 
 interface Entry {
@@ -374,46 +374,41 @@ const Help: React.FC = () => {
         <div className="min-h-screen bg-white">
             <PageHeader
                 title="Yardım merkezi"
-                lead={
-                    <>
-                        Sık sorulan soruların yanıtları burada. Aradığınızı bulamazsanız{' '}
-                        <Link to="/contact" className="text-brand-700 hover:underline">bize yazın</Link>.
-                    </>
-                }
+                lead="Hesap, satın alma, kurslar, Edurce Kredi ve eğitmenlik hakkında en sık sorulan soruların yanıtları. Aramak için yazmaya başlayın."
             >
-                <div className="mt-7 max-w-lg">
+                <div className="mt-9 max-w-xl">
                     <label htmlFor="help-search" className="sr-only">Yardım konularında ara</label>
                     <input
                         id="help-search"
                         value={query}
                         onChange={e => setQuery(e.target.value)}
                         placeholder="Konu ara — iade, sertifika, video, kredi…"
-                        className="w-full h-11 px-4 rounded-lg border border-slate-300 bg-white text-[15px] focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-500/15 transition-colors"
+                        className="w-full py-4 px-5 rounded-xl bg-white/10 border border-brand-600 text-white text-[16px] placeholder:text-brand-300 backdrop-blur focus:outline-none focus:bg-white focus:text-slate-900 focus:placeholder:text-slate-400 focus:border-white transition-colors"
                     />
                     {query && (
-                        <p className="text-sm text-slate-500 mt-2">
-                            {totalHits > 0 ? `${totalHits} sonuç` : 'Sonuç bulunamadı'}
+                        <p className="text-[14px] text-brand-200 mt-3">
+                            {totalHits > 0 ? `${totalHits} sonuç bulundu` : 'Sonuç bulunamadı'}
                         </p>
                     )}
                 </div>
             </PageHeader>
 
-            <div className="container px-4 py-12 lg:py-16">
-                <div className="flex flex-col lg:flex-row gap-12">
+            <div className="container px-4 py-16 lg:py-24">
+                <div className="flex flex-col lg:flex-row gap-14 lg:gap-20">
 
                     {/* Bölüm listesi */}
                     {!query && (
-                        <nav className="lg:w-56 shrink-0" aria-label="Bölümler">
-                            <div className="lg:sticky lg:top-24">
-                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-3">
-                                    Bölümler
+                        <nav className="lg:w-64 shrink-0" aria-label="Bölümler">
+                            <div className="lg:sticky lg:top-28">
+                                <p className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400 mb-5">
+                                    Bu sayfada
                                 </p>
-                                <ol className="space-y-1 border-l border-slate-200">
+                                <ol className="border-l border-slate-200">
                                     {GROUPS.map(g => (
                                         <li key={g.id}>
                                             <a
                                                 href={`#${g.id}`}
-                                                className="-ml-px block border-l-2 border-transparent pl-3 py-1 text-sm text-slate-500 hover:text-slate-800 hover:border-slate-300 transition-colors"
+                                                className="block pl-5 pr-2 py-2 text-[13.5px] leading-snug text-slate-500 hover:text-slate-900 transition-colors"
                                             >
                                                 {g.title}
                                             </a>
@@ -424,26 +419,32 @@ const Help: React.FC = () => {
                         </nav>
                     )}
 
-                    <div className="flex-1 min-w-0 max-w-3xl">
+                    <div className="flex-1 min-w-0 max-w-[42rem]">
                         {totalHits === 0 ? (
-                            <div className="border border-slate-200 rounded-xl py-14 px-6 text-center">
-                                <p className="text-[15px] font-medium text-slate-800">
+                            <div className="rounded-xl border border-slate-200 py-16 px-6 text-center">
+                                <p className="font-montserrat text-[18px] font-extrabold text-slate-900 tracking-tight">
                                     "{query}" için sonuç bulunamadı
                                 </p>
-                                <p className="text-[15px] text-slate-600 mt-2 max-w-md mx-auto leading-relaxed">
+                                <p className="text-[16px] text-slate-600 mt-3 max-w-md mx-auto leading-[1.75]">
                                     Farklı bir kelime deneyin ya da{' '}
-                                    <Link to="/contact" className="text-brand-700 hover:underline">
+                                    <Link to="/contact" className="text-brand-700 font-medium hover:underline">
                                         doğrudan bize yazın
                                     </Link>
                                     .
                                 </p>
                             </div>
                         ) : (
-                            filtered.map(group => (
-                                <section key={group.id} id={group.id} className="scroll-mt-24 mb-12 last:mb-0">
-                                    <h2 className="text-xl font-bold text-slate-900 mb-4">{group.title}</h2>
+                            filtered.map((group, gi) => (
+                                <section
+                                    key={group.id}
+                                    id={group.id}
+                                    className={cn('scroll-mt-28', gi > 0 && 'mt-16 pt-16 border-t border-slate-100')}
+                                >
+                                    <h2 className="font-montserrat text-[26px] lg:text-[30px] font-extrabold text-slate-900 tracking-[-0.02em] leading-[1.15] mb-6">
+                                        {group.title}
+                                    </h2>
 
-                                    <div className="border-y border-slate-200 divide-y divide-slate-200">
+                                    <div className="divide-y divide-slate-100 border-t border-slate-100">
                                         {group.entries.map(entry => {
                                             const key = `${group.id}-${entry.q}`;
                                             const isOpen = open === key || Boolean(query);
@@ -452,23 +453,39 @@ const Help: React.FC = () => {
                                                     <button
                                                         onClick={() => setOpen(isOpen && !query ? null : key)}
                                                         aria-expanded={isOpen}
-                                                        className="w-full flex items-start justify-between gap-4 py-4 text-left group"
+                                                        className="w-full flex items-start justify-between gap-6 py-5 text-left group"
                                                     >
-                                                        <span className="text-[15px] font-medium text-slate-800 group-hover:text-brand-800 transition-colors">
+                                                        <span className={cn(
+                                                            'text-[16.5px] leading-snug transition-colors',
+                                                            isOpen
+                                                                ? 'text-brand-800 font-semibold'
+                                                                : 'text-slate-800 font-medium group-hover:text-brand-800'
+                                                        )}>
                                                             {entry.q}
                                                         </span>
                                                         {!query && (
-                                                            <span className={cn(
-                                                                'text-slate-400 text-xl leading-none shrink-0 transition-transform mt-0.5',
-                                                                isOpen && 'rotate-45'
-                                                            )}>
-                                                                +
+                                                            <span
+                                                                aria-hidden
+                                                                className={cn(
+                                                                    'shrink-0 mt-1 w-5 h-5 relative transition-transform duration-300',
+                                                                    isOpen && 'rotate-90'
+                                                                )}
+                                                            >
+                                                                {/* İki çizgiden artı — açılınca çarpıya döner */}
+                                                                <span className={cn(
+                                                                    'absolute left-0 top-1/2 w-5 h-[1.5px] -translate-y-1/2 rounded-full transition-colors',
+                                                                    isOpen ? 'bg-brand-700' : 'bg-slate-400 group-hover:bg-brand-600'
+                                                                )} />
+                                                                <span className={cn(
+                                                                    'absolute left-1/2 top-0 h-5 w-[1.5px] -translate-x-1/2 rounded-full transition-all duration-300',
+                                                                    isOpen ? 'opacity-0' : 'bg-slate-400 group-hover:bg-brand-600'
+                                                                )} />
                                                             </span>
                                                         )}
                                                     </button>
                                                     {isOpen && (
-                                                        <div className="pb-5 pr-8 -mt-1">
-                                                            <p className="text-[15px] text-slate-600 leading-[1.75]">
+                                                        <div className="pb-6 pr-10 -mt-1">
+                                                            <p className="text-[16px] text-slate-600 leading-[1.8]">
                                                                 {entry.a}
                                                             </p>
                                                         </div>
@@ -480,23 +497,11 @@ const Help: React.FC = () => {
                                 </section>
                             ))
                         )}
-
-                        <div className="mt-14 border-t border-slate-200 pt-8">
-                            <h2 className="text-lg font-bold text-slate-900">Aradığınızı bulamadınız mı?</h2>
-                            <p className="text-[15px] text-slate-600 mt-2 leading-relaxed max-w-xl">
-                                İletişim formundan yazın. Mesajınıza bir talep numarası verilir ve
-                                en geç iki iş günü içinde dönüş yapılır.
-                            </p>
-                            <Link
-                                to="/contact"
-                                className="inline-block mt-4 h-11 px-6 leading-[44px] rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-sm font-semibold transition-colors"
-                            >
-                                İletişime geç
-                            </Link>
-                        </div>
                     </div>
                 </div>
             </div>
+
+            <ContactBand />
         </div>
     );
 };

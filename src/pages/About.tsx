@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import PageLayout, { P, UL, H3, Note } from '@/components/content/PageLayout';
+import PageLayout, { P, UL, H3, Note, Stats } from '@/components/content/PageLayout';
 
 /**
  * Hakkımızda.
@@ -24,7 +24,7 @@ const About: React.FC = () => (
                 title: 'Ne yapıyoruz',
                 body: (
                     <>
-                        <P>
+                        <P lead>
                             Edurce, alanında bilgi sahibi kişilerin kurs hazırlayıp yayınlayabildiği,
                             öğrenmek isteyenlerin de bu kurslara erişebildiği bir platformdur.
                             Kurslar videolu derslerden oluşur; eğitmen bölüm ve ders yapısını kendi
@@ -74,10 +74,17 @@ const About: React.FC = () => (
                 title: 'Gelir paylaşımı',
                 body: (
                     <>
-                        <P>
+                        <P lead>
                             Eğitmenin kazancı şeffaf ve tek bir kurala bağlıdır: brüt satış tutarından
                             önce yasal vergi düşülür, kalan tutarın %55'i eğitmene aittir.
                         </P>
+                        <Stats
+                            items={[
+                                { value: '%20', label: 'Brüt tutardan düşülen yasal vergi' },
+                                { value: '%55', label: 'Kalan tutardan eğitmenin payı' },
+                                { value: '440 ₺', label: '1.000 ₺\'lik satışta eğitmene kalan' },
+                            ]}
+                        />
                         <P>
                             Örnek olarak 1.000 ₺'lik bir satışta 200 ₺ vergi kesilir, kalan 800 ₺'nin
                             440 ₺'si eğitmene, 360 ₺'si platforma kalır. Her satışın dökümü eğitmen
