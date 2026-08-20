@@ -86,6 +86,35 @@ export const CourseDetailPage = () => {
   ];
   const [activeSection, setActiveSection] = useState('genel-bakis');
 
+
+  // Route is /course/:slug — param named 'slug' covers both numeric IDs and text slugs
+  const courseIdentifier = slug || id || '';
+  // If it's purely numeric, treat as course_id (not a slug)
+  const isNumericId = /^\d+$/.test(courseIdentifier);
+
+  // Fetch course details
+  const { data: courseData, isLoading } = useQuery({
+    queryKey: ['course', courseIdentifier],
+    queryFn: async () => {
+      if (isNumericId) {
+        // Direct numeric ID lookup
+        return coursesAPI.getCourse(Number(courseIdentifier));
+      }
+      // Two-step: resolve slug → course_id, then fetch full data
+      const slugRes = await fetch(`${API_BASE_URL}/courses/slug/${encodeURIComponent(courseIdentifier)}`);
+      if (!slugRes.ok) throw new Error('Kurs bulunamadı');
+      const data = await slugRes.json();
+      // Slug endpoint returns { course_id }, then fetch full course data
+      if (data?.course_id) return coursesAPI.getCourse(data.course_id);
+      // If full course response was returned directly
+      if (data?.course) return data;
+      throw new Error('Kurs verisi alınamadı');
+    },
+    enabled: !!courseIdentifier,
+  });
+
+  const courseId = courseData?.course?.id || courseData?.course?.course_id || Number(courseIdentifier) || 0;
+
   useEffect(() => {
     if (!courseData) return;
 
@@ -117,34 +146,6 @@ export const CourseDetailPage = () => {
     observer.observe(el);
     return () => observer.disconnect();
   }, [courseId]);
-
-  // Route is /course/:slug — param named 'slug' covers both numeric IDs and text slugs
-  const courseIdentifier = slug || id || '';
-  // If it's purely numeric, treat as course_id (not a slug)
-  const isNumericId = /^\d+$/.test(courseIdentifier);
-
-  // Fetch course details
-  const { data: courseData, isLoading } = useQuery({
-    queryKey: ['course', courseIdentifier],
-    queryFn: async () => {
-      if (isNumericId) {
-        // Direct numeric ID lookup
-        return coursesAPI.getCourse(Number(courseIdentifier));
-      }
-      // Two-step: resolve slug → course_id, then fetch full data
-      const slugRes = await fetch(`${API_BASE_URL}/courses/slug/${encodeURIComponent(courseIdentifier)}`);
-      if (!slugRes.ok) throw new Error('Kurs bulunamadı');
-      const data = await slugRes.json();
-      // Slug endpoint returns { course_id }, then fetch full course data
-      if (data?.course_id) return coursesAPI.getCourse(data.course_id);
-      // If full course response was returned directly
-      if (data?.course) return data;
-      throw new Error('Kurs verisi alınamadı');
-    },
-    enabled: !!courseIdentifier,
-  });
-
-  const courseId = courseData?.course?.id || courseData?.course?.course_id || Number(courseIdentifier) || 0;
 
   /**
    * Kategori adresleri.
