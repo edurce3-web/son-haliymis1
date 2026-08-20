@@ -217,6 +217,28 @@ interface CourseLesson {
   processingStage?: string;
 }
 
+/**
+ * Sunucudaki video_status değerinin arayüzdeki karşılığı.
+ *
+ * Sayfa yenilendiğinde işlemenin nerede kaldığı yalnızca buradan anlaşılıyor;
+ * eşleme yanlış olursa biten video "işleniyor" gibi ya da süren iş "hazır"
+ * gibi görünür.
+ */
+const VIDEO_STATUS_MAP: Record<string, CourseLesson['processingStatus']> = {
+  pending: 'pending',
+  queued: 'pending',
+  uploading: 'uploading',
+  processing: 'processing',
+  processed: 'completed',
+  completed: 'completed',
+  error: 'error',
+};
+
+/** İşin hâlâ sürdüğü, dolayısıyla takip edilmesi gereken durumlar. */
+const IN_FLIGHT_STATUSES: Array<CourseLesson['processingStatus']> = [
+  'uploading', 'pending', 'processing',
+];
+
 interface CourseSection {
   id: string;
   title: string;
@@ -301,38 +323,24 @@ export default function AdvancedCourseCreator() {
                   dbLessonId: lesson.id // Map backend ID to dbLessonId to allow updates
                 };
 
-                // If lesson has media paths or videoStatus, set appropriate UI state
+                // Sunucudaki video durumunu arayüzün durumuna çevir. Sayfa
+                // yenilendiğinde bu değer, işlemenin takibini yeniden
+                // başlatan effect'i tetikler.
                 const videoStatus = lesson.videoStatus || 'pending';
                 if ((lesson.hlsManifestPath || lesson.sourceBucketPath || lesson.fileName || videoStatus !== 'pending') && !lesson.fileName) {
-                  const statusMap: Record<string, string> = {
-                    'uploading': 'processing',
-                    'processing': 'pending',
-                    'processed': 'completed',
-                    'completed': 'completed',
-                    'error': 'error',
-                    'pending': 'pending'
-                  };
                   mappedLesson = {
                     ...mappedLesson,
                     type: 'video',
                     fileName: 'Mevcut Video',
                     uploadProgress: 1,
-                    processingStatus: statusMap[videoStatus] || 'pending'
+                    processingStatus: VIDEO_STATUS_MAP[videoStatus] || 'pending'
                   };
                 } else if (lesson.fileName) {
-                  const statusMap: Record<string, string> = {
-                    'uploading': 'processing',
-                    'processing': 'pending',
-                    'processed': 'completed',
-                    'completed': 'completed',
-                    'error': 'error',
-                    'pending': 'pending'
-                  };
                   mappedLesson = {
                     ...mappedLesson,
                     type: lesson.type || 'video',
                     uploadProgress: 1,
-                    processingStatus: statusMap[videoStatus] || 'pending'
+                    processingStatus: VIDEO_STATUS_MAP[videoStatus] || 'pending'
                   };
                 }
                 return mappedLesson;
@@ -473,15 +481,20 @@ export default function AdvancedCourseCreator() {
   const [promoVideo, setPromoVideo] = useState<File | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
 
-  // Video işlenirken sayfa yenileme uyarısı
+  /** Süren işleri takip eden zamanlayıcıların ders kimlikleri. */
+  const activePollsRef = useRef<Set<string>>(new Set());
+
+  // Yalnızca tarayıcıdan sunucuya yükleme sürerken uyar. İşleme aşamasında
+  // uyarmıyoruz: iş sunucuda devam ediyor ve sayfa yenilenince takip
+  // kaldığı yerden sürüyor.
   useEffect(() => {
-    const hasProcessingVideo = courseData.sections.some(s =>
-      s.lessons.some(l => l.type === 'video' && (l.processingStatus === 'processing' || l.processingStatus === 'pending'))
+    const isUploading = courseData.sections.some(s =>
+      s.lessons.some(l => l.processingStatus === 'uploading')
     );
 
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasProcessingVideo) {
-        const msg = 'Video işlenmeye devam ediyor. Sayfayı yenilerseniz bazı veriler kaydedilmeyebilir.';
+      if (isUploading) {
+        const msg = 'Video yükleniyor. Sayfadan çıkarsanız yükleme yarıda kalır.';
         e.preventDefault();
         e.returnValue = msg;
         return msg;
@@ -984,8 +997,7 @@ export default function AdvancedCourseCreator() {
     { id: 3, title: 'Fiyatlandırma', icon: Target },
     { id: 4, title: 'Öğrenci Kitlesi', icon: Users },
     { id: 5, title: 'Pazarlama', icon: Tag },
-    { id: 6, title: 'Sertifika', icon: Award },
-    { id: 7, title: 'Önizleme', icon: Eye }
+    { id: 6, title: 'Önizleme', icon: Eye }
   ];
 
 
@@ -1558,6 +1570,12 @@ export default function AdvancedCourseCreator() {
   // Not: İşleme sunucudaki kalıcı kuyrukta yürür. Bu yoklama sadece ekranı canlı
   // tutmak içindir — sayfayı kapatmak işlemi durdurmaz, bittiğinde e-posta gelir.
   const pollVideoStatus = async (dbLessonId: string, uiLessonId: string) => {
+    // Aynı ders için ikinci bir takip başlatma. Sayfa yenilendiğinde takibi
+    // yeniden kuran effect her durum değişiminde çalışıyor; bu koruma
+    // olmadan her tur yeni bir zamanlayıcı doğuruyor.
+    if (activePollsRef.current.has(dbLessonId)) return;
+    activePollsRef.current.add(dbLessonId);
+
     const maxAttempts = 360; // 60 dakika (10 saniye * 360)
     let attempts = 0;
 
@@ -1616,18 +1634,41 @@ export default function AdvancedCourseCreator() {
           return true;
         }
 
-        setTimeout(checkStatus, 10000);
+        setTimeout(run, 10000);
         return false;
       } catch (error) {
         console.error('Video status check error:', error);
         attempts++;
-        if (attempts < maxAttempts) setTimeout(checkStatus, 10000);
+        if (attempts < maxAttempts) setTimeout(run, 10000);
         return false;
       }
     };
 
-    setTimeout(checkStatus, 5000);
+    /** Takip bittiğinde kaydı bırak ki gerekirse yeniden başlatılabilsin. */
+    const run = async () => {
+      const finished = await checkStatus();
+      if (finished) activePollsRef.current.delete(dbLessonId);
+    };
+
+    setTimeout(run, 3000);
   };
+
+  /**
+   * Sayfa yenilendikten sonra süren işleri yeniden takip et.
+   *
+   * Eğitmen video yükleyip sayfayı yenilediğinde daha önce ilerleme donuyordu;
+   * takip yalnızca yükleme anında kurulduğu için. Artık durumu "süren" olan
+   * her ders için takip kendiliğinden kuruluyor.
+   */
+  useEffect(() => {
+    for (const section of courseData.sections) {
+      for (const lesson of section.lessons) {
+        if (!lesson.dbLessonId) continue;
+        if (!IN_FLIGHT_STATUSES.includes(lesson.processingStatus)) continue;
+        pollVideoStatus(String(lesson.dbLessonId), lesson.id);
+      }
+    }
+  }, [courseData.sections]);
 
   // Form validasyon fonksiyonu
   const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
@@ -2442,7 +2483,7 @@ export default function AdvancedCourseCreator() {
                                                               <PlayCircle className="w-5 h-5" />
                                                             </div>
                                                             <div>
-                                                              <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 max-w-[200px] truncate">{lesson.fileName}</h4>
+                                                              <h4 title={lesson.fileName} className="text-sm font-bold text-slate-800 dark:text-slate-200 max-w-[340px] truncate">{lesson.fileName}</h4>
                                                               <div className="flex items-center gap-3 mt-1">
                                                                 {lesson.durationSeconds != null && lesson.durationSeconds > 0 && (
                                                                   <div className="flex items-center text-[11px] font-bold text-slate-500">
@@ -2451,12 +2492,18 @@ export default function AdvancedCourseCreator() {
                                                                   </div>
                                                                 )}
 
-                                                                {(lesson.processingStatus === 'processing' || lesson.processingStatus === 'pending') && (
+                                                                {(lesson.processingStatus === 'processing'
+                                                                  || lesson.processingStatus === 'pending'
+                                                                  || lesson.processingStatus === 'uploading') && (
                                                                   <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-500/10 rounded-full flex items-center gap-1.5 px-2 py-0.5">
                                                                     <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
-                                                                    {lesson.processingProgress
-                                                                      ? `İşleniyor %${lesson.processingProgress}`
-                                                                      : 'İşleniyor'}
+                                                                    {lesson.processingStatus === 'uploading'
+                                                                      ? 'Sunucuya aktarılıyor'
+                                                                      : lesson.processingStatus === 'pending'
+                                                                        ? 'Kuyrukta'
+                                                                        : lesson.processingProgress
+                                                                          ? `İşleniyor %${lesson.processingProgress}`
+                                                                          : 'İşleniyor'}
                                                                   </span>
                                                                 )}
                                                                 {(lesson.processingStatus === 'completed' || lesson.processingStatus === 'processed') && (
@@ -2860,34 +2907,36 @@ export default function AdvancedCourseCreator() {
         return (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
             {(!courseData.price || !(courseData as any).price_level) ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6">
-                  <Tag className="w-12 h-12 text-slate-400" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Önce Kurs Fiyatını Belirleyin</h3>
-                <p className="text-slate-500 max-w-sm">Kupon oluşturabilmek için öncelikle Fiyatlandırma sekmesinden kursunuzun fiyatını seçmelisiniz.</p>
+              <div className="max-w-lg">
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Kupon</h2>
+                <p className="text-[15px] text-slate-500 mt-2 leading-relaxed">
+                  Kupon oluşturmak için önce Fiyatlandırma sekmesinden kursun fiyatını
+                  belirlemeniz gerekiyor.
+                </p>
               </div>
             ) : (
-              <>
+              <div className="max-w-2xl space-y-6">
                 <div>
-                  <h2 className="text-xl font-bold text-slate-800 dark:text-white">Kupon Oluştur</h2>
-                  <p className="text-sm text-slate-500 mt-1">Kursunuz için özel fiyatlı indirim kuponu oluşturun ve kaydedin.</p>
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">Kupon</h2>
+                  <p className="text-[15px] text-slate-500 mt-1.5">
+                    Kursunuz için indirimli fiyatlı bir kod tanımlayın.
+                  </p>
                 </div>
 
-                <Card className="border-none ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl bg-white dark:bg-slate-900 shadow-sm">
-                  <CardContent className="p-6 space-y-5">
+                <div className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900">
+                  <div className="p-6 space-y-5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-bold text-slate-500">Kupon Kodu</Label>
+                        <Label className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Kupon kodu</Label>
                         <Input
                           placeholder="INDIRIM20"
                           value={couponData.code}
                           onChange={(e) => setCouponData(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
-                          className="h-11 rounded-xl font-mono font-bold tracking-widest"
+                          className="h-11 rounded-lg font-mono tracking-widest"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-bold text-slate-500">Kupon Fiyatı</Label>
+                        <Label className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">İndirimli fiyat</Label>
                         <Select
                           value={couponData.priceLevel?.toString() || ''}
                           onValueChange={(value) => {
@@ -2897,8 +2946,8 @@ export default function AdvancedCourseCreator() {
                             }
                           }}
                         >
-                          <SelectTrigger className="h-11 rounded-xl font-bold text-emerald-600">
-                            <SelectValue placeholder="İndirimli fiyat seçin" />
+                          <SelectTrigger className="h-11 rounded-lg">
+                            <SelectValue placeholder="Fiyat seçin" />
                           </SelectTrigger>
                           <SelectContent className="rounded-xl">
                             {getPriceOptionsForCurrency(courseData.currency).filter(opt => opt.level < (courseData as any).price_level).length > 0 ? (
@@ -2920,56 +2969,51 @@ export default function AdvancedCourseCreator() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-bold text-slate-500">Kullanım Limiti</Label>
+                        <Label className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Kullanım limiti</Label>
                         <Input
                           type="number"
                           placeholder="100"
                           value={couponData.usageLimit || ''}
                           onChange={(e) => setCouponData(prev => ({ ...prev, usageLimit: Number(e.target.value) }))}
-                          className="h-11 rounded-xl font-bold"
+                          className="h-11 rounded-lg"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-bold text-slate-500">Son Geçerlilik</Label>
+                        <Label className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Son geçerlilik</Label>
                         <Input
                           type="date"
                           value={couponData.validUntil}
                           onChange={(e) => setCouponData(prev => ({ ...prev, validUntil: e.target.value }))}
-                          className="h-11 rounded-xl"
+                          className="h-11 rounded-lg"
                         />
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                      <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{couponData.isActive ? 'Kupon Aktif' : 'Kupon Pasif'}</span>
+                    <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-5">
+                      <div>
+                        <p className="text-[14px] font-semibold text-slate-800 dark:text-slate-200">Kupon aktif</p>
+                        <p className="text-[13px] text-slate-500 mt-0.5">
+                          Kapalıyken kod çalışmaz, kayıt silinmez.
+                        </p>
+                      </div>
                       <Switch
                         checked={couponData.isActive}
                         onCheckedChange={(checked) => setCouponData(prev => ({ ...prev, isActive: checked }))}
                       />
                     </div>
-                  </CardContent>
-                </Card>
 
-                {/* Önizleme */}
-                {couponData.code && couponData.priceLevel > 0 && (
-                  <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-6 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
-                        <Tag className="w-6 h-6 text-orange-400" />
-                      </div>
-                      <div>
-                        <p className="text-white font-bold text-lg">
-                          Yeni Fiyat: {couponData.discountPrice} {courseData.currency}
-                        </p>
-                        <p className="text-slate-400 text-xs">Kod: <span className="font-mono font-bold text-orange-400">{couponData.code}</span></p>
-                      </div>
-                    </div>
-                    <div className="text-right text-slate-400 text-xs">
-                      <p>Limit: {couponData.usageLimit} kullanım</p>
-                      {couponData.validUntil && <p>Son: {couponData.validUntil}</p>}
-                    </div>
+                    {couponData.code && couponData.priceLevel > 0 && (
+                      <p className="text-[13px] text-slate-500 border-t border-slate-100 dark:border-slate-800 pt-5">
+                        <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">{couponData.code}</span>
+                        {' '}kodunu kullananlar kursu{' '}
+                        <span className="font-semibold text-slate-800 dark:text-slate-200">
+                          {couponData.discountPrice} {courseData.currency}
+                        </span>
+                        {' '}öder.
+                      </p>
+                    )}
                   </div>
-                )}
+                </div>
 
                 <Button
                   onClick={async () => {
@@ -3007,159 +3051,123 @@ export default function AdvancedCourseCreator() {
                       toast.error(`Kupon kayıt hatası: ${err.message}`);
                     }
                   }}
-                  className="w-full h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-all"
+                  className="h-11 px-7 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-semibold"
                 >
-                  <Save className="w-4 h-4 mr-2" /> Kuponu Kaydet
+                  Kuponu kaydet
                 </Button>
-              </>
+              </div>
             )}
           </div>
         );
 
-      case 6:
+      case 6: {
+        /**
+         * Yayın öncesi kontrol.
+         *
+         * Burada eskiden kurs detay sayfasının elle yazılmış bir kopyası
+         * duruyordu; gerçek sayfa her değiştiğinde geride kalıyor ve yanlış
+         * bir izlenim veriyordu. Artık eksikler listeleniyor ve önizleme
+         * gerçek sayfada açılıyor.
+         */
+        const lessonCount = courseData.sections.reduce((n, s) => n + s.lessons.length, 0);
+        const videoCount = courseData.sections.reduce(
+          (n, s) => n + s.lessons.filter(l => l.processingStatus === 'completed').length, 0);
+        const pendingVideos = courseData.sections.reduce(
+          (n, s) => n + s.lessons.filter(l => IN_FLIGHT_STATUSES.includes(l.processingStatus)).length, 0);
+        const previewCount = courseData.sections.reduce(
+          (n, s) => n + s.lessons.filter(l => l.isFree).length, 0);
+
+        const checks = [
+          { label: 'Kurs başlığı', ok: Boolean(courseData.title?.trim()), hint: 'Temel Bilgiler' },
+          { label: 'Açıklama', ok: (courseData.description || '').trim().length >= 40, hint: 'Temel Bilgiler' },
+          { label: 'Kategori', ok: Boolean(courseData.category), hint: 'Temel Bilgiler' },
+          { label: 'Kapak görseli', ok: Boolean(coverPreviewUrl || (courseData as any).image), hint: 'Temel Bilgiler' },
+          { label: 'En az bir bölüm ve ders', ok: lessonCount > 0, hint: 'Kurs İçeriği' },
+          { label: 'Tüm videolar hazır', ok: lessonCount > 0 && pendingVideos === 0, hint: 'Kurs İçeriği' },
+          { label: 'Fiyat', ok: Boolean((courseData as any).price_level), hint: 'Fiyatlandırma' },
+          { label: 'Ücretsiz önizleme dersi', ok: previewCount > 0, hint: 'Kurs İçeriği', optional: true },
+        ];
+
+        const missing = checks.filter(c => !c.ok && !c.optional);
+        const canPreview = Boolean(creatorId && creatorId !== 'new');
+
         return (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900/30 dark:to-amber-800/20 flex items-center justify-center mb-6">
-                <Award className="w-12 h-12 text-amber-500" />
-              </div>
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Sertifika Sistemi</h2>
-              <p className="text-slate-500 text-base max-w-md">Bu özellik şu anda geliştirme aşamasındadır. Çok yakında kursunuzu tamamlayan öğrencilere otomatik sertifika verebileceksiniz.</p>
-              <div className="mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-600 text-sm font-bold">
-                <Rocket className="w-4 h-4" />
-                Yakında Geliyor
-              </div>
+          <div className="max-w-2xl space-y-8 animate-in fade-in duration-500">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Yayın öncesi kontrol</h2>
+              <p className="text-[15px] text-slate-500 mt-1.5">
+                {missing.length === 0
+                  ? 'Kurs yayına hazır görünüyor.'
+                  : `Yayınlamadan önce ${missing.length} eksik var.`}
+              </p>
             </div>
-          </div>
-        );
 
-      case 7:
-        return (
-          <div className="w-full animate-in fade-in slide-in-from-bottom-5 duration-700">
-            <div className="flex flex-col w-full h-[600px] overflow-y-auto overflow-x-hidden custom-scrollbar border border-slate-200 dark:border-slate-800 rounded-3xl bg-white dark:bg-slate-900 shadow-inner">
-              {/* Kurs Detay Sayfası Taslağı (CourseDetailPage Önizlemesi) */}
-              <div className="w-full text-left">
-                {/* 1. Breadcrumb / Kategori */}
-                <div className="bg-[#111827] px-6 py-4 flex items-center text-sm text-gray-400 gap-2 border-b border-gray-800 sticky top-0 z-20">
-                  <span>{COURSE_CATEGORIES.find(c => String(c.id) === courseData.category)?.name || 'Kategori'}</span>
-                  <ChevronRight className="w-4 h-4 text-gray-600" />
-                  <span>{COURSE_CATEGORIES.find(c => String(c.id) === courseData.category)?.subcategories?.find(s => String(s.id) === courseData.subcategory)?.name || 'Alt Kategori'}</span>
-                  <ChevronRight className="w-4 h-4 text-gray-600" />
-                  <span className="text-gray-200 font-bold truncate">{courseData.title || 'Kurs Başlığı'}</span>
-                </div>
-
-                {/* 2. Hero Section */}
-                <div className="bg-gradient-to-b from-[#111827] to-gray-900 p-6 lg:p-10 relative overflow-hidden">
-                  <div className="grid lg:grid-cols-12 gap-8 items-start relative z-10">
-
-                    {/* Media / Video Placeholder */}
-                    <div className="lg:col-span-6 relative rounded-2xl overflow-hidden ring-1 ring-white/10 aspect-video bg-black flex items-center justify-center">
-                      {(coverPreviewUrl || (courseData as any).image) ? (
-                        <div className="w-full h-full relative group">
-                          <img src={coverPreviewUrl || (courseData as any).image || ''} alt="Kapak" className="w-full h-full object-cover opacity-80" />
-                          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
-                            <PlayCircle className="w-16 h-16 text-white/90 drop-shadow-xl" />
-                            <span className="mt-4 px-4 py-2 bg-white/20 backdrop-blur-md text-white rounded-full text-sm font-medium">Önizleme Videosu</span>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center text-gray-500">
-                          <PlayCircle className="w-16 h-16 mb-2 opacity-50" />
-                          <span>Video veya Kapak Görseli</span>
-                        </div>
+            <div className="border border-slate-200 dark:border-slate-800 rounded-xl divide-y divide-slate-100 dark:divide-slate-800">
+              {checks.map(check => (
+                <div key={check.label} className="flex items-center justify-between gap-4 px-5 py-3.5">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className={cn(
+                      'w-5 h-5 rounded-full shrink-0 flex items-center justify-center text-[11px] font-bold',
+                      check.ok
+                        ? 'bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200'
+                        : check.optional
+                          ? 'bg-slate-100 text-slate-400'
+                          : 'bg-amber-50 text-amber-600 ring-1 ring-amber-200'
+                    )}>
+                      {check.ok ? '✓' : '!'}
+                    </span>
+                    <span className="text-[15px] text-slate-800 dark:text-slate-200 truncate">
+                      {check.label}
+                      {check.optional && !check.ok && (
+                        <span className="text-slate-400 text-[13px]"> · isteğe bağlı</span>
                       )}
-                    </div>
-
-                    {/* Content Section */}
-                    <div className="lg:col-span-6 flex flex-col items-start text-white space-y-4">
-                      <div className="flex flex-wrap gap-2">
-                        <Badge className="bg-[#0D9488]/10 text-[#0D9488] border-[#0D9488]/20">Yeni</Badge>
-                        <Badge className="bg-white/10 text-gray-300 border-white/20">{courseData.level || 'Tüm Seviyeler'}</Badge>
-                      </div>
-
-                      <h1 className="text-3xl lg:text-4xl font-extrabold leading-tight tracking-tight">
-                        {courseData.title || 'Kurs Başlığınız'}
-                      </h1>
-
-                      <p className="text-lg text-gray-400 font-medium line-clamp-2">
-                        {courseData.subtitle || 'Kurs alt başlığı...'}
-                      </p>
-
-                      {/* Eğitmen Kısmı */}
-                      <div className="flex items-center gap-3 mt-2">
-                        <div className="w-10 h-10 rounded-full bg-[#0D9488]/20 flex items-center justify-center overflow-hidden border border-white/10">
-                          <UserCircle className="w-6 h-6 text-[#0D9488]" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-400">Eğitmen</p>
-                          <p className="text-base font-bold text-white">{user?.first_name} {user?.last_name || 'Eğitmen Adı'}</p>
-                        </div>
-                      </div>
-                    </div>
+                    </span>
                   </div>
-                </div>
-
-                {/* 3. Detailed Sections */}
-                <div className="p-8 lg:p-12 space-y-12">
-                  {/* Neler Öğreneceksiniz? */}
-                  {courseData.learningObjectives?.length > 0 && (
-                    <div className="bg-teal-50/30 dark:bg-slate-800/50 rounded-3xl p-8 border border-teal-100/50 dark:border-slate-800 shadow-sm">
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3 text-[#0D9488]">
-                        <ShieldCheck className="w-6 h-6" />
-                        Neler Öğreneceksiniz?
-                      </h3>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        {courseData.learningObjectives.map((item, i) => (
-                          <div key={i} className="flex gap-3 text-slate-700 dark:text-slate-300 group">
-                            <Check className="w-4 h-4 text-[#0D9488] shrink-0 mt-1" />
-                            <span className="text-sm font-medium leading-relaxed">{item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                  {!check.ok && (
+                    <span className="text-[13px] text-slate-400 shrink-0">{check.hint}</span>
                   )}
-
-                  {/* Kurs Açıklaması */}
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-                      <BookOpen className="w-6 h-6 text-slate-400" />
-                      Kurs Hakkında
-                    </h3>
-                    <div className="text-[16px] text-slate-600 dark:text-slate-400 leading-[1.8] break-words whitespace-pre-wrap bg-slate-50/50 dark:bg-slate-800/20 p-8 rounded-3xl border border-slate-100 dark:border-slate-800">
-                      {courseData.description || 'Kurs açıklaması içeriği buraya gelecek...'}
-                    </div>
-                  </div>
                 </div>
+              ))}
+            </div>
 
-                {/* 4. Bottom Bar (Pricing & Action) */}
-                <div className="bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 p-6 flex flex-col sm:flex-row items-center justify-between gap-6 sticky bottom-0 z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.02)]">
-                  <div className="flex items-center gap-6 text-slate-600 dark:text-slate-400 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-5 h-5 text-[#0D9488]" />
-                      <span className="font-semibold">0 Saat İçerik</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <BookOpen className="w-5 h-5 text-[#0D9488]" />
-                      <span className="font-semibold">{(courseData.sections || []).reduce((acc, sec) => acc + (sec.lessons?.length || 0), 0)} Ders</span>
-                    </div>
+            <div className="grid grid-cols-3 gap-px bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+              {[
+                { value: courseData.sections.length, label: 'Bölüm' },
+                { value: lessonCount, label: 'Ders' },
+                { value: `${videoCount}/${lessonCount}`, label: 'Hazır video' },
+              ].map(item => (
+                <div key={item.label} className="bg-white dark:bg-slate-900 px-5 py-4">
+                  <div className="text-[22px] font-bold text-slate-900 dark:text-white tabular-nums leading-none">
+                    {item.value}
                   </div>
-
-                  <div className="flex items-center gap-6">
-                    <div className="text-right">
-                      <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1 text-slate-400">Kurs Ücreti</p>
-                      <p className="text-3xl font-black text-[#0D9488]">
-                        {courseData.price > 0 ? `₺${courseData.price}` : 'Ücretsiz'}
-                      </p>
-                    </div>
-                    <Button className="h-14 px-8 rounded-xl bg-[#0D9488] hover:bg-[#0D9488]/90 text-white font-bold text-lg shadow-xl shadow-teal-100 dark:shadow-none whitespace-nowrap pointer-events-none">
-                      Hemen Kaydol
-                    </Button>
-                  </div>
+                  <div className="text-[13px] text-slate-500 mt-1.5">{item.label}</div>
                 </div>
-              </div>
+              ))}
+            </div>
+
+            <div className="border-t border-slate-200 dark:border-slate-800 pt-6">
+              <h3 className="text-[15px] font-semibold text-slate-900 dark:text-white">Önizleme</h3>
+              <p className="text-[15px] text-slate-500 mt-1.5 leading-relaxed">
+                Kursu öğrencilerin göreceği gerçek sayfada açar. Taslak kurslar yalnızca
+                size görünür.
+              </p>
+              <Button
+                onClick={() => window.open(`/course/${creatorId}`, '_blank', 'noopener')}
+                disabled={!canPreview}
+                className="h-11 px-7 mt-5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-semibold disabled:opacity-50"
+              >
+                Önizlemeyi aç
+              </Button>
+              {!canPreview && (
+                <p className="text-[13px] text-slate-400 mt-2.5">
+                  Önizleme için kursu önce taslak olarak kaydedin.
+                </p>
+              )}
             </div>
           </div>
         );
+      }
+
 
       default:
         return <div>Step {currentStep} content</div>;
@@ -3658,33 +3666,19 @@ export default function AdvancedCourseCreator() {
       </div>
 
       <AlertDialog open={deleteConfirmation.isOpen} onOpenChange={(open) => setDeleteConfirmation(prev => ({ ...prev, isOpen: open }))}>
-        <AlertDialogContent className="rounded-2xl">
+        <AlertDialogContent className="rounded-2xl max-w-sm">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-lg font-black">
-              {deleteConfirmation.type === 'section' && '⚠️ Bölümü Sil'}
-              {deleteConfirmation.type === 'lesson' && '⚠️ Dersi Sil'}
-              {deleteConfirmation.type === 'video' && '🗑️ Videoyu Sil'}
-              {deleteConfirmation.type === 'resource' && '🗑️ Kaynağı Sil'}
+            <AlertDialogTitle className="text-[15px] font-semibold">
+              {deleteConfirmation.type === 'section' && 'Bölümü silmek istediğinize emin misiniz?'}
+              {deleteConfirmation.type === 'lesson' && 'Dersi silmek istediğinize emin misiniz?'}
+              {deleteConfirmation.type === 'video' && 'Videoyu silmek istediğinize emin misiniz?'}
+              {deleteConfirmation.type === 'resource' && 'Kaynağı silmek istediğinize emin misiniz?'}
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-sm leading-relaxed">
-              {deleteConfirmation.type === 'section' && (
-                <>Bu bölümü silmek istediğinize emin misiniz? <strong>Altındaki tüm dersler, videolar ve kaynaklar</strong> hem veritabanından hem de bulut depolamadan (IDrive E2) kalıcı olarak silinecektir.</>
-              )}
-              {deleteConfirmation.type === 'lesson' && (
-                <>Bu dersi silmek istediğinize emin misiniz? <strong>Derse ait video, HLS segmentleri ve tüm kaynak dosyalar</strong> kalıcı olarak silinecektir.</>
-              )}
-              {deleteConfirmation.type === 'video' && (
-                <>Bu videoyu silmek istediğinize emin misiniz? <strong>Ham video dosyası ve tüm HLS segmentleri</strong> kalıcı olarak silinecektir.</>
-              )}
-              {deleteConfirmation.type === 'resource' && (
-                <><strong>"{deleteConfirmation.resourceName}"</strong> dosyasını silmek istediğinize emin misiniz? Dosya hem veritabanından hem de bulut depolamadan kalıcı olarak silinecektir.</>
-              )}
-            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="rounded-xl">İptal</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm} className="bg-red-600 hover:bg-red-700 rounded-xl">
-              Evet, Sil
+              Sil
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

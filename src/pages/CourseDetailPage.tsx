@@ -393,351 +393,149 @@ export const CourseDetailPage = () => {
   const reviewsCount = reviewsData?.total || reviewsData?.items?.length || 0;
   const reviewsList = reviewsData?.items || [];
 
+  // Satın alma kartındaki özet bilgiler
+  const allLessons: any[] = (course.sections || []).flatMap((s: any) => s.lessons || []);
+  const totalLessons = allLessons.length;
+
+  const totalSeconds = Number(course.total_duration_seconds)
+    || allLessons.reduce((sum, l) => sum + (Number(l.duration) || 0), 0);
+  const totalDurationLabel = totalSeconds > 0
+    ? (() => {
+      const h = Math.floor(totalSeconds / 3600);
+      const m = Math.round((totalSeconds % 3600) / 60);
+      return h > 0 ? `${h} sa ${m} dk` : `${m || 1} dk`;
+    })()
+    : 'Belirtilmedi';
+
+  const levelLabel = ({
+    beginner: 'Başlangıç',
+    intermediate: 'Orta',
+    advanced: 'İleri',
+    all: 'Tüm seviyeler',
+  } as Record<string, string>)[course.level] || 'Tüm seviyeler';
+
+  /** Kart üzerindeki oynat düğmesi tanıtım videosu yoksa bunu açar. */
+  const firstPreviewLesson = allLessons.find((l: any) => l.preview || l.is_free) || null;
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-24 font-sans text-slate-800">
-      {/* 1. Navbar Area (Breadcrumbs) */}
-      <div className="bg-[#111827] border-b border-gray-800">
-        <div className="container mx-auto px-4 py-4">
-          <nav className="flex items-center text-sm text-gray-400 gap-2 overflow-hidden whitespace-nowrap">
-            <span className="hover:text-white cursor-pointer transition-colors max-w-[150px] truncate">{course.category_name || 'Kategori'}</span>
-            <ChevronRight className="w-3.5 h-3.5 text-gray-600 shrink-0" />
-            <span className="hover:text-white cursor-pointer transition-colors max-w-[150px] truncate">{course.subcategory_name || 'Alt Kategori'}</span>
-            <ChevronRight className="w-3.5 h-3.5 text-gray-600 shrink-0" />
-            <span className="text-gray-200 font-bold truncate max-w-[300px]">{course.title}</span>
+      {/*
+        Kahraman bölümü.
+
+        Düzen bilinçli olarak "bilgi solda, satın alma kartı sağda": kullanıcı
+        okurken fiyat ve buton ekranda kalıyor. Kart yapışkan olduğu için
+        müfredata inildiğinde de kaybolmuyor.
+      */}
+      <div className="bg-brand-950 text-white">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <nav className="flex items-center text-[13px] text-brand-300 gap-2 py-4 overflow-hidden whitespace-nowrap">
+            {course.category_slug ? (
+              <Link to={`/courses/${course.category_slug}`} className="hover:text-white transition-colors truncate max-w-[160px]">
+                {course.category_name}
+              </Link>
+            ) : (
+              <span className="truncate max-w-[160px]">{course.category_name || 'Kategori'}</span>
+            )}
+            {course.subcategory_name && (
+              <>
+                <ChevronRight className="w-3.5 h-3.5 text-brand-600 shrink-0" />
+                {course.category_slug && course.subcategory_slug ? (
+                  <Link
+                    to={`/courses/${course.category_slug}/${course.subcategory_slug}`}
+                    className="hover:text-white transition-colors truncate max-w-[160px]"
+                  >
+                    {course.subcategory_name}
+                  </Link>
+                ) : (
+                  <span className="truncate max-w-[160px]">{course.subcategory_name}</span>
+                )}
+              </>
+            )}
           </nav>
-        </div>
-      </div>
 
-      {/* 2. Modern Split Hero Section */}
-      <div className="bg-gradient-to-b from-[#111827] to-gray-900 border-b border-gray-800 relative overflow-hidden">
+          <div className="grid lg:grid-cols-12 gap-10 pb-14 lg:pb-40 pt-4">
+            {/* Sol: kurs bilgisi */}
+            <div className="lg:col-span-7 xl:col-span-8">
+              <h1 className="text-[30px] sm:text-[38px] lg:text-[42px] font-bold leading-[1.15] tracking-[-0.02em] break-words">
+                {course.title}
+              </h1>
 
-        <div className="container mx-auto px-4 py-10 lg:py-16 relative z-10">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+              {course.short_description && (
+                <p className="text-[17px] lg:text-[18px] text-brand-100 leading-[1.65] mt-5 max-w-2xl break-words">
+                  {course.short_description}
+                </p>
+              )}
 
-            {/* Left Col (5 cols): Media & Preview */}
-            <div className="lg:col-span-5 space-y-6 order-2 lg:order-1">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5 bg-gray-900 aspect-video group">
-
-                {/* Video Oynatıcı veya Poster */}
-                {isVideoPlaying && (previewLesson || course.preview_video) ? (
-                  <>
-                    {previewLesson?.video_type === 'hls' ? (
-                      <HLSVideoPlayer
-                        key={previewLesson.lesson_id}
-                        src={previewLesson.video_url}
-                        videoType="hls"
-                        poster={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
-                        title={previewLesson.title}
-                      />
-                    ) : (
-                      <video
-                        ref={videoRef}
-                        src={previewLesson?.video_url || course.preview_video}
-                        className="w-full h-full object-contain bg-black"
-                        controls
-                        autoPlay
-                        playsInline
-                        poster={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
-                        onEnded={() => setIsVideoPlaying(false)}
-                        onError={() => {
-                          toast.error('Video yüklenemedi');
-                          setIsVideoPlaying(false);
-                        }}
-                      />
-                    )}
-
-                    {/* Oynatılan önizleme dersinin adı */}
-                    {previewLesson && (
-                      <div className="absolute top-0 inset-x-0 bg-gradient-to-b from-black/80 to-transparent px-4 pt-3 pb-8 pointer-events-none">
-                        <p className="text-[11px] font-semibold uppercase tracking-wider text-brand-300">
-                          Ücretsiz önizleme
-                        </p>
-                        <p className="text-sm font-medium text-white truncate pr-10">
-                          {previewLesson.title}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Video Kapat Butonu */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsVideoPlaying(false);
-                        setPreviewLesson(null);
-                        videoRef.current?.pause();
-                      }}
-                      className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors z-10 border border-white/10"
-                    >
-                      <XIcon className="w-4 h-4" />
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    {/* Poster Görseli */}
-                    <img
-                      src={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
-                      alt={course.title}
-                      className="w-full h-full object-cover opacity-90 transition-opacity duration-500 group-hover:opacity-75"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/placeholder-course.jpg';
-                      }}
-                    />
-
-                    {/* Play Butonu - Ortada */}
-                    <div
-                      className="absolute inset-0 flex items-center justify-center cursor-pointer"
-                      onClick={() => {
-                        if (course.preview_video) {
-                          setIsVideoPlaying(true);
-                        } else {
-                          toast.info('Bu kurs için önizleme videosu bulunmuyor');
-                        }
-                      }}
-                    >
-                      <div className={cn(
-                        "w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center transition-transform group-hover:scale-110 shadow-xl border border-white/30",
-                        course.preview_video && "hover:bg-white/30"
-                      )}>
-                        <Play className="w-8 h-8 text-white fill-white ml-1" />
-                      </div>
-                    </div>
-
-                    {/* Önizlemeyi Başlat Butonu - Sol Alt */}
-                    <div className="absolute bottom-4 left-4">
-                      <button
-                        onClick={() => {
-                          if (course.preview_video) {
-                            setIsVideoPlaying(true);
-                          } else {
-                            toast.info('Bu kurs için önizleme videosu bulunmuyor');
-                          }
-                        }}
-                        className={cn(
-                          "inline-flex items-center gap-2 px-3 py-1.5 bg-black/60 backdrop-blur-md text-white text-xs font-bold rounded-lg border border-white/10 transition-colors",
-                          course.preview_video ? "hover:bg-black/80 cursor-pointer" : "opacity-60 cursor-not-allowed"
-                        )}
-                      >
-                        <PlayCircle className="w-3.5 h-3.5" />
-                        {course.preview_video ? 'Önizlemeyi Başlat' : 'Önizleme Yok'}
-                      </button>
-                    </div>
-
-                    {/* Video varsa ses ikonu göster */}
-                    {course.preview_video && (
-                      <div className="absolute top-3 right-3">
-                        <div className="flex items-center gap-1 px-2 py-1 bg-black/50 backdrop-blur-sm rounded-full border border-white/10">
-                          <Volume2 className="w-3 h-3 text-white/80" />
-                          <span className="text-[10px] font-bold text-white/80">Video</span>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-
-              <div className="flex items-center justify-between px-2 text-xs font-medium text-gray-500">
-                <div className="flex items-center gap-1.5">
-                  <Shield className="w-4 h-4 text-emerald-500" />
-                  <span>30 Gün İade Garantisi</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <InfIcon className="w-4 h-4 text-indigo-500" />
-                  <span>Ömür Boyu Tam Erişim</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Smartphone className="w-4 h-4 text-blue-500" />
-                  <span>Mobil ve TV</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Col (7 cols): Course Info & Actions */}
-            <div className="lg:col-span-7 space-y-6 order-1 lg:order-2">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 border-brand-500/20 px-3 py-1 rounded-full font-semibold">
-                    {course.subcategory_name || 'Geliştirme'}
-                  </Badge>
-                  <div className="flex items-center gap-1 text-xs font-medium text-gray-400">
-                    <Clock className="w-3.5 h-3.5" />
-                    <span>Son güncelleme: {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR')}</span>
-                  </div>
-                </div>
-
-                <h1 className="text-4xl lg:text-[2.75rem] font-black text-white leading-[1.1] tracking-tight break-words overflow-hidden">
-                  {course.title}
-                </h1>
-
-                {course.short_description && (
-                  <div className="relative mt-6 mb-6">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-brand-900/40 to-gray-800/40 rounded-2xl blur-lg opacity-80 pointer-events-none"></div>
-                    <p className="relative text-[1.15rem] lg:text-xl text-gray-300 font-medium leading-[1.6] break-words overflow-hidden border-l-4 border-brand-500 pl-5 py-1">
-                      {course.short_description}
-                    </p>
-                  </div>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-7 text-[14px]">
+                {Number(course.rating) > 0 && (
+                  <span className="flex items-center gap-2">
+                    <span className="font-bold text-amber-400 text-[15px]">
+                      {Number(course.rating).toFixed(1)}
+                    </span>
+                    <span className="flex gap-0.5">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={cn(
+                            'w-3.5 h-3.5',
+                            i < Math.round(Number(course.rating)) ? 'fill-amber-400 text-amber-400' : 'text-brand-700 fill-brand-800'
+                          )}
+                        />
+                      ))}
+                    </span>
+                    <span className="text-brand-200">({reviewsCount} değerlendirme)</span>
+                  </span>
                 )}
 
-                <div className="flex flex-wrap items-center gap-6 pt-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-black text-yellow-400">{parseFloat(course.rating || 0).toFixed(1)}</span>
-                    <div className="flex flex-col text-xs font-medium">
-                      <div className="flex gap-0.5 mb-0.5">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className={cn("w-3.5 h-3.5", i < Math.round(Number(course.rating || 0)) ? "fill-yellow-400 text-yellow-400" : "text-gray-600 fill-gray-700")} />
-                        ))}
-                      </div>
-                      <span className="text-gray-400 underline decoration-gray-600">({reviewsCount} değerlendirme)</span>
-                    </div>
-                  </div>
+                <span className="text-brand-200">
+                  <span className="font-semibold text-white">
+                    {Number(course.student_count || 0).toLocaleString('tr-TR')}
+                  </span>{' '}
+                  öğrenci
+                </span>
 
-                  <div className="h-8 w-px bg-gray-700 hidden sm:block"></div>
-
-                  <div className="flex items-center gap-3">
-                    <span className="font-bold text-white text-lg">{course.student_count?.toLocaleString() || 0}</span>
-                    <span className="text-sm text-gray-400">Öğrenci</span>
-                  </div>
-
-                  <div className="h-8 w-px bg-gray-700 hidden sm:block"></div>
-
-                  {/* Eğitmen adı profiline götürür; slug yoksa (eski hesap)
-                      düz metin kalır, tıklanamaz bir bağlantı bırakmıyoruz */}
-                  <InstructorLink className="flex items-center gap-3 group">
-                    <Avatar className="w-9 h-9 border-2 border-gray-700 shadow-sm">
-                      <AvatarImage src={instructorAvatar} alt={instructorFullName} />
-                      <AvatarFallback className="bg-gray-800 text-gray-300 font-bold text-xs">
-                        {instructorFullName.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="text-sm">
-                      <div className="text-gray-400 text-[10px] uppercase font-bold tracking-wider">Eğitmen</div>
-                      <div className="font-bold text-white group-hover:text-brand-400 transition-colors">{instructorFullName}</div>
-                    </div>
-                  </InstructorLink>
-                </div>
+                <span className="text-brand-200">
+                  Son güncelleme{' '}
+                  {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
+                    month: 'long', year: 'numeric',
+                  })}
+                </span>
               </div>
 
-              {/* Pricing Card (Inline Style) */}
-              <div className="bg-white/5 p-6 rounded-2xl border border-white/10 mt-8 flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden backdrop-blur-md">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/5 rounded-full blur-3xl -z-10"></div>
-
-                <div className="flex flex-col gap-1 w-full sm:w-auto">
-                  <div className="flex items-center gap-3">
-                    {appliedCoupon ? (
-                      <>
-                        <span className="text-4xl font-black text-white tracking-tighter">
-                          ₺{appliedCoupon.discount_price.toFixed(2)}
-                        </span>
-                        <div className="flex flex-col leading-none">
-                          <span className="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded">
-                            {Math.max(0, parseFloat(course.price) - appliedCoupon.discount_price).toFixed(2)}₺ kupon indirimi
-                          </span>
-                          <span className="text-gray-500 line-through text-lg font-medium">₺{course.price}</span>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-4xl font-black text-white tracking-tighter">₺{course.price}</span>
-                        {Number(course.original_price) > 0 && Number(course.original_price) > Number(course.price) && (
-                          <div className="flex flex-col leading-none">
-                            <span className="text-xs text-rose-400 font-bold bg-rose-500/10 px-1.5 py-0.5 rounded uppercase tracking-wide">
-                              %{course.discount_percentage || Math.round((1 - parseFloat(course.price) / parseFloat(course.original_price)) * 100) || '0'} İndirim
-                            </span>
-                            <span className="text-gray-500 line-through text-lg font-medium">₺{course.original_price}</span>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-400 font-medium ml-1">KDV Dahil. Tek seferlik ödeme.</p>
-                </div>
-
-                <div className="flex gap-3 w-full sm:w-auto">
-                  <Button
-                    size="lg"
-                    onClick={handleAddToCart}
-                    disabled={addToCartMutation.isPending}
-                    className="flex-1 sm:flex-none h-12 px-8 bg-brand-600 hover:bg-brand-500 text-white rounded-xl shadow-[0_0_20px_rgba(13,148,136,0.2)] font-bold transition-all hover:-translate-y-0.5"
-                  >
-                    {addToCartMutation.isPending ? '...' : 'Sepete Ekle'}
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    onClick={handleEnroll}
-                    disabled={enrollMutation.isPending}
-                    className="flex-1 sm:flex-none h-12 px-8 border-2 border-white/20 hover:border-white/40 bg-transparent text-white rounded-xl font-bold transition-all hover:bg-white/5"
-                  >
-                    Hemen Al
-                  </Button>
-                </div>
-              </div>
-
-              {/* Kupon Girişi */}
-              <div className="mt-4 flex gap-2">
-                <div className="flex-1 relative">
-                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                  <Input
-                    placeholder="Kupon kodunuzu girin"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                    className="h-10 pl-9 rounded-xl text-sm font-mono font-bold tracking-wider text-white bg-white/5 border-white/10 placeholder-gray-500 focus:border-brand-500 focus:ring-brand-500"
-                    disabled={!!appliedCoupon}
-                  />
-                </div>
-                {appliedCoupon ? (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-10 px-4 rounded-xl text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 text-xs font-bold"
-                    onClick={() => { setAppliedCoupon(null); setCouponCode(''); }}
-                  >
-                    Kaldır
-                  </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    className="h-10 px-5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold shadow-[0_0_15px_rgba(13,148,136,0.2)]"
-                    disabled={!couponCode || couponLoading}
-                    onClick={async () => {
-                      setCouponLoading(true);
-                      try {
-                        const res = await fetch(`${API_BASE_URL}/coupons/validate/${couponCode}`);
-                        const data = await res.json();
-                        if (res.ok && data.valid) {
-                          setAppliedCoupon(data.coupon);
-                          toast.success(`Kupon uygulandı: Yeni fiyat ₺${data.coupon.discount_price}`);
-                        } else {
-                          toast.error(data.error || 'Geçersiz kupon');
-                        }
-                      } catch {
-                        toast.error('Kupon doğrulanamadı');
-                      } finally {
-                        setCouponLoading(false);
-                      }
-                    }}
-                  >
-                    {couponLoading ? '...' : 'Uygula'}
-                  </Button>
-                )}
-              </div>
+              <InstructorLink className="inline-flex items-center gap-3 mt-7 group">
+                <Avatar className="w-10 h-10 ring-2 ring-brand-800">
+                  <AvatarImage src={instructorAvatar} alt={instructorFullName} />
+                  <AvatarFallback className="bg-brand-800 text-brand-100 font-semibold text-xs">
+                    {instructorFullName.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-left">
+                  <span className="block text-[11px] uppercase tracking-wider text-brand-300">Eğitmen</span>
+                  <span className="block font-semibold group-hover:text-brand-200 transition-colors">
+                    {instructorFullName}
+                  </span>
+                </span>
+              </InstructorLink>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 3. Sticky Tabs Navigation */}
-      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 shadow-sm supports-[backdrop-filter]:bg-white/80">
-        <div className="container mx-auto px-4 max-w-6xl">
+      {/* Satın alma kartı — masaüstünde kahraman bölümüne biniyor */}
+      <div className="container mx-auto px-4 max-w-6xl relative z-30">
+        <div className="grid lg:grid-cols-12 gap-10">
+          <div className="lg:col-span-7 xl:col-span-8 order-2 lg:order-1 min-w-0 pb-4">
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="h-[72px] w-full justify-start gap-8 md:gap-14 bg-transparent p-0 rounded-none overflow-x-auto no-scrollbar">
+            {/* Sekme çubuğu sütunun içinde yapışıyor; sayfa boyunca üstte kalır */}
+            <TabsList className="sticky top-0 z-20 h-14 w-full justify-start gap-7 bg-[#F8FAFC] p-0 rounded-none border-b border-slate-200 overflow-x-auto no-scrollbar">
               {['overview', 'curriculum', 'instructor', 'reviews'].map((tab) => (
                 <TabsTrigger
                   key={tab}
                   value={tab}
-                  className="h-full rounded-none border-b-[3px] border-transparent px-2 data-[state=active]:border-[#175D5D] data-[state=active]:bg-transparent data-[state=active]:text-[#175D5D] data-[state=active]:shadow-none font-bold text-slate-500 hover:text-slate-800 transition-all uppercase text-[13px] tracking-widest whitespace-nowrap"
+                  className="h-full rounded-none border-b-2 border-transparent px-1 data-[state=active]:border-brand-700 data-[state=active]:bg-transparent data-[state=active]:text-brand-800 data-[state=active]:shadow-none font-semibold text-slate-500 hover:text-slate-900 transition-colors text-[15px] whitespace-nowrap"
                 >
                   {{
-                    'overview': 'Genel Bakış',
+                    'overview': 'Genel bakış',
                     'curriculum': 'Müfredat',
                     'instructor': 'Eğitmen',
                     'reviews': 'Değerlendirmeler'
@@ -747,112 +545,59 @@ export const CourseDetailPage = () => {
             </TabsList>
 
             {/* 4. Tab Contents Container */}
-            <div className="py-12 md:py-16">
+            <div className="py-10">
 
               {/* OVERVIEW TAB */}
-              <TabsContent value="overview" className="space-y-16 animate-in fade-in duration-700 outline-none">
+              <TabsContent value="overview" className="space-y-12 animate-in fade-in duration-500 outline-none">
 
-                {/* What You'll Learn */}
-                <div className="bg-white rounded-2xl border border-slate-200/60 p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.03)] relative overflow-hidden group hover:shadow-[0_8px_40px_rgb(0,0,0,0.06)] transition-all duration-500">
-
-                  <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-10 flex items-center gap-4 relative z-10">
-                    <div className="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center border border-brand-100 shadow-sm">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /><path d="m9 12 2 2 4-4" /></svg>
-                    </div>
-                    Neler Öğreneceksiniz?
+                {/* Neler öğreneceksiniz */}
+                <div className="bg-white rounded-xl border border-slate-200 p-7 md:p-8">
+                  <h2 className="text-[20px] font-bold text-slate-900 mb-6">
+                    Neler öğreneceksiniz
                   </h2>
-                  <div className="grid md:grid-cols-2 gap-x-12 gap-y-6 relative z-10">
-                    {(Array.isArray(course.what_you_learn) ? course.what_you_learn : (course.what_you_learn || "").split(';')).map((item: string, i: number) => (
-                      <div key={i} className="flex gap-4 items-start group/item">
-                        <div className="mt-1 w-6 h-6 rounded-full bg-brand-50 shrink-0 flex items-center justify-center group-hover/item:bg-brand-100 transition-colors border border-brand-100 group-hover/item:scale-110 duration-300">
-                          <Check className="w-3.5 h-3.5 text-brand-600 stroke-[3]" />
+                  <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
+                    {(Array.isArray(course.what_you_learn) ? course.what_you_learn : (course.what_you_learn || "").split(';'))
+                      .filter((item: string) => item && item.trim())
+                      .map((item: string, i: number) => (
+                        <div key={i} className="flex gap-3 items-start">
+                          <Check className="w-4 h-4 text-brand-700 stroke-[3] mt-1 shrink-0" />
+                          <span className="text-slate-700 leading-[1.7] break-words text-[15px]">{item}</span>
                         </div>
-                        <span className="text-slate-700 font-medium leading-[1.7] break-words overflow-hidden text-[15px] group-hover/item:text-slate-900 transition-colors">{item}</span>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
 
-                {/* Description & Details */}
-                <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
-                  <div className="lg:col-span-8 space-y-16">
-                    <section>
-                      <h3 className="text-2xl font-extrabold text-slate-900 mb-6 flex items-center gap-3">
-                        <BookOpen className="w-6 h-6 text-slate-400" />
-                        Kurs Hakkında
-                      </h3>
-                      <div className="text-[16px] text-slate-600 leading-[1.9] break-words whitespace-pre-wrap overflow-hidden bg-white p-8 rounded-2xl border border-slate-200/60 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
-                        {course.description}
-                      </div>
-                    </section>
-
+                {/* Kurs açıklaması */}
+                <section>
+                  <h2 className="text-[20px] font-bold text-slate-900 mb-4">Kurs hakkında</h2>
+                  <div className="text-[16px] text-slate-600 leading-[1.85] break-words whitespace-pre-wrap">
+                    {course.description}
                   </div>
-
-                  <div className="lg:col-span-4 space-y-8">
-                    <div className="sticky top-32 space-y-8">
-                      {/* Course Features Card */}
-                      <div className="bg-white rounded-2xl border border-slate-200/60 p-1 shadow-[0_8px_30px_rgb(0,0,0,0.03)] overflow-hidden">
-                        <div className="bg-slate-50/50 rounded-xl p-7">
-                          <h3 className="text-xl font-extrabold text-slate-900 mb-6 flex items-center gap-3">
-                            <Tag className="w-5 h-5 text-slate-500" />
-                            Kurs Özellikleri
-                          </h3>
-                          <div className="space-y-1">
-                            {[
-                              { icon: <MonitorPlay className="w-[18px] h-[18px]" />, label: 'Toplam Süre', value: course.duration ? `${Math.floor(course.duration / 60)} saat ${course.duration % 60} dk` : 'Belirtilmedi' },
-                              { icon: <BookOpen className="w-[18px] h-[18px]" />, label: 'Ders Sayısı', value: `${course.sections?.reduce((a: number, s: any) => a + (s.lessons?.length || 0), 0) || 0} Ders` },
-                              { icon: <Download className="w-[18px] h-[18px]" />, label: 'Kaynaklar', value: `${course.downloadable_resources || 0} indirilebilir` },
-                              { icon: <Globe className="w-[18px] h-[18px]" />, label: 'Dil', value: <span className="uppercase">{course.language}</span> },
-                              { icon: <Award className="w-[18px] h-[18px]" />, label: 'Sertifika', value: <span className="text-[#175D5D] font-bold">Bitirme Sertifikası</span> }
-                            ].map((feature, idx) => (
-                              <div key={idx} className="flex items-center justify-between py-3.5 border-b border-slate-200/60 last:border-0 group">
-                                <span className="text-slate-500 flex items-center gap-3 text-[14px] font-medium group-hover:text-slate-700 transition-colors">
-                                  {feature.icon} {feature.label}
-                                </span>
-                                <span className="font-semibold text-slate-900 text-[14px] text-right">
-                                  {feature.value}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                </section>
               </TabsContent>
 
               {/* CURRICULUM TAB */}
-              <TabsContent value="curriculum" className="space-y-8 animate-in fade-in duration-700 outline-none max-w-4xl mx-auto">
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between bg-white p-8 rounded-2xl border border-slate-200/60 shadow-[0_2px_20px_rgb(0,0,0,0.02)] gap-4">
-                  <div>
-                    <h2 className="text-3xl font-extrabold text-slate-900">Müfredat</h2>
-                    <p className="text-slate-500 text-[15px] mt-2 font-medium">Uzmanlık yolculuğunuzda adım adım ilerleyin.</p>
-                  </div>
-                  <div className="flex items-center gap-3 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-200/50">
-                    <div className="text-center px-4 border-r border-slate-200 max-w-[120px]">
-                      <div className="text-xl font-black text-[#175D5D] truncate">{course.sections?.length || 0}</div>
-                      <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Bölüm</div>
-                    </div>
-                    <div className="text-center px-4 max-w-[150px]">
-                      <div className="text-xl font-black text-slate-700 truncate">{course.sections?.reduce((a: number, s: any) => a + (s.lessons?.length || 0), 0) || 0}</div>
-                      <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Ders</div>
-                    </div>
-                  </div>
+              <TabsContent value="curriculum" className="space-y-6 animate-in fade-in duration-500 outline-none">
+                <div className="flex flex-wrap items-baseline justify-between gap-3">
+                  <h2 className="text-[20px] font-bold text-slate-900">Müfredat</h2>
+                  <p className="text-[14px] text-slate-500">
+                    {course.sections?.length || 0} bölüm · {totalLessons} ders · {totalDurationLabel}
+                  </p>
                 </div>
 
-                <div className="space-y-5">
+                <div className="space-y-3">
                   {course.sections?.map((section: any, idx: number) => (
-                    <div key={section.section_id} className="bg-white border border-slate-200/60 rounded-xl overflow-hidden hover:border-slate-300 transition-colors shadow-sm group">
-                      <div className="bg-slate-50/50 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer relative overflow-hidden">
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-transparent group-hover:bg-[#175D5D] transition-colors"></div>
-                        <div className="flex items-center gap-5 relative z-10">
-                          <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-[15px] font-black text-slate-400 shadow-sm">
+                    <div key={section.id ?? section.section_id ?? idx} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                      <div className="bg-slate-50 px-5 py-4 flex items-center justify-between gap-4 border-b border-slate-200">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className="text-[13px] font-semibold text-slate-400 tabular-nums shrink-0">
                             {(idx + 1).toString().padStart(2, '0')}
-                          </div>
-                          <span className="text-[17px] font-bold text-slate-800 leading-tight">{section.title}</span>
+                          </span>
+                          <span className="text-[15px] font-semibold text-slate-900 leading-snug truncate">
+                            {section.title}
+                          </span>
                         </div>
-                        <span className="text-[13px] font-bold text-slate-500 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm shrink-0 whitespace-nowrap">
+                        <span className="text-[13px] text-slate-500 shrink-0 whitespace-nowrap">
                           {section.lessons?.length || 0} ders
                         </span>
                       </div>
@@ -867,32 +612,29 @@ export const CourseDetailPage = () => {
                             <div
                               key={lessonId}
                               className={cn(
-                                'group/lesson flex items-center justify-between gap-4 p-5 transition-all pl-6 md:pl-20 relative',
-                                isPreview ? 'hover:bg-brand-50/60 cursor-pointer' : 'hover:bg-slate-50/80'
+                                'group/lesson flex items-center justify-between gap-4 px-5 py-3.5 transition-colors',
+                                isPreview ? 'hover:bg-brand-50/60 cursor-pointer' : 'hover:bg-slate-50'
                               )}
                               onClick={() => isPreview ? openLessonPreview(lesson) : setSelectedLesson(lesson)}
                             >
-                              <div className="absolute left-8 top-0 bottom-0 w-px bg-slate-200 hidden md:block"></div>
-
-                              <div className="flex items-center gap-5 flex-1 min-w-0 relative z-10">
-                                <div className={cn(
-                                  'w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-sm border shrink-0',
-                                  isPreview
-                                    ? 'bg-[#175D5D] text-white border-[#175D5D]'
-                                    : 'bg-white text-slate-400 border-slate-200 group-hover/lesson:bg-[#175D5D] group-hover/lesson:text-white group-hover/lesson:border-[#175D5D]'
-                                )}>
-                                  <Play className="w-4 h-4 ml-0.5" fill="currentColor" />
-                                </div>
-                                <span className="text-[15px] text-slate-600 group-hover/lesson:text-slate-900 font-semibold transition-colors truncate">
+                              <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                                <Play
+                                  className={cn(
+                                    'w-3.5 h-3.5 shrink-0',
+                                    isPreview ? 'text-brand-700' : 'text-slate-300'
+                                  )}
+                                  fill="currentColor"
+                                />
+                                <span className="text-[15px] text-slate-700 group-hover/lesson:text-slate-900 transition-colors truncate">
                                   {lesson.title}
                                 </span>
                                 {isPreview && (
-                                  <span className="shrink-0 text-[11px] font-bold uppercase tracking-wider text-[#175D5D] bg-brand-50 border border-brand-200 rounded-full px-2.5 py-1">
-                                    {previewLoading === lessonId ? 'Açılıyor' : 'Ücretsiz izle'}
+                                  <span className="shrink-0 text-[12px] font-semibold text-brand-800 bg-brand-50 border border-brand-200 rounded px-2 py-0.5">
+                                    {previewLoading === lessonId ? 'Açılıyor…' : 'Önizle'}
                                   </span>
                                 )}
                               </div>
-                              <div className="text-[13px] text-slate-400 font-medium font-mono min-w-[50px] text-right shrink-0">
+                              <div className="text-[13px] text-slate-400 tabular-nums min-w-[46px] text-right shrink-0">
                                 {seconds
                                   ? `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`
                                   : '00:00'}
@@ -907,7 +649,7 @@ export const CourseDetailPage = () => {
               </TabsContent>
 
               {/* INSTRUCTOR TAB */}
-              <TabsContent value="instructor" className="animate-in fade-in duration-700 outline-none max-w-4xl mx-auto">
+              <TabsContent value="instructor" className="animate-in fade-in duration-700 outline-none">
                 <div className="bg-white rounded-2xl border border-slate-200/60 p-1 mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
                   <div className="bg-slate-50/30 rounded-xl p-8 md:p-12 relative overflow-hidden">
 
@@ -917,7 +659,7 @@ export const CourseDetailPage = () => {
                           <InstructorLink className="block">
                             <Avatar className="w-40 h-40 md:w-48 md:h-48 border-8 border-white shadow-xl">
                               <AvatarImage src={instructorAvatar} alt={instructorFullName} className="object-cover" />
-                              <AvatarFallback className="text-6xl bg-gradient-to-br from-brand-50 to-[#175D5D]/10 text-[#175D5D] font-black">
+                              <AvatarFallback className="text-6xl bg-gradient-to-br from-brand-50 to-[#175D5D]/10 text-[#175D5D] font-bold">
                                 {instructorFullName.charAt(0)}
                               </AvatarFallback>
                             </Avatar>
@@ -933,11 +675,11 @@ export const CourseDetailPage = () => {
                         <div className="text-center mt-8 w-full space-y-3">
                           <div className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm flex justify-between items-center text-center">
                             <div className="flex-1 border-r border-slate-100 last:border-0 px-2">
-                              <div className="text-2xl font-black text-slate-800">{(course.instructor_total_students || course.instructor_students || 0).toLocaleString()}</div>
+                              <div className="text-2xl font-bold text-slate-800">{(course.instructor_total_students || course.instructor_students || 0).toLocaleString()}</div>
                               <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Öğrenci</div>
                             </div>
                             <div className="flex-1 px-2">
-                              <div className="text-2xl font-black text-slate-800">{course.instructor_course_count || course.instructor_courses || '1'}</div>
+                              <div className="text-2xl font-bold text-slate-800">{course.instructor_course_count || course.instructor_courses || '1'}</div>
                               <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Kurs</div>
                             </div>
                           </div>
@@ -948,7 +690,7 @@ export const CourseDetailPage = () => {
                         <div>
                           <p className="text-[#175D5D] font-bold text-sm tracking-widest uppercase mb-2">{course.instructor_title || 'Uzman Eğitmen'}</p>
                           <InstructorLink className="inline-block">
-                            <h3 className="text-3xl md:text-4xl font-black text-slate-900 leading-tight hover:text-[#175D5D] transition-colors">
+                            <h3 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight hover:text-[#175D5D] transition-colors">
                               {instructorFullName}
                             </h3>
                           </InstructorLink>
@@ -964,7 +706,7 @@ export const CourseDetailPage = () => {
                         </div>
 
                         <div>
-                          <h4 className="text-lg font-extrabold text-slate-800 mb-4 flex items-center gap-2">
+                          <h4 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                             <UserCircle className="w-5 h-5 text-[#175D5D]" />
                             Eğitmen Hakkında
                           </h4>
@@ -995,10 +737,10 @@ export const CourseDetailPage = () => {
               <TabsContent value="reviews" className="animate-in fade-in duration-700 outline-none max-w-5xl mx-auto">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                   <div>
-                    <h3 className="text-3xl font-extrabold text-slate-900">Öğrenci Değerlendirmeleri</h3>
+                    <h3 className="text-3xl font-bold text-slate-900">Öğrenci Değerlendirmeleri</h3>
                     <p className="text-slate-500 font-medium mt-2">Bu kurs hakkında öğrenciler ne düşünüyor?</p>
                   </div>
-                  <div className="text-sm font-black bg-amber-50 text-amber-600 px-6 py-3 rounded-2xl flex items-center gap-2 border border-amber-100 shadow-sm">
+                  <div className="text-sm font-bold bg-amber-50 text-amber-600 px-6 py-3 rounded-2xl flex items-center gap-2 border border-amber-100 shadow-sm">
                     <Star className="w-5 h-5 fill-current" />
                     {reviewsCount} Değerlendirme
                   </div>
@@ -1011,7 +753,7 @@ export const CourseDetailPage = () => {
                         <div className="flex justify-between items-start mb-6">
                           <div className="flex gap-4 items-center">
                             <Avatar className="w-12 h-12 border-2 border-white shadow-md ring-1 ring-slate-100">
-                              <AvatarFallback className="bg-gradient-to-br from-amber-50 to-orange-50 text-amber-600 font-black text-lg">
+                              <AvatarFallback className="bg-gradient-to-br from-amber-50 to-orange-50 text-amber-600 font-bold text-lg">
                                 {review.reviewer_name?.charAt(0)}
                               </AvatarFallback>
                             </Avatar>
@@ -1038,15 +780,204 @@ export const CourseDetailPage = () => {
                     <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
                       <MessageSquare className="w-10 h-10 text-slate-300" strokeWidth={1.5} />
                     </div>
-                    <h3 className="text-2xl font-extrabold text-slate-900">Henüz değerlendirme yok</h3>
+                    <h3 className="text-2xl font-bold text-slate-900">Henüz değerlendirme yok</h3>
                     <p className="text-slate-500 mt-2 font-medium max-w-sm mx-auto">Bu kurs için henüz bir değerlendirme yapılmamış. İlk değerlendiren siz olun!</p>
                   </div>
                 )}
               </TabsContent>
             </div>
           </Tabs>
+          </div>
+
+          <aside className="lg:col-span-5 xl:col-span-4 lg:-mt-[21rem] -mt-8 order-1 lg:order-2">
+            <div className="lg:sticky lg:top-24 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-[0_18px_50px_-20px_rgba(15,23,42,0.35)]">
+              {/* Önizleme alanı */}
+              <div className="relative aspect-video bg-slate-900 group">
+                {isVideoPlaying && (previewLesson || course.preview_video) ? (
+                  <>
+                    {previewLesson?.video_type === 'hls' ? (
+                      <HLSVideoPlayer
+                        key={previewLesson.lesson_id}
+                        src={previewLesson.video_url}
+                        videoType="hls"
+                        poster={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
+                        title={previewLesson.title}
+                      />
+                    ) : (
+                      <video
+                        ref={videoRef}
+                        src={previewLesson?.video_url || course.preview_video}
+                        className="w-full h-full object-contain bg-black"
+                        controls
+                        autoPlay
+                        playsInline
+                        onEnded={() => setIsVideoPlaying(false)}
+                        onError={() => {
+                          toast.error('Video yüklenemedi');
+                          setIsVideoPlaying(false);
+                        }}
+                      />
+                    )}
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsVideoPlaying(false);
+                        setPreviewLesson(null);
+                        videoRef.current?.pause();
+                      }}
+                      className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors z-10"
+                    >
+                      <XIcon className="w-4 h-4" />
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (course.preview_video) setIsVideoPlaying(true);
+                      else if (firstPreviewLesson) openLessonPreview(firstPreviewLesson);
+                      else toast.info('Bu kurs için önizleme bulunmuyor');
+                    }}
+                    className="absolute inset-0 w-full h-full"
+                  >
+                    <img
+                      src={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
+                      alt={course.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-course.jpg'; }}
+                    />
+                    {(course.preview_video || firstPreviewLesson) && (
+                      <>
+                        <span className="absolute inset-0 bg-black/45 group-hover:bg-black/55 transition-colors" />
+                        <span className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                          <span className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                            <Play className="w-6 h-6 text-brand-800 fill-brand-800 ml-0.5" />
+                          </span>
+                          <span className="text-white text-[13px] font-semibold">
+                            Bu kursu önizle
+                          </span>
+                        </span>
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+
+              <div className="p-6">
+                {/* Fiyat */}
+                <div className="flex items-baseline gap-3 flex-wrap">
+                  <span className="text-[32px] font-bold text-slate-900 tracking-tight">
+                    {appliedCoupon
+                      ? formatPrice(appliedCoupon.discount_price)
+                      : Number(course.price) > 0 ? formatPrice(Number(course.price)) : 'Ücretsiz'}
+                  </span>
+                  {appliedCoupon ? (
+                    <span className="text-[17px] text-slate-400 line-through">
+                      {formatPrice(Number(course.price))}
+                    </span>
+                  ) : Number(course.original_price) > Number(course.price) ? (
+                    <>
+                      <span className="text-[17px] text-slate-400 line-through">
+                        {formatPrice(Number(course.original_price))}
+                      </span>
+                      <span className="text-[13px] font-semibold text-rose-700 bg-rose-50 border border-rose-200 rounded px-2 py-0.5">
+                        %{course.discount_percentage
+                          || Math.round((1 - Number(course.price) / Number(course.original_price)) * 100)} indirim
+                      </span>
+                    </>
+                  ) : null}
+                </div>
+                <p className="text-[13px] text-slate-500 mt-1.5">
+                  KDV dahil · Tek seferlik ödeme
+                </p>
+
+                {/* Eylemler */}
+                <div className="mt-5 space-y-2.5">
+                  <Button
+                    onClick={handleAddToCart}
+                    disabled={addToCartMutation.isPending}
+                    className="w-full h-12 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold"
+                  >
+                    {addToCartMutation.isPending ? 'Ekleniyor…' : 'Sepete ekle'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleEnroll}
+                    disabled={enrollMutation.isPending}
+                    className="w-full h-12 rounded-lg border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-800 text-[15px] font-semibold"
+                  >
+                    Hemen satın al
+                  </Button>
+                </div>
+
+                {/* Kupon */}
+                <div className="mt-4 flex gap-2">
+                  <Input
+                    placeholder="Kupon kodu"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    className="h-10 rounded-lg text-[14px] font-mono tracking-wider"
+                    disabled={!!appliedCoupon}
+                  />
+                  {appliedCoupon ? (
+                    <Button
+                      variant="ghost"
+                      className="h-10 px-4 rounded-lg text-rose-600 hover:text-rose-700 hover:bg-rose-50 text-[13px] font-semibold shrink-0"
+                      onClick={() => { setAppliedCoupon(null); setCouponCode(''); }}
+                    >
+                      Kaldır
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      className="h-10 px-5 rounded-lg text-[13px] font-semibold shrink-0"
+                      disabled={!couponCode || couponLoading}
+                      onClick={async () => {
+                        setCouponLoading(true);
+                        try {
+                          const res = await fetch(`${API_BASE_URL}/coupons/validate/${couponCode}`);
+                          const data = await res.json();
+                          if (res.ok && data.valid) {
+                            setAppliedCoupon(data.coupon);
+                            toast.success(`Kupon uygulandı: ${formatPrice(data.coupon.discount_price)}`);
+                          } else {
+                            toast.error(data.error || 'Geçersiz kupon');
+                          }
+                        } catch {
+                          toast.error('Kupon doğrulanamadı');
+                        } finally {
+                          setCouponLoading(false);
+                        }
+                      }}
+                    >
+                      {couponLoading ? '…' : 'Uygula'}
+                    </Button>
+                  )}
+                </div>
+
+                {/* Kursun içeriği */}
+                <dl className="mt-6 pt-6 border-t border-slate-100 space-y-3 text-[14px]">
+                  {[
+                    { label: 'Ders sayısı', value: `${totalLessons} ders` },
+                    { label: 'Toplam süre', value: totalDurationLabel },
+                    { label: 'Seviye', value: levelLabel },
+                    { label: 'Dil', value: (course.language || 'tr').toUpperCase() },
+                    { label: 'Erişim', value: 'Ömür boyu' },
+                    { label: 'Sertifika', value: 'Bitirme sertifikası' },
+                  ].map(row => (
+                    <div key={row.label} className="flex items-center justify-between gap-4">
+                      <dt className="text-slate-500">{row.label}</dt>
+                      <dd className="font-semibold text-slate-900 text-right">{row.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
+
 
       {/* Eğitmenin diğer kursları */}
       <CourseRail
@@ -1093,7 +1024,7 @@ const CourseRail: React.FC<{
       <div className="container mx-auto px-4 py-14 lg:py-16">
         <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <div>
-            <h2 className="text-[22px] lg:text-[26px] font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-[22px] lg:text-[26px] font-bold text-slate-900 tracking-tight">
               {title}
             </h2>
             {subtitle && (
