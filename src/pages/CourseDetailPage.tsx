@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { VideoPlayer } from '@/components/video/VideoPlayer';
 import HLSVideoPlayer from '@/components/video/HLSVideoPlayer';
 import { coursesAPI, cartAPI, enrollmentAPI, reviewsAPI, qaAPI, getCourseImageUrl, API_BASE_URL } from '@/lib/api';
 import { useSeo } from '@/hooks/useSeo';
+import { useCategoryNav } from '@/hooks/useCategoryNav';
 
 /** Kanonik adreslerin tabanı. */
 const SITE_URL = 'https://edurce.com';
@@ -111,6 +112,39 @@ export const CourseDetailPage = () => {
 
   const courseId = courseData?.course?.id || courseData?.course?.course_id || Number(courseIdentifier) || 0;
 
+  /**
+   * Kategori adresleri.
+   *
+   * Slug'lar kurs yanıtından değil, yerel kategori ağacından türetiliyor.
+   * Ağaç zaten tek gerçek kaynak; sunucuya ek sütun eklemek hem gereksiz hem
+   * de eski şemalarda sorguyu kırma riski taşıyordu.
+   *
+   * Hook oldukları için erken return'lerden ÖNCE duruyorlar.
+   */
+  const { data: navData } = useCategoryNav();
+
+  const categorySlug = useMemo(() => {
+    const source = courseData?.course;
+    const cats = navData?.categories || [];
+    if (!source) return null;
+    const byId = cats.find(c => c.id != null && Number(c.id) === Number(source.category_id));
+    return byId?.slug || cats.find(c => c.name === source.category_name)?.slug || null;
+  }, [navData, courseData]);
+
+  const subcategorySlug = useMemo(() => {
+    const source = courseData?.course;
+    const cats = navData?.categories || [];
+    if (!source) return null;
+    for (const cat of cats) {
+      const sub = cat.subcategories.find(
+        s => (s.id != null && Number(s.id) === Number(source.subcategory_id))
+          || s.name === source.subcategory_name
+      );
+      if (sub) return sub.slug;
+    }
+    return null;
+  }, [navData, courseData]);
+
 
   /**
    * Önizlemede oynatılan ders.
@@ -157,6 +191,8 @@ export const CourseDetailPage = () => {
     },
     enabled: !!courseId,
     staleTime: 5 * 60 * 1000,
+    // Uc henuz yayinda degilse sayfayi mesgul etmesin
+    retry: false,
   });
 
   // Fetch course reviews
@@ -456,8 +492,8 @@ export const CourseDetailPage = () => {
       <section className="bg-brand-950">
         <div className="container mx-auto px-4 max-w-6xl">
           <nav className="flex items-center text-[13px] text-brand-300 gap-2 py-4 overflow-hidden whitespace-nowrap">
-            {course.category_slug ? (
-              <Link to={`/courses/${course.category_slug}`} className="hover:text-white transition-colors truncate max-w-[180px]">
+            {categorySlug ? (
+              <Link to={`/courses/${categorySlug}`} className="hover:text-white transition-colors truncate max-w-[180px]">
                 {course.category_name}
               </Link>
             ) : (
@@ -466,9 +502,9 @@ export const CourseDetailPage = () => {
             {course.subcategory_name && (
               <>
                 <ChevronRight className="w-3.5 h-3.5 text-brand-700 shrink-0" />
-                {course.category_slug && course.subcategory_slug ? (
+                {categorySlug && subcategorySlug ? (
                   <Link
-                    to={`/courses/${course.category_slug}/${course.subcategory_slug}`}
+                    to={`/courses/${categorySlug}/${subcategorySlug}`}
                     className="hover:text-white transition-colors truncate max-w-[180px]"
                   >
                     {course.subcategory_name}
@@ -1075,7 +1111,7 @@ export const CourseDetailPage = () => {
           ? `${course.subcategory_name} alanındaki popüler eğitimler`
           : 'Aynı alandaki popüler eğitimler'}
         courses={suggestions?.relatedCourses}
-        moreHref={course.category_slug ? `/courses/${course.category_slug}` : '/courses'}
+        moreHref={categorySlug ? `/courses/${categorySlug}` : '/courses'}
         moreLabel="Tümünü gör"
         tinted
       />
