@@ -521,9 +521,8 @@ export const Header = () => {
               variant="outline"
               size="sm"
               onClick={() => navigate('/instructor')}
-              className="hidden md:flex rounded-full text-indigo-600 border-indigo-200 hover:bg-indigo-600 hover:text-white text-xs px-4 h-8 font-semibold transition-all"
+              className="hidden md:flex rounded-full text-brand-700 border-brand-200 hover:bg-brand-700 hover:text-white text-xs px-4 h-8 font-semibold transition-colors"
             >
-              <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
               Eğitmen Paneli
             </Button>
           ) : !loading && isAuthenticated ? (
@@ -531,9 +530,8 @@ export const Header = () => {
               variant="outline"
               size="sm"
               onClick={() => navigate('/become-instructor')}
-              className="hidden md:flex rounded-full text-indigo-600 border-indigo-200 hover:bg-indigo-600 hover:text-white text-xs px-4 h-8 font-semibold transition-all"
+              className="hidden md:flex rounded-full text-brand-700 border-brand-200 hover:bg-brand-700 hover:text-white text-xs px-4 h-8 font-semibold transition-colors"
             >
-              <GraduationCap className="w-3.5 h-3.5 mr-1.5" />
               Eğitimci Ol
             </Button>
           ) : !isAuthenticated ? (
@@ -541,9 +539,8 @@ export const Header = () => {
               variant="outline"
               size="sm"
               onClick={() => navigate('/become-instructor')}
-              className="hidden md:flex rounded-full text-indigo-600 border-indigo-200 hover:bg-indigo-600 hover:text-white text-xs px-4 h-8 font-semibold transition-all"
+              className="hidden md:flex rounded-full text-brand-700 border-brand-200 hover:bg-brand-700 hover:text-white text-xs px-4 h-8 font-semibold transition-colors"
             >
-              <GraduationCap className="w-3.5 h-3.5 mr-1.5" />
               Eğitimci Ol
             </Button>
           ) : null}

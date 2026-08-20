@@ -143,16 +143,21 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
     const pagination = data?.pagination;
     const courses = data?.courses || [];
 
-    const categoryHref = useCallback((slug: string) => {
-        if (mode === 'category') return `/courses/${slug}`;
-        // Arama sayfasından kategoriye giderken aramayı koru
-        return query ? `/courses/${slug}?q=${encodeURIComponent(query)}` : `/courses/${slug}`;
-    }, [mode, query]);
+    /**
+     * Kategori bağlantısı.
+     *
+     * Arama terimi bilinçli olarak taşınmıyor: kategori seçimi ile arama iki
+     * ayrı gezinme yolu. Önceden ikisi birleşiyor ve "yazılım" araması bir
+     * kategoriye girildiğinde de uygulanmaya devam ediyordu; kullanıcı
+     * kategoriye baktığını sanarken aslında kategori içinde arama sonucu
+     * görüyordu.
+     */
+    const categoryHref = useCallback((slug: string) => `/courses/${slug}`, []);
 
     const resetFilters = () => updateParams({ level: null, minRating: null, free: null });
 
-    /** "Tüm kurslar" — aramadayken arama terimini koru */
-    const allCoursesHref = query ? `/search?q=${encodeURIComponent(query)}` : '/courses';
+    /** "Tüm kurslar" — arama terimini taşımaz, katalogun tamamına gider */
+    const allCoursesHref = '/courses';
 
 
     const heading = data?.subcategory?.name
@@ -216,18 +221,6 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                     <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">
                         {loading && !data ? 'Yükleniyor…' : heading}
                     </h1>
-                    {(data?.subcategory?.description || data?.category?.description) && !query && (
-                        <p className="text-slate-600 mt-2 max-w-3xl text-[15px] leading-relaxed">
-                            {data.subcategory?.description || data.category?.description}
-                        </p>
-                    )}
-                    {pagination && (
-                        <p className="text-sm text-slate-500 mt-2">
-                            {pagination.total > 0
-                                ? `${pagination.total.toLocaleString('tr-TR')} kurs bulundu`
-                                : 'Kurs bulunamadı'}
-                        </p>
-                    )}
                 </header>
 
                 <div className="flex flex-col lg:flex-row gap-8">
@@ -343,9 +336,6 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                             </div>
                         ) : courses.length === 0 ? (
                             <div className="bg-white border border-slate-200 rounded-2xl py-20 text-center px-6">
-                                <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
-                                    <Search className="w-7 h-7 text-slate-300" />
-                                </div>
                                 <h2 className="text-lg font-semibold text-slate-800 mb-2">
                                     {query ? `"${query}" için sonuç yok` : 'Burada henüz kurs yok'}
                                 </h2>

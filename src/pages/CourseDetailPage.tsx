@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -62,6 +62,27 @@ export const CourseDetailPage = () => {
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; price_level: number; discount_price: number } | null>(null);
   const [couponLoading, setCouponLoading] = useState(false);
 
+  /**
+   * Eylem şeridi görünürlüğü.
+   *
+   * Şerit ekrandan çıktığında alttaki yapışkan satın alma çubuğu beliriyor.
+   * Kaydırma dinlemek yerine gözlemci kullanılıyor; her karede hesap yapmıyor.
+   */
+  const actionBarRef = useRef<HTMLElement>(null);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+
+  useEffect(() => {
+    const el = actionBarRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowStickyBar(!entry.isIntersecting && entry.boundingClientRect.top < 0),
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [courseId]);
+
   // Route is /course/:slug — param named 'slug' covers both numeric IDs and text slugs
   const courseIdentifier = slug || id || '';
   // If it's purely numeric, treat as course_id (not a slug)
@@ -108,7 +129,11 @@ export const CourseDetailPage = () => {
 
     setPreviewLoading(lessonId);
     try {
-      const res = await fetch(`${API_BASE_URL}/courses/${courseId}/preview-lesson/${lessonId}`);
+      // Kimlik isteğe bağlı: eğitmen kendi taslak kursunu da önizleyebilsin
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE_URL}/courses/${courseId}/preview-lesson/${lessonId}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Önizleme açılamadı');
 
@@ -414,117 +439,292 @@ export const CourseDetailPage = () => {
     all: 'Tüm seviyeler',
   } as Record<string, string>)[course.level] || 'Tüm seviyeler';
 
-  /** Kart üzerindeki oynat düğmesi tanıtım videosu yoksa bunu açar. */
+  /** Oynat düğmesi tanıtım videosu yoksa ilk ücretsiz dersi açar. */
   const firstPreviewLesson = allLessons.find((l: any) => l.preview || l.is_free) || null;
+  const hasAnyPreview = Boolean(course.preview_video || firstPreviewLesson);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-24 font-sans text-slate-800">
+    <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-800 pb-24">
       {/*
-        Kahraman bölümü.
+        Üst şerit: oynatıcı ortada ve geniş.
 
-        Düzen bilinçli olarak "bilgi solda, satın alma kartı sağda": kullanıcı
-        okurken fiyat ve buton ekranda kalıyor. Kart yapışkan olduğu için
-        müfredata inildiğinde de kaybolmuyor.
+        Yaygın "solda metin, sağda yapışkan satın alma kartı" düzeni yerine
+        içerik yatay katmanlar hâlinde diziliyor: önce video, sonra başlık,
+        sonra eylem şeridi. Satın alma, şerit ekrandan çıkınca alttaki
+        yapışkan çubukta görünmeye devam ediyor.
       */}
-      <div className="bg-brand-950 text-white">
+      <section className="bg-brand-950">
         <div className="container mx-auto px-4 max-w-6xl">
           <nav className="flex items-center text-[13px] text-brand-300 gap-2 py-4 overflow-hidden whitespace-nowrap">
             {course.category_slug ? (
-              <Link to={`/courses/${course.category_slug}`} className="hover:text-white transition-colors truncate max-w-[160px]">
+              <Link to={`/courses/${course.category_slug}`} className="hover:text-white transition-colors truncate max-w-[180px]">
                 {course.category_name}
               </Link>
             ) : (
-              <span className="truncate max-w-[160px]">{course.category_name || 'Kategori'}</span>
+              <span className="truncate max-w-[180px]">{course.category_name || 'Kategori'}</span>
             )}
             {course.subcategory_name && (
               <>
-                <ChevronRight className="w-3.5 h-3.5 text-brand-600 shrink-0" />
+                <ChevronRight className="w-3.5 h-3.5 text-brand-700 shrink-0" />
                 {course.category_slug && course.subcategory_slug ? (
                   <Link
                     to={`/courses/${course.category_slug}/${course.subcategory_slug}`}
-                    className="hover:text-white transition-colors truncate max-w-[160px]"
+                    className="hover:text-white transition-colors truncate max-w-[180px]"
                   >
                     {course.subcategory_name}
                   </Link>
                 ) : (
-                  <span className="truncate max-w-[160px]">{course.subcategory_name}</span>
+                  <span className="truncate max-w-[180px]">{course.subcategory_name}</span>
                 )}
               </>
             )}
           </nav>
 
-          <div className="grid lg:grid-cols-12 gap-10 pb-14 lg:pb-40 pt-4">
-            {/* Sol: kurs bilgisi */}
-            <div className="lg:col-span-7 xl:col-span-8">
-              <h1 className="text-[30px] sm:text-[38px] lg:text-[42px] font-bold leading-[1.15] tracking-[-0.02em] break-words">
-                {course.title}
-              </h1>
+          <div className="max-w-4xl mx-auto pb-10">
+            <div className="relative aspect-video bg-black rounded-xl overflow-hidden ring-1 ring-white/10 group">
+              {isVideoPlaying && (previewLesson || course.preview_video) ? (
+                <>
+                  {previewLesson?.video_type === 'hls' ? (
+                    <HLSVideoPlayer
+                      key={previewLesson.lesson_id}
+                      src={previewLesson.video_url}
+                      videoType="hls"
+                      autoPlay
+                      poster={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
+                      title={previewLesson.title}
+                    />
+                  ) : (
+                    <video
+                      ref={videoRef}
+                      src={previewLesson?.video_url || course.preview_video}
+                      className="w-full h-full object-contain bg-black"
+                      controls
+                      autoPlay
+                      playsInline
+                      onEnded={() => setIsVideoPlaying(false)}
+                      onError={() => {
+                        toast.error('Video yüklenemedi');
+                        setIsVideoPlaying(false);
+                      }}
+                    />
+                  )}
 
-              {course.short_description && (
-                <p className="text-[17px] lg:text-[18px] text-brand-100 leading-[1.65] mt-5 max-w-2xl break-words">
-                  {course.short_description}
-                </p>
+                  {previewLesson && (
+                    <div className="absolute top-0 inset-x-0 bg-gradient-to-b from-black/75 to-transparent px-4 pt-3 pb-10 pointer-events-none">
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-brand-300">
+                        Ücretsiz önizleme
+                      </p>
+                      <p className="text-sm font-medium text-white truncate pr-12">{previewLesson.title}</p>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsVideoPlaying(false);
+                      setPreviewLesson(null);
+                      videoRef.current?.pause();
+                    }}
+                    className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors z-10"
+                  >
+                    <XIcon className="w-4 h-4" />
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (course.preview_video) setIsVideoPlaying(true);
+                    else if (firstPreviewLesson) openLessonPreview(firstPreviewLesson);
+                  }}
+                  disabled={!hasAnyPreview}
+                  className="absolute inset-0 w-full h-full disabled:cursor-default"
+                >
+                  <img
+                    src={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
+                    alt={course.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-course.jpg'; }}
+                  />
+                  <span className="absolute inset-0 bg-black/40" />
+                  <span className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                    {hasAnyPreview ? (
+                      <>
+                        <span className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-xl group-hover:scale-105 transition-transform">
+                          <Play className="w-6 h-6 text-brand-800 fill-brand-800 ml-0.5" />
+                        </span>
+                        <span className="text-white text-[14px] font-semibold">Bu kursu önizle</span>
+                      </>
+                    ) : (
+                      <span className="text-white/80 text-[14px]">Bu kurs için önizleme eklenmemiş</span>
+                    )}
+                  </span>
+                </button>
               )}
-
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-7 text-[14px]">
-                {Number(course.rating) > 0 && (
-                  <span className="flex items-center gap-2">
-                    <span className="font-bold text-amber-400 text-[15px]">
-                      {Number(course.rating).toFixed(1)}
-                    </span>
-                    <span className="flex gap-0.5">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={cn(
-                            'w-3.5 h-3.5',
-                            i < Math.round(Number(course.rating)) ? 'fill-amber-400 text-amber-400' : 'text-brand-700 fill-brand-800'
-                          )}
-                        />
-                      ))}
-                    </span>
-                    <span className="text-brand-200">({reviewsCount} değerlendirme)</span>
-                  </span>
-                )}
-
-                <span className="text-brand-200">
-                  <span className="font-semibold text-white">
-                    {Number(course.student_count || 0).toLocaleString('tr-TR')}
-                  </span>{' '}
-                  öğrenci
-                </span>
-
-                <span className="text-brand-200">
-                  Son güncelleme{' '}
-                  {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
-                    month: 'long', year: 'numeric',
-                  })}
-                </span>
-              </div>
-
-              <InstructorLink className="inline-flex items-center gap-3 mt-7 group">
-                <Avatar className="w-10 h-10 ring-2 ring-brand-800">
-                  <AvatarImage src={instructorAvatar} alt={instructorFullName} />
-                  <AvatarFallback className="bg-brand-800 text-brand-100 font-semibold text-xs">
-                    {instructorFullName.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-left">
-                  <span className="block text-[11px] uppercase tracking-wider text-brand-300">Eğitmen</span>
-                  <span className="block font-semibold group-hover:text-brand-200 transition-colors">
-                    {instructorFullName}
-                  </span>
-                </span>
-              </InstructorLink>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Satın alma kartı — masaüstünde kahraman bölümüne biniyor */}
-      <div className="container mx-auto px-4 max-w-6xl relative z-30">
-        <div className="grid lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-7 xl:col-span-8 order-2 lg:order-1 min-w-0 pb-4">
+      {/* Başlık katmanı */}
+      <section className="bg-white border-b border-slate-200">
+        <div className="container mx-auto px-4 max-w-6xl py-9">
+          <h1 className="text-[28px] sm:text-[34px] lg:text-[38px] font-bold text-slate-900 leading-[1.15] tracking-[-0.02em] break-words max-w-4xl">
+            {course.title}
+          </h1>
+
+          {course.short_description && (
+            <p className="text-[17px] text-slate-600 leading-[1.65] mt-4 max-w-3xl break-words">
+              {course.short_description}
+            </p>
+          )}
+
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-6 text-[14px] text-slate-500">
+            {Number(course.rating) > 0 && (
+              <span className="flex items-center gap-2">
+                <span className="font-bold text-slate-900 text-[15px]">
+                  {Number(course.rating).toFixed(1)}
+                </span>
+                <span className="flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={cn(
+                        'w-3.5 h-3.5',
+                        i < Math.round(Number(course.rating)) ? 'fill-amber-400 text-amber-400' : 'text-slate-200 fill-slate-200'
+                      )}
+                    />
+                  ))}
+                </span>
+                <span>({reviewsCount})</span>
+              </span>
+            )}
+
+            <span>
+              <span className="font-semibold text-slate-900">
+                {Number(course.student_count || 0).toLocaleString('tr-TR')}
+              </span>{' '}
+              öğrenci
+            </span>
+
+            <span>{totalLessons} ders · {totalDurationLabel}</span>
+            <span>{levelLabel}</span>
+
+            <span>
+              Son güncelleme{' '}
+              {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
+                month: 'long', year: 'numeric',
+              })}
+            </span>
+
+            <InstructorLink className="flex items-center gap-2.5 group ml-auto">
+              <Avatar className="w-8 h-8 ring-1 ring-slate-200">
+                <AvatarImage src={instructorAvatar} alt={instructorFullName} />
+                <AvatarFallback className="bg-slate-100 text-slate-600 font-semibold text-xs">
+                  {instructorFullName.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <span className="font-semibold text-slate-800 group-hover:text-brand-800 transition-colors">
+                {instructorFullName}
+              </span>
+            </InstructorLink>
+          </div>
+        </div>
+      </section>
+
+      {/* Eylem şeridi — fiyat, butonlar ve kupon tek satırda */}
+      <section ref={actionBarRef} className="bg-white border-b border-slate-200">
+        <div className="container mx-auto px-4 max-w-6xl py-6">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+            <div className="lg:w-56 shrink-0">
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <span className="text-[30px] font-bold text-slate-900 tracking-tight leading-none">
+                  {appliedCoupon
+                    ? formatPrice(appliedCoupon.discount_price)
+                    : Number(course.price) > 0 ? formatPrice(Number(course.price)) : 'Ücretsiz'}
+                </span>
+                {appliedCoupon ? (
+                  <span className="text-[16px] text-slate-400 line-through">
+                    {formatPrice(Number(course.price))}
+                  </span>
+                ) : Number(course.original_price) > Number(course.price) ? (
+                  <span className="text-[16px] text-slate-400 line-through">
+                    {formatPrice(Number(course.original_price))}
+                  </span>
+                ) : null}
+              </div>
+              <p className="text-[13px] text-slate-500 mt-1.5">KDV dahil · Tek ödeme</p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-2.5 lg:flex-1">
+              <Button
+                onClick={handleAddToCart}
+                disabled={addToCartMutation.isPending}
+                className="h-12 px-8 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold"
+              >
+                {addToCartMutation.isPending ? 'Ekleniyor…' : 'Sepete ekle'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleEnroll}
+                disabled={enrollMutation.isPending}
+                className="h-12 px-8 rounded-lg border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-800 text-[15px] font-semibold"
+              >
+                Hemen satın al
+              </Button>
+            </div>
+
+            <div className="flex gap-2 lg:w-72 shrink-0">
+              <Input
+                placeholder="Kupon kodu"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                className="h-12 rounded-lg text-[14px] font-mono tracking-wider"
+                disabled={!!appliedCoupon}
+              />
+              {appliedCoupon ? (
+                <Button
+                  variant="ghost"
+                  className="h-12 px-4 rounded-lg text-rose-600 hover:text-rose-700 hover:bg-rose-50 text-[13px] font-semibold shrink-0"
+                  onClick={() => { setAppliedCoupon(null); setCouponCode(''); }}
+                >
+                  Kaldır
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  className="h-12 px-5 rounded-lg text-[13px] font-semibold shrink-0"
+                  disabled={!couponCode || couponLoading}
+                  onClick={async () => {
+                    setCouponLoading(true);
+                    try {
+                      const res = await fetch(`${API_BASE_URL}/coupons/validate/${couponCode}`);
+                      const data = await res.json();
+                      if (res.ok && data.valid) {
+                        setAppliedCoupon(data.coupon);
+                        toast.success(`Kupon uygulandı: ${formatPrice(data.coupon.discount_price)}`);
+                      } else {
+                        toast.error(data.error || 'Geçersiz kupon');
+                      }
+                    } catch {
+                      toast.error('Kupon doğrulanamadı');
+                    } finally {
+                      setCouponLoading(false);
+                    }
+                  }}
+                >
+                  {couponLoading ? '…' : 'Uygula'}
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* İçerik: solda sekmeler, sağda ince bilgi rayı */}
+      <div className="container mx-auto px-4 max-w-6xl">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-14">
+          <div className="lg:col-span-8 min-w-0 pb-4">
           <Tabs defaultValue="overview" className="w-full">
             {/* Sekme çubuğu sütunun içinde yapışıyor; sayfa boyunca üstte kalır */}
             <TabsList className="sticky top-0 z-20 h-14 w-full justify-start gap-7 bg-[#F8FAFC] p-0 rounded-none border-b border-slate-200 overflow-x-auto no-scrollbar">
@@ -789,175 +989,14 @@ export const CourseDetailPage = () => {
           </Tabs>
           </div>
 
-          <aside className="lg:col-span-5 xl:col-span-4 lg:-mt-[21rem] -mt-8 order-1 lg:order-2">
-            <div className="lg:sticky lg:top-24 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-[0_18px_50px_-20px_rgba(15,23,42,0.35)]">
-              {/* Önizleme alanı */}
-              <div className="relative aspect-video bg-slate-900 group">
-                {isVideoPlaying && (previewLesson || course.preview_video) ? (
-                  <>
-                    {previewLesson?.video_type === 'hls' ? (
-                      <HLSVideoPlayer
-                        key={previewLesson.lesson_id}
-                        src={previewLesson.video_url}
-                        videoType="hls"
-                        poster={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
-                        title={previewLesson.title}
-                      />
-                    ) : (
-                      <video
-                        ref={videoRef}
-                        src={previewLesson?.video_url || course.preview_video}
-                        className="w-full h-full object-contain bg-black"
-                        controls
-                        autoPlay
-                        playsInline
-                        onEnded={() => setIsVideoPlaying(false)}
-                        onError={() => {
-                          toast.error('Video yüklenemedi');
-                          setIsVideoPlaying(false);
-                        }}
-                      />
-                    )}
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsVideoPlaying(false);
-                        setPreviewLesson(null);
-                        videoRef.current?.pause();
-                      }}
-                      className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors z-10"
-                    >
-                      <XIcon className="w-4 h-4" />
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (course.preview_video) setIsVideoPlaying(true);
-                      else if (firstPreviewLesson) openLessonPreview(firstPreviewLesson);
-                      else toast.info('Bu kurs için önizleme bulunmuyor');
-                    }}
-                    className="absolute inset-0 w-full h-full"
-                  >
-                    <img
-                      src={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
-                      alt={course.title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-course.jpg'; }}
-                    />
-                    {(course.preview_video || firstPreviewLesson) && (
-                      <>
-                        <span className="absolute inset-0 bg-black/45 group-hover:bg-black/55 transition-colors" />
-                        <span className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                          <span className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-                            <Play className="w-6 h-6 text-brand-800 fill-brand-800 ml-0.5" />
-                          </span>
-                          <span className="text-white text-[13px] font-semibold">
-                            Bu kursu önizle
-                          </span>
-                        </span>
-                      </>
-                    )}
-                  </button>
-                )}
-              </div>
-
-              <div className="p-6">
-                {/* Fiyat */}
-                <div className="flex items-baseline gap-3 flex-wrap">
-                  <span className="text-[32px] font-bold text-slate-900 tracking-tight">
-                    {appliedCoupon
-                      ? formatPrice(appliedCoupon.discount_price)
-                      : Number(course.price) > 0 ? formatPrice(Number(course.price)) : 'Ücretsiz'}
-                  </span>
-                  {appliedCoupon ? (
-                    <span className="text-[17px] text-slate-400 line-through">
-                      {formatPrice(Number(course.price))}
-                    </span>
-                  ) : Number(course.original_price) > Number(course.price) ? (
-                    <>
-                      <span className="text-[17px] text-slate-400 line-through">
-                        {formatPrice(Number(course.original_price))}
-                      </span>
-                      <span className="text-[13px] font-semibold text-rose-700 bg-rose-50 border border-rose-200 rounded px-2 py-0.5">
-                        %{course.discount_percentage
-                          || Math.round((1 - Number(course.price) / Number(course.original_price)) * 100)} indirim
-                      </span>
-                    </>
-                  ) : null}
-                </div>
-                <p className="text-[13px] text-slate-500 mt-1.5">
-                  KDV dahil · Tek seferlik ödeme
-                </p>
-
-                {/* Eylemler */}
-                <div className="mt-5 space-y-2.5">
-                  <Button
-                    onClick={handleAddToCart}
-                    disabled={addToCartMutation.isPending}
-                    className="w-full h-12 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold"
-                  >
-                    {addToCartMutation.isPending ? 'Ekleniyor…' : 'Sepete ekle'}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={handleEnroll}
-                    disabled={enrollMutation.isPending}
-                    className="w-full h-12 rounded-lg border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-800 text-[15px] font-semibold"
-                  >
-                    Hemen satın al
-                  </Button>
-                </div>
-
-                {/* Kupon */}
-                <div className="mt-4 flex gap-2">
-                  <Input
-                    placeholder="Kupon kodu"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                    className="h-10 rounded-lg text-[14px] font-mono tracking-wider"
-                    disabled={!!appliedCoupon}
-                  />
-                  {appliedCoupon ? (
-                    <Button
-                      variant="ghost"
-                      className="h-10 px-4 rounded-lg text-rose-600 hover:text-rose-700 hover:bg-rose-50 text-[13px] font-semibold shrink-0"
-                      onClick={() => { setAppliedCoupon(null); setCouponCode(''); }}
-                    >
-                      Kaldır
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      className="h-10 px-5 rounded-lg text-[13px] font-semibold shrink-0"
-                      disabled={!couponCode || couponLoading}
-                      onClick={async () => {
-                        setCouponLoading(true);
-                        try {
-                          const res = await fetch(`${API_BASE_URL}/coupons/validate/${couponCode}`);
-                          const data = await res.json();
-                          if (res.ok && data.valid) {
-                            setAppliedCoupon(data.coupon);
-                            toast.success(`Kupon uygulandı: ${formatPrice(data.coupon.discount_price)}`);
-                          } else {
-                            toast.error(data.error || 'Geçersiz kupon');
-                          }
-                        } catch {
-                          toast.error('Kupon doğrulanamadı');
-                        } finally {
-                          setCouponLoading(false);
-                        }
-                      }}
-                    >
-                      {couponLoading ? '…' : 'Uygula'}
-                    </Button>
-                  )}
-                </div>
-
-                {/* Kursun içeriği */}
-                <dl className="mt-6 pt-6 border-t border-slate-100 space-y-3 text-[14px]">
+          {/* Sağ ray: kurs künyesi ve eğitmen. Satın alma burada değil —
+              o iş eylem şeridinde ve alttaki yapışkan çubukta. */}
+          <aside className="lg:col-span-4">
+            <div className="lg:sticky lg:top-6 space-y-6 pb-10">
+              <div className="border border-slate-200 rounded-xl bg-white p-6">
+                <h2 className="text-[15px] font-bold text-slate-900">Bu kurs neler içeriyor</h2>
+                <span className="block w-8 h-[3px] rounded-full bg-brand-700 mt-2.5 mb-4" />
+                <dl className="space-y-3 text-[14px]">
                   {[
                     { label: 'Ders sayısı', value: `${totalLessons} ders` },
                     { label: 'Toplam süre', value: totalDurationLabel },
@@ -965,6 +1004,9 @@ export const CourseDetailPage = () => {
                     { label: 'Dil', value: (course.language || 'tr').toUpperCase() },
                     { label: 'Erişim', value: 'Ömür boyu' },
                     { label: 'Sertifika', value: 'Bitirme sertifikası' },
+                    ...(Number(course.downloadable_resources) > 0
+                      ? [{ label: 'Kaynak', value: `${course.downloadable_resources} indirilebilir` }]
+                      : []),
                   ].map(row => (
                     <div key={row.label} className="flex items-center justify-between gap-4">
                       <dt className="text-slate-500">{row.label}</dt>
@@ -972,6 +1014,44 @@ export const CourseDetailPage = () => {
                     </div>
                   ))}
                 </dl>
+              </div>
+
+              <div className="border border-slate-200 rounded-xl bg-white p-6">
+                <h2 className="text-[15px] font-bold text-slate-900">Eğitmen</h2>
+                <span className="block w-8 h-[3px] rounded-full bg-brand-700 mt-2.5 mb-4" />
+                <InstructorLink className="flex items-center gap-3 group">
+                  <Avatar className="w-12 h-12 ring-1 ring-slate-200">
+                    <AvatarImage src={instructorAvatar} alt={instructorFullName} />
+                    <AvatarFallback className="bg-slate-100 text-slate-600 font-semibold">
+                      {instructorFullName.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="min-w-0">
+                    <span className="block font-semibold text-slate-900 group-hover:text-brand-800 transition-colors truncate">
+                      {instructorFullName}
+                    </span>
+                    <span className="block text-[13px] text-slate-500 truncate">
+                      {course.instructor_title || 'Eğitmen'}
+                    </span>
+                  </span>
+                </InstructorLink>
+                <p className="text-[14px] text-slate-600 leading-[1.7] mt-4 line-clamp-4">
+                  {instructorBio}
+                </p>
+                <div className="flex gap-6 mt-4 pt-4 border-t border-slate-100 text-[13px]">
+                  <span>
+                    <span className="block font-bold text-slate-900 text-[16px]">
+                      {Number(course.instructor_total_students || course.instructor_students || 0).toLocaleString('tr-TR')}
+                    </span>
+                    <span className="text-slate-500">Öğrenci</span>
+                  </span>
+                  <span>
+                    <span className="block font-bold text-slate-900 text-[16px]">
+                      {course.instructor_course_count || course.instructor_courses || 1}
+                    </span>
+                    <span className="text-slate-500">Kurs</span>
+                  </span>
+                </div>
               </div>
             </div>
           </aside>
@@ -999,6 +1079,51 @@ export const CourseDetailPage = () => {
         moreLabel="Tümünü gör"
         tinted
       />
+
+      {/*
+        Yapışkan satın alma çubuğu.
+
+        Eylem şeridi ekrandan çıktığı anda beliriyor; kullanıcı müfredatı
+        okurken fiyatı ve butonu kaybetmesin diye. Şerit görünürken
+        gizleniyor, iki kez aynı şeyi göstermenin anlamı yok.
+      */}
+      <div
+        className={cn(
+          'fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur transition-transform duration-300',
+          showStickyBar ? 'translate-y-0' : 'translate-y-full'
+        )}
+      >
+        <div className="container mx-auto px-4 max-w-6xl py-3 flex items-center gap-4">
+          <div className="min-w-0 flex-1 hidden sm:block">
+            <p className="text-[14px] font-semibold text-slate-900 truncate">{course.title}</p>
+            <p className="text-[13px] text-slate-500 truncate">
+              {totalLessons} ders · {totalDurationLabel}
+            </p>
+          </div>
+
+          <span className="text-[20px] font-bold text-slate-900 whitespace-nowrap">
+            {appliedCoupon
+              ? formatPrice(appliedCoupon.discount_price)
+              : Number(course.price) > 0 ? formatPrice(Number(course.price)) : 'Ücretsiz'}
+          </span>
+
+          <Button
+            onClick={handleAddToCart}
+            disabled={addToCartMutation.isPending}
+            className="h-11 px-6 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold shrink-0"
+          >
+            Sepete ekle
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleEnroll}
+            disabled={enrollMutation.isPending}
+            className="h-11 px-6 rounded-lg border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-800 text-[15px] font-semibold shrink-0 hidden md:inline-flex"
+          >
+            Hemen satın al
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
