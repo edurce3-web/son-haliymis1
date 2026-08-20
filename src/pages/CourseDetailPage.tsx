@@ -72,6 +72,40 @@ export const CourseDetailPage = () => {
   const actionBarRef = useRef<HTMLElement>(null);
   const [showStickyBar, setShowStickyBar] = useState(false);
 
+  /**
+   * Sayfadaki bölümler ve okunan bölüm.
+   *
+   * Sekme yerine tek sayfa kullanıldığı için soldaki dizin, kaydırma sırasında
+   * hangi bölümde olunduğunu işaretliyor.
+   */
+  const PAGE_SECTIONS = [
+    { id: 'genel-bakis', label: 'Genel bakış' },
+    { id: 'mufredat', label: 'Müfredat' },
+    { id: 'egitmen', label: 'Eğitmen' },
+    { id: 'degerlendirmeler', label: 'Değerlendirmeler' },
+  ];
+  const [activeSection, setActiveSection] = useState('genel-bakis');
+
+  useEffect(() => {
+    if (!courseData) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (visible) setActiveSection(visible.target.id);
+      },
+      { rootMargin: '-100px 0px -70% 0px', threshold: 0 }
+    );
+
+    PAGE_SECTIONS.forEach(s => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [courseData]);
+
   useEffect(() => {
     const el = actionBarRef.current;
     if (!el) return;
@@ -183,11 +217,34 @@ export const CourseDetailPage = () => {
 
   // Eğitmenin diğer kursları ve benzer kurslar — tek istekte
   const { data: suggestions } = useQuery({
-    queryKey: ['course-suggestions', courseId],
+    queryKey: ['course-suggestions', courseId, categorySlug],
     queryFn: async () => {
+      // Önce özel uç. Sunucuda henüz yoksa katalog ucundan aynı bilgiyi
+      // toplayarak devam ediyoruz — şeritlerin boş kalmasındansa bir istek
+      // fazladan atmak yeğ.
       const res = await fetch(`${API_BASE_URL}/courses/${courseId}/suggestions?limit=8`);
-      if (!res.ok) throw new Error('Öneriler alınamadı');
-      return res.json();
+      if (res.ok) return res.json();
+      if (res.status !== 404) throw new Error('Öneriler alınamadı');
+
+      if (!categorySlug) return { instructorCourses: [], relatedCourses: [] };
+
+      const fallback = await fetch(
+        `${API_BASE_URL}/catalog?category=${encodeURIComponent(categorySlug)}&limit=12`
+      );
+      if (!fallback.ok) return { instructorCourses: [], relatedCourses: [] };
+
+      const data = await fallback.json();
+      const list = (data.courses || []).filter(
+        (c: any) => Number(c.course_id ?? c.id) !== Number(courseId)
+      );
+
+      const instructorName = courseData?.course?.instructor_name;
+      return {
+        instructorCourses: instructorName
+          ? list.filter((c: any) => c.instructor_name === instructorName).slice(0, 8)
+          : [],
+        relatedCourses: list.slice(0, 8),
+      };
     },
     enabled: !!courseId,
     staleTime: 5 * 60 * 1000,
@@ -489,11 +546,11 @@ export const CourseDetailPage = () => {
         sonra eylem şeridi. Satın alma, şerit ekrandan çıkınca alttaki
         yapışkan çubukta görünmeye devam ediyor.
       */}
-      <section className="bg-brand-950">
+      <section className="bg-white border-b border-slate-200">
         <div className="container mx-auto px-4 max-w-6xl">
-          <nav className="flex items-center text-[13px] text-brand-300 gap-2 py-4 overflow-hidden whitespace-nowrap">
+          <nav className="flex items-center text-[13px] text-slate-500 gap-2 py-5 overflow-hidden whitespace-nowrap">
             {categorySlug ? (
-              <Link to={`/courses/${categorySlug}`} className="hover:text-white transition-colors truncate max-w-[180px]">
+              <Link to={`/courses/${categorySlug}`} className="hover:text-brand-800 transition-colors truncate max-w-[180px]">
                 {course.category_name}
               </Link>
             ) : (
@@ -501,11 +558,11 @@ export const CourseDetailPage = () => {
             )}
             {course.subcategory_name && (
               <>
-                <ChevronRight className="w-3.5 h-3.5 text-brand-700 shrink-0" />
+                <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
                 {categorySlug && subcategorySlug ? (
                   <Link
                     to={`/courses/${categorySlug}/${subcategorySlug}`}
-                    className="hover:text-white transition-colors truncate max-w-[180px]"
+                    className="hover:text-brand-800 transition-colors truncate max-w-[180px]"
                   >
                     {course.subcategory_name}
                   </Link>
@@ -515,9 +572,72 @@ export const CourseDetailPage = () => {
               </>
             )}
           </nav>
+          <div className="pb-8 max-w-4xl">
+          <h1 className="text-[28px] sm:text-[34px] lg:text-[38px] font-bold text-slate-900 leading-[1.15] tracking-[-0.02em] break-words max-w-4xl">
+            {course.title}
+          </h1>
 
-          <div className="max-w-4xl mx-auto pb-10">
-            <div className="relative aspect-video bg-black rounded-xl overflow-hidden ring-1 ring-white/10 group">
+          {course.short_description && (
+            <p className="text-[17px] text-slate-600 leading-[1.65] mt-4 max-w-3xl break-words">
+              {course.short_description}
+            </p>
+          )}
+
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-6 text-[14px] text-slate-500">
+            {Number(course.rating) > 0 && (
+              <span className="flex items-center gap-2">
+                <span className="font-bold text-slate-900 text-[15px]">
+                  {Number(course.rating).toFixed(1)}
+                </span>
+                <span className="flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={cn(
+                        'w-3.5 h-3.5',
+                        i < Math.round(Number(course.rating)) ? 'fill-amber-400 text-amber-400' : 'text-slate-200 fill-slate-200'
+                      )}
+                    />
+                  ))}
+                </span>
+                <span>({reviewsCount})</span>
+              </span>
+            )}
+
+            <span>
+              <span className="font-semibold text-slate-900">
+                {Number(course.student_count || 0).toLocaleString('tr-TR')}
+              </span>{' '}
+              öğrenci
+            </span>
+
+            <span>{totalLessons} ders · {totalDurationLabel}</span>
+            <span>{levelLabel}</span>
+
+            <span>
+              Son güncelleme{' '}
+              {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
+                month: 'long', year: 'numeric',
+              })}
+            </span>
+
+            <InstructorLink className="flex items-center gap-2.5 group ml-auto">
+              <Avatar className="w-8 h-8 ring-1 ring-slate-200">
+                <AvatarImage src={instructorAvatar} alt={instructorFullName} />
+                <AvatarFallback className="bg-slate-100 text-slate-600 font-semibold text-xs">
+                  {instructorFullName.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <span className="font-semibold text-slate-800 group-hover:text-brand-800 transition-colors">
+                {instructorFullName}
+              </span>
+            </InstructorLink>
+          </div>
+          </div>
+
+
+          <div className="max-w-4xl pb-10">
+            <div className="relative aspect-video bg-slate-900 rounded-xl overflow-hidden shadow-[0_24px_60px_-24px_rgba(15,23,42,0.45)] group">
               {isVideoPlaying && (previewLesson || course.preview_video) ? (
                 <>
                   {previewLesson?.video_type === 'hls' ? (
@@ -602,71 +722,6 @@ export const CourseDetailPage = () => {
         </div>
       </section>
 
-      {/* Başlık katmanı */}
-      <section className="bg-white border-b border-slate-200">
-        <div className="container mx-auto px-4 max-w-6xl py-9">
-          <h1 className="text-[28px] sm:text-[34px] lg:text-[38px] font-bold text-slate-900 leading-[1.15] tracking-[-0.02em] break-words max-w-4xl">
-            {course.title}
-          </h1>
-
-          {course.short_description && (
-            <p className="text-[17px] text-slate-600 leading-[1.65] mt-4 max-w-3xl break-words">
-              {course.short_description}
-            </p>
-          )}
-
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-6 text-[14px] text-slate-500">
-            {Number(course.rating) > 0 && (
-              <span className="flex items-center gap-2">
-                <span className="font-bold text-slate-900 text-[15px]">
-                  {Number(course.rating).toFixed(1)}
-                </span>
-                <span className="flex gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={cn(
-                        'w-3.5 h-3.5',
-                        i < Math.round(Number(course.rating)) ? 'fill-amber-400 text-amber-400' : 'text-slate-200 fill-slate-200'
-                      )}
-                    />
-                  ))}
-                </span>
-                <span>({reviewsCount})</span>
-              </span>
-            )}
-
-            <span>
-              <span className="font-semibold text-slate-900">
-                {Number(course.student_count || 0).toLocaleString('tr-TR')}
-              </span>{' '}
-              öğrenci
-            </span>
-
-            <span>{totalLessons} ders · {totalDurationLabel}</span>
-            <span>{levelLabel}</span>
-
-            <span>
-              Son güncelleme{' '}
-              {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
-                month: 'long', year: 'numeric',
-              })}
-            </span>
-
-            <InstructorLink className="flex items-center gap-2.5 group ml-auto">
-              <Avatar className="w-8 h-8 ring-1 ring-slate-200">
-                <AvatarImage src={instructorAvatar} alt={instructorFullName} />
-                <AvatarFallback className="bg-slate-100 text-slate-600 font-semibold text-xs">
-                  {instructorFullName.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <span className="font-semibold text-slate-800 group-hover:text-brand-800 transition-colors">
-                {instructorFullName}
-              </span>
-            </InstructorLink>
-          </div>
-        </div>
-      </section>
 
       {/* Eylem şeridi — fiyat, butonlar ve kupon tek satırda */}
       <section ref={actionBarRef} className="bg-white border-b border-slate-200">
@@ -757,38 +812,80 @@ export const CourseDetailPage = () => {
         </div>
       </section>
 
-      {/* İçerik: solda sekmeler, sağda ince bilgi rayı */}
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-14">
-          <div className="lg:col-span-8 min-w-0 pb-4">
-          <Tabs defaultValue="overview" className="w-full">
-            {/* Sekme çubuğu sütunun içinde yapışıyor; sayfa boyunca üstte kalır */}
-            <TabsList className="sticky top-0 z-20 h-14 w-full justify-start gap-7 bg-[#F8FAFC] p-0 rounded-none border-b border-slate-200 overflow-x-auto no-scrollbar">
-              {['overview', 'curriculum', 'instructor', 'reviews'].map((tab) => (
-                <TabsTrigger
-                  key={tab}
-                  value={tab}
-                  className="h-full rounded-none border-b-2 border-transparent px-1 data-[state=active]:border-brand-700 data-[state=active]:bg-transparent data-[state=active]:text-brand-800 data-[state=active]:shadow-none font-semibold text-slate-500 hover:text-slate-900 transition-colors text-[15px] whitespace-nowrap"
-                >
-                  {{
-                    'overview': 'Genel bakış',
-                    'curriculum': 'Müfredat',
-                    'instructor': 'Eğitmen',
-                    'reviews': 'Değerlendirmeler'
-                  }[tab]}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+      {/* Künye şeridi — kurs özeti yatay bantta, ayrı bir kart gerekmiyor */}
+      <section className="bg-white border-b border-slate-200">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <dl className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
+            {[
+              { label: 'Ders', value: `${totalLessons}` },
+              { label: 'Toplam süre', value: totalDurationLabel },
+              { label: 'Seviye', value: levelLabel },
+              { label: 'Dil', value: (course.language || 'tr').toUpperCase() },
+              { label: 'Erişim', value: 'Ömür boyu' },
+              { label: 'Sertifika', value: 'Var' },
+            ].map(item => (
+              <div key={item.label} className="py-5 sm:px-6 first:sm:pl-0 last:sm:pr-0">
+                <dt className="text-[12px] uppercase tracking-wider text-slate-400 font-semibold">
+                  {item.label}
+                </dt>
+                <dd className="text-[16px] font-semibold text-slate-900 mt-1.5">{item.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
 
-            {/* 4. Tab Contents Container */}
-            <div className="py-10">
+      {/*
+        İçerik: solda yapışkan bölüm dizini, sağda uzun sayfa.
+
+        Sekme kullanılmıyor. Sekmeler içeriği gizler ve arama motoru yalnızca
+        ilk sekmeyi görür; burada tüm bölümler tek sayfada, soldaki dizin
+        okunan bölümü işaretliyor.
+      */}
+      <div className="container mx-auto px-4 max-w-6xl">
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 py-12">
+          <nav className="lg:w-56 shrink-0 order-2 lg:order-1" aria-label="Bu sayfada">
+            <div className="lg:sticky lg:top-8">
+              <p className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400 mb-4">
+                Bu sayfada
+              </p>
+              <ol className="border-l border-slate-200">
+                {PAGE_SECTIONS.map(section => {
+                  const active = activeSection === section.id;
+                  return (
+                    <li key={section.id} className="relative">
+                      <span
+                        aria-hidden
+                        className={cn(
+                          'absolute -left-px top-1 bottom-1 w-[2px] rounded-full transition-opacity',
+                          active ? 'bg-brand-700 opacity-100' : 'opacity-0'
+                        )}
+                      />
+                      <a
+                        href={`#${section.id}`}
+                        className={cn(
+                          'block pl-5 pr-2 py-2 text-[14px] transition-colors',
+                          active ? 'text-brand-800 font-semibold' : 'text-slate-500 hover:text-slate-900'
+                        )}
+                      >
+                        {section.label}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          </nav>
+
+          <div className="flex-1 min-w-0 max-w-3xl order-1 lg:order-2">
+            <div>
 
               {/* OVERVIEW TAB */}
-              <TabsContent value="overview" className="space-y-12 animate-in fade-in duration-500 outline-none">
+              <section id="genel-bakis" className="scroll-mt-24 space-y-12">
 
                 {/* Neler öğreneceksiniz */}
                 <div className="bg-white rounded-xl border border-slate-200 p-7 md:p-8">
-                  <h2 className="text-[20px] font-bold text-slate-900 mb-6">
+                  <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em] mb-6">
                     Neler öğreneceksiniz
                   </h2>
                   <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
@@ -805,17 +902,17 @@ export const CourseDetailPage = () => {
 
                 {/* Kurs açıklaması */}
                 <section>
-                  <h2 className="text-[20px] font-bold text-slate-900 mb-4">Kurs hakkında</h2>
+                  <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em] mb-4">Kurs hakkında</h2>
                   <div className="text-[16px] text-slate-600 leading-[1.85] break-words whitespace-pre-wrap">
                     {course.description}
                   </div>
                 </section>
-              </TabsContent>
+              </section>
 
               {/* CURRICULUM TAB */}
-              <TabsContent value="curriculum" className="space-y-6 animate-in fade-in duration-500 outline-none">
+              <section id="mufredat" className="scroll-mt-24 space-y-6 pt-16 mt-16 border-t border-slate-200">
                 <div className="flex flex-wrap items-baseline justify-between gap-3">
-                  <h2 className="text-[20px] font-bold text-slate-900">Müfredat</h2>
+                  <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em]">Müfredat</h2>
                   <p className="text-[14px] text-slate-500">
                     {course.sections?.length || 0} bölüm · {totalLessons} ders · {totalDurationLabel}
                   </p>
@@ -882,10 +979,10 @@ export const CourseDetailPage = () => {
                     </div>
                   ))}
                 </div>
-              </TabsContent>
+              </section>
 
               {/* INSTRUCTOR TAB */}
-              <TabsContent value="instructor" className="animate-in fade-in duration-700 outline-none">
+              <section id="egitmen" className="scroll-mt-24 pt-16 mt-16 border-t border-slate-200">
                 <div className="bg-white rounded-2xl border border-slate-200/60 p-1 mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
                   <div className="bg-slate-50/30 rounded-xl p-8 md:p-12 relative overflow-hidden">
 
@@ -967,10 +1064,10 @@ export const CourseDetailPage = () => {
                     </div>
                   </div>
                 </div>
-              </TabsContent>
+              </section>
 
               {/* REVIEWS TAB */}
-              <TabsContent value="reviews" className="animate-in fade-in duration-700 outline-none max-w-5xl mx-auto">
+              <section id="degerlendirmeler" className="scroll-mt-24 pt-16 mt-16 border-t border-slate-200">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                   <div>
                     <h3 className="text-3xl font-bold text-slate-900">Öğrenci Değerlendirmeleri</h3>
@@ -1020,77 +1117,9 @@ export const CourseDetailPage = () => {
                     <p className="text-slate-500 mt-2 font-medium max-w-sm mx-auto">Bu kurs için henüz bir değerlendirme yapılmamış. İlk değerlendiren siz olun!</p>
                   </div>
                 )}
-              </TabsContent>
+              </section>
             </div>
-          </Tabs>
           </div>
-
-          {/* Sağ ray: kurs künyesi ve eğitmen. Satın alma burada değil —
-              o iş eylem şeridinde ve alttaki yapışkan çubukta. */}
-          <aside className="lg:col-span-4">
-            <div className="lg:sticky lg:top-6 space-y-6 pb-10">
-              <div className="border border-slate-200 rounded-xl bg-white p-6">
-                <h2 className="text-[15px] font-bold text-slate-900">Bu kurs neler içeriyor</h2>
-                <span className="block w-8 h-[3px] rounded-full bg-brand-700 mt-2.5 mb-4" />
-                <dl className="space-y-3 text-[14px]">
-                  {[
-                    { label: 'Ders sayısı', value: `${totalLessons} ders` },
-                    { label: 'Toplam süre', value: totalDurationLabel },
-                    { label: 'Seviye', value: levelLabel },
-                    { label: 'Dil', value: (course.language || 'tr').toUpperCase() },
-                    { label: 'Erişim', value: 'Ömür boyu' },
-                    { label: 'Sertifika', value: 'Bitirme sertifikası' },
-                    ...(Number(course.downloadable_resources) > 0
-                      ? [{ label: 'Kaynak', value: `${course.downloadable_resources} indirilebilir` }]
-                      : []),
-                  ].map(row => (
-                    <div key={row.label} className="flex items-center justify-between gap-4">
-                      <dt className="text-slate-500">{row.label}</dt>
-                      <dd className="font-semibold text-slate-900 text-right">{row.value}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-
-              <div className="border border-slate-200 rounded-xl bg-white p-6">
-                <h2 className="text-[15px] font-bold text-slate-900">Eğitmen</h2>
-                <span className="block w-8 h-[3px] rounded-full bg-brand-700 mt-2.5 mb-4" />
-                <InstructorLink className="flex items-center gap-3 group">
-                  <Avatar className="w-12 h-12 ring-1 ring-slate-200">
-                    <AvatarImage src={instructorAvatar} alt={instructorFullName} />
-                    <AvatarFallback className="bg-slate-100 text-slate-600 font-semibold">
-                      {instructorFullName.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="min-w-0">
-                    <span className="block font-semibold text-slate-900 group-hover:text-brand-800 transition-colors truncate">
-                      {instructorFullName}
-                    </span>
-                    <span className="block text-[13px] text-slate-500 truncate">
-                      {course.instructor_title || 'Eğitmen'}
-                    </span>
-                  </span>
-                </InstructorLink>
-                <p className="text-[14px] text-slate-600 leading-[1.7] mt-4 line-clamp-4">
-                  {instructorBio}
-                </p>
-                <div className="flex gap-6 mt-4 pt-4 border-t border-slate-100 text-[13px]">
-                  <span>
-                    <span className="block font-bold text-slate-900 text-[16px]">
-                      {Number(course.instructor_total_students || course.instructor_students || 0).toLocaleString('tr-TR')}
-                    </span>
-                    <span className="text-slate-500">Öğrenci</span>
-                  </span>
-                  <span>
-                    <span className="block font-bold text-slate-900 text-[16px]">
-                      {course.instructor_course_count || course.instructor_courses || 1}
-                    </span>
-                    <span className="text-slate-500">Kurs</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </aside>
         </div>
       </div>
 
@@ -1185,7 +1214,7 @@ const CourseRail: React.FC<{
       <div className="container mx-auto px-4 py-14 lg:py-16">
         <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <div>
-            <h2 className="text-[22px] lg:text-[26px] font-bold text-slate-900 tracking-tight">
+            <h2 className="font-montserrat text-[22px] lg:text-[26px] font-extrabold text-slate-900 tracking-[-0.02em]">
               {title}
             </h2>
             {subtitle && (
@@ -1195,7 +1224,7 @@ const CourseRail: React.FC<{
           {moreHref && (
             <Link
               to={moreHref}
-              className="text-sm font-semibold text-[#175D5D] hover:text-brand-800 hover:underline shrink-0"
+              className="text-sm font-semibold text-brand-700 hover:text-brand-900 hover:underline shrink-0"
             >
               {moreLabel || 'Tümünü gör'}
             </Link>
