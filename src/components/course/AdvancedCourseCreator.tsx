@@ -1164,6 +1164,53 @@ export default function AdvancedCourseCreator() {
     });
   };
 
+  /**
+   * Dersi ücretsiz önizlemeye açar/kapatır.
+   *
+   * Sunucuya hemen yazılıyor — "kaydet" beklemek, eğitmenin işaretleyip
+   * sayfadan çıkması durumunda seçimi kaybettiriyordu. Hata olursa arayüzdeki
+   * durum geri alınıyor.
+   */
+  const togglePreviewLesson = async (sectionId: string, lessonId: string) => {
+    const section = courseData.sections.find(s => s.id === sectionId);
+    const lesson = section?.lessons.find(l => l.id === lessonId);
+    if (!section || !lesson?.dbLessonId) return;
+
+    const next = !lesson.isFree;
+    const apply = (value: boolean) => setCourseData(prev => ({
+      ...prev,
+      sections: prev.sections.map(s => s.id === sectionId ? {
+        ...s,
+        lessons: s.lessons.map(l => l.id === lessonId ? { ...l, isFree: value } : l),
+      } : s),
+    }));
+
+    apply(next);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/courses/lessons`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({
+          courseId: courseData.courseId || courseUrlId,
+          sectionId: section.dbSectionId,
+          lessonId: lesson.dbLessonId,
+          title: lesson.title,
+          sortOrder: section.lessons.findIndex(l => l.id === lessonId),
+          isFree: next,
+        }),
+      });
+      if (!response.ok) throw new Error('Kaydedilemedi');
+      toast.success(next
+        ? 'Ders ücretsiz önizlemeye açıldı'
+        : 'Ders önizlemeden kaldırıldı');
+    } catch {
+      apply(!next);
+      toast.error('Önizleme durumu kaydedilemedi');
+    }
+  };
+
   const handleFileUpload = (sectionId: string, lessonId: string, type: 'video' | 'presentation' | 'document', dbLessonId?: number) => {
     setSelectedLesson({ sectionId, lessonId, dbLessonId });
     setUploadType(type);
@@ -2307,6 +2354,28 @@ export default function AdvancedCourseCreator() {
                                                     </div>
 
                                                     <div className="flex items-center gap-2">
+                                                      {/* Ücretsiz önizleme: bu ders kurs detay sayfasında
+                                                          herkese açık oynatılır. Ders kaydedilmeden
+                                                          işaretlenemez, çünkü sunucuda karşılığı yok. */}
+                                                      <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        disabled={!lesson.dbLessonId}
+                                                        title={lesson.dbLessonId
+                                                          ? 'Bu dersi kurs detay sayfasında ücretsiz önizleme olarak göster'
+                                                          : 'Önce dersi kaydedin'}
+                                                        onClick={() => togglePreviewLesson(section.id, lesson.id)}
+                                                        className={cn(
+                                                          'h-9 px-3 rounded-xl text-xs font-bold transition-colors disabled:opacity-40',
+                                                          lesson.isFree
+                                                            ? 'bg-teal-50 text-teal-700 hover:bg-teal-100 ring-1 ring-teal-200'
+                                                            : 'text-slate-400 hover:text-teal-700 hover:bg-teal-50'
+                                                        )}
+                                                      >
+                                                        {lesson.isFree ? 'Önizlemede' : 'Önizleme yap'}
+                                                      </Button>
+
                                                       {!lesson.titleSaved && lesson.title.trim() && (
                                                         <Button
                                                           size="sm"
@@ -2770,92 +2839,6 @@ export default function AdvancedCourseCreator() {
                   </Button>
                 </CardContent>
               </Card>
-
-              {/* Ön Koşullar Kartı */}
-              <Card className="border-none ring-1 ring-slate-200 dark:ring-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none rounded-[32px] overflow-hidden bg-white dark:bg-slate-900">
-                <CardHeader className="p-8 pb-4">
-                  <div>
-                    <CardTitle className="text-lg font-bold">Ön Koşullar</CardTitle>
-                    <p className="text-xs text-slate-500">Öğrencilerin kursa başlamadan önce bilmesi gerekenler</p>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-8 pt-4 space-y-4">
-                  {prerequisites.map((prerequisite, index) => (
-                    <div key={index} className="flex items-center gap-3 group">
-                      <div className="flex-1 relative">
-                        <Input
-                          placeholder="Örn: Temel HTML ve CSS bilgisi"
-                          value={prerequisite}
-                          onChange={(e) => updatePrerequisite(index, e.target.value)}
-                          className="h-12 px-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-400 transition-all font-medium"
-                          maxLength={160}
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-300">
-                          {prerequisite.length}/160
-                        </span>
-                      </div>
-                      {prerequisites.length > 1 && (
-                        <Button
-                          variant="ghost" size="icon" className="text-slate-300 hover:text-red-500 rounded-xl"
-                          onClick={() => removePrerequisite(index)}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-                  ))}
-                  <Button
-                    onClick={addPrerequisite}
-                    variant="ghost"
-                    className="w-full h-12 border-2 border-dashed border-slate-100 dark:border-slate-800 hover:border-blue-400 hover:bg-blue-50/50 rounded-xl text-slate-400 hover:text-blue-600 font-bold transition-all"
-                  >
-                    <Plus className="w-4 h-4 mr-2" /> Gereksinim Ekle
-                  </Button>
-                </CardContent>
-              </Card>
-
-              {/* Hedef Kitle Kartı */}
-              <Card className="border-none ring-1 ring-slate-200 dark:ring-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none rounded-[32px] overflow-hidden bg-white dark:bg-slate-900">
-                <CardHeader className="p-8 pb-4">
-                  <div>
-                    <CardTitle className="text-lg font-bold">Hedef Kitle</CardTitle>
-                    <p className="text-xs text-slate-500">Bu kurs kimler için tasarlanmıştır?</p>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-8 pt-4 space-y-4">
-                  {audiences.map((item, index) => (
-                    <div key={index} className="flex items-center gap-3 group">
-                      <div className="flex-1 relative">
-                        <Input
-                          placeholder="Örn: Web geliştirme dünyasına yeni girmek isteyen öğrenciler"
-                          value={item}
-                          onChange={(e) => updateAudience(index, e.target.value)}
-                          className="h-12 px-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50 focus:ring-4 focus:ring-purple-500/10 focus:border-purple-400 transition-all font-medium"
-                          maxLength={160}
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-300">
-                          {item.length}/160
-                        </span>
-                      </div>
-                      {audiences.length > 1 && (
-                        <Button
-                          variant="ghost" size="icon" className="text-slate-300 hover:text-red-500 rounded-xl"
-                          onClick={() => removeAudience(index)}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-                  ))}
-                  <Button
-                    onClick={addAudience}
-                    variant="ghost"
-                    className="w-full h-12 border-2 border-dashed border-slate-100 dark:border-slate-800 hover:border-purple-400 hover:bg-purple-50/50 rounded-xl text-slate-400 hover:text-purple-600 font-bold transition-all"
-                  >
-                    <Plus className="w-4 h-4 mr-2" /> Kitle Ekle
-                  </Button>
-                </CardContent>
-              </Card>
             </div>
 
             <div className="pt-6 flex justify-center">
@@ -3146,24 +3129,6 @@ export default function AdvancedCourseCreator() {
                       {courseData.description || 'Kurs açıklaması içeriği buraya gelecek...'}
                     </div>
                   </div>
-
-                  {/* Kimin İçin Uygun? */}
-                  {courseData.targetAudience?.length > 0 && (
-                    <div className="bg-indigo-50/30 dark:bg-indigo-900/10 rounded-3xl p-8 border border-indigo-100 dark:border-indigo-900/20 shadow-sm">
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3 text-indigo-600">
-                        <Users className="w-6 h-6" />
-                        Kimin İçin Uygun?
-                      </h3>
-                      <div className="space-y-3">
-                        {courseData.targetAudience.map((audience, i) => (
-                          <div key={i} className="flex items-center gap-3 text-slate-700 dark:text-slate-300">
-                            <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-sm ring-4 ring-indigo-50 dark:ring-indigo-900/20" />
-                            <span className="text-sm font-medium leading-relaxed">{audience}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 {/* 4. Bottom Bar (Pricing & Action) */}

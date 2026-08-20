@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
 import { VideoPlayer } from '@/components/video/VideoPlayer';
+import HLSVideoPlayer from '@/components/video/HLSVideoPlayer';
 import { coursesAPI, cartAPI, enrollmentAPI, reviewsAPI, qaAPI, getCourseImageUrl, API_BASE_URL } from '@/lib/api';
 import { useSeo } from '@/hooks/useSeo';
 
@@ -15,7 +16,7 @@ import { useSeo } from '@/hooks/useSeo';
 const SITE_URL = 'https://edurce.com';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import {
   Star,
@@ -89,6 +90,49 @@ export const CourseDetailPage = () => {
 
   const courseId = courseData?.course?.id || courseData?.course?.course_id || Number(courseIdentifier) || 0;
 
+
+  /**
+   * Önizlemede oynatılan ders.
+   *
+   * Kurs tanıtım videosu (preview_video) dışında, eğitmenin "ücretsiz
+   * önizleme" işaretlediği dersler de burada oynatılır. Video adresi ayrı bir
+   * uçtan çekiliyor çünkü detay yanıtında ders videoları yer almıyor —
+   * yer alsaydı ücretli içerik herkese açık olurdu.
+   */
+  const [previewLesson, setPreviewLesson] = useState<any>(null);
+  const [previewLoading, setPreviewLoading] = useState<number | null>(null);
+
+  const openLessonPreview = async (lesson: any) => {
+    const lessonId = lesson.id ?? lesson.lesson_id;
+    if (!lessonId || !courseId) return;
+
+    setPreviewLoading(lessonId);
+    try {
+      const res = await fetch(`${API_BASE_URL}/courses/${courseId}/preview-lesson/${lessonId}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Önizleme açılamadı');
+
+      setPreviewLesson(data.lesson);
+      setIsVideoPlaying(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error: any) {
+      toast.error(error.message || 'Önizleme açılamadı');
+    } finally {
+      setPreviewLoading(null);
+    }
+  };
+
+  // Eğitmenin diğer kursları ve benzer kurslar — tek istekte
+  const { data: suggestions } = useQuery({
+    queryKey: ['course-suggestions', courseId],
+    queryFn: async () => {
+      const res = await fetch(`${API_BASE_URL}/courses/${courseId}/suggestions?limit=8`);
+      if (!res.ok) throw new Error('Öneriler alınamadı');
+      return res.json();
+    },
+    enabled: !!courseId,
+    staleTime: 5 * 60 * 1000,
+  });
 
   // Fetch course reviews
   const { data: reviewsData } = useQuery({
@@ -366,8 +410,6 @@ export const CourseDetailPage = () => {
 
       {/* 2. Modern Split Hero Section */}
       <div className="bg-gradient-to-b from-[#111827] to-gray-900 border-b border-gray-800 relative overflow-hidden">
-        <div className="absolute top-0 right-0 -m-32 w-[500px] h-[500px] bg-teal-900/30 rounded-full blur-[100px] pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 -m-32 w-[400px] h-[400px] bg-indigo-900/20 rounded-full blur-[100px] pointer-events-none"></div>
 
         <div className="container mx-auto px-4 py-10 lg:py-16 relative z-10">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
@@ -377,31 +419,52 @@ export const CourseDetailPage = () => {
               <div className="relative rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5 bg-gray-900 aspect-video group">
 
                 {/* Video Oynatıcı veya Poster */}
-                {isVideoPlaying && course.preview_video ? (
+                {isVideoPlaying && (previewLesson || course.preview_video) ? (
                   <>
-                    <video
-                      ref={videoRef}
-                      src={course.preview_video}
-                      className="w-full h-full object-contain bg-black"
-                      controls
-                      autoPlay
-                      playsInline
-                      poster={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
-                      onEnded={() => setIsVideoPlaying(false)}
-                      onError={(e) => {
-                        console.error('Video yükleme hatası:', e);
-                        toast.error('Video yüklenemedi');
-                        setIsVideoPlaying(false);
-                      }}
-                    />
+                    {previewLesson?.video_type === 'hls' ? (
+                      <HLSVideoPlayer
+                        key={previewLesson.lesson_id}
+                        src={previewLesson.video_url}
+                        videoType="hls"
+                        poster={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
+                        title={previewLesson.title}
+                      />
+                    ) : (
+                      <video
+                        ref={videoRef}
+                        src={previewLesson?.video_url || course.preview_video}
+                        className="w-full h-full object-contain bg-black"
+                        controls
+                        autoPlay
+                        playsInline
+                        poster={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
+                        onEnded={() => setIsVideoPlaying(false)}
+                        onError={() => {
+                          toast.error('Video yüklenemedi');
+                          setIsVideoPlaying(false);
+                        }}
+                      />
+                    )}
+
+                    {/* Oynatılan önizleme dersinin adı */}
+                    {previewLesson && (
+                      <div className="absolute top-0 inset-x-0 bg-gradient-to-b from-black/80 to-transparent px-4 pt-3 pb-8 pointer-events-none">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-brand-300">
+                          Ücretsiz önizleme
+                        </p>
+                        <p className="text-sm font-medium text-white truncate pr-10">
+                          {previewLesson.title}
+                        </p>
+                      </div>
+                    )}
+
                     {/* Video Kapat Butonu */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setIsVideoPlaying(false);
-                        if (videoRef.current) {
-                          videoRef.current.pause();
-                        }
+                        setPreviewLesson(null);
+                        videoRef.current?.pause();
                       }}
                       className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors z-10 border border-white/10"
                     >
@@ -492,7 +555,7 @@ export const CourseDetailPage = () => {
             <div className="lg:col-span-7 space-y-6 order-1 lg:order-2">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="bg-teal-500/10 text-teal-400 hover:bg-teal-500/20 border-teal-500/20 px-3 py-1 rounded-full font-semibold">
+                  <Badge variant="secondary" className="bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 border-brand-500/20 px-3 py-1 rounded-full font-semibold">
                     {course.subcategory_name || 'Geliştirme'}
                   </Badge>
                   <div className="flex items-center gap-1 text-xs font-medium text-gray-400">
@@ -507,8 +570,8 @@ export const CourseDetailPage = () => {
 
                 {course.short_description && (
                   <div className="relative mt-6 mb-6">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-teal-900/40 to-gray-800/40 rounded-2xl blur-lg opacity-80 pointer-events-none"></div>
-                    <p className="relative text-[1.15rem] lg:text-xl text-gray-300 font-medium leading-[1.6] break-words overflow-hidden border-l-4 border-teal-500 pl-5 py-1">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-brand-900/40 to-gray-800/40 rounded-2xl blur-lg opacity-80 pointer-events-none"></div>
+                    <p className="relative text-[1.15rem] lg:text-xl text-gray-300 font-medium leading-[1.6] break-words overflow-hidden border-l-4 border-brand-500 pl-5 py-1">
                       {course.short_description}
                     </p>
                   </div>
@@ -547,7 +610,7 @@ export const CourseDetailPage = () => {
                     </Avatar>
                     <div className="text-sm">
                       <div className="text-gray-400 text-[10px] uppercase font-bold tracking-wider">Eğitmen</div>
-                      <div className="font-bold text-white group-hover:text-teal-400 transition-colors">{instructorFullName}</div>
+                      <div className="font-bold text-white group-hover:text-brand-400 transition-colors">{instructorFullName}</div>
                     </div>
                   </InstructorLink>
                 </div>
@@ -593,7 +656,7 @@ export const CourseDetailPage = () => {
                     size="lg"
                     onClick={handleAddToCart}
                     disabled={addToCartMutation.isPending}
-                    className="flex-1 sm:flex-none h-12 px-8 bg-teal-600 hover:bg-teal-500 text-white rounded-xl shadow-[0_0_20px_rgba(13,148,136,0.2)] font-bold transition-all hover:-translate-y-0.5"
+                    className="flex-1 sm:flex-none h-12 px-8 bg-brand-600 hover:bg-brand-500 text-white rounded-xl shadow-[0_0_20px_rgba(13,148,136,0.2)] font-bold transition-all hover:-translate-y-0.5"
                   >
                     {addToCartMutation.isPending ? '...' : 'Sepete Ekle'}
                   </Button>
@@ -617,7 +680,7 @@ export const CourseDetailPage = () => {
                     placeholder="Kupon kodunuzu girin"
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                    className="h-10 pl-9 rounded-xl text-sm font-mono font-bold tracking-wider text-white bg-white/5 border-white/10 placeholder-gray-500 focus:border-teal-500 focus:ring-teal-500"
+                    className="h-10 pl-9 rounded-xl text-sm font-mono font-bold tracking-wider text-white bg-white/5 border-white/10 placeholder-gray-500 focus:border-brand-500 focus:ring-brand-500"
                     disabled={!!appliedCoupon}
                   />
                 </div>
@@ -633,7 +696,7 @@ export const CourseDetailPage = () => {
                 ) : (
                   <Button
                     size="sm"
-                    className="h-10 px-5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-[0_0_15px_rgba(13,148,136,0.2)]"
+                    className="h-10 px-5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold shadow-[0_0_15px_rgba(13,148,136,0.2)]"
                     disabled={!couponCode || couponLoading}
                     onClick={async () => {
                       setCouponLoading(true);
@@ -671,7 +734,7 @@ export const CourseDetailPage = () => {
                 <TabsTrigger
                   key={tab}
                   value={tab}
-                  className="h-full rounded-none border-b-[3px] border-transparent px-2 data-[state=active]:border-[#0D9488] data-[state=active]:bg-transparent data-[state=active]:text-[#0D9488] data-[state=active]:shadow-none font-bold text-slate-500 hover:text-slate-800 transition-all uppercase text-[13px] tracking-widest whitespace-nowrap"
+                  className="h-full rounded-none border-b-[3px] border-transparent px-2 data-[state=active]:border-[#175D5D] data-[state=active]:bg-transparent data-[state=active]:text-[#175D5D] data-[state=active]:shadow-none font-bold text-slate-500 hover:text-slate-800 transition-all uppercase text-[13px] tracking-widest whitespace-nowrap"
                 >
                   {{
                     'overview': 'Genel Bakış',
@@ -690,11 +753,10 @@ export const CourseDetailPage = () => {
               <TabsContent value="overview" className="space-y-16 animate-in fade-in duration-700 outline-none">
 
                 {/* What You'll Learn */}
-                <div className="bg-white rounded-[2rem] border border-slate-200/60 p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.03)] relative overflow-hidden group hover:shadow-[0_8px_40px_rgb(0,0,0,0.06)] transition-all duration-500">
-                  <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-teal-50/50 rounded-full blur-[100px] -mr-48 -mt-48 pointer-events-none transition-opacity duration-500 group-hover:opacity-100 opacity-60"></div>
+                <div className="bg-white rounded-2xl border border-slate-200/60 p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.03)] relative overflow-hidden group hover:shadow-[0_8px_40px_rgb(0,0,0,0.06)] transition-all duration-500">
 
                   <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-10 flex items-center gap-4 relative z-10">
-                    <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center border border-teal-100 shadow-sm">
+                    <div className="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center border border-brand-100 shadow-sm">
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /><path d="m9 12 2 2 4-4" /></svg>
                     </div>
                     Neler Öğreneceksiniz?
@@ -702,8 +764,8 @@ export const CourseDetailPage = () => {
                   <div className="grid md:grid-cols-2 gap-x-12 gap-y-6 relative z-10">
                     {(Array.isArray(course.what_you_learn) ? course.what_you_learn : (course.what_you_learn || "").split(';')).map((item: string, i: number) => (
                       <div key={i} className="flex gap-4 items-start group/item">
-                        <div className="mt-1 w-6 h-6 rounded-full bg-teal-50 shrink-0 flex items-center justify-center group-hover/item:bg-teal-100 transition-colors border border-teal-100 group-hover/item:scale-110 duration-300">
-                          <Check className="w-3.5 h-3.5 text-teal-600 stroke-[3]" />
+                        <div className="mt-1 w-6 h-6 rounded-full bg-brand-50 shrink-0 flex items-center justify-center group-hover/item:bg-brand-100 transition-colors border border-brand-100 group-hover/item:scale-110 duration-300">
+                          <Check className="w-3.5 h-3.5 text-brand-600 stroke-[3]" />
                         </div>
                         <span className="text-slate-700 font-medium leading-[1.7] break-words overflow-hidden text-[15px] group-hover/item:text-slate-900 transition-colors">{item}</span>
                       </div>
@@ -719,51 +781,18 @@ export const CourseDetailPage = () => {
                         <BookOpen className="w-6 h-6 text-slate-400" />
                         Kurs Hakkında
                       </h3>
-                      <div className="text-[16px] text-slate-600 leading-[1.9] break-words whitespace-pre-wrap overflow-hidden bg-white p-8 rounded-[2rem] border border-slate-200/60 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+                      <div className="text-[16px] text-slate-600 leading-[1.9] break-words whitespace-pre-wrap overflow-hidden bg-white p-8 rounded-2xl border border-slate-200/60 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
                         {course.description}
                       </div>
                     </section>
 
-                    <section className="bg-gradient-to-br from-indigo-50/50 to-white rounded-[2rem] border border-indigo-100/60 p-8 md:p-10 space-y-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] relative overflow-hidden">
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-100/50 rounded-full blur-[40px] -mr-10 -mt-10 pointer-events-none"></div>
-                      <div className="flex items-center gap-4 mb-4 relative z-10">
-                        <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center border border-indigo-200">
-                          <Users className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-2xl font-extrabold text-slate-900">Kimin İçin Uygun?</h3>
-                      </div>
-                      <ul className="space-y-4 pl-2 relative z-10">
-                        {(Array.isArray(course.target_audience) ? course.target_audience : (course.target_audience || "").split(';')).map((item: string, i: number) => (
-                          <li key={i} className="flex gap-4 items-start text-slate-700">
-                            <div className="w-2 h-2 rounded-full bg-indigo-400 mt-2 shrink-0 ring-4 ring-indigo-50" />
-                            <span className="break-words overflow-hidden leading-[1.7] text-[15px] font-medium">{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </section>
                   </div>
 
                   <div className="lg:col-span-4 space-y-8">
                     <div className="sticky top-32 space-y-8">
-                      {/* Requirements Card */}
-                      <div className="bg-white rounded-[2rem] border border-slate-200/60 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-shadow duration-300">
-                        <h3 className="text-xl font-extrabold text-slate-900 mb-6 flex items-center gap-3">
-                          <Trophy className="w-6 h-6 text-amber-500" />
-                          Gereksinimler
-                        </h3>
-                        <ul className="space-y-4">
-                          {(Array.isArray(course.requirements) ? course.requirements : (course.requirements || "").split(';')).map((item: string, i: number) => (
-                            <li key={i} className="text-[15px] text-slate-600 leading-[1.6] pl-4 border-l-[3px] border-amber-200 break-words overflow-hidden relative">
-                              <span className="absolute left-[-2.5px] top-2 w-[2px] h-2 bg-amber-400 rounded-full"></span>
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
                       {/* Course Features Card */}
-                      <div className="bg-white rounded-[2rem] border border-slate-200/60 p-1 shadow-[0_8px_30px_rgb(0,0,0,0.03)] overflow-hidden">
-                        <div className="bg-slate-50/50 rounded-[1.75rem] p-7">
+                      <div className="bg-white rounded-2xl border border-slate-200/60 p-1 shadow-[0_8px_30px_rgb(0,0,0,0.03)] overflow-hidden">
+                        <div className="bg-slate-50/50 rounded-xl p-7">
                           <h3 className="text-xl font-extrabold text-slate-900 mb-6 flex items-center gap-3">
                             <Tag className="w-5 h-5 text-slate-500" />
                             Kurs Özellikleri
@@ -774,7 +803,7 @@ export const CourseDetailPage = () => {
                               { icon: <BookOpen className="w-[18px] h-[18px]" />, label: 'Ders Sayısı', value: `${course.sections?.reduce((a: number, s: any) => a + (s.lessons?.length || 0), 0) || 0} Ders` },
                               { icon: <Download className="w-[18px] h-[18px]" />, label: 'Kaynaklar', value: `${course.downloadable_resources || 0} indirilebilir` },
                               { icon: <Globe className="w-[18px] h-[18px]" />, label: 'Dil', value: <span className="uppercase">{course.language}</span> },
-                              { icon: <Award className="w-[18px] h-[18px]" />, label: 'Sertifika', value: <span className="text-[#0D9488] font-bold">Bitirme Sertifikası</span> }
+                              { icon: <Award className="w-[18px] h-[18px]" />, label: 'Sertifika', value: <span className="text-[#175D5D] font-bold">Bitirme Sertifikası</span> }
                             ].map((feature, idx) => (
                               <div key={idx} className="flex items-center justify-between py-3.5 border-b border-slate-200/60 last:border-0 group">
                                 <span className="text-slate-500 flex items-center gap-3 text-[14px] font-medium group-hover:text-slate-700 transition-colors">
@@ -795,14 +824,14 @@ export const CourseDetailPage = () => {
 
               {/* CURRICULUM TAB */}
               <TabsContent value="curriculum" className="space-y-8 animate-in fade-in duration-700 outline-none max-w-4xl mx-auto">
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between bg-white p-8 rounded-[2rem] border border-slate-200/60 shadow-[0_2px_20px_rgb(0,0,0,0.02)] gap-4">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between bg-white p-8 rounded-2xl border border-slate-200/60 shadow-[0_2px_20px_rgb(0,0,0,0.02)] gap-4">
                   <div>
                     <h2 className="text-3xl font-extrabold text-slate-900">Müfredat</h2>
                     <p className="text-slate-500 text-[15px] mt-2 font-medium">Uzmanlık yolculuğunuzda adım adım ilerleyin.</p>
                   </div>
                   <div className="flex items-center gap-3 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-200/50">
                     <div className="text-center px-4 border-r border-slate-200 max-w-[120px]">
-                      <div className="text-xl font-black text-[#0D9488] truncate">{course.sections?.length || 0}</div>
+                      <div className="text-xl font-black text-[#175D5D] truncate">{course.sections?.length || 0}</div>
                       <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Bölüm</div>
                     </div>
                     <div className="text-center px-4 max-w-[150px]">
@@ -814,9 +843,9 @@ export const CourseDetailPage = () => {
 
                 <div className="space-y-5">
                   {course.sections?.map((section: any, idx: number) => (
-                    <div key={section.section_id} className="bg-white border border-slate-200/60 rounded-[1.5rem] overflow-hidden hover:border-slate-300 transition-colors shadow-sm group">
+                    <div key={section.section_id} className="bg-white border border-slate-200/60 rounded-xl overflow-hidden hover:border-slate-300 transition-colors shadow-sm group">
                       <div className="bg-slate-50/50 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer relative overflow-hidden">
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-transparent group-hover:bg-[#0D9488] transition-colors"></div>
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-transparent group-hover:bg-[#175D5D] transition-colors"></div>
                         <div className="flex items-center gap-5 relative z-10">
                           <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-[15px] font-black text-slate-400 shadow-sm">
                             {(idx + 1).toString().padStart(2, '0')}
@@ -829,27 +858,48 @@ export const CourseDetailPage = () => {
                       </div>
 
                       <div className="divide-y divide-slate-100">
-                        {section.lessons?.map((lesson: any, lessonIdx: number) => (
-                          <div
-                            key={lesson.lesson_id || lessonIdx}
-                            className="group/lesson flex items-center justify-between p-5 hover:bg-slate-50/80 transition-all cursor-pointer pl-6 md:pl-20 relative"
-                            onClick={() => setSelectedLesson(lesson)}
-                          >
-                            <div className="absolute left-8 top-0 bottom-0 w-px bg-slate-200 hidden md:block"></div>
+                        {section.lessons?.map((lesson: any, lessonIdx: number) => {
+                          const isPreview = Boolean(lesson.preview || lesson.is_free);
+                          const lessonId = lesson.id ?? lesson.lesson_id ?? lessonIdx;
+                          const seconds = lesson.duration || lesson.duration_seconds || lesson.duration_minutes || 0;
 
-                            <div className="flex items-center gap-5 flex-1 relative z-10">
-                              <div className="w-10 h-10 rounded-full bg-white text-slate-400 group-hover/lesson:bg-[#0D9488] group-hover/lesson:text-white flex items-center justify-center transition-all shadow-sm border border-slate-200 group-hover/lesson:border-[#0D9488]">
-                                <Play className="w-4 h-4 ml-0.5" fill="currentColor" />
+                          return (
+                            <div
+                              key={lessonId}
+                              className={cn(
+                                'group/lesson flex items-center justify-between gap-4 p-5 transition-all pl-6 md:pl-20 relative',
+                                isPreview ? 'hover:bg-brand-50/60 cursor-pointer' : 'hover:bg-slate-50/80'
+                              )}
+                              onClick={() => isPreview ? openLessonPreview(lesson) : setSelectedLesson(lesson)}
+                            >
+                              <div className="absolute left-8 top-0 bottom-0 w-px bg-slate-200 hidden md:block"></div>
+
+                              <div className="flex items-center gap-5 flex-1 min-w-0 relative z-10">
+                                <div className={cn(
+                                  'w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-sm border shrink-0',
+                                  isPreview
+                                    ? 'bg-[#175D5D] text-white border-[#175D5D]'
+                                    : 'bg-white text-slate-400 border-slate-200 group-hover/lesson:bg-[#175D5D] group-hover/lesson:text-white group-hover/lesson:border-[#175D5D]'
+                                )}>
+                                  <Play className="w-4 h-4 ml-0.5" fill="currentColor" />
+                                </div>
+                                <span className="text-[15px] text-slate-600 group-hover/lesson:text-slate-900 font-semibold transition-colors truncate">
+                                  {lesson.title}
+                                </span>
+                                {isPreview && (
+                                  <span className="shrink-0 text-[11px] font-bold uppercase tracking-wider text-[#175D5D] bg-brand-50 border border-brand-200 rounded-full px-2.5 py-1">
+                                    {previewLoading === lessonId ? 'Açılıyor' : 'Ücretsiz izle'}
+                                  </span>
+                                )}
                               </div>
-                              <span className="text-[15px] text-slate-600 group-hover/lesson:text-slate-900 font-semibold transition-colors">{lesson.title}</span>
+                              <div className="text-[13px] text-slate-400 font-medium font-mono min-w-[50px] text-right shrink-0">
+                                {seconds
+                                  ? `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`
+                                  : '00:00'}
+                              </div>
                             </div>
-                            <div className="text-[13px] text-slate-400 font-medium font-mono min-w-[50px] text-right">
-                              {lesson.duration || lesson.duration_seconds || lesson.duration_minutes ?
-                                `${Math.floor((lesson.duration || lesson.duration_seconds || lesson.duration_minutes || 0) / 60)}:${((lesson.duration || lesson.duration_seconds || lesson.duration_minutes || 0) % 60).toString().padStart(2, '0')}`
-                                : '00:00'}
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   ))}
@@ -858,9 +908,8 @@ export const CourseDetailPage = () => {
 
               {/* INSTRUCTOR TAB */}
               <TabsContent value="instructor" className="animate-in fade-in duration-700 outline-none max-w-4xl mx-auto">
-                <div className="bg-white rounded-[2.5rem] border border-slate-200/60 p-1 mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
-                  <div className="bg-slate-50/30 rounded-[2.25rem] p-8 md:p-12 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-teal-100/30 rounded-full blur-[80px] -mr-20 -mt-20 pointer-events-none"></div>
+                <div className="bg-white rounded-2xl border border-slate-200/60 p-1 mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
+                  <div className="bg-slate-50/30 rounded-xl p-8 md:p-12 relative overflow-hidden">
 
                     <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start relative z-10">
                       <div className="md:col-span-4 flex flex-col items-center">
@@ -868,7 +917,7 @@ export const CourseDetailPage = () => {
                           <InstructorLink className="block">
                             <Avatar className="w-40 h-40 md:w-48 md:h-48 border-8 border-white shadow-xl">
                               <AvatarImage src={instructorAvatar} alt={instructorFullName} className="object-cover" />
-                              <AvatarFallback className="text-6xl bg-gradient-to-br from-teal-50 to-[#0D9488]/10 text-[#0D9488] font-black">
+                              <AvatarFallback className="text-6xl bg-gradient-to-br from-brand-50 to-[#175D5D]/10 text-[#175D5D] font-black">
                                 {instructorFullName.charAt(0)}
                               </AvatarFallback>
                             </Avatar>
@@ -897,16 +946,16 @@ export const CourseDetailPage = () => {
 
                       <div className="md:col-span-8 space-y-8">
                         <div>
-                          <p className="text-[#0D9488] font-bold text-sm tracking-widest uppercase mb-2">{course.instructor_title || 'Uzman Eğitmen'}</p>
+                          <p className="text-[#175D5D] font-bold text-sm tracking-widest uppercase mb-2">{course.instructor_title || 'Uzman Eğitmen'}</p>
                           <InstructorLink className="inline-block">
-                            <h3 className="text-3xl md:text-4xl font-black text-slate-900 leading-tight hover:text-[#0D9488] transition-colors">
+                            <h3 className="text-3xl md:text-4xl font-black text-slate-900 leading-tight hover:text-[#175D5D] transition-colors">
                               {instructorFullName}
                             </h3>
                           </InstructorLink>
                           {instructorSlug && (
                             <Link
                               to={`/user/${instructorSlug}`}
-                              className="inline-flex items-center gap-1 text-sm font-semibold text-[#0D9488] hover:gap-2 transition-all mt-3"
+                              className="inline-flex items-center gap-1 text-sm font-semibold text-[#175D5D] hover:gap-2 transition-all mt-3"
                             >
                               Profili ve tüm kursları
                               <ChevronRight className="w-4 h-4" />
@@ -916,7 +965,7 @@ export const CourseDetailPage = () => {
 
                         <div>
                           <h4 className="text-lg font-extrabold text-slate-800 mb-4 flex items-center gap-2">
-                            <UserCircle className="w-5 h-5 text-[#0D9488]" />
+                            <UserCircle className="w-5 h-5 text-[#175D5D]" />
                             Eğitmen Hakkında
                           </h4>
                           <div className="prose prose-slate prose-lg text-slate-600 leading-[1.8] font-medium max-h-[400px] overflow-y-auto pr-6 custom-scrollbar">
@@ -958,7 +1007,7 @@ export const CourseDetailPage = () => {
                 {reviewsList.length > 0 ? (
                   <div className="grid md:grid-cols-2 gap-8">
                     {reviewsList.map((review: any) => (
-                      <div key={review.review_id} className="bg-white p-8 rounded-[2rem] border border-slate-200/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-slate-300 transition-all duration-300 group">
+                      <div key={review.review_id} className="bg-white p-8 rounded-2xl border border-slate-200/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-slate-300 transition-all duration-300 group">
                         <div className="flex justify-between items-start mb-6">
                           <div className="flex gap-4 items-center">
                             <Avatar className="w-12 h-12 border-2 border-white shadow-md ring-1 ring-slate-100">
@@ -985,7 +1034,7 @@ export const CourseDetailPage = () => {
                     }
                   </div>
                 ) : (
-                  <div className="text-center py-20 bg-white rounded-[3rem] border border-slate-200/60 shadow-sm">
+                  <div className="text-center py-20 bg-white rounded-2xl border border-slate-200/60 shadow-sm">
                     <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
                       <MessageSquare className="w-10 h-10 text-slate-300" strokeWidth={1.5} />
                     </div>
@@ -998,6 +1047,110 @@ export const CourseDetailPage = () => {
           </Tabs>
         </div>
       </div>
+
+      {/* Eğitmenin diğer kursları */}
+      <CourseRail
+        title={`${instructorFullName} eğitmenin diğer kursları`}
+        subtitle="Aynı eğitmenden devam edebileceğin eğitimler"
+        courses={suggestions?.instructorCourses}
+        moreHref={instructorSlug ? `/user/${instructorSlug}` : undefined}
+        moreLabel="Eğitmen profilini gör"
+      />
+
+      {/* Benzer kurslar */}
+      <CourseRail
+        title="Bu kursla ilgili diğer kurslar"
+        subtitle={course.subcategory_name
+          ? `${course.subcategory_name} alanındaki popüler eğitimler`
+          : 'Aynı alandaki popüler eğitimler'}
+        courses={suggestions?.relatedCourses}
+        moreHref={course.category_slug ? `/courses/${course.category_slug}` : '/courses'}
+        moreLabel="Tümünü gör"
+        tinted
+      />
     </div>
+  );
+};
+
+/**
+ * Kurs detay sayfasının altındaki yatay kurs şeridi.
+ *
+ * Mobilde kaydırılıyor, masaüstünde ızgaraya oturuyor. Liste boşsa hiç
+ * basılmıyor — boş bir başlık sayfayı yarım gösteriyor.
+ */
+const CourseRail: React.FC<{
+  title: string;
+  subtitle?: string;
+  courses?: any[];
+  moreHref?: string;
+  moreLabel?: string;
+  tinted?: boolean;
+}> = ({ title, subtitle, courses, moreHref, moreLabel, tinted }) => {
+  if (!courses?.length) return null;
+
+  return (
+    <section className={cn('border-t border-slate-200', tinted ? 'bg-slate-50' : 'bg-white')}>
+      <div className="container mx-auto px-4 py-14 lg:py-16">
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
+          <div>
+            <h2 className="text-[22px] lg:text-[26px] font-extrabold text-slate-900 tracking-tight">
+              {title}
+            </h2>
+            {subtitle && (
+              <p className="text-[15px] text-slate-500 mt-1.5">{subtitle}</p>
+            )}
+          </div>
+          {moreHref && (
+            <Link
+              to={moreHref}
+              className="text-sm font-semibold text-[#175D5D] hover:text-brand-800 hover:underline shrink-0"
+            >
+              {moreLabel || 'Tümünü gör'}
+            </Link>
+          )}
+        </div>
+
+        <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 snap-x md:grid md:grid-cols-2 xl:grid-cols-4 md:overflow-visible md:mx-0 md:px-0">
+          {courses.map((c: any) => (
+            <Link
+              key={c.course_id ?? c.id}
+              to={`/course/${c.slug || c.course_id || c.id}`}
+              className="group w-[280px] shrink-0 md:w-auto snap-start bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col hover:border-brand-300 hover:shadow-[0_12px_28px_-14px_rgba(13,148,136,0.35)] transition-all duration-200"
+            >
+              <div className="aspect-[16/10] bg-slate-100 overflow-hidden">
+                <img
+                  src={getCourseImageUrl(c.course_id ?? c.id, c.image)}
+                  alt={c.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
+                />
+              </div>
+              <div className="p-4 flex flex-col flex-1">
+                {c.subcategory_name && (
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-[#175D5D] mb-2 truncate">
+                    {c.subcategory_name}
+                  </p>
+                )}
+                <h3 className="text-[15px] font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-brand-800 transition-colors">
+                  {c.title}
+                </h3>
+                <p className="text-[13px] text-slate-500 mt-1 truncate">{c.instructor_name}</p>
+
+                <div className="mt-auto pt-3 flex items-center justify-between gap-2">
+                  <span className="text-[16px] font-bold text-slate-900">
+                    {Number(c.price) > 0 ? formatPrice(Number(c.price)) : 'Ücretsiz'}
+                  </span>
+                  {Number(c.review_count) > 0 && (
+                    <span className="text-xs text-slate-500">
+                      {Number(c.rating).toFixed(1)} · {c.review_count} yorum
+                    </span>
+                  )}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };

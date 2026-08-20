@@ -116,18 +116,18 @@ const NotesTab: React.FC<{ courseId: number; lessonId: number | null }> = ({ cou
                     value={draft}
                     onChange={e => setDraft(e.target.value)}
                     onKeyDown={e => { if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); if (draft.trim()) addMutation.mutate(); } }}
-                    className="bg-slate-900 border-white/10 text-slate-200 min-h-[100px] rounded-xl resize-none focus-visible:ring-indigo-500 placeholder:text-slate-600"
+                    className="bg-slate-900 border-white/10 text-slate-200 min-h-[100px] rounded-xl resize-none focus-visible:ring-brand-500 placeholder:text-slate-600"
                 />
                 <div className="flex justify-between items-center">
                     <span className="text-[10px] text-slate-600">Ctrl+Enter ile kaydet</span>
                     <Button onClick={() => addMutation.mutate()} disabled={!draft.trim() || addMutation.isPending} size="sm"
-                        className="bg-indigo-500 hover:bg-indigo-600 rounded-full px-6 text-xs font-semibold">
+                        className="bg-brand-500 hover:bg-brand-600 rounded-full px-6 text-xs font-semibold">
                         {addMutation.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Kaydet'}
                     </Button>
                 </div>
             </div>
             {isLoading ? (
-                <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 text-indigo-400 animate-spin" /></div>
+                <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 text-brand-400 animate-spin" /></div>
             ) : notes.length === 0 ? (
                 <div className="text-center py-8 text-slate-600 text-sm">Henüz not yok. İlk notunuzu ekleyin!</div>
             ) : (
@@ -140,7 +140,7 @@ const NotesTab: React.FC<{ courseId: number; lessonId: number | null }> = ({ cou
                                         className="bg-slate-900 border-white/10 text-slate-200 min-h-[80px] rounded-xl resize-none text-sm" />
                                     <div className="flex gap-2 justify-end">
                                         <button onClick={() => setEditingId(null)} className="text-[11px] text-slate-500 hover:text-slate-300">İptal</button>
-                                        <button onClick={() => updateMutation.mutate(n.note_id)} className="text-[11px] text-indigo-400 hover:text-indigo-300 font-bold">Kaydet</button>
+                                        <button onClick={() => updateMutation.mutate(n.note_id)} className="text-[11px] text-brand-400 hover:text-brand-300 font-bold">Kaydet</button>
                                     </div>
                                 </div>
                             ) : (
@@ -152,7 +152,7 @@ const NotesTab: React.FC<{ courseId: number; lessonId: number | null }> = ({ cou
                                         </span>
                                         <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-3">
                                             <button onClick={() => { setEditingId(n.note_id); setEditText(n.content); }}
-                                                className="text-[10px] text-indigo-400 hover:text-indigo-300 font-medium">Düzenle</button>
+                                                className="text-[10px] text-brand-400 hover:text-brand-300 font-medium">Düzenle</button>
                                             <button onClick={() => deleteMutation.mutate(n.note_id)}
                                                 className="text-[10px] text-rose-400 hover:text-rose-300 font-medium">Sil</button>
                                         </div>
@@ -185,7 +185,7 @@ const AnnouncementsTab: React.FC<{ courseId: number }> = ({ courseId }) => {
     const anns = data?.announcements || [];
     if (isLoading) return (
         <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
+            <Loader2 className="w-6 h-6 text-brand-400 animate-spin" />
         </div>
     );
     if (anns.length === 0) return (
@@ -196,13 +196,13 @@ const AnnouncementsTab: React.FC<{ courseId: number }> = ({ courseId }) => {
     );
     return (
         <div className="space-y-3">
-            <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2"><Megaphone className="w-5 h-5 text-indigo-400" /> Duyurular</h3>
+            <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2"><Megaphone className="w-5 h-5 text-brand-400" /> Duyurular</h3>
             {anns.map((a: any) => (
                 <div key={a.announcement_id} className="bg-slate-800/40 border border-white/5 rounded-xl overflow-hidden">
                     <button onClick={() => setExpanded(expanded === a.announcement_id ? null : a.announcement_id)}
                         className="w-full text-left p-4 flex items-center gap-3 hover:bg-slate-800/60 transition-colors">
-                        <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center shrink-0">
-                            <Megaphone className="w-4 h-4 text-indigo-400" />
+                        <div className="w-8 h-8 rounded-lg bg-brand-500/20 flex items-center justify-center shrink-0">
+                            <Megaphone className="w-4 h-4 text-brand-400" />
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="font-semibold text-slate-200 text-sm truncate">{a.title}</p>
@@ -218,6 +218,19 @@ const AnnouncementsTab: React.FC<{ courseId: number }> = ({ courseId }) => {
             ))}
         </div>
     );
+};
+
+/** Ders süresi saniye cinsinden tutuluyor; alan adı eskiden yanlış okunuyordu. */
+const lessonSeconds = (lesson: any) =>
+    Number(lesson?.duration_seconds) || Number(lesson?.duration_minutes) || 0;
+
+/** Bölümün toplam süresini "1sa 12dk" / "42dk" biçiminde verir. */
+const formatSectionDuration = (lessons: any[]) => {
+    const total = (lessons || []).reduce((sum, l) => sum + lessonSeconds(l), 0);
+    if (!total) return '—';
+    const h = Math.floor(total / 3600);
+    const m = Math.round((total % 3600) / 60);
+    return h > 0 ? `${h}sa ${m}dk` : `${m || 1}dk`;
 };
 
 const formatDuration = (seconds: number) => {
@@ -423,7 +436,7 @@ const CoursePlayer = () => {
     if (isLoading) return (
         <div className="h-screen flex items-center justify-center bg-slate-950 text-slate-100">
             <div className="flex flex-col items-center gap-4">
-                <div className="w-16 h-16 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
+                <div className="w-16 h-16 border-4 border-brand-500/30 border-t-brand-500 rounded-full animate-spin"></div>
                 <p className="font-medium tracking-wide animate-pulse">Eğitim Ortamı Hazırlanıyor...</p>
             </div>
         </div>
@@ -495,13 +508,21 @@ const CoursePlayer = () => {
                 setActiveLessonId(nextLesson.lesson_id);
                 toast('Geçiliyor:', {
                     description: nextLesson.title,
-                    icon: <MonitorPlay className="w-4 h-4 text-indigo-400" />
+                    icon: <MonitorPlay className="w-4 h-4 text-brand-400" />
                 });
             }
         }
     };
 
     const allLessons = content.structure.flatMap((s: any) => s.lessons);
+
+    // Önceki/sonraki ders — video altındaki gezinme için
+    const activeIndex = allLessons.findIndex((l: any) => l.lesson_id === activeLessonId);
+    const prevLesson = activeIndex > 0 ? allLessons[activeIndex - 1] : null;
+    const nextLesson = activeIndex >= 0 && activeIndex < allLessons.length - 1
+        ? allLessons[activeIndex + 1]
+        : null;
+
     const completedCount = allLessons.filter((l: any) => l.is_completed).length;
     const totalCount = allLessons.length;
     const progressPercent = Math.round((completedCount / (totalCount || 1)) * 100);
@@ -510,7 +531,7 @@ const CoursePlayer = () => {
     const videoType = activeLesson?.video_type || (activeLesson?.hls_manifest_path ? 'hls' : 'mp4');
 
     return (
-        <div className="flex flex-col min-h-screen bg-slate-950 text-slate-50 font-sans selection:bg-indigo-500/30">
+        <div className="flex flex-col min-h-screen bg-slate-950 text-slate-50 font-sans selection:bg-brand-500/30">
 
             {/* Minimalist Top Navigation */}
             <header className="h-16 shrink-0 flex items-center justify-between px-6 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/5 sticky top-0">
@@ -524,7 +545,7 @@ const CoursePlayer = () => {
                         <ArrowLeft className="w-4 h-4" />
                     </Button>
                     <div className="hidden md:flex flex-col">
-                        <span className="text-xs font-medium text-indigo-400 tracking-wider uppercase mb-0.5">Eğitim Ortamı</span>
+                        <span className="text-xs font-medium text-brand-400 tracking-wider uppercase mb-0.5">Eğitim Ortamı</span>
                         <h1 className="font-bold text-sm text-slate-100 line-clamp-1 max-w-[300px] lg:max-w-xl">
                             {content.course.title}
                         </h1>
@@ -544,7 +565,7 @@ const CoursePlayer = () => {
                                 <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="3" fill="transparent"
                                     strokeDasharray={14 * 2 * Math.PI}
                                     strokeDashoffset={14 * 2 * Math.PI - (progressPercent / 100) * (14 * 2 * Math.PI)}
-                                    className="text-indigo-500 transition-all duration-1000 ease-out"
+                                    className="text-brand-500 transition-all duration-1000 ease-out"
                                 />
                             </svg>
                             <span className="absolute text-[8px] font-bold">{progressPercent}%</span>
@@ -590,13 +611,13 @@ const CoursePlayer = () => {
                                         <span className="text-sm text-slate-400">Düşünceleriniz (İsteğe Bağlı)</span>
                                         <Textarea
                                             placeholder="Kurs hakkında ne düşünüyorsunuz?"
-                                            className="bg-slate-950 border-white/10 min-h-[100px] text-slate-200 resize-none focus-visible:ring-indigo-500"
+                                            className="bg-slate-950 border-white/10 min-h-[100px] text-slate-200 resize-none focus-visible:ring-brand-500"
                                             value={reviewComment}
                                             onChange={(e) => setReviewComment(e.target.value)}
                                         />
                                     </div>
                                     <Button
-                                        className="w-full bg-indigo-500 hover:bg-indigo-600 text-white mt-2"
+                                        className="w-full bg-brand-500 hover:bg-brand-600 text-white mt-2"
                                         onClick={submitReview}
                                         disabled={reviewMutation.isPending}
                                     >
@@ -621,7 +642,7 @@ const CoursePlayer = () => {
                                 size="sm"
                                 onClick={handleClaimCertificate}
                                 disabled={isClaimingCertificate}
-                                className="hidden md:flex bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-full font-medium px-5 shadow-lg shadow-indigo-500/20 border-0 disabled:opacity-50"
+                                className="hidden md:flex bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white rounded-full font-medium px-5 shadow-lg shadow-brand-500/20 border-0 disabled:opacity-50"
                             >
                                 {isClaimingCertificate ? (
                                     <Loader2 className="w-3.5 h-3.5 animate-spin mr-2" />
@@ -639,7 +660,7 @@ const CoursePlayer = () => {
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         className={cn(
                             "rounded-full w-10 h-10 transition-colors",
-                            isSidebarOpen ? "bg-indigo-500/10 text-indigo-400" : "bg-white/5 text-slate-300 hover:bg-white/10"
+                            isSidebarOpen ? "bg-brand-500/10 text-brand-400" : "bg-white/5 text-slate-300 hover:bg-white/10"
                         )}
                     >
                         <ListVideo className="w-5 h-5" />
@@ -666,16 +687,16 @@ const CoursePlayer = () => {
                                 title={activeLesson.title}
                             />
                         ) : (
-                            <div className="absolute inset-0 flex items-center justify-center flex-col gap-6 text-white bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 border border-white/5 rounded-3xl">
+                            <div className="absolute inset-0 flex items-center justify-center flex-col gap-6 text-white bg-gradient-to-br from-slate-900 via-brand-950 to-slate-900 border border-white/5 rounded-3xl">
                                 <div className="relative">
-                                    <div className="w-24 h-24 rounded-full bg-indigo-500/20 flex items-center justify-center animate-pulse"></div>
-                                    <MonitorPlay className="w-10 h-10 text-indigo-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                                    <div className="w-24 h-24 rounded-full bg-brand-500/20 flex items-center justify-center animate-pulse"></div>
+                                    <MonitorPlay className="w-10 h-10 text-brand-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
                                 </div>
                                 <div className="text-center space-y-2">
                                     <p className="font-semibold text-xl text-slate-100">
                                         {activeLesson ? 'Medya Bulunamadı' : 'Derse Hazırsınız'}
                                     </p>
-                                    <p className="text-sm text-indigo-300">
+                                    <p className="text-sm text-brand-300">
                                         {!activeLesson ? 'Yan panelden bir ders seçerek başlayın' : 'Bu ders için henüz bir video eklenmemiş.'}
                                     </p>
                                 </div>
@@ -690,11 +711,11 @@ const CoursePlayer = () => {
                             <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                                 <div className="space-y-3 flex-1">
                                     <div className="flex items-center gap-3">
-                                        <Badge variant="outline" className="bg-indigo-500/10 text-indigo-400 border-indigo-500/20 px-3 py-1 rounded-full font-semibold">
+                                        <Badge variant="outline" className="bg-brand-500/10 text-brand-400 border-brand-500/20 px-3 py-1 rounded-full font-semibold">
                                             Ders {activeLesson?.sort_order || '-'}
                                         </Badge>
                                         <span className="text-sm font-medium text-slate-400 flex items-center gap-1.5">
-                                            <MonitorPlay className="w-4 h-4" /> {formatDuration(activeLesson?.duration_minutes || 0)}
+                                            <MonitorPlay className="w-4 h-4" /> {formatDuration(activeLesson?.duration_seconds || activeLesson?.duration_minutes || 0)}
                                         </span>
                                     </div>
                                     <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
@@ -721,14 +742,53 @@ const CoursePlayer = () => {
                                 </Button>
                             </div>
 
+                            {/* Ders gezinmesi — kaldığın yerden ileri geri git */}
+                            {(prevLesson || nextLesson) && (
+                                <div className="grid sm:grid-cols-2 gap-3">
+                                    {prevLesson ? (
+                                        <button
+                                            onClick={() => setActiveLessonId(prevLesson.lesson_id)}
+                                            className="group flex items-center gap-3 p-4 rounded-2xl bg-slate-900/40 border border-white/5 hover:border-brand-500/30 hover:bg-slate-900/70 transition-colors text-left"
+                                        >
+                                            <ArrowLeft className="w-4 h-4 text-slate-500 group-hover:text-brand-400 shrink-0 transition-colors" />
+                                            <div className="min-w-0">
+                                                <p className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">
+                                                    Önceki ders
+                                                </p>
+                                                <p className="text-sm text-slate-300 truncate group-hover:text-white transition-colors">
+                                                    {prevLesson.title}
+                                                </p>
+                                            </div>
+                                        </button>
+                                    ) : <div className="hidden sm:block" />}
+
+                                    {nextLesson && (
+                                        <button
+                                            onClick={() => setActiveLessonId(nextLesson.lesson_id)}
+                                            className="group flex items-center justify-end gap-3 p-4 rounded-2xl bg-slate-900/40 border border-white/5 hover:border-brand-500/30 hover:bg-slate-900/70 transition-colors text-right"
+                                        >
+                                            <div className="min-w-0">
+                                                <p className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">
+                                                    Sonraki ders
+                                                </p>
+                                                <p className="text-sm text-slate-300 truncate group-hover:text-white transition-colors">
+                                                    {nextLesson.title}
+                                                </p>
+                                            </div>
+                                            <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-brand-400 shrink-0 transition-colors" />
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+
                             {/* Pill Tabs */}
                             <Tabs defaultValue="overview" className="w-full">
                                 <TabsList className="w-full justify-start h-auto p-1 bg-slate-900/50 backdrop-blur-sm border border-white/5 rounded-2xl mb-6 inline-flex overflow-x-auto no-scrollbar">
-                                    <TabsTrigger value="overview" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-indigo-500 data-[state=active]:text-white transition-all">Genel Bakış</TabsTrigger>
-                                    <TabsTrigger value="qa" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-indigo-500 data-[state=active]:text-white transition-all">Soru & Cevap</TabsTrigger>
-                                    <TabsTrigger value="notes" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-indigo-500 data-[state=active]:text-white transition-all">Notlar</TabsTrigger>
-                                    <TabsTrigger value="resources" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-indigo-500 data-[state=active]:text-white transition-all">Kaynaklar</TabsTrigger>
-                                    <TabsTrigger value="announcements" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-indigo-500 data-[state=active]:text-white transition-all">Duyurular</TabsTrigger>
+                                    <TabsTrigger value="overview" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Genel Bakış</TabsTrigger>
+                                    <TabsTrigger value="qa" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Soru & Cevap</TabsTrigger>
+                                    <TabsTrigger value="notes" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Notlar</TabsTrigger>
+                                    <TabsTrigger value="resources" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Kaynaklar</TabsTrigger>
+                                    <TabsTrigger value="announcements" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Duyurular</TabsTrigger>
                                 </TabsList>
 
                                 <div className="bg-slate-900/40 border border-white/5 rounded-3xl p-6 md:p-8 backdrop-blur-md">
@@ -759,7 +819,7 @@ const CoursePlayer = () => {
                                                     </div>
                                                     <Button
                                                         onClick={() => setShowQuestionForm(true)}
-                                                        className="bg-indigo-500 hover:bg-indigo-600 rounded-full px-6 text-sm font-medium"
+                                                        className="bg-brand-500 hover:bg-brand-600 rounded-full px-6 text-sm font-medium"
                                                     >
                                                         <HelpCircle className="w-4 h-4 mr-2" /> Soru Sor
                                                     </Button>
@@ -776,20 +836,20 @@ const CoursePlayer = () => {
                                                         placeholder="Sorunuzun başlığı"
                                                         value={questionTitle}
                                                         onChange={(e) => setQuestionTitle(e.target.value)}
-                                                        className="bg-slate-900 border-white/10 text-slate-200 h-11 rounded-xl focus-visible:ring-indigo-500"
+                                                        className="bg-slate-900 border-white/10 text-slate-200 h-11 rounded-xl focus-visible:ring-brand-500"
                                                     />
                                                     <Textarea
                                                         placeholder="Sorunuzu detaylı açıklayın..."
                                                         value={questionContent}
                                                         onChange={(e) => setQuestionContent(e.target.value)}
-                                                        className="bg-slate-900 border-white/10 min-h-[100px] text-slate-200 rounded-xl resize-none focus-visible:ring-indigo-500"
+                                                        className="bg-slate-900 border-white/10 min-h-[100px] text-slate-200 rounded-xl resize-none focus-visible:ring-brand-500"
                                                     />
                                                     <div className="flex justify-end gap-3">
                                                         <Button variant="ghost" onClick={() => setShowQuestionForm(false)} className="text-slate-400 rounded-full">İptal</Button>
                                                         <Button
                                                             onClick={() => askQuestionMutation.mutate()}
                                                             disabled={!questionTitle || !questionContent || askQuestionMutation.isPending}
-                                                            className="bg-indigo-500 hover:bg-indigo-600 rounded-full px-6"
+                                                            className="bg-brand-500 hover:bg-brand-600 rounded-full px-6"
                                                         >
                                                             {askQuestionMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
                                                             Gönder
@@ -805,8 +865,8 @@ const CoursePlayer = () => {
                                                         <div key={q.question_id} className="bg-slate-800/30 rounded-2xl p-5 border border-white/5 space-y-4">
                                                             {/* Soru Başlığı */}
                                                             <div className="flex items-start gap-3">
-                                                                <div className="w-9 h-9 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0 mt-0.5">
-                                                                    <User className="w-4 h-4 text-indigo-400" />
+                                                                <div className="w-9 h-9 rounded-full bg-brand-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                                                                    <User className="w-4 h-4 text-brand-400" />
                                                                 </div>
                                                                 <div className="flex-1 min-w-0">
                                                                     <div className="flex items-center gap-2 mb-1">
@@ -828,11 +888,11 @@ const CoursePlayer = () => {
                                                             {q.answers?.length > 0 && (
                                                                 <div className="ml-6 pl-6 border-l-2 border-white/5 space-y-3">
                                                                     {q.answers.map((a: any) => (
-                                                                        <div key={a.answer_id} className={cn("p-3 rounded-xl", a.is_instructor_answer ? "bg-indigo-500/10 border border-indigo-500/20" : "bg-slate-900/50")}>
+                                                                        <div key={a.answer_id} className={cn("p-3 rounded-xl", a.is_instructor_answer ? "bg-brand-500/10 border border-brand-500/20" : "bg-slate-900/50")}>
                                                                             <div className="flex items-center gap-2 mb-1">
                                                                                 <span className="text-sm font-bold text-slate-200">{a.first_name} {a.last_name}</span>
                                                                                 {a.is_instructor_answer && (
-                                                                                    <Badge className="bg-indigo-500/20 text-indigo-300 border-none text-[10px] px-2">
+                                                                                    <Badge className="bg-brand-500/20 text-brand-300 border-none text-[10px] px-2">
                                                                                         <BadgeCheck className="w-3 h-3 mr-1" /> Eğitmen
                                                                                     </Badge>
                                                                                 )}
@@ -846,7 +906,7 @@ const CoursePlayer = () => {
 
                                                             {/* Cevap Yaz */}
                                                             {activeQuestionId === q.question_id ? (
-                                                                <div className="ml-6 pl-6 border-l-2 border-indigo-500/30">
+                                                                <div className="ml-6 pl-6 border-l-2 border-brand-500/30">
                                                                     <div className="flex gap-2">
                                                                         <Textarea
                                                                             placeholder="Cevabınızı yazın..."
@@ -861,7 +921,7 @@ const CoursePlayer = () => {
                                                                             size="sm"
                                                                             onClick={() => answerMutation.mutate(q.question_id)}
                                                                             disabled={!answerContent || answerMutation.isPending}
-                                                                            className="bg-indigo-500 hover:bg-indigo-600 rounded-full px-4 text-xs"
+                                                                            className="bg-brand-500 hover:bg-brand-600 rounded-full px-4 text-xs"
                                                                         >
                                                                             {answerMutation.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Gönder'}
                                                                         </Button>
@@ -870,7 +930,7 @@ const CoursePlayer = () => {
                                                             ) : (
                                                                 <button
                                                                     onClick={() => setActiveQuestionId(q.question_id)}
-                                                                    className="text-xs text-indigo-400 hover:text-indigo-300 font-medium ml-12 flex items-center gap-1"
+                                                                    className="text-xs text-brand-400 hover:text-brand-300 font-medium ml-12 flex items-center gap-1"
                                                                 >
                                                                     <MessageSquare className="w-3 h-3" /> Cevap Yaz
                                                                 </button>
@@ -882,7 +942,7 @@ const CoursePlayer = () => {
                                                 !showQuestionForm && (
                                                     <div className="text-center py-12">
                                                         <div className="w-14 h-14 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4 border border-white/5">
-                                                            <MessageSquare className="w-7 h-7 text-indigo-400/50" />
+                                                            <MessageSquare className="w-7 h-7 text-brand-400/50" />
                                                         </div>
                                                         <p className="text-slate-500 text-sm">Henüz soru sorulmamış. İlk soruyu siz sorun!</p>
                                                     </div>
@@ -913,19 +973,19 @@ const CoursePlayer = () => {
                                                             download={r.name || true}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="flex items-center gap-4 p-4 bg-slate-800/30 hover:bg-slate-800/60 rounded-xl border border-white/5 hover:border-indigo-500/20 transition-all group"
+                                                            className="flex items-center gap-4 p-4 bg-slate-800/30 hover:bg-slate-800/60 rounded-xl border border-white/5 hover:border-brand-500/20 transition-all group"
                                                         >
-                                                            <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-xl border border-white/5 group-hover:border-indigo-500/30">
+                                                            <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-xl border border-white/5 group-hover:border-brand-500/30">
                                                                 {icon}
                                                             </div>
                                                             <div className="flex-1 min-w-0">
-                                                                <p className="text-sm font-bold text-slate-200 truncate group-hover:text-indigo-300 transition-colors">{r.name}</p>
+                                                                <p className="text-sm font-bold text-slate-200 truncate group-hover:text-brand-300 transition-colors">{r.name}</p>
                                                                 <div className="flex items-center gap-3 mt-1">
                                                                     <span className="text-xs text-slate-500 uppercase font-medium">{ext}</span>
                                                                     <span className="text-xs text-slate-600">{sizeMB}</span>
                                                                 </div>
                                                             </div>
-                                                            <Download className="w-5 h-5 text-slate-500 group-hover:text-indigo-400 transition-colors" />
+                                                            <Download className="w-5 h-5 text-slate-500 group-hover:text-brand-400 transition-colors" />
                                                         </a>
                                                     );
                                                 })}
@@ -961,7 +1021,7 @@ const CoursePlayer = () => {
                     <div className="p-6 shrink-0 border-b border-white/5 bg-gradient-to-b from-slate-800/50 to-transparent">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="font-bold text-lg text-slate-100 flex items-center gap-2">
-                                <GraduationCap className="w-5 h-5 text-indigo-400" />
+                                <GraduationCap className="w-5 h-5 text-brand-400" />
                                 İçerik
                             </h3>
                             <Button variant="ghost" size="icon" className="lg:hidden w-8 h-8 rounded-full bg-white/5 text-slate-400 hover:text-white" onClick={() => setIsSidebarOpen(false)}>
@@ -973,9 +1033,9 @@ const CoursePlayer = () => {
                         <div className="space-y-2">
                             <div className="flex justify-between text-xs font-medium text-slate-400">
                                 <span>Toplam İlerleme</span>
-                                <span className="text-indigo-400">{progressPercent}%</span>
+                                <span className="text-brand-400">{progressPercent}%</span>
                             </div>
-                            <Progress value={progressPercent} className="h-2 bg-slate-800 [&>div]:bg-indigo-500" />
+                            <Progress value={progressPercent} className="h-2 bg-slate-800 [&>div]:bg-brand-500" />
                         </div>
                     </div>
 
@@ -986,17 +1046,21 @@ const CoursePlayer = () => {
                                     <AccordionTrigger className="hover:no-underline px-5 py-4 hover:bg-slate-800/50 transition-colors group">
                                         <div className="flex flex-col items-start gap-1">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <Badge variant="secondary" className="bg-indigo-500/10 text-indigo-300 border-none px-2 py-0 text-[9px] uppercase tracking-widest rounded-full">
+                                                <Badge variant="secondary" className="bg-brand-500/10 text-brand-300 border-none px-2 py-0 text-[9px] uppercase tracking-widest rounded-full">
                                                     Bölüm {idx + 1}
                                                 </Badge>
                                             </div>
-                                            <span className="text-[15px] font-semibold text-slate-200 text-left group-data-[state=open]:text-indigo-300 transition-colors leading-tight">
+                                            <span className="text-[15px] font-semibold text-slate-200 text-left group-data-[state=open]:text-brand-300 transition-colors leading-tight">
                                                 {section.title}
                                             </span>
                                             <div className="flex items-center gap-1.5 mt-1 text-xs text-slate-500 font-medium">
-                                                <span>{section.lessons.length} Ders</span>
+                                                <span>{section.lessons.length} ders</span>
                                                 <span className="w-1 h-1 rounded-full bg-slate-700"></span>
-                                                <span className="text-emerald-400/80">{section.lessons.filter((l: any) => l.is_completed).length} Biten</span>
+                                                <span>{formatSectionDuration(section.lessons)}</span>
+                                                <span className="w-1 h-1 rounded-full bg-slate-700"></span>
+                                                <span className="text-emerald-400/80">
+                                                    {section.lessons.filter((l: any) => l.is_completed).length} biten
+                                                </span>
                                             </div>
                                         </div>
                                     </AccordionTrigger>
@@ -1012,17 +1076,17 @@ const CoursePlayer = () => {
                                                         className={cn(
                                                             "flex gap-3 p-3 rounded-xl transition-all text-left relative group overflow-hidden",
                                                             isActive
-                                                                ? "bg-indigo-500/10 border border-indigo-500/20 shadow-inner"
+                                                                ? "bg-brand-500/10 border border-brand-500/20 shadow-inner"
                                                                 : "hover:bg-slate-800/50 border border-transparent"
                                                         )}
                                                     >
-                                                        {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 rounded-l-xl"></div>}
+                                                        {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-500 rounded-l-xl"></div>}
 
-                                                        <div className="mt-0.5 shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-slate-900 border border-white/5 group-hover:border-indigo-500/30 transition-colors">
+                                                        <div className="mt-0.5 shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-slate-900 border border-white/5 group-hover:border-brand-500/30 transition-colors">
                                                             {lesson.is_completed ? (
                                                                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                                                             ) : isActive ? (
-                                                                <Play className="w-3 h-3 text-indigo-400 fill-indigo-400" />
+                                                                <Play className="w-3 h-3 text-brand-400 fill-brand-400" />
                                                             ) : (
                                                                 <span className="text-[10px] text-slate-500 font-bold">{lessonIdx + 1}</span>
                                                             )}
@@ -1031,7 +1095,7 @@ const CoursePlayer = () => {
                                                         <div className="flex-1 min-w-0">
                                                             <p className={cn(
                                                                 "text-sm font-medium leading-tight mb-1",
-                                                                isActive ? "text-indigo-300" : "text-slate-300 group-hover:text-slate-100"
+                                                                isActive ? "text-brand-300" : "text-slate-300 group-hover:text-slate-100"
                                                             )}>
                                                                 {lesson.title}
                                                             </p>
@@ -1041,7 +1105,7 @@ const CoursePlayer = () => {
                                                                 ) : (
                                                                     <FileText className="w-3 h-3 text-slate-500" />
                                                                 )}
-                                                                <span className="text-xs text-slate-500">{formatDuration(lesson.duration_minutes || 0)}</span>
+                                                                <span className="text-xs text-slate-500">{formatDuration(lesson.duration_seconds || lesson.duration_minutes || 0)}</span>
                                                                 {lesson.video_type === 'hls' && (
                                                                     <span className="text-[8px] px-1.5 rounded-sm bg-slate-800 text-slate-400 font-bold tracking-wider">HD</span>
                                                                 )}
