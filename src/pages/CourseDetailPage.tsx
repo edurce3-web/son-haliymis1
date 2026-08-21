@@ -725,12 +725,12 @@ export const CourseDetailPage = () => {
 
 
       {/* Eylem şeridi — fiyat, butonlar ve kupon tek satırda */}
-      <section ref={actionBarRef} className="bg-white border-b border-slate-200">
+      <section ref={actionBarRef} className="bg-gradient-to-b from-brand-50/60 to-white border-y border-slate-200">
         <div className="container mx-auto px-4 max-w-6xl py-6">
           <div className="flex flex-col lg:flex-row lg:items-center gap-6">
             <div className="lg:w-56 shrink-0">
               <div className="flex items-baseline gap-3 flex-wrap">
-                <span className="text-[30px] font-bold text-slate-900 tracking-tight leading-none">
+                <span className="font-montserrat text-[32px] font-extrabold text-slate-900 tracking-[-0.03em] leading-none">
                   {appliedCoupon
                     ? formatPrice(appliedCoupon.discount_price)
                     : Number(course.price) > 0 ? formatPrice(Number(course.price)) : 'Ücretsiz'}
@@ -826,10 +826,10 @@ export const CourseDetailPage = () => {
               { label: 'Sertifika', value: 'Var' },
             ].map(item => (
               <div key={item.label} className="py-5 sm:px-6 first:sm:pl-0 last:sm:pr-0">
-                <dt className="text-[12px] uppercase tracking-wider text-slate-400 font-semibold">
+                <dt className="font-montserrat text-[10px] uppercase tracking-[0.14em] text-slate-400 font-extrabold">
                   {item.label}
                 </dt>
-                <dd className="text-[16px] font-semibold text-slate-900 mt-1.5">{item.value}</dd>
+                <dd className="text-[17px] font-semibold text-slate-900 mt-2">{item.value}</dd>
               </div>
             ))}
           </dl>
@@ -886,9 +886,10 @@ export const CourseDetailPage = () => {
 
                 {/* Neler öğreneceksiniz */}
                 <div className="bg-white rounded-xl border border-slate-200 p-7 md:p-8">
-                  <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em] mb-6">
+                  <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em]">
                     Neler öğreneceksiniz
                   </h2>
+                  <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-3 mb-6" />
                   <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
                     {(Array.isArray(course.what_you_learn) ? course.what_you_learn : (course.what_you_learn || "").split(';'))
                       .filter((item: string) => item && item.trim())
@@ -903,7 +904,8 @@ export const CourseDetailPage = () => {
 
                 {/* Kurs açıklaması */}
                 <section>
-                  <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em] mb-4">Kurs hakkında</h2>
+                  <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em]">Kurs hakkında</h2>
+                  <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-3 mb-6" />
                   <div className="text-[16px] text-slate-600 leading-[1.85] break-words whitespace-pre-wrap">
                     {course.description}
                   </div>
@@ -912,19 +914,22 @@ export const CourseDetailPage = () => {
 
               {/* CURRICULUM TAB */}
               <section id="mufredat" className="scroll-mt-24 space-y-6 pt-16 mt-16 border-t border-slate-200">
-                <div className="flex flex-wrap items-baseline justify-between gap-3">
-                  <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em]">Müfredat</h2>
-                  <p className="text-[14px] text-slate-500">
-                    {course.sections?.length || 0} bölüm · {totalLessons} ders · {totalDurationLabel}
-                  </p>
+                <div>
+                  <div className="flex flex-wrap items-baseline justify-between gap-3">
+                    <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em]">Müfredat</h2>
+                    <p className="text-[14px] text-slate-500">
+                      {course.sections?.length || 0} bölüm · {totalLessons} ders · {totalDurationLabel}
+                    </p>
+                  </div>
+                  <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-3" />
                 </div>
 
                 <div className="space-y-3">
                   {course.sections?.map((section: any, idx: number) => (
-                    <div key={section.id ?? section.section_id ?? idx} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
-                      <div className="bg-slate-50 px-5 py-4 flex items-center justify-between gap-4 border-b border-slate-200">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span className="text-[13px] font-semibold text-slate-400 tabular-nums shrink-0">
+                    <div key={section.id ?? section.section_id ?? idx} className="bg-white border border-slate-200 rounded-xl overflow-hidden transition-colors hover:border-brand-200">
+                      <div className="bg-slate-50/70 px-5 py-4 flex items-center justify-between gap-4 border-b border-slate-200">
+                        <div className="flex items-center gap-3.5 min-w-0">
+                          <span className="font-montserrat text-[12px] font-extrabold text-brand-700 tabular-nums shrink-0">
                             {(idx + 1).toString().padStart(2, '0')}
                           </span>
                           <span className="text-[15px] font-semibold text-slate-900 leading-snug truncate">
@@ -982,140 +987,141 @@ export const CourseDetailPage = () => {
                 </div>
               </section>
 
-              {/* INSTRUCTOR TAB */}
               <section id="egitmen" className="scroll-mt-24 pt-16 mt-16 border-t border-slate-200">
-                <div className="bg-white rounded-2xl border border-slate-200/60 p-1 mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
-                  <div className="bg-slate-50/30 rounded-xl p-8 md:p-12 relative overflow-hidden">
+                <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em]">
+                  Eğitmen
+                </h2>
+                <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-3 mb-8" />
 
-                    <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start relative z-10">
-                      <div className="md:col-span-4 flex flex-col items-center">
-                        <div className="relative">
-                          <InstructorLink className="block">
-                            <Avatar className="w-40 h-40 md:w-48 md:h-48 border-8 border-white shadow-xl">
-                              <AvatarImage src={instructorAvatar} alt={instructorFullName} className="object-cover" />
-                              <AvatarFallback className="text-6xl bg-gradient-to-br from-brand-50 to-[#175D5D]/10 text-[#175D5D] font-bold">
-                                {instructorFullName.charAt(0)}
-                              </AvatarFallback>
-                            </Avatar>
-                          </InstructorLink>
-                          <div className="absolute -bottom-4 -right-4 bg-white p-2 rounded-2xl shadow-lg border border-slate-100">
-                            <div className="bg-amber-50 text-amber-600 font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-sm">
-                              <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
-                              {Number(course.instructor_avg_rating || course.rating || 0).toFixed(1)}
-                            </div>
-                          </div>
-                        </div>
+                <div className="flex flex-col sm:flex-row gap-6">
+                  <InstructorLink className="shrink-0">
+                    <Avatar className="w-24 h-24 ring-1 ring-slate-200">
+                      <AvatarImage src={instructorAvatar} alt={instructorFullName} className="object-cover" />
+                      <AvatarFallback className="text-3xl bg-slate-100 text-slate-500 font-semibold">
+                        {instructorFullName.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </InstructorLink>
 
-                        <div className="text-center mt-8 w-full space-y-3">
-                          <div className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm flex justify-between items-center text-center">
-                            <div className="flex-1 border-r border-slate-100 last:border-0 px-2">
-                              <div className="text-2xl font-bold text-slate-800">{(course.instructor_total_students || course.instructor_students || 0).toLocaleString()}</div>
-                              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Öğrenci</div>
-                            </div>
-                            <div className="flex-1 px-2">
-                              <div className="text-2xl font-bold text-slate-800">{course.instructor_course_count || course.instructor_courses || '1'}</div>
-                              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Kurs</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                  <div className="min-w-0 flex-1">
+                    <InstructorLink className="inline-block group">
+                      <h3 className="text-[20px] font-bold text-slate-900 group-hover:text-brand-800 transition-colors">
+                        {instructorFullName}
+                      </h3>
+                    </InstructorLink>
+                    <p className="text-[14px] text-slate-500 mt-0.5">
+                      {course.instructor_title || 'Eğitmen'}
+                    </p>
 
-                      <div className="md:col-span-8 space-y-8">
-                        <div>
-                          <p className="text-[#175D5D] font-bold text-sm tracking-widest uppercase mb-2">{course.instructor_title || 'Uzman Eğitmen'}</p>
-                          <InstructorLink className="inline-block">
-                            <h3 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight hover:text-[#175D5D] transition-colors">
-                              {instructorFullName}
-                            </h3>
-                          </InstructorLink>
-                          {instructorSlug && (
-                            <Link
-                              to={`/user/${instructorSlug}`}
-                              className="inline-flex items-center gap-1 text-sm font-semibold text-[#175D5D] hover:gap-2 transition-all mt-3"
-                            >
-                              Profili ve tüm kursları
-                              <ChevronRight className="w-4 h-4" />
-                            </Link>
-                          )}
-                        </div>
-
-                        <div>
-                          <h4 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                            <UserCircle className="w-5 h-5 text-[#175D5D]" />
-                            Eğitmen Hakkında
-                          </h4>
-                          <div className="prose prose-slate prose-lg text-slate-600 leading-[1.8] font-medium max-h-[400px] overflow-y-auto pr-6 custom-scrollbar">
-                            {instructorBio}
-                          </div>
-                        </div>
-
-                        {instructorExpertiseArray.length > 0 && (
-                          <div className="pt-6 border-t border-slate-200/60">
-                            <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Uzmanlık & Yetkinlikler</h4>
-                            <div className="flex flex-wrap gap-2.5">
-                              {instructorExpertiseArray.map((exp: string, idx: number) => (
-                                <Badge key={idx} variant="secondary" className="bg-white border hover:bg-slate-50 border-slate-200 text-slate-600 py-1.5 px-4 text-[13px] font-bold rounded-xl shadow-sm">
-                                  {exp}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
+                    <div className="flex flex-wrap gap-x-8 gap-y-2 mt-4 text-[14px]">
+                      <span>
+                        <span className="font-semibold text-slate-900">
+                          {Number(course.instructor_total_students || course.instructor_students || 0).toLocaleString('tr-TR')}
+                        </span>
+                        <span className="text-slate-500"> öğrenci</span>
+                      </span>
+                      <span>
+                        <span className="font-semibold text-slate-900">
+                          {course.instructor_course_count || course.instructor_courses || 1}
+                        </span>
+                        <span className="text-slate-500"> kurs</span>
+                      </span>
+                      {Number(course.instructor_avg_rating || course.rating || 0) > 0 && (
+                        <span>
+                          <span className="font-semibold text-slate-900">
+                            {Number(course.instructor_avg_rating || course.rating || 0).toFixed(1)}
+                          </span>
+                          <span className="text-slate-500"> ortalama puan</span>
+                        </span>
+                      )}
                     </div>
+
+                    <p className="text-[15px] text-slate-600 leading-[1.8] mt-5 whitespace-pre-wrap break-words">
+                      {instructorBio}
+                    </p>
+
+                    {instructorExpertiseArray.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-5">
+                        {instructorExpertiseArray.map((exp: string, idx: number) => (
+                          <span
+                            key={idx}
+                            className="text-[13px] text-slate-600 border border-slate-200 rounded-full px-3 py-1"
+                          >
+                            {exp}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </section>
-
               {/* REVIEWS TAB */}
               <section id="degerlendirmeler" className="scroll-mt-24 pt-16 mt-16 border-t border-slate-200">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
-                  <div>
-                    <h3 className="text-3xl font-bold text-slate-900">Öğrenci Değerlendirmeleri</h3>
-                    <p className="text-slate-500 font-medium mt-2">Bu kurs hakkında öğrenciler ne düşünüyor?</p>
-                  </div>
-                  <div className="text-sm font-bold bg-amber-50 text-amber-600 px-6 py-3 rounded-2xl flex items-center gap-2 border border-amber-100 shadow-sm">
-                    <Star className="w-5 h-5 fill-current" />
-                    {reviewsCount} Değerlendirme
-                  </div>
+                <div className="flex flex-wrap items-baseline justify-between gap-3">
+                  <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em]">
+                    Değerlendirmeler
+                  </h2>
+                  {reviewsCount > 0 && (
+                    <p className="text-[14px] text-slate-500">
+                      <span className="font-semibold text-slate-900">
+                        {Number(course.rating || 0).toFixed(1)}
+                      </span>{' '}
+                      ortalama · {reviewsCount} değerlendirme
+                    </p>
+                  )}
                 </div>
+                <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-3 mb-8" />
 
                 {reviewsList.length > 0 ? (
-                  <div className="grid md:grid-cols-2 gap-8">
+                  <div className="divide-y divide-slate-200 border-y border-slate-200">
                     {reviewsList.map((review: any) => (
-                      <div key={review.review_id} className="bg-white p-8 rounded-2xl border border-slate-200/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-slate-300 transition-all duration-300 group">
-                        <div className="flex justify-between items-start mb-6">
-                          <div className="flex gap-4 items-center">
-                            <Avatar className="w-12 h-12 border-2 border-white shadow-md ring-1 ring-slate-100">
-                              <AvatarFallback className="bg-gradient-to-br from-amber-50 to-orange-50 text-amber-600 font-bold text-lg">
-                                {review.reviewer_name?.charAt(0)}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <h4 className="font-bold text-[16px] text-slate-900">{review.reviewer_name}</h4>
-                              <div className="flex gap-1 mt-1">
+                      <article key={review.review_id} className="py-6">
+                        <div className="flex items-center gap-3.5">
+                          <Avatar className="w-10 h-10 ring-1 ring-slate-200">
+                            <AvatarFallback className="bg-slate-100 text-slate-600 font-semibold text-[15px]">
+                              {review.reviewer_name?.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-semibold text-[15px] text-slate-900 truncate">
+                              {review.reviewer_name}
+                            </h4>
+                            <div className="flex items-center gap-2.5 mt-1">
+                              <span className="flex gap-0.5">
                                 {[...Array(5)].map((_, starIdx) => (
-                                  <Star key={starIdx} className={cn("w-4 h-4", starIdx < Number(review.rating || 0) ? "fill-amber-400 text-amber-400" : "text-slate-200 fill-slate-200")} />
+                                  <Star
+                                    key={starIdx}
+                                    className={cn(
+                                      'w-3.5 h-3.5',
+                                      starIdx < Number(review.rating || 0)
+                                        ? 'fill-amber-400 text-amber-400'
+                                        : 'text-slate-200 fill-slate-200'
+                                    )}
+                                  />
                                 ))}
-                              </div>
+                              </span>
+                              <span className="text-[13px] text-slate-400">
+                                {new Date(review.created_at).toLocaleDateString('tr-TR', {
+                                  day: 'numeric', month: 'long', year: 'numeric',
+                                })}
+                              </span>
                             </div>
                           </div>
-                          <span className="text-[12px] font-bold text-slate-400 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 group-hover:bg-white transition-colors">{new Date(review.created_at).toLocaleDateString('tr-TR')}</span>
                         </div>
-                        <p className="text-slate-600 text-[15px] leading-[1.8] font-medium relative z-10">
-                          "{review.comment}"
-                        </p>
-                      </div>
-                    ))
-                    }
+                        {review.comment && (
+                          <p className="text-slate-600 text-[15px] leading-[1.8] mt-4">
+                            {review.comment}
+                          </p>
+                        )}
+                      </article>
+                    ))}
                   </div>
                 ) : (
-                  <div className="text-center py-20 bg-white rounded-2xl border border-slate-200/60 shadow-sm">
-                    <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <MessageSquare className="w-10 h-10 text-slate-300" strokeWidth={1.5} />
-                    </div>
-                    <h3 className="text-2xl font-bold text-slate-900">Henüz değerlendirme yok</h3>
-                    <p className="text-slate-500 mt-2 font-medium max-w-sm mx-auto">Bu kurs için henüz bir değerlendirme yapılmamış. İlk değerlendiren siz olun!</p>
+                  <div className="border border-slate-200 rounded-xl py-14 px-6 text-center">
+                    <p className="text-[16px] font-semibold text-slate-800">Henüz değerlendirme yok</p>
+                    <p className="text-[15px] text-slate-500 mt-2 max-w-sm mx-auto leading-relaxed">
+                      Bu kursu tamamlayan ilk değerlendirmeyi siz bırakabilirsiniz.
+                    </p>
                   </div>
                 )}
               </section>
@@ -1218,8 +1224,9 @@ const CourseRail: React.FC<{
             <h2 className="font-montserrat text-[22px] lg:text-[26px] font-extrabold text-slate-900 tracking-[-0.02em]">
               {title}
             </h2>
+            <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-3" />
             {subtitle && (
-              <p className="text-[15px] text-slate-500 mt-1.5">{subtitle}</p>
+              <p className="text-[15px] text-slate-500 mt-3">{subtitle}</p>
             )}
           </div>
           {moreHref && (
@@ -1237,7 +1244,7 @@ const CourseRail: React.FC<{
             <Link
               key={c.course_id ?? c.id}
               to={`/course/${c.slug || c.course_id || c.id}`}
-              className="group w-[280px] shrink-0 md:w-auto snap-start bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col hover:border-brand-300 hover:shadow-[0_12px_28px_-14px_rgba(13,148,136,0.35)] transition-all duration-200"
+              className="group w-[280px] shrink-0 md:w-auto snap-start bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col hover:border-brand-300 hover:shadow-[0_14px_32px_-16px_rgba(23,93,93,0.4)] transition-all duration-200"
             >
               <div className="aspect-[16/10] bg-slate-100 overflow-hidden">
                 <img
