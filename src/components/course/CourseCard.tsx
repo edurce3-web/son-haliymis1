@@ -216,7 +216,7 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
           )}
         >
           {/* Card Header: Image */}
-          <Link to={courseUrl} className="relative aspect-video w-full bg-slate-100 overflow-hidden shrink-0 group">
+          <Link to={courseUrl} target="_blank" rel="noopener" className="relative aspect-video w-full bg-slate-100 overflow-hidden shrink-0 group">
             <img
               src={imgSrc}
               alt={course.title}
@@ -244,7 +244,7 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
             
             {/* Base info Always visible */}
             <div className="mb-2">
-              <Link to={courseUrl}>
+              <Link to={courseUrl} target="_blank" rel="noopener">
                 <h3 className="font-extrabold text-slate-900 text-[15px] leading-[1.3] line-clamp-2 hover:text-violet-700 transition-colors">
                   {course.title}
                 </h3>
@@ -304,7 +304,7 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
             />
 
               <div className="p-5">
-                <Link to={courseUrl}>
+                <Link to={courseUrl} target="_blank" rel="noopener">
                   <h4 className="font-extrabold text-slate-900 text-[17px] leading-snug line-clamp-2 hover:text-brand-700 transition-colors">
                     {course.title}
                   </h4>

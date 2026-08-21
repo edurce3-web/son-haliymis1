@@ -4,7 +4,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
 import { VideoPlayer } from '@/components/video/VideoPlayer';
@@ -62,15 +61,9 @@ export const CourseDetailPage = () => {
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; price_level: number; discount_price: number } | null>(null);
   const [couponLoading, setCouponLoading] = useState(false);
+  // Kupon alani varsayilan olarak kapali; cubugu kalabaliklastirmasin
+  const [showCoupon, setShowCoupon] = useState(false);
 
-  /**
-   * Eylem şeridi görünürlüğü.
-   *
-   * Şerit ekrandan çıktığında alttaki yapışkan satın alma çubuğu beliriyor.
-   * Kaydırma dinlemek yerine gözlemci kullanılıyor; her karede hesap yapmıyor.
-   */
-  const actionBarRef = useRef<HTMLElement>(null);
-  const [showStickyBar, setShowStickyBar] = useState(false);
 
   /**
    * Sayfadaki bölümler ve okunan bölüm.
@@ -134,18 +127,6 @@ export const CourseDetailPage = () => {
     });
     return () => observer.disconnect();
   }, [courseData]);
-
-  useEffect(() => {
-    const el = actionBarRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setShowStickyBar(!entry.isIntersecting && entry.boundingClientRect.top < 0),
-      { threshold: 0 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [courseId]);
 
   /**
    * Kategori adresleri.
@@ -474,7 +455,6 @@ export const CourseDetailPage = () => {
     );
   }
 
-  const currentLesson = selectedLesson || course.sections?.[0]?.lessons?.[0];
   const instructorFullName = course.instructor_name || 'Eğitmen';
   const instructorAvatar = course.instructor_avatar || course.instructor_image || '/placeholder-avatar.jpg';
   const instructorSlug: string | null = course.instructor_slug || null;
@@ -538,254 +518,247 @@ export const CourseDetailPage = () => {
   const hasAnyPreview = Boolean(course.preview_video || firstPreviewLesson);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-800 pb-24">
+    <div className="min-h-screen bg-white font-sans text-slate-800">
       {/*
-        Üst şerit: oynatıcı ortada ve geniş.
-
-        Yaygın "solda metin, sağda yapışkan satın alma kartı" düzeni yerine
-        içerik yatay katmanlar hâlinde diziliyor: önce video, sonra başlık,
-        sonra eylem şeridi. Satın alma, şerit ekrandan çıkınca alttaki
-        yapışkan çubukta görünmeye devam ediyor.
+        Sayfa tek sütun bir "künye" ile açılıyor: başlık, özet, teknik satır,
+        ardından geniş oynatıcı. Hemen altındaki satın alma çubuğu üst menünün
+        altına yapışıyor; böylece aşağı inildiğinde fiyat ve buton ekranda
+        kalıyor, ayrı bir yüzen kart ya da alt çubuk gerekmiyor.
       */}
-      <section className="bg-white border-b border-slate-200">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <nav className="flex items-center text-[13px] text-slate-500 gap-2 py-5 overflow-hidden whitespace-nowrap">
-            {categorySlug ? (
-              <Link to={`/courses/${categorySlug}`} className="hover:text-brand-800 transition-colors truncate max-w-[180px]">
-                {course.category_name}
-              </Link>
-            ) : (
-              <span className="truncate max-w-[180px]">{course.category_name || 'Kategori'}</span>
-            )}
-            {course.subcategory_name && (
-              <>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-                {categorySlug && subcategorySlug ? (
-                  <Link
-                    to={`/courses/${categorySlug}/${subcategorySlug}`}
-                    className="hover:text-brand-800 transition-colors truncate max-w-[180px]"
-                  >
-                    {course.subcategory_name}
-                  </Link>
-                ) : (
-                  <span className="truncate max-w-[180px]">{course.subcategory_name}</span>
-                )}
-              </>
-            )}
-          </nav>
-          <div className="pb-8 max-w-4xl">
-          <h1 className="text-[28px] sm:text-[34px] lg:text-[38px] font-bold text-slate-900 leading-[1.15] tracking-[-0.02em] break-words max-w-4xl">
-            {course.title}
-          </h1>
-
-          {course.short_description && (
-            <p className="text-[17px] text-slate-600 leading-[1.65] mt-4 max-w-3xl break-words">
-              {course.short_description}
-            </p>
+      <div className="container mx-auto px-4 max-w-5xl">
+        <nav className="flex items-center text-[13px] text-slate-500 gap-2 pt-5 pb-4 overflow-hidden whitespace-nowrap">
+          {categorySlug ? (
+            <Link to={`/courses/${categorySlug}`} className="hover:text-brand-800 transition-colors truncate max-w-[170px]">
+              {course.category_name}
+            </Link>
+          ) : (
+            <span className="truncate max-w-[170px]">{course.category_name || 'Kategori'}</span>
           )}
-
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-6 text-[14px] text-slate-500">
-            {Number(course.rating) > 0 && (
-              <span className="flex items-center gap-2">
-                <span className="font-bold text-slate-900 text-[15px]">
-                  {Number(course.rating).toFixed(1)}
-                </span>
-                <span className="flex gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={cn(
-                        'w-3.5 h-3.5',
-                        i < Math.round(Number(course.rating)) ? 'fill-amber-400 text-amber-400' : 'text-slate-200 fill-slate-200'
-                      )}
-                    />
-                  ))}
-                </span>
-                <span>({reviewsCount})</span>
-              </span>
-            )}
-
-            <span>
-              <span className="font-semibold text-slate-900">
-                {Number(course.student_count || 0).toLocaleString('tr-TR')}
-              </span>{' '}
-              öğrenci
-            </span>
-
-            <span>{totalLessons} ders · {totalDurationLabel}</span>
-            <span>{levelLabel}</span>
-
-            <span>
-              Son güncelleme{' '}
-              {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
-                month: 'long', year: 'numeric',
-              })}
-            </span>
-
-            <InstructorLink className="flex items-center gap-2.5 group ml-auto">
-              <Avatar className="w-8 h-8 ring-1 ring-slate-200">
-                <AvatarImage src={instructorAvatar} alt={instructorFullName} />
-                <AvatarFallback className="bg-slate-100 text-slate-600 font-semibold text-xs">
-                  {instructorFullName.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <span className="font-semibold text-slate-800 group-hover:text-brand-800 transition-colors">
-                {instructorFullName}
-              </span>
-            </InstructorLink>
-          </div>
-          </div>
-
-
-          <div className="max-w-4xl pb-10">
-            <div className="relative aspect-video bg-slate-900 rounded-xl overflow-hidden shadow-[0_24px_60px_-24px_rgba(15,23,42,0.45)] group">
-              {isVideoPlaying && (previewLesson || course.preview_video) ? (
-                <>
-                  {previewLesson?.video_type === 'hls' ? (
-                    <HLSVideoPlayer
-                      key={previewLesson.lesson_id}
-                      src={previewLesson.video_url}
-                      videoType="hls"
-                      autoPlay
-                      poster={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
-                      title={previewLesson.title}
-                    />
-                  ) : (
-                    <video
-                      ref={videoRef}
-                      src={previewLesson?.video_url || course.preview_video}
-                      className="w-full h-full object-contain bg-black"
-                      controls
-                      autoPlay
-                      playsInline
-                      onEnded={() => setIsVideoPlaying(false)}
-                      onError={() => {
-                        toast.error('Video yüklenemedi');
-                        setIsVideoPlaying(false);
-                      }}
-                    />
-                  )}
-
-                  {previewLesson && (
-                    <div className="absolute top-0 inset-x-0 bg-gradient-to-b from-black/75 to-transparent px-4 pt-3 pb-10 pointer-events-none">
-                      <p className="text-[11px] font-semibold uppercase tracking-wider text-brand-300">
-                        Ücretsiz önizleme
-                      </p>
-                      <p className="text-sm font-medium text-white truncate pr-12">{previewLesson.title}</p>
-                    </div>
-                  )}
-
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsVideoPlaying(false);
-                      setPreviewLesson(null);
-                      videoRef.current?.pause();
-                    }}
-                    className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors z-10"
-                  >
-                    <XIcon className="w-4 h-4" />
-                  </button>
-                </>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (course.preview_video) setIsVideoPlaying(true);
-                    else if (firstPreviewLesson) openLessonPreview(firstPreviewLesson);
-                  }}
-                  disabled={!hasAnyPreview}
-                  className="absolute inset-0 w-full h-full disabled:cursor-default"
+          {course.subcategory_name && (
+            <>
+              <span className="text-slate-300">/</span>
+              {categorySlug && subcategorySlug ? (
+                <Link
+                  to={`/courses/${categorySlug}/${subcategorySlug}`}
+                  className="hover:text-brand-800 transition-colors truncate max-w-[170px]"
                 >
-                  <img
-                    src={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
-                    alt={course.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-course.jpg'; }}
-                  />
-                  <span className="absolute inset-0 bg-black/40" />
-                  <span className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                    {hasAnyPreview ? (
-                      <>
-                        <span className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-xl group-hover:scale-105 transition-transform">
-                          <Play className="w-6 h-6 text-brand-800 fill-brand-800 ml-0.5" />
-                        </span>
-                        <span className="text-white text-[14px] font-semibold">Bu kursu önizle</span>
-                      </>
-                    ) : (
-                      <span className="text-white/80 text-[14px]">Bu kurs için önizleme eklenmemiş</span>
-                    )}
-                  </span>
-                </button>
+                  {course.subcategory_name}
+                </Link>
+              ) : (
+                <span className="truncate max-w-[170px]">{course.subcategory_name}</span>
               )}
-            </div>
-          </div>
+            </>
+          )}
+        </nav>
+
+        <h1 className="font-montserrat text-[27px] sm:text-[33px] font-extrabold text-slate-900 leading-[1.15] tracking-[-0.025em] break-words">
+          {course.title}
+        </h1>
+
+        {course.short_description && (
+          <p className="text-[16px] text-slate-600 leading-[1.6] mt-3 max-w-3xl break-words">
+            {course.short_description}
+          </p>
+        )}
+
+        {/* Teknik satır — tek satırda tüm ölçüler */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-4 text-[13.5px] text-slate-500">
+          {reviewsCount > 0 && (
+            <span className="flex items-center gap-1.5">
+              <span className="font-bold text-amber-600 tabular-nums">
+                {Number(course.rating || 0).toFixed(1)}
+              </span>
+              <StarRating rating={Number(course.rating || 0)} />
+              <span>({reviewsCount})</span>
+            </span>
+          )}
+          <span className="text-slate-300">·</span>
+          <span>{Number(course.student_count || 0).toLocaleString('tr-TR')} öğrenci</span>
+          <span className="text-slate-300">·</span>
+          <span>{totalLessons} ders</span>
+          <span className="text-slate-300">·</span>
+          <span>{totalDurationLabel}</span>
+          <span className="text-slate-300">·</span>
+          <span>{levelLabel}</span>
+          <span className="text-slate-300">·</span>
+          <span>{(course.language || 'tr').toUpperCase()}</span>
         </div>
-      </section>
 
+        <InstructorLink className="inline-flex items-center gap-2.5 mt-4 group">
+          <Avatar className="w-7 h-7 ring-1 ring-slate-200">
+            <AvatarImage src={instructorAvatar} alt={instructorFullName} />
+            <AvatarFallback className="bg-slate-100 text-slate-500 text-[11px] font-semibold">
+              {instructorFullName.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+          <span className="text-[14px] text-slate-500">
+            <span className="font-semibold text-slate-800 group-hover:text-brand-800 transition-colors">
+              {instructorFullName}
+            </span>
+            {' · '}
+            {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
+              month: 'long', year: 'numeric',
+            })} güncellemesi
+          </span>
+        </InstructorLink>
 
-      {/* Eylem şeridi — fiyat, butonlar ve kupon tek satırda */}
-      <section ref={actionBarRef} className="bg-gradient-to-b from-brand-50/60 to-white border-y border-slate-200">
-        <div className="container mx-auto px-4 max-w-6xl py-6">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-            <div className="lg:w-56 shrink-0">
-              <div className="flex items-baseline gap-3 flex-wrap">
-                <span className="font-montserrat text-[32px] font-extrabold text-slate-900 tracking-[-0.03em] leading-none">
+        {/* Oynatıcı */}
+        <div className="relative aspect-video bg-slate-900 rounded-lg overflow-hidden mt-6 group">
+          {isVideoPlaying && (previewLesson || course.preview_video) ? (
+            <>
+              {previewLesson?.video_type === 'hls' ? (
+                <HLSVideoPlayer
+                  key={previewLesson.lesson_id}
+                  src={previewLesson.video_url}
+                  videoType="hls"
+                  autoPlay
+                  poster={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
+                  title={previewLesson.title}
+                />
+              ) : (
+                <video
+                  ref={videoRef}
+                  src={previewLesson?.video_url || course.preview_video}
+                  className="w-full h-full object-contain bg-black"
+                  controls
+                  autoPlay
+                  playsInline
+                  onEnded={() => setIsVideoPlaying(false)}
+                  onError={() => {
+                    toast.error('Video yüklenemedi');
+                    setIsVideoPlaying(false);
+                  }}
+                />
+              )}
+
+              {previewLesson && (
+                <div className="absolute top-0 inset-x-0 bg-gradient-to-b from-black/70 to-transparent px-4 pt-2.5 pb-8 pointer-events-none">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-brand-300">
+                    Ücretsiz önizleme
+                  </p>
+                  <p className="text-[13px] font-medium text-white truncate pr-12">{previewLesson.title}</p>
+                </div>
+              )}
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsVideoPlaying(false);
+                  setPreviewLesson(null);
+                  videoRef.current?.pause();
+                }}
+                className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors z-10"
+              >
+                <XIcon className="w-4 h-4" />
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                if (course.preview_video) setIsVideoPlaying(true);
+                else if (firstPreviewLesson) openLessonPreview(firstPreviewLesson);
+              }}
+              disabled={!hasAnyPreview}
+              className="absolute inset-0 w-full h-full disabled:cursor-default"
+            >
+              <img
+                src={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
+                alt={course.title}
+                className="w-full h-full object-cover"
+                onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-course.jpg'; }}
+              />
+              <span className="absolute inset-0 bg-slate-900/40" />
+              <span className="absolute inset-0 flex flex-col items-center justify-center gap-2.5">
+                {hasAnyPreview ? (
+                  <>
+                    <span className="w-14 h-14 rounded-full bg-white flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <Play className="w-5 h-5 text-brand-800 fill-brand-800 ml-0.5" />
+                    </span>
+                    <span className="text-white text-[13px] font-semibold">Bu kursu önizle</span>
+                  </>
+                ) : (
+                  <span className="text-white/80 text-[13px]">Önizleme eklenmemiş</span>
+                )}
+              </span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/*
+        Satın alma çubuğu. Üst menü 64px, bu yüzden top-16'da yapışıyor —
+        sayfayı aşağı kaydırırken fiyat ve butonlar hep görünür kalıyor.
+      */}
+      <div className="sticky top-16 z-30 bg-white/95 backdrop-blur border-y border-slate-200 mt-6">
+        <div className="container mx-auto px-4 max-w-5xl py-3">
+          <div className="flex items-center gap-3 sm:gap-5">
+            <div className="min-w-0">
+              <div className="flex items-baseline gap-2 flex-wrap">
+                <span className="font-montserrat text-[24px] sm:text-[27px] font-extrabold text-slate-900 tracking-[-0.03em] leading-none">
                   {appliedCoupon
                     ? formatPrice(appliedCoupon.discount_price)
                     : Number(course.price) > 0 ? formatPrice(Number(course.price)) : 'Ücretsiz'}
                 </span>
-                {appliedCoupon ? (
-                  <span className="text-[16px] text-slate-400 line-through">
-                    {formatPrice(Number(course.price))}
+                {(appliedCoupon || Number(course.original_price) > Number(course.price)) && (
+                  <span className="text-[14px] text-slate-400 line-through">
+                    {formatPrice(Number(appliedCoupon ? course.price : course.original_price))}
                   </span>
-                ) : Number(course.original_price) > Number(course.price) ? (
-                  <span className="text-[16px] text-slate-400 line-through">
-                    {formatPrice(Number(course.original_price))}
-                  </span>
-                ) : null}
+                )}
               </div>
-              <p className="text-[13px] text-slate-500 mt-1.5">KDV dahil · Tek ödeme</p>
+              <p className="text-[11.5px] text-slate-400 mt-1 hidden sm:block">
+                KDV dahil · Ömür boyu erişim
+              </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-2.5 lg:flex-1">
-              <Button
-                onClick={handleAddToCart}
-                disabled={addToCartMutation.isPending}
-                className="h-12 px-8 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold"
-              >
-                {addToCartMutation.isPending ? 'Ekleniyor…' : 'Sepete ekle'}
-              </Button>
+            <div className="flex items-center gap-2 ml-auto shrink-0">
+              {!showCoupon && !appliedCoupon && (
+                <button
+                  onClick={() => setShowCoupon(true)}
+                  className="hidden sm:inline text-[13px] font-medium text-slate-500 hover:text-brand-800 transition-colors px-2"
+                >
+                  Kuponum var
+                </button>
+              )}
               <Button
                 variant="outline"
                 onClick={handleEnroll}
                 disabled={enrollMutation.isPending}
-                className="h-12 px-8 rounded-lg border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-800 text-[15px] font-semibold"
+                className="h-10 px-5 rounded-md border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-800 text-[14px] font-semibold hidden sm:inline-flex"
               >
-                Hemen satın al
+                Hemen al
+              </Button>
+              <Button
+                onClick={handleAddToCart}
+                disabled={addToCartMutation.isPending}
+                className="h-10 px-6 rounded-md bg-brand-700 hover:bg-brand-800 text-white text-[14px] font-semibold"
+              >
+                {addToCartMutation.isPending ? 'Ekleniyor…' : 'Sepete ekle'}
               </Button>
             </div>
+          </div>
 
-            <div className="flex gap-2 lg:w-72 shrink-0">
+          {(showCoupon || appliedCoupon) && (
+            <div className="flex items-center gap-2 mt-3 max-w-sm">
               <Input
                 placeholder="Kupon kodu"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                className="h-12 rounded-lg text-[14px] font-mono tracking-wider"
+                className="h-9 rounded-md text-[13px] font-mono tracking-wider"
                 disabled={!!appliedCoupon}
               />
               {appliedCoupon ? (
                 <Button
                   variant="ghost"
-                  className="h-12 px-4 rounded-lg text-rose-600 hover:text-rose-700 hover:bg-rose-50 text-[13px] font-semibold shrink-0"
-                  onClick={() => { setAppliedCoupon(null); setCouponCode(''); }}
+                  className="h-9 px-3 rounded-md text-rose-600 hover:bg-rose-50 text-[13px] font-semibold shrink-0"
+                  onClick={() => { setAppliedCoupon(null); setCouponCode(''); setShowCoupon(false); }}
                 >
                   Kaldır
                 </Button>
               ) : (
                 <Button
                   variant="outline"
-                  className="h-12 px-5 rounded-lg text-[13px] font-semibold shrink-0"
+                  className="h-9 px-4 rounded-md text-[13px] font-semibold shrink-0"
                   disabled={!couponCode || couponLoading}
                   onClick={async () => {
                     setCouponLoading(true);
@@ -809,47 +782,15 @@ export const CourseDetailPage = () => {
                 </Button>
               )}
             </div>
-          </div>
+          )}
         </div>
-      </section>
+      </div>
 
-      {/* Künye şeridi — kurs özeti yatay bantta, ayrı bir kart gerekmiyor */}
-      <section className="bg-white border-b border-slate-200">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <dl className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
-            {[
-              { label: 'Ders', value: `${totalLessons}` },
-              { label: 'Toplam süre', value: totalDurationLabel },
-              { label: 'Seviye', value: levelLabel },
-              { label: 'Dil', value: (course.language || 'tr').toUpperCase() },
-              { label: 'Erişim', value: 'Ömür boyu' },
-              { label: 'Sertifika', value: 'Var' },
-            ].map(item => (
-              <div key={item.label} className="py-5 sm:px-6 first:sm:pl-0 last:sm:pr-0">
-                <dt className="font-montserrat text-[10px] uppercase tracking-[0.14em] text-slate-400 font-extrabold">
-                  {item.label}
-                </dt>
-                <dd className="text-[17px] font-semibold text-slate-900 mt-2">{item.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-
-      {/*
-        İçerik: solda yapışkan bölüm dizini, sağda uzun sayfa.
-
-        Sekme kullanılmıyor. Sekmeler içeriği gizler ve arama motoru yalnızca
-        ilk sekmeyi görür; burada tüm bölümler tek sayfada, soldaki dizin
-        okunan bölümü işaretliyor.
-      */}
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 py-12">
-          <nav className="lg:w-56 shrink-0 order-2 lg:order-1" aria-label="Bu sayfada">
-            <div className="lg:sticky lg:top-8">
-              <p className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400 mb-4">
-                Bu sayfada
-              </p>
+      {/* Gövde: solda bölüm dizini, sağda içerik */}
+      <div className="container mx-auto px-4 max-w-5xl">
+        <div className="flex gap-10 lg:gap-14 py-10">
+          <nav className="hidden lg:block w-44 shrink-0" aria-label="Bu sayfada">
+            <div className="sticky top-36">
               <ol className="border-l border-slate-200">
                 {PAGE_SECTIONS.map(section => {
                   const active = activeSection === section.id;
@@ -865,7 +806,7 @@ export const CourseDetailPage = () => {
                       <a
                         href={`#${section.id}`}
                         className={cn(
-                          'block pl-5 pr-2 py-2 text-[14px] transition-colors',
+                          'block pl-4 pr-2 py-1.5 text-[13.5px] transition-colors',
                           active ? 'text-brand-800 font-semibold' : 'text-slate-500 hover:text-slate-900'
                         )}
                       >
@@ -878,327 +819,247 @@ export const CourseDetailPage = () => {
             </div>
           </nav>
 
-          <div className="flex-1 min-w-0 max-w-3xl order-1 lg:order-2">
-            <div>
-
-              {/* OVERVIEW TAB */}
-              <section id="genel-bakis" className="scroll-mt-24 space-y-12">
-
-                {/* Neler öğreneceksiniz */}
-                <div className="bg-white rounded-xl border border-slate-200 p-7 md:p-8">
-                  <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em]">
-                    Neler öğreneceksiniz
-                  </h2>
-                  <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-3 mb-6" />
-                  <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
-                    {(Array.isArray(course.what_you_learn) ? course.what_you_learn : (course.what_you_learn || "").split(';'))
-                      .filter((item: string) => item && item.trim())
-                      .map((item: string, i: number) => (
-                        <div key={i} className="flex gap-3 items-start">
-                          <Check className="w-4 h-4 text-brand-700 stroke-[3] mt-1 shrink-0" />
-                          <span className="text-slate-700 leading-[1.7] break-words text-[15px]">{item}</span>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-
-                {/* Kurs açıklaması */}
-                <section>
-                  <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em]">Kurs hakkında</h2>
-                  <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-3 mb-6" />
-                  <div className="text-[16px] text-slate-600 leading-[1.85] break-words whitespace-pre-wrap">
-                    {course.description}
-                  </div>
-                </section>
-              </section>
-
-              {/* CURRICULUM TAB */}
-              <section id="mufredat" className="scroll-mt-24 space-y-6 pt-16 mt-16 border-t border-slate-200">
-                <div>
-                  <div className="flex flex-wrap items-baseline justify-between gap-3">
-                    <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em]">Müfredat</h2>
-                    <p className="text-[14px] text-slate-500">
-                      {course.sections?.length || 0} bölüm · {totalLessons} ders · {totalDurationLabel}
-                    </p>
-                  </div>
-                  <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-3" />
-                </div>
-
-                <div className="space-y-3">
-                  {course.sections?.map((section: any, idx: number) => (
-                    <div key={section.id ?? section.section_id ?? idx} className="bg-white border border-slate-200 rounded-xl overflow-hidden transition-colors hover:border-brand-200">
-                      <div className="bg-slate-50/70 px-5 py-4 flex items-center justify-between gap-4 border-b border-slate-200">
-                        <div className="flex items-center gap-3.5 min-w-0">
-                          <span className="font-montserrat text-[12px] font-extrabold text-brand-700 tabular-nums shrink-0">
-                            {(idx + 1).toString().padStart(2, '0')}
-                          </span>
-                          <span className="text-[15px] font-semibold text-slate-900 leading-snug truncate">
-                            {section.title}
-                          </span>
-                        </div>
-                        <span className="text-[13px] text-slate-500 shrink-0 whitespace-nowrap">
-                          {section.lessons?.length || 0} ders
-                        </span>
-                      </div>
-
-                      <div className="divide-y divide-slate-100">
-                        {section.lessons?.map((lesson: any, lessonIdx: number) => {
-                          const isPreview = Boolean(lesson.preview || lesson.is_free);
-                          const lessonId = lesson.id ?? lesson.lesson_id ?? lessonIdx;
-                          const seconds = lesson.duration || lesson.duration_seconds || lesson.duration_minutes || 0;
-
-                          return (
-                            <div
-                              key={lessonId}
-                              className={cn(
-                                'group/lesson flex items-center justify-between gap-4 px-5 py-3.5 transition-colors',
-                                isPreview ? 'hover:bg-brand-50/60 cursor-pointer' : 'hover:bg-slate-50'
-                              )}
-                              onClick={() => isPreview ? openLessonPreview(lesson) : setSelectedLesson(lesson)}
-                            >
-                              <div className="flex items-center gap-3.5 flex-1 min-w-0">
-                                <Play
-                                  className={cn(
-                                    'w-3.5 h-3.5 shrink-0',
-                                    isPreview ? 'text-brand-700' : 'text-slate-300'
-                                  )}
-                                  fill="currentColor"
-                                />
-                                <span className="text-[15px] text-slate-700 group-hover/lesson:text-slate-900 transition-colors truncate">
-                                  {lesson.title}
-                                </span>
-                                {isPreview && (
-                                  <span className="shrink-0 text-[12px] font-semibold text-brand-800 bg-brand-50 border border-brand-200 rounded px-2 py-0.5">
-                                    {previewLoading === lessonId ? 'Açılıyor…' : 'Önizle'}
-                                  </span>
-                                )}
-                              </div>
-                              <div className="text-[13px] text-slate-400 tabular-nums min-w-[46px] text-right shrink-0">
-                                {seconds
-                                  ? `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`
-                                  : '00:00'}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
+          <div className="flex-1 min-w-0">
+            {/* ── Genel bakış ─────────────────────────────────────────── */}
+            <section id="genel-bakis" className="scroll-mt-36">
+              <SectionTitle>Neler öğreneceksiniz</SectionTitle>
+              <div className="grid sm:grid-cols-2 gap-x-8 gap-y-2.5">
+                {(Array.isArray(course.what_you_learn) ? course.what_you_learn : (course.what_you_learn || '').split(';'))
+                  .filter((item: string) => item && item.trim())
+                  .map((item: string, i: number) => (
+                    <div key={i} className="flex gap-2.5 items-start">
+                      <Check className="w-3.5 h-3.5 text-brand-700 stroke-[3] mt-1.5 shrink-0" />
+                      <span className="text-slate-700 leading-[1.65] break-words text-[14.5px]">{item}</span>
                     </div>
                   ))}
-                </div>
-              </section>
+              </div>
 
-              <section id="egitmen" className="scroll-mt-24 pt-16 mt-16 border-t border-slate-200">
-                <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em]">
-                  Eğitmen
-                </h2>
-                <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-3 mb-8" />
+              {course.description && (
+                <>
+                  <SectionTitle className="mt-10">Kurs hakkında</SectionTitle>
+                  <div className="text-[15.5px] text-slate-600 leading-[1.8] break-words whitespace-pre-wrap">
+                    {course.description}
+                  </div>
+                </>
+              )}
+            </section>
 
-                <div className="flex flex-col sm:flex-row gap-6">
-                  <InstructorLink className="shrink-0">
-                    <Avatar className="w-24 h-24 ring-1 ring-slate-200">
-                      <AvatarImage src={instructorAvatar} alt={instructorFullName} className="object-cover" />
-                      <AvatarFallback className="text-3xl bg-slate-100 text-slate-500 font-semibold">
-                        {instructorFullName.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </InstructorLink>
+            {/* ── Müfredat ────────────────────────────────────────────── */}
+            <section id="mufredat" className="scroll-mt-36 mt-12 pt-10 border-t border-slate-200">
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
+                <SectionTitle className="mb-0">Müfredat</SectionTitle>
+                <p className="text-[13.5px] text-slate-500">
+                  {course.sections?.length || 0} bölüm · {totalLessons} ders · {totalDurationLabel}
+                </p>
+              </div>
 
-                  <div className="min-w-0 flex-1">
-                    <InstructorLink className="inline-block group">
-                      <h3 className="text-[20px] font-bold text-slate-900 group-hover:text-brand-800 transition-colors">
-                        {instructorFullName}
-                      </h3>
-                    </InstructorLink>
-                    <p className="text-[14px] text-slate-500 mt-0.5">
-                      {course.instructor_title || 'Eğitmen'}
-                    </p>
-
-                    <div className="flex flex-wrap gap-x-8 gap-y-2 mt-4 text-[14px]">
-                      <span>
-                        <span className="font-semibold text-slate-900">
-                          {Number(course.instructor_total_students || course.instructor_students || 0).toLocaleString('tr-TR')}
+              <div className="mt-5 border border-slate-200 rounded-lg divide-y divide-slate-200 overflow-hidden">
+                {course.sections?.map((section: any, idx: number) => (
+                  <div key={section.id ?? section.section_id ?? idx}>
+                    <div className="bg-slate-50/80 px-4 py-2.5 flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className="font-montserrat text-[11px] font-extrabold text-brand-700 tabular-nums shrink-0">
+                          {(idx + 1).toString().padStart(2, '0')}
                         </span>
-                        <span className="text-slate-500"> öğrenci</span>
+                        <span className="text-[14.5px] font-semibold text-slate-900 leading-snug truncate">
+                          {section.title}
+                        </span>
+                      </div>
+                      <span className="text-[12.5px] text-slate-400 shrink-0 whitespace-nowrap">
+                        {section.lessons?.length || 0} ders
                       </span>
-                      <span>
-                        <span className="font-semibold text-slate-900">
-                          {course.instructor_course_count || course.instructor_courses || 1}
-                        </span>
-                        <span className="text-slate-500"> kurs</span>
-                      </span>
-                      {Number(course.instructor_avg_rating || course.rating || 0) > 0 && (
-                        <span>
-                          <span className="font-semibold text-slate-900">
-                            {Number(course.instructor_avg_rating || course.rating || 0).toFixed(1)}
-                          </span>
-                          <span className="text-slate-500"> ortalama puan</span>
-                        </span>
-                      )}
                     </div>
 
-                    <p className="text-[15px] text-slate-600 leading-[1.8] mt-5 whitespace-pre-wrap break-words">
-                      {instructorBio}
-                    </p>
+                    <div className="divide-y divide-slate-100">
+                      {section.lessons?.map((lesson: any, lessonIdx: number) => {
+                        const isPreview = Boolean(lesson.preview || lesson.is_free);
+                        const lessonId = lesson.id ?? lesson.lesson_id ?? lessonIdx;
+                        const seconds = lesson.duration || lesson.duration_seconds || lesson.duration_minutes || 0;
 
-                    {instructorExpertiseArray.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-5">
-                        {instructorExpertiseArray.map((exp: string, idx: number) => (
-                          <span
-                            key={idx}
-                            className="text-[13px] text-slate-600 border border-slate-200 rounded-full px-3 py-1"
+                        return (
+                          <div
+                            key={lessonId}
+                            onClick={() => isPreview && openLessonPreview(lesson)}
+                            className={cn(
+                              'group/lesson flex items-center justify-between gap-3 px-4 py-2.5 transition-colors',
+                              isPreview ? 'hover:bg-brand-50/50 cursor-pointer' : 'hover:bg-slate-50/60'
+                            )}
                           >
-                            {exp}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
+                              <Play
+                                className={cn('w-3 h-3 shrink-0', isPreview ? 'text-brand-700' : 'text-slate-300')}
+                                fill="currentColor"
+                              />
+                              <span className="text-[14.5px] text-slate-700 truncate">{lesson.title}</span>
+                              {isPreview && (
+                                <span className="shrink-0 text-[11.5px] font-semibold text-brand-800 bg-brand-50 border border-brand-200 rounded px-1.5 py-0.5">
+                                  {previewLoading === lessonId ? 'Açılıyor…' : 'Önizle'}
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-[12.5px] text-slate-400 tabular-nums shrink-0">
+                              {seconds
+                                ? `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`
+                                : '—'}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              </section>
-              {/* REVIEWS TAB */}
-              <section id="degerlendirmeler" className="scroll-mt-24 pt-16 mt-16 border-t border-slate-200">
-                <div className="flex flex-wrap items-baseline justify-between gap-3">
-                  <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em]">
-                    Değerlendirmeler
-                  </h2>
-                  {reviewsCount > 0 && (
-                    <p className="text-[14px] text-slate-500">
-                      <span className="font-semibold text-slate-900">
-                        {Number(course.rating || 0).toFixed(1)}
-                      </span>{' '}
-                      ortalama · {reviewsCount} değerlendirme
-                    </p>
+                ))}
+              </div>
+            </section>
+
+            {/* ── Eğitmen ─────────────────────────────────────────────── */}
+            <section id="egitmen" className="scroll-mt-36 mt-12 pt-10 border-t border-slate-200">
+              <SectionTitle>Eğitmen</SectionTitle>
+
+              <div className="flex gap-5">
+                <InstructorLink className="shrink-0">
+                  <Avatar className="w-16 h-16 ring-1 ring-slate-200">
+                    <AvatarImage src={instructorAvatar} alt={instructorFullName} className="object-cover" />
+                    <AvatarFallback className="text-xl bg-slate-100 text-slate-500 font-semibold">
+                      {instructorFullName.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                </InstructorLink>
+
+                <div className="min-w-0 flex-1">
+                  <InstructorLink className="inline-block group">
+                    <h3 className="text-[17px] font-bold text-slate-900 group-hover:text-brand-800 transition-colors">
+                      {instructorFullName}
+                    </h3>
+                  </InstructorLink>
+                  <p className="text-[13.5px] text-slate-500">
+                    {course.instructor_title || 'Eğitmen'}
+                  </p>
+
+                  <p className="text-[13.5px] text-slate-500 mt-2">
+                    {Number(course.instructor_total_students || course.instructor_students || 0).toLocaleString('tr-TR')} öğrenci
+                    {' · '}
+                    {course.instructor_course_count || course.instructor_courses || 1} kurs
+                  </p>
+
+                  <p className="text-[14.5px] text-slate-600 leading-[1.75] mt-3 whitespace-pre-wrap break-words">
+                    {instructorBio}
+                  </p>
+
+                  {instructorExpertiseArray.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                      {instructorExpertiseArray.map((exp: string, idx: number) => (
+                        <span key={idx} className="text-[12.5px] text-slate-600 border border-slate-200 rounded-full px-2.5 py-0.5">
+                          {exp}
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </div>
-                <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-3 mb-8" />
+              </div>
+            </section>
 
-                {reviewsList.length > 0 ? (
-                  <div className="divide-y divide-slate-200 border-y border-slate-200">
-                    {reviewsList.map((review: any) => (
-                      <article key={review.review_id} className="py-6">
-                        <div className="flex items-center gap-3.5">
-                          <Avatar className="w-10 h-10 ring-1 ring-slate-200">
-                            <AvatarFallback className="bg-slate-100 text-slate-600 font-semibold text-[15px]">
-                              {review.reviewer_name?.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="min-w-0 flex-1">
-                            <h4 className="font-semibold text-[15px] text-slate-900 truncate">
-                              {review.reviewer_name}
-                            </h4>
-                            <div className="flex items-center gap-2.5 mt-1">
-                              <span className="flex gap-0.5">
-                                {[...Array(5)].map((_, starIdx) => (
-                                  <Star
-                                    key={starIdx}
-                                    className={cn(
-                                      'w-3.5 h-3.5',
-                                      starIdx < Number(review.rating || 0)
-                                        ? 'fill-amber-400 text-amber-400'
-                                        : 'text-slate-200 fill-slate-200'
-                                    )}
-                                  />
-                                ))}
-                              </span>
-                              <span className="text-[13px] text-slate-400">
-                                {new Date(review.created_at).toLocaleDateString('tr-TR', {
-                                  day: 'numeric', month: 'long', year: 'numeric',
-                                })}
-                              </span>
-                            </div>
+            {/* ── Değerlendirmeler ────────────────────────────────────── */}
+            <section id="degerlendirmeler" className="scroll-mt-36 mt-12 pt-10 border-t border-slate-200">
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
+                <SectionTitle className="mb-0">Değerlendirmeler</SectionTitle>
+                {reviewsCount > 0 && (
+                  <p className="text-[13.5px] text-slate-500">
+                    <span className="font-semibold text-slate-900">{Number(course.rating || 0).toFixed(1)}</span>
+                    {' '}ortalama · {reviewsCount} değerlendirme
+                  </p>
+                )}
+              </div>
+
+              {reviewsList.length > 0 ? (
+                <div className="mt-5 divide-y divide-slate-200 border-y border-slate-200">
+                  {reviewsList.map((review: any) => (
+                    <article key={review.review_id} className="py-4">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="w-8 h-8 ring-1 ring-slate-200">
+                          <AvatarFallback className="bg-slate-100 text-slate-600 font-semibold text-[13px]">
+                            {review.reviewer_name?.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-semibold text-[14px] text-slate-900 truncate">
+                            {review.reviewer_name}
+                          </h4>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <StarRating rating={Number(review.rating || 0)} />
+                            <span className="text-[12.5px] text-slate-400">
+                              {new Date(review.created_at).toLocaleDateString('tr-TR', {
+                                day: 'numeric', month: 'long', year: 'numeric',
+                              })}
+                            </span>
                           </div>
                         </div>
-                        {review.comment && (
-                          <p className="text-slate-600 text-[15px] leading-[1.8] mt-4">
-                            {review.comment}
-                          </p>
-                        )}
-                      </article>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="border border-slate-200 rounded-xl py-14 px-6 text-center">
-                    <p className="text-[16px] font-semibold text-slate-800">Henüz değerlendirme yok</p>
-                    <p className="text-[15px] text-slate-500 mt-2 max-w-sm mx-auto leading-relaxed">
-                      Bu kursu tamamlayan ilk değerlendirmeyi siz bırakabilirsiniz.
-                    </p>
-                  </div>
-                )}
-              </section>
-            </div>
+                      </div>
+                      {review.comment && (
+                        <p className="text-slate-600 text-[14.5px] leading-[1.75] mt-2.5">
+                          {review.comment}
+                        </p>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[14.5px] text-slate-500 mt-4">
+                  Bu kurs için henüz değerlendirme yapılmamış.
+                </p>
+              )}
+            </section>
           </div>
         </div>
       </div>
 
-
       {/* Eğitmenin diğer kursları */}
       <CourseRail
         title={`${instructorFullName} eğitmenin diğer kursları`}
-        subtitle="Aynı eğitmenden devam edebileceğin eğitimler"
         courses={suggestions?.instructorCourses}
         moreHref={instructorSlug ? `/user/${instructorSlug}` : undefined}
-        moreLabel="Eğitmen profilini gör"
+        moreLabel="Eğitmen profili"
       />
 
       {/* Benzer kurslar */}
       <CourseRail
         title="Bu kursla ilgili diğer kurslar"
-        subtitle={course.subcategory_name
-          ? `${course.subcategory_name} alanındaki popüler eğitimler`
-          : 'Aynı alandaki popüler eğitimler'}
         courses={suggestions?.relatedCourses}
         moreHref={categorySlug ? `/courses/${categorySlug}` : '/courses'}
         moreLabel="Tümünü gör"
         tinted
       />
-
-      {/*
-        Yapışkan satın alma çubuğu.
-
-        Eylem şeridi ekrandan çıktığı anda beliriyor; kullanıcı müfredatı
-        okurken fiyatı ve butonu kaybetmesin diye. Şerit görünürken
-        gizleniyor, iki kez aynı şeyi göstermenin anlamı yok.
-      */}
-      <div
-        className={cn(
-          'fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur transition-transform duration-300',
-          showStickyBar ? 'translate-y-0' : 'translate-y-full'
-        )}
-      >
-        <div className="container mx-auto px-4 max-w-6xl py-3 flex items-center gap-4">
-          <div className="min-w-0 flex-1 hidden sm:block">
-            <p className="text-[14px] font-semibold text-slate-900 truncate">{course.title}</p>
-            <p className="text-[13px] text-slate-500 truncate">
-              {totalLessons} ders · {totalDurationLabel}
-            </p>
-          </div>
-
-          <span className="text-[20px] font-bold text-slate-900 whitespace-nowrap">
-            {appliedCoupon
-              ? formatPrice(appliedCoupon.discount_price)
-              : Number(course.price) > 0 ? formatPrice(Number(course.price)) : 'Ücretsiz'}
-          </span>
-
-          <Button
-            onClick={handleAddToCart}
-            disabled={addToCartMutation.isPending}
-            className="h-11 px-6 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold shrink-0"
-          >
-            Sepete ekle
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleEnroll}
-            disabled={enrollMutation.isPending}
-            className="h-11 px-6 rounded-lg border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-800 text-[15px] font-semibold shrink-0 hidden md:inline-flex"
-          >
-            Hemen satın al
-          </Button>
-        </div>
-      </div>
     </div>
   );
 };
+
+/** Bölüm başlığı — altında markanın kısa çizgisi. */
+const SectionTitle: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
+  <div className={cn('mb-5', className)}>
+    <h2 className="font-montserrat text-[19px] font-extrabold text-slate-900 tracking-[-0.02em]">
+      {children}
+    </h2>
+    <span className="block w-8 h-[3px] rounded-full bg-brand-700 mt-2" />
+  </div>
+);
+
+/** 5 üzerinden puanı yıldızla gösterir; yarım yıldız desteklenir. */
+const StarRating: React.FC<{ rating: number }> = ({ rating }) => (
+  <span className="inline-flex items-center gap-[1px]" aria-label={`${rating.toFixed(1)} / 5`}>
+    {[0, 1, 2, 3, 4].map(i => {
+      const fill = Math.max(0, Math.min(1, rating - i));
+      return (
+        <span key={i} className="relative w-3.5 h-3.5 shrink-0">
+          <Star className="absolute inset-0 w-3.5 h-3.5 text-slate-200 fill-slate-200" />
+          {fill > 0 && (
+            <span className="absolute inset-0 overflow-hidden" style={{ width: `${fill * 100}%` }}>
+              <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+            </span>
+          )}
+        </span>
+      );
+    })}
+  </span>
+);
 
 /**
  * Kurs detay sayfasının altındaki yatay kurs şeridi.
@@ -1244,7 +1105,9 @@ const CourseRail: React.FC<{
             <Link
               key={c.course_id ?? c.id}
               to={`/course/${c.slug || c.course_id || c.id}`}
-              className="group w-[280px] shrink-0 md:w-auto snap-start bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col hover:border-brand-300 hover:shadow-[0_14px_32px_-16px_rgba(23,93,93,0.4)] transition-all duration-200"
+              target="_blank"
+              rel="noopener"
+              className="group w-[250px] shrink-0 md:w-auto snap-start bg-white border border-slate-200 rounded-lg overflow-hidden flex flex-col hover:border-brand-300 transition-colors"
             >
               <div className="aspect-[16/10] bg-slate-100 overflow-hidden">
                 <img

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, Loader2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+import { Heart, Loader2, Star } from 'lucide-react';
 import { cartAPI, favoritesAPI, enrollmentAPI } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatPrice } from '@/lib/utils';
@@ -27,14 +27,6 @@ export interface CatalogCourse {
     instructor_name?: string;
     is_favorited?: boolean;
 }
-
-/** Puanı Domestika'daki gibi yüzdeye çevirir: 4.5/5 -> %90 */
-const ratingPercent = (rating?: number) => Math.round(((Number(rating) || 0) / 5) * 100);
-
-const compactCount = (n?: number) => {
-    const v = Number(n) || 0;
-    return v.toLocaleString('tr-TR');
-};
 
 interface Props {
     course: CatalogCourse;
@@ -70,6 +62,36 @@ const Highlighted: React.FC<{ text: string; term?: string }> = ({ text, term }) 
     );
 };
 
+/**
+ * Puanı yıldızla gösterir.
+ *
+ * Önceden memnuniyet yüzdesi ("%80") yazıyordu; 5 üzerinden puanı yüzdeye
+ * çevirmek kullanıcıya tanıdık gelmeyen bir sayı üretiyordu. Yarım yıldız
+ * için dolu yıldız maskeleniyor.
+ */
+const Stars: React.FC<{ rating: number }> = ({ rating }) => (
+    <span className="inline-flex items-center gap-[1px]" aria-label={`${rating.toFixed(1)} / 5`}>
+        {[0, 1, 2, 3, 4].map(i => {
+            const fill = Math.max(0, Math.min(1, rating - i));
+            return (
+                <span key={i} className="relative w-3.5 h-3.5 shrink-0">
+                    <Star className="absolute inset-0 w-3.5 h-3.5 text-slate-200 fill-slate-200" />
+                    {fill > 0 && (
+                        <span
+                            className="absolute inset-0 overflow-hidden"
+                            style={{ width: `${fill * 100}%` }}
+                        >
+                            <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                        </span>
+                    )}
+                </span>
+            );
+        })}
+    </span>
+);
+
+const compactCount = (n?: number) => (Number(n) || 0).toLocaleString('tr-TR');
+
 export const CatalogCourseCard: React.FC<Props> = ({
     course, highlight, owned = false, progress = 0, inCart: inCartProp = false,
 }) => {
@@ -86,6 +108,8 @@ export const CatalogCourseCard: React.FC<Props> = ({
     const price = Number(course.price) || 0;
     const isFree = price === 0;
     const inCart = inCartProp || addedLocally;
+    const rating = Number(course.rating) || 0;
+    const reviewCount = Number(course.review_count) || 0;
 
     const addToCart = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -102,8 +126,7 @@ export const CatalogCourseCard: React.FC<Props> = ({
 
         setAdding(true);
         try {
-            // Ücretsiz kursu sepetten geçirmenin anlamı yok; doğrudan kaydet
-            // ve derse gönder.
+            // Ücretsiz kursu sepetten geçirmenin anlamı yok; doğrudan kaydet.
             if (isFree) {
                 await enrollmentAPI.enrollInCourse(courseId);
                 queryClient.invalidateQueries({ queryKey: ['enrolled-courses'] });
@@ -115,10 +138,8 @@ export const CatalogCourseCard: React.FC<Props> = ({
             setAddedLocally(true);
             toast.success('Sepete eklendi', { description: course.title });
         } catch (err: any) {
-            // Zaten sepetteyse kullanıcıya hata gibi göstermenin anlamı yok
             const message = String(err?.message || '').toLowerCase();
             if (isFree) {
-                // Zaten kayıtlıysa hata göstermek yerine derse götür
                 if (message.includes('zaten')) navigate(`/learning/${courseId}`);
                 else toast.error('Kursa kaydolunamadı');
             } else if (message.includes('zaten')) {
@@ -150,60 +171,38 @@ export const CatalogCourseCard: React.FC<Props> = ({
         }
     };
 
-    const summary = course.short_description || course.description || '';
-
-    // Alt satırdaki bilgiler nokta ile ayrılıyor; ikon kullanılmıyor.
-    const meta = [
-        Number(course.student_count) > 0 && `${compactCount(course.student_count)} öğrenci`,
-        Number(course.review_count) > 0 && `%${ratingPercent(course.rating)} memnuniyet`,
-        Number(course.duration_hours) > 0 && `${Math.round(Number(course.duration_hours))} saat`,
-    ].filter(Boolean) as string[];
+    // Kurs bağlantıları yeni sekmede açılıyor: kullanıcı liste içindeki yerini
+    // kaybetmeden birkaç kursa bakabilsin.
+    const linkProps = { to: href, target: '_blank' as const, rel: 'noopener' };
 
     return (
-        <article className="group relative bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col transition-all duration-200 hover:border-brand-300 hover:shadow-[0_12px_28px_-14px_rgba(23,93,93,0.35)]">
-            <Link to={href} className="block relative aspect-[16/10] bg-slate-100 overflow-hidden">
+        <article className="group relative bg-white border border-slate-200 rounded-lg overflow-hidden flex transition-colors hover:border-brand-300">
+            {/* Görsel — dar ve solda, kart yüksekliğini şişirmiyor */}
+            <Link {...linkProps} className="relative w-[132px] sm:w-[168px] shrink-0 bg-slate-100 overflow-hidden">
                 {course.image && !imgFailed ? (
                     <img
                         src={course.image}
                         alt={course.title}
                         loading="lazy"
                         onError={() => setImgFailed(true)}
-                        className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500 ease-out"
+                        className="absolute inset-0 w-full h-full object-cover"
                     />
                 ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-                        <span className="text-slate-400 text-xs font-medium px-4 text-center line-clamp-2">
+                    <div className="absolute inset-0 bg-slate-100 flex items-center justify-center p-3">
+                        <span className="text-slate-400 text-[11px] font-medium text-center line-clamp-3">
                             {course.title}
                         </span>
                     </div>
                 )}
 
-                {/* Sahip olunan kurs görselin üstünde işaretleniyor */}
                 {owned && (
-                    <span className="absolute top-2.5 left-2.5 bg-brand-700 text-white text-[11px] font-semibold rounded-md px-2 py-1">
-                        Kayıtlısınız
-                    </span>
-                )}
-                {!owned && course.level && (
-                    <span className="absolute bottom-2.5 left-2.5 bg-white/95 text-slate-700 text-[11px] font-semibold rounded-md px-2 py-1">
-                        {course.level}
+                    <span className="absolute top-2 left-2 bg-brand-700 text-white text-[10px] font-semibold rounded px-1.5 py-0.5">
+                        Kayıtlı
                     </span>
                 )}
 
-                <button
-                    onClick={toggleFavorite}
-                    aria-label={favorited ? 'Favorilerden çıkar' : 'Favorilere ekle'}
-                    className={cn(
-                        'absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur flex items-center justify-center transition-opacity hover:bg-white',
-                        favorited ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 focus:opacity-100'
-                    )}
-                >
-                    <Heart className={cn('w-4 h-4', favorited ? 'fill-rose-500 text-rose-500' : 'text-slate-600')} />
-                </button>
-
-                {/* Sahip olunan kursta ilerleme çubuğu görselin altına yapışıyor */}
                 {owned && progress > 0 && (
-                    <span className="absolute inset-x-0 bottom-0 h-1 bg-black/15">
+                    <span className="absolute inset-x-0 bottom-0 h-1 bg-black/20">
                         <span
                             className="block h-full bg-brand-500"
                             style={{ width: `${Math.min(100, progress)}%` }}
@@ -212,64 +211,87 @@ export const CatalogCourseCard: React.FC<Props> = ({
                 )}
             </Link>
 
-            <div className="p-4 flex flex-col flex-1">
-                {/* Kategori — tek satır, sade */}
-                {(course.subcategory_name || course.category_name) && (
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-brand-700 mb-2">
-                        {course.subcategory_name || course.category_name}
-                    </p>
-                )}
+            <div className="flex-1 min-w-0 p-4 flex flex-col">
+                <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                        {(course.subcategory_name || course.category_name) && (
+                            <p className="text-[11px] font-semibold uppercase tracking-wide text-brand-700 truncate">
+                                {course.subcategory_name || course.category_name}
+                            </p>
+                        )}
+                        <h3 className="text-[15px] font-bold text-slate-900 leading-snug line-clamp-2 mt-1">
+                            <Link {...linkProps} className="hover:text-brand-800 transition-colors">
+                                <Highlighted text={course.title} term={highlight} />
+                            </Link>
+                        </h3>
+                    </div>
 
-                <h3 className="font-bold text-[15px] text-slate-900 leading-snug line-clamp-2 mb-1.5">
-                    <Link to={href} className="hover:text-brand-800 transition-colors">
-                        <Highlighted text={course.title} term={highlight} />
-                    </Link>
-                </h3>
+                    <button
+                        onClick={toggleFavorite}
+                        aria-label={favorited ? 'Favorilerden çıkar' : 'Favorilere ekle'}
+                        className={cn(
+                            'shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all',
+                            favorited
+                                ? 'opacity-100 text-rose-500'
+                                : 'opacity-0 group-hover:opacity-100 focus:opacity-100 text-slate-400 hover:text-rose-500'
+                        )}
+                    >
+                        <Heart className={cn('w-4 h-4', favorited && 'fill-rose-500')} />
+                    </button>
+                </div>
 
                 {course.instructor_name && (
-                    <p className="text-[13px] text-slate-500 mb-2">{course.instructor_name}</p>
+                    <p className="text-[13px] text-slate-500 truncate mt-1">{course.instructor_name}</p>
                 )}
 
-                {summary && (
-                    <p className="text-[13.5px] text-slate-600 leading-relaxed line-clamp-2 mb-3">
-                        {summary}
-                    </p>
-                )}
+                {/* Puan yıldızlarla; yüzde göstermiyoruz */}
+                <div className="flex items-center gap-2 mt-2 min-h-[18px]">
+                    {reviewCount > 0 ? (
+                        <>
+                            <span className="text-[13px] font-bold text-amber-600 tabular-nums">
+                                {rating.toFixed(1)}
+                            </span>
+                            <Stars rating={rating} />
+                            <span className="text-[12px] text-slate-400">({compactCount(reviewCount)})</span>
+                        </>
+                    ) : (
+                        <span className="text-[12px] text-slate-400">Henüz değerlendirilmemiş</span>
+                    )}
+                </div>
 
-                {meta.length > 0 && (
-                    <p className="text-xs text-slate-500 mb-3">
-                        {meta.join(' · ')}
-                    </p>
-                )}
+                <p className="text-[12px] text-slate-500 mt-1.5">
+                    {[
+                        Number(course.student_count) > 0 && `${compactCount(course.student_count)} öğrenci`,
+                        Number(course.duration_hours) > 0 && `${Math.round(Number(course.duration_hours))} saat`,
+                        course.level,
+                    ].filter(Boolean).join(' · ')}
+                </p>
 
-                {/* Fiyat ve eylem — kartın en altına yapışsın */}
-                <div className="mt-auto pt-3 border-t border-slate-100">
+                <div className="mt-auto pt-3 flex items-end justify-between gap-3">
                     {owned ? (
                         <>
-                            <p className="text-[13px] text-slate-600 mb-2.5">
+                            <span className="text-[13px] text-slate-500">
                                 {progress >= 100
-                                    ? 'Bu kursu tamamladınız'
-                                    : progress > 0
-                                        ? `%${progress} tamamlandı`
-                                        : 'Bu kurs kitaplığınızda'}
-                            </p>
+                                    ? 'Tamamlandı'
+                                    : progress > 0 ? `%${progress} tamamlandı` : 'Kitaplığında'}
+                            </span>
                             <Link
                                 to={`/learning/${courseId}`}
-                                className="w-full h-11 rounded-lg font-semibold text-sm flex items-center justify-center bg-brand-700 hover:bg-brand-800 text-white transition-colors"
+                                className="h-9 px-4 leading-9 rounded-md bg-brand-700 hover:bg-brand-800 text-white text-[13px] font-semibold transition-colors shrink-0"
                             >
-                                {progress >= 100 ? 'Kursu tekrar izle' : progress > 0 ? 'Devam et' : 'Eğitime git'}
+                                {progress > 0 ? 'Devam et' : 'Eğitime git'}
                             </Link>
                         </>
                     ) : (
                         <>
-                            <p className="text-[17px] font-bold text-slate-900 mb-2.5">
+                            <span className="text-[18px] font-bold text-slate-900 leading-none">
                                 {isFree ? 'Ücretsiz' : formatPrice(price)}
-                            </p>
+                            </span>
                             <button
                                 onClick={addToCart}
                                 disabled={adding}
                                 className={cn(
-                                    'w-full h-11 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors',
+                                    'h-9 px-4 rounded-md text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-colors shrink-0',
                                     inCart
                                         ? 'bg-white border border-brand-600 text-brand-800 hover:bg-brand-50'
                                         : 'bg-brand-700 hover:bg-brand-800 text-white',
@@ -277,14 +299,8 @@ export const CatalogCourseCard: React.FC<Props> = ({
                                 )}
                             >
                                 {adding ? (
-                                    <><Loader2 className="w-4 h-4 animate-spin" /> Ekleniyor</>
-                                ) : inCart ? (
-                                    'Sepete git'
-                                ) : isFree ? (
-                                    'Ücretsiz kaydol'
-                                ) : (
-                                    'Sepete ekle'
-                                )}
+                                    <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Ekleniyor</>
+                                ) : inCart ? 'Sepete git' : isFree ? 'Kaydol' : 'Sepete ekle'}
                             </button>
                         </>
                     )}

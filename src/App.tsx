@@ -61,6 +61,8 @@ import PaymentSettings from './pages/settings/PaymentSettings';
 import PurchaseHistorySettings from './pages/settings/PurchaseHistorySettings';
 import CloseAccountSettings from './pages/settings/CloseAccountSettings';
 
+import ScrollToTop from './components/layout/ScrollToTop';
+
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const path = location.pathname;
@@ -75,6 +77,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ScrollToTop />
       {!hideLayout && <Header />}
       {/* Kategori sayfalarında alt kategori şeridi — header'ın hemen altında */}
       {!hideLayout && <CategoryBar />}
