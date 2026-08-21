@@ -178,124 +178,126 @@ export const CatalogCourseCard: React.FC<Props> = ({
         course.level,
     ].filter(Boolean).join(' · ');
 
+    const subtitle = course.short_description || course.description || '';
+
     return (
-        <article className="group bg-white border border-slate-200 rounded-lg p-4 flex flex-col transition-colors hover:border-brand-300">
-            <div className="flex gap-4">
-                {/* Küçük kare görsel — kartı yükseltmiyor */}
-                <Link
-                    {...linkProps}
-                    className="relative w-20 h-20 shrink-0 rounded-md bg-slate-100 overflow-hidden"
-                >
-                    {course.image && !imgFailed ? (
-                        <img
-                            src={course.image}
-                            alt={course.title}
-                            loading="lazy"
-                            onError={() => setImgFailed(true)}
-                            className="absolute inset-0 w-full h-full object-cover"
-                        />
-                    ) : (
-                        <span className="absolute inset-0 flex items-center justify-center font-montserrat text-[22px] font-extrabold text-slate-300">
-                            {course.title.charAt(0).toLocaleUpperCase('tr-TR')}
-                        </span>
-                    )}
-
-                    {owned && progress > 0 && (
-                        <span className="absolute inset-x-0 bottom-0 h-1 bg-black/25">
-                            <span
-                                className="block h-full bg-brand-500"
-                                style={{ width: `${Math.min(100, progress)}%` }}
-                            />
-                        </span>
-                    )}
-                </Link>
-
-                <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                        <p className="text-[11px] font-semibold uppercase tracking-wide text-brand-700 truncate">
-                            {course.subcategory_name || course.category_name || ' '}
-                            {owned && <span className="text-slate-400 normal-case"> · Kayıtlı</span>}
-                        </p>
-
-                        <button
-                            onClick={toggleFavorite}
-                            aria-label={favorited ? 'Favorilerden çıkar' : 'Favorilere ekle'}
-                            className={cn(
-                                'shrink-0 -mt-1 -mr-1 w-7 h-7 rounded-full flex items-center justify-center transition-all',
-                                favorited
-                                    ? 'opacity-100 text-rose-500'
-                                    : 'opacity-0 group-hover:opacity-100 focus:opacity-100 text-slate-400 hover:text-rose-500'
-                            )}
-                        >
-                            <Heart className={cn('w-4 h-4', favorited && 'fill-rose-500')} />
-                        </button>
-                    </div>
-
-                    <h3 className="text-[15px] font-bold text-slate-900 leading-snug line-clamp-2 mt-0.5">
-                        <Link {...linkProps} className="hover:text-brand-800 transition-colors">
-                            <Highlighted text={course.title} term={highlight} />
-                        </Link>
-                    </h3>
-
-                    {course.instructor_name && (
-                        <p className="text-[13px] text-slate-500 truncate mt-1">{course.instructor_name}</p>
-                    )}
-
-                    <div className="flex items-center gap-2 mt-1.5 min-h-[18px]">
-                        {reviewCount > 0 ? (
-                            <>
-                                <span className="text-[13px] font-bold text-amber-600 tabular-nums">
-                                    {rating.toFixed(1)}
-                                </span>
-                                <StarRating rating={rating} />
-                                <span className="text-[12px] text-slate-400">({compactCount(reviewCount)})</span>
-                            </>
-                        ) : (
-                            <span className="text-[12px] text-slate-400">Henüz değerlendirilmemiş</span>
-                        )}
-                    </div>
-
-                    {meta && <p className="text-[12px] text-slate-500 mt-1">{meta}</p>}
-                </div>
-            </div>
-
-            <div className="mt-3.5 pt-3.5 border-t border-slate-100 flex items-center justify-between gap-3">
-                {owned ? (
-                    <>
-                        <span className="text-[13px] text-slate-500">
-                            {progress >= 100
-                                ? 'Tamamlandı'
-                                : progress > 0 ? `%${progress} tamamlandı` : 'Kitaplığında'}
-                        </span>
-                        <Link
-                            to={`/learning/${courseId}`}
-                            className="h-9 px-4 leading-9 rounded-md bg-brand-700 hover:bg-brand-800 text-white text-[13px] font-semibold transition-colors shrink-0"
-                        >
-                            {progress > 0 ? 'Devam et' : 'Eğitime git'}
-                        </Link>
-                    </>
+        <article className="group bg-white border border-slate-200 rounded-lg overflow-hidden flex flex-col transition-colors hover:border-brand-300">
+            {/* Kapak — 16:9, kartı fazla uzatmıyor */}
+            <Link {...linkProps} className="relative block aspect-[16/9] bg-slate-100 overflow-hidden">
+                {course.image && !imgFailed ? (
+                    <img
+                        src={course.image}
+                        alt={course.title}
+                        loading="lazy"
+                        onError={() => setImgFailed(true)}
+                        className="absolute inset-0 w-full h-full object-cover"
+                    />
                 ) : (
-                    <>
-                        <span className="text-[19px] font-bold text-slate-900 leading-none">
-                            {isFree ? 'Ücretsiz' : formatPrice(price)}
-                        </span>
-                        <button
-                            onClick={addToCart}
-                            disabled={adding}
-                            className={cn(
-                                'h-9 px-4 rounded-md text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-colors shrink-0',
-                                inCart
-                                    ? 'bg-white border border-brand-600 text-brand-800 hover:bg-brand-50'
-                                    : 'bg-brand-700 hover:bg-brand-800 text-white',
-                                adding && 'opacity-70 cursor-wait'
-                            )}
-                        >
-                            {adding ? (
-                                <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Ekleniyor</>
-                            ) : inCart ? 'Sepete git' : isFree ? 'Kaydol' : 'Sepete ekle'}
-                        </button>
-                    </>
+                    <span className="absolute inset-0 flex items-center justify-center font-montserrat text-[26px] font-extrabold text-slate-300">
+                        {course.title.charAt(0).toLocaleUpperCase('tr-TR')}
+                    </span>
                 )}
+
+                {owned && (
+                    <span className="absolute top-1.5 left-1.5 bg-brand-700 text-white text-[10px] font-semibold rounded px-1.5 py-0.5">
+                        Kayıtlı
+                    </span>
+                )}
+
+                <button
+                    onClick={toggleFavorite}
+                    aria-label={favorited ? 'Favorilerden çıkar' : 'Favorilere ekle'}
+                    className={cn(
+                        'absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-white/90 backdrop-blur flex items-center justify-center transition-opacity',
+                        favorited ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 focus:opacity-100'
+                    )}
+                >
+                    <Heart className={cn('w-3.5 h-3.5', favorited ? 'fill-rose-500 text-rose-500' : 'text-slate-600')} />
+                </button>
+
+                {owned && progress > 0 && (
+                    <span className="absolute inset-x-0 bottom-0 h-1 bg-black/25">
+                        <span className="block h-full bg-brand-500" style={{ width: `${Math.min(100, progress)}%` }} />
+                    </span>
+                )}
+            </Link>
+
+            <div className="p-3 flex flex-col flex-1">
+                {(course.subcategory_name || course.category_name) && (
+                    <p className="text-[10px] font-semibold uppercase tracking-wide text-brand-700 truncate">
+                        {course.subcategory_name || course.category_name}
+                    </p>
+                )}
+
+                <h3 className="text-[14px] font-bold text-slate-900 leading-snug line-clamp-2 mt-1">
+                    <Link {...linkProps} className="hover:text-brand-800 transition-colors">
+                        <Highlighted text={course.title} term={highlight} />
+                    </Link>
+                </h3>
+
+                {/* Alt başlık — kursun kısa tanıtımı */}
+                {subtitle && (
+                    <p className="text-[12px] text-slate-500 leading-[1.5] line-clamp-2 mt-1">
+                        {subtitle}
+                    </p>
+                )}
+
+                {course.instructor_name && (
+                    <p className="text-[12px] text-slate-400 truncate mt-1.5">{course.instructor_name}</p>
+                )}
+
+                <div className="flex items-center gap-1.5 mt-1.5 min-h-[16px]">
+                    {reviewCount > 0 ? (
+                        <>
+                            <span className="text-[12px] font-bold text-amber-600 tabular-nums">
+                                {rating.toFixed(1)}
+                            </span>
+                            <StarRating rating={rating} size={12} />
+                            <span className="text-[11px] text-slate-400">({compactCount(reviewCount)})</span>
+                        </>
+                    ) : (
+                        <span className="text-[11px] text-slate-400">Henüz değerlendirilmemiş</span>
+                    )}
+                </div>
+
+                {meta && <p className="text-[11px] text-slate-400 mt-1">{meta}</p>}
+
+                <div className="mt-auto pt-2.5 flex items-center justify-between gap-2">
+                    {owned ? (
+                        <>
+                            <span className="text-[12px] text-slate-500 truncate">
+                                {progress >= 100 ? 'Tamamlandı' : progress > 0 ? `%${progress}` : 'Kitaplığında'}
+                            </span>
+                            <Link
+                                to={`/learning/${courseId}`}
+                                className="h-8 px-3 leading-8 rounded-md bg-brand-700 hover:bg-brand-800 text-white text-[12px] font-semibold transition-colors shrink-0"
+                            >
+                                {progress > 0 ? 'Devam et' : 'Başla'}
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            <span className="text-[16px] font-bold text-slate-900 leading-none">
+                                {isFree ? 'Ücretsiz' : formatPrice(price)}
+                            </span>
+                            <button
+                                onClick={addToCart}
+                                disabled={adding}
+                                className={cn(
+                                    'h-8 px-3 rounded-md text-[12px] font-semibold flex items-center justify-center gap-1 transition-colors shrink-0',
+                                    inCart
+                                        ? 'bg-white border border-brand-600 text-brand-800 hover:bg-brand-50'
+                                        : 'bg-brand-700 hover:bg-brand-800 text-white',
+                                    adding && 'opacity-70 cursor-wait'
+                                )}
+                            >
+                                {adding ? (
+                                    <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : inCart ? 'Sepette' : isFree ? 'Kaydol' : 'Sepete ekle'}
+                            </button>
+                        </>
+                    )}
+                </div>
             </div>
         </article>
     );

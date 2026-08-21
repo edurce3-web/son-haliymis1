@@ -321,18 +321,17 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                         )}
 
                         {loading ? (
-                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5">
                                 {Array.from({ length: 6 }).map((_, i) => (
-                                    <div key={i} className="bg-white border border-slate-200 rounded-lg p-4 animate-pulse">
-                                        <div className="flex gap-4">
-                                            <div className="w-20 h-20 shrink-0 bg-slate-100 rounded-md" />
-                                            <div className="flex-1 space-y-2.5 pt-1">
-                                                <div className="h-2.5 bg-slate-100 rounded w-1/3" />
-                                                <div className="h-4 bg-slate-100 rounded w-4/5" />
-                                                <div className="h-3 bg-slate-50 rounded w-1/2" />
-                                            </div>
+                                    <div key={i} className="bg-white border border-slate-200 rounded-lg overflow-hidden animate-pulse">
+                                        <div className="aspect-[16/9] bg-slate-100" />
+                                        <div className="p-3 space-y-2">
+                                            <div className="h-2 bg-slate-100 rounded w-1/3" />
+                                            <div className="h-3.5 bg-slate-100 rounded w-4/5" />
+                                            <div className="h-2.5 bg-slate-50 rounded w-full" />
+                                            <div className="h-2.5 bg-slate-50 rounded w-2/3" />
+                                            <div className="h-8 bg-slate-100 rounded-md mt-3" />
                                         </div>
-                                        <div className="h-9 bg-slate-100 rounded-md mt-4 w-32 ml-auto" />
                                     </div>
                                 ))}
                             </div>
@@ -363,7 +362,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                             </div>
                         ) : (
                             <>
-                                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5">
                                     {courses.map(course => {
                                         const id = course.course_id ?? course.id;
                                         return (
