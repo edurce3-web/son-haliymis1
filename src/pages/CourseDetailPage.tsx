@@ -69,6 +69,15 @@ export const CourseDetailPage = () => {
   // Tum degerlendirmeler penceresi
   const [reviewsOpen, setReviewsOpen] = useState(false);
 
+  /**
+   * Mobil alt çubuğun görünürlüğü.
+   *
+   * Künyenin altındaki satın alma bloğu ekrandan çıktığında çubuk beliriyor.
+   * Kaydırma dinlemek yerine gözlemci kullanılıyor.
+   */
+  const mobilePurchaseRef = useRef<HTMLDivElement>(null);
+  const [showMobileBar, setShowMobileBar] = useState(false);
+
 
   /**
    * Sayfadaki bölümler ve okunan bölüm.
@@ -79,6 +88,7 @@ export const CourseDetailPage = () => {
   const PAGE_SECTIONS = [
     { id: 'genel-bakis', label: 'Genel bakış' },
     { id: 'mufredat', label: 'Müfredat' },
+    { id: 'egitmen', label: 'Eğitmen' },
     { id: 'degerlendirmeler', label: 'Değerlendirmeler' },
   ];
   const [activeSection, setActiveSection] = useState('genel-bakis');
@@ -129,6 +139,18 @@ export const CourseDetailPage = () => {
       const el = document.getElementById(s.id);
       if (el) observer.observe(el);
     });
+    return () => observer.disconnect();
+  }, [courseData]);
+
+  useEffect(() => {
+    const el = mobilePurchaseRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowMobileBar(!entry.isIntersecting && entry.boundingClientRect.top < 0),
+      { threshold: 0 }
+    );
+    observer.observe(el);
     return () => observer.disconnect();
   }, [courseData]);
 
@@ -548,6 +570,87 @@ export const CourseDetailPage = () => {
     ru: 'Rusça',
   } as Record<string, string>)[String(course.language || 'tr').toLowerCase()]
     || String(course.language || 'Türkçe');
+
+  /**
+   * Satın alma kutusu.
+   *
+   * İki yerde basılıyor: geniş ekranda sağ rayda sabit, dar ekranda
+   * künyenin hemen altında. Aynı JSX iki kez yazılmasın diye bileşen
+   * hâline getirildi; bileşenin içinde durum yok, hepsi sayfadan geliyor.
+   */
+  const PurchaseBox = () => (
+    <div className="bg-white border border-slate-200 rounded-lg p-4 border-t-[3px] border-t-brand-700 shadow-sm">
+      <div className="flex items-baseline gap-2 flex-wrap">
+        <span className="font-montserrat text-[28px] font-extrabold text-slate-900 tracking-[-0.03em] leading-none">
+          {appliedCoupon
+            ? formatPrice(appliedCoupon.discount_price)
+            : Number(course.price) > 0 ? formatPrice(Number(course.price)) : 'Ücretsiz'}
+        </span>
+        {(appliedCoupon || Number(course.original_price) > Number(course.price)) && (
+          <span className="text-[15px] text-slate-400 line-through">
+            {formatPrice(Number(appliedCoupon ? course.price : course.original_price))}
+          </span>
+        )}
+      </div>
+      <p className="text-[12px] text-slate-400 mt-1.5">KDV dahil · Ömür boyu erişim</p>
+
+      <div className="space-y-2 mt-4">
+        <Button
+          onClick={handleAddToCart}
+          disabled={addToCartMutation.isPending}
+          className="w-full h-11 rounded-md bg-brand-700 hover:bg-brand-800 text-white text-[14.5px] font-semibold"
+        >
+          {addToCartMutation.isPending ? 'Ekleniyor…' : 'Sepete ekle'}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={handleEnroll}
+          disabled={enrollMutation.isPending}
+          className="w-full h-11 rounded-md border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-800 text-[14.5px] font-semibold"
+        >
+          Hemen satın al
+        </Button>
+      </div>
+
+      {!showCoupon && !appliedCoupon ? (
+        <button
+          onClick={() => setShowCoupon(true)}
+          className="text-[13px] font-medium text-slate-500 hover:text-brand-800 transition-colors mt-3"
+        >
+          Kuponum var
+        </button>
+      ) : (
+        <div className="flex items-center gap-2 mt-3">
+          <Input
+            placeholder="Kupon kodu"
+            value={couponCode}
+            onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+            className="h-9 rounded-md text-[13px] font-mono tracking-wider"
+            disabled={!!appliedCoupon}
+          />
+          {appliedCoupon ? (
+            <Button
+              variant="ghost"
+              className="h-9 px-3 rounded-md text-rose-600 hover:bg-rose-50 text-[13px] font-semibold shrink-0"
+              onClick={() => { setAppliedCoupon(null); setCouponCode(''); setShowCoupon(false); }}
+            >
+              Kaldır
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              className="h-9 px-4 rounded-md text-[13px] font-semibold shrink-0"
+              disabled={!couponCode || couponLoading}
+              onClick={applyCoupon}
+            >
+              {couponLoading ? '…' : 'Uygula'}
+            </Button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
   /** Oynat düğmesi tanıtım videosu yoksa ilk ücretsiz dersi açar. */
   const firstPreviewLesson = allLessons.find((l: any) => l.preview || l.is_free) || null;
   const hasAnyPreview = Boolean(course.preview_video || firstPreviewLesson);
@@ -578,7 +681,7 @@ export const CourseDetailPage = () => {
     .slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-slate-50/60 font-sans text-slate-800">
+    <div className="min-h-screen bg-slate-50/60 font-sans text-slate-800 pb-20 lg:pb-0">
       <div className="container mx-auto px-4 max-w-6xl">
         <nav className="flex items-center text-[13px] text-slate-500 gap-2 pt-5 pb-4 overflow-hidden whitespace-nowrap">
           {categorySlug ? (
@@ -605,23 +708,13 @@ export const CourseDetailPage = () => {
           )}
         </nav>
 
-        <h1 className="font-montserrat text-[26px] sm:text-[31px] font-extrabold text-slate-900 leading-[1.15] tracking-[-0.025em] break-words max-w-4xl">
-          {course.title}
-        </h1>
-
-        {course.short_description && (
-          <p className="text-[16px] text-slate-600 leading-[1.6] mt-3 max-w-3xl break-words">
-            {course.short_description}
-          </p>
-        )}
-
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 mt-6 pb-10">
-          {/* ── Sol: oynatıcı + künye satırı + içerik ──────────────────── */}
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 mt-1 pb-10">
+          {/* ── Sol: oynatıcı, başlık, künye, satın alma, içerik ───────── */}
           <div className="lg:col-span-8 min-w-0">
             {/*
-              Oynatıcı sütunun tamamını kaplıyor. Önizlemeye açık dersler
-              müfredat listesinde "Önizle" etiketiyle zaten işaretli; yanda
-              ikinci bir liste tutmak videoyu daraltıyordu.
+              Oynatıcı en üstte ve sütunun tamamını kaplıyor. Önizlemeye açık
+              dersler müfredat listesinde "Önizle" etiketiyle zaten işaretli;
+              yanda ikinci bir liste tutmak videoyu daraltıyordu.
             */}
             <div className="relative aspect-video bg-slate-900 rounded-xl overflow-hidden group ring-1 ring-slate-900/5">
               {isVideoPlaying && (previewLesson || course.preview_video) ? (
@@ -694,10 +787,10 @@ export const CourseDetailPage = () => {
                   <span className="absolute inset-0 flex flex-col items-center justify-center gap-3">
                     {hasAnyPreview ? (
                       <>
-                        <span className="w-16 h-16 rounded-full bg-white/95 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-                          <Play className="w-6 h-6 text-brand-800 fill-brand-800 ml-0.5" />
+                        <span className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/95 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                          <Play className="w-5 h-5 sm:w-6 sm:h-6 text-brand-800 fill-brand-800 ml-0.5" />
                         </span>
-                        <span className="text-white text-[13.5px] font-semibold">
+                        <span className="text-white text-[12.5px] sm:text-[13.5px] font-semibold px-4 text-center">
                           {previewLessons.length > 0
                             ? `${previewLessons.length} ders ücretsiz izlenebilir`
                             : 'Bu kursu önizle'}
@@ -711,60 +804,90 @@ export const CourseDetailPage = () => {
               )}
             </div>
 
+            {/* Başlık ve alt başlık — videonun hemen altında */}
+            <h1 className="font-montserrat text-[24px] sm:text-[29px] font-extrabold text-slate-900 leading-[1.15] tracking-[-0.025em] break-words mt-6">
+              {course.title}
+            </h1>
+
+            {course.short_description && (
+              <p className="text-[15.5px] sm:text-[16px] text-slate-600 leading-[1.6] mt-2.5 break-words">
+                {course.short_description}
+              </p>
+            )}
+
             {/*
-              Künye satırı — videonun altında.
+              Künye — dört ölçü, her biri etiketli.
 
-              Ders sayısı, süre, seviye ve dil buradan çıkarıldı; hepsi sağdaki
-              "Kurs özellikleri" tablosunda zaten var, iki kez yazmak satırı
-              kalabalıklaştırıyordu.
+              Öncesinde hepsi tek satırda noktalarla ayrılmış düz metindi ve
+              hangi sayının ne olduğu okunmuyordu. Artık her ölçünün üstünde
+              küçük bir etiket var, aralarında dikey ayraç.
             */}
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-3 mt-4 rounded-xl border border-slate-200 bg-gradient-to-r from-brand-50/70 to-white px-4 py-3">
-              {reviewsCount > 0 && (
-                <span className="flex items-center gap-2">
-                  <span className="font-montserrat text-[17px] font-extrabold text-amber-600 tabular-nums leading-none">
-                    {Number(course.rating || 0).toFixed(1)}
-                  </span>
-                  <StarRating rating={Number(course.rating || 0)} />
-                  <span className="text-[13px] text-slate-500">({reviewsCount})</span>
-                </span>
-              )}
+            <div className="mt-5 rounded-xl border border-slate-200 bg-white overflow-hidden">
+              <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-y sm:divide-y-0 divide-slate-100">
+                <div className="px-4 py-3">
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Puan</p>
+                  {reviewsCount > 0 ? (
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <span className="font-montserrat text-[16px] font-extrabold text-amber-600 tabular-nums leading-none">
+                        {Number(course.rating || 0).toFixed(1)}
+                      </span>
+                      <StarRating rating={Number(course.rating || 0)} size={12} />
+                    </div>
+                  ) : (
+                    <p className="text-[14px] text-slate-400 mt-1">—</p>
+                  )}
+                  <p className="text-[11.5px] text-slate-400 mt-0.5">
+                    {reviewsCount > 0 ? `${reviewsCount} değerlendirme` : 'Değerlendirilmemiş'}
+                  </p>
+                </div>
 
-              <span className="text-[13.5px] text-slate-600">
-                <span className="font-semibold text-slate-900">
-                  {Number(course.student_count || 0).toLocaleString('tr-TR')}
-                </span>{' '}
-                öğrenci
-              </span>
+                <div className="px-4 py-3">
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Öğrenci</p>
+                  <p className="font-montserrat text-[16px] font-extrabold text-slate-900 tabular-nums leading-none mt-1">
+                    {Number(course.student_count || 0).toLocaleString('tr-TR')}
+                  </p>
+                  <p className="text-[11.5px] text-slate-400 mt-0.5">kayıtlı</p>
+                </div>
 
-              <span className="text-[13.5px] text-slate-600">
-                <span className="font-semibold text-slate-900">
-                  {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
-                    month: 'long', year: 'numeric',
-                  })}
-                </span>{' '}
-                güncellemesi
-              </span>
+                <div className="px-4 py-3">
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Güncelleme</p>
+                  <p className="text-[14px] font-semibold text-slate-900 leading-tight mt-1.5">
+                    {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
+                      month: 'long', year: 'numeric',
+                    })}
+                  </p>
+                </div>
 
-              <InstructorLink className="flex items-center gap-2.5 group ml-auto">
-                <Avatar className="w-8 h-8 ring-2 ring-white shadow-sm">
-                  <AvatarImage src={instructorAvatar} alt={instructorFullName} />
-                  <AvatarFallback className="bg-brand-100 text-brand-800 text-[11px] font-bold">
-                    {instructorFullName.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="leading-tight">
-                  <span className="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
-                    Eğitmen
+                <InstructorLink className="px-4 py-3 group block">
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Eğitmen</p>
+                  <span className="flex items-center gap-2 mt-1.5">
+                    <Avatar className="w-6 h-6 ring-1 ring-slate-200 shrink-0">
+                      <AvatarImage src={instructorAvatar} alt={instructorFullName} />
+                      <AvatarFallback className="bg-brand-100 text-brand-800 text-[10px] font-bold">
+                        {instructorFullName.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-[13.5px] font-semibold text-slate-900 group-hover:text-brand-800 transition-colors truncate">
+                      {instructorFullName}
+                    </span>
                   </span>
-                  <span className="block text-[13.5px] font-semibold text-slate-900 group-hover:text-brand-800 transition-colors">
-                    {instructorFullName}
-                  </span>
-                </span>
-              </InstructorLink>
+                </InstructorLink>
+              </div>
+            </div>
+
+            {/*
+              Mobil satın alma bloğu.
+
+              Sağ ray masaüstünde sabit duruyor ama dar ekranda içerik
+              yığıldığı için en alta düşüyordu. Burada, künyenin hemen
+              altında; sağdaki kart yalnızca geniş ekranda görünüyor.
+            */}
+            <div ref={mobilePurchaseRef} className="lg:hidden mt-5">
+              <PurchaseBox />
             </div>
 
             {/* ── Genel bakış ─────────────────────────────────────────── */}
-            <section id="genel-bakis" className="scroll-mt-24 mt-8 rounded-xl border border-brand-100 bg-gradient-to-br from-brand-50/80 to-white p-6">
+            <section id="genel-bakis" className="scroll-mt-24 mt-8 rounded-xl border border-brand-100 bg-gradient-to-br from-brand-50/80 to-white p-4 sm:p-6">
               <SectionTitle>Neler öğreneceksiniz</SectionTitle>
               <div className="grid sm:grid-cols-2 gap-x-8 gap-y-2.5">
                 {learnItems.map((item: string, i: number) => (
@@ -793,7 +916,7 @@ export const CourseDetailPage = () => {
                         <span className="font-montserrat text-[11px] font-extrabold text-brand-700 tabular-nums shrink-0">
                           {(idx + 1).toString().padStart(2, '0')}
                         </span>
-                        <span className="text-[14.5px] font-semibold text-slate-900 leading-snug truncate">
+                        <span className="text-[14px] sm:text-[14.5px] font-semibold text-slate-900 leading-snug truncate">
                           {section.title}
                         </span>
                       </div>
@@ -822,7 +945,7 @@ export const CourseDetailPage = () => {
                                 className={cn('w-3 h-3 shrink-0', isPreview ? 'text-brand-700' : 'text-slate-300')}
                                 fill="currentColor"
                               />
-                              <span className="text-[14.5px] text-slate-700 truncate">{lesson.title}</span>
+                              <span className="text-[14px] sm:text-[14.5px] text-slate-700 truncate">{lesson.title}</span>
                               {isPreview && (
                                 <span className="shrink-0 text-[11.5px] font-semibold text-brand-800 bg-brand-50 border border-brand-200 rounded px-1.5 py-0.5">
                                   Önizle
@@ -890,29 +1013,91 @@ export const CourseDetailPage = () => {
               </section>
             )}
 
-            {/* ── Eğitmenin diğer kursları ────────────────────────────── */}
-            {suggestions?.instructorCourses?.length > 0 && (
-              <section className="mt-10 pt-8 border-t border-slate-200">
-                <div className="flex flex-wrap items-baseline justify-between gap-3">
-                  <SectionTitle className="mb-0">
-                    {instructorFullName} eğitmenin diğer kursları
-                  </SectionTitle>
-                  {instructorSlug && (
-                    <Link
-                      to={`/user/${instructorSlug}`}
-                      className="text-[13.5px] font-semibold text-brand-700 hover:text-brand-900 hover:underline"
-                    >
-                      Eğitmen profili
-                    </Link>
-                  )}
+            {/* ── Eğitmen ─────────────────────────────────────────────── */}
+            <section id="egitmen" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
+              <SectionTitle>Eğitmen</SectionTitle>
+
+              <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
+                  <InstructorLink className="shrink-0">
+                    <Avatar className="w-16 h-16 ring-2 ring-white shadow-sm">
+                      <AvatarImage src={instructorAvatar} alt={instructorFullName} className="object-cover" />
+                      <AvatarFallback className="bg-brand-100 text-brand-800 font-bold text-[20px]">
+                        {instructorFullName.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </InstructorLink>
+
+                  <div className="min-w-0 flex-1">
+                    <InstructorLink className="inline-block group">
+                      <h3 className="text-[17px] font-bold text-slate-900 group-hover:text-brand-800 transition-colors">
+                        {instructorFullName}
+                      </h3>
+                    </InstructorLink>
+                    <p className="text-[13.5px] text-slate-500">
+                      {course.instructor_title || 'Eğitmen'}
+                    </p>
+
+                    <div className="flex flex-wrap gap-x-5 gap-y-1 mt-2.5 text-[13.5px] text-slate-500">
+                      <span>
+                        <span className="font-semibold text-slate-900">
+                          {Number(course.instructor_total_students || course.instructor_students || 0).toLocaleString('tr-TR')}
+                        </span> öğrenci
+                      </span>
+                      <span>
+                        <span className="font-semibold text-slate-900">
+                          {course.instructor_course_count || course.instructor_courses || 1}
+                        </span> kurs
+                      </span>
+                      {Number(course.instructor_avg_rating || 0) > 0 && (
+                        <span>
+                          <span className="font-semibold text-slate-900">
+                            {Number(course.instructor_avg_rating).toFixed(1)}
+                          </span> ortalama puan
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="text-[14px] text-slate-600 leading-[1.75] mt-3 whitespace-pre-wrap break-words">
+                      {instructorBio}
+                    </p>
+
+                    {instructorExpertiseArray.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-3">
+                        {instructorExpertiseArray.slice(0, 8).map((exp: string, idx: number) => (
+                          <span key={idx} className="text-[12.5px] text-slate-600 border border-slate-200 rounded-full px-2.5 py-0.5">
+                            {exp}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {instructorSlug && (
+                      <Link
+                        to={`/user/${instructorSlug}`}
+                        className="inline-block text-[13.5px] font-semibold text-brand-700 hover:text-brand-900 hover:underline mt-3"
+                      >
+                        Profili gör
+                      </Link>
+                    )}
+                  </div>
                 </div>
-                <div className="mt-5 flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x">
-                  {suggestions.instructorCourses.slice(0, 8).map((c: any) => (
-                    <MiniCourseCard key={c.course_id ?? c.id} course={c} className="w-[210px]" />
-                  ))}
-                </div>
-              </section>
-            )}
+
+                {/* Eğitmenin diğer kursları — kartın hemen altında */}
+                {suggestions?.instructorCourses?.length > 0 && (
+                  <div className="mt-5 pt-5 border-t border-slate-100">
+                    <p className="text-[13px] font-semibold text-slate-700 mb-3">
+                      Eğitmenin diğer kursları
+                    </p>
+                    <div className="flex gap-3 overflow-x-auto pb-2 -mx-5 px-5 snap-x">
+                      {suggestions.instructorCourses.slice(0, 8).map((c: any) => (
+                        <MiniCourseCard key={c.course_id ?? c.id} course={c} className="w-[190px]" />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </section>
 
             {/* ── Değerlendirmeler ────────────────────────────────────── */}
             <section id="degerlendirmeler" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
@@ -951,80 +1136,10 @@ export const CourseDetailPage = () => {
             </section>
           </div>
 
-          {/* ── Sağ: satın alma, künye, eğitmen ────────────────────────── */}
-          <aside className="lg:col-span-4">
+          {/* ── Sağ: satın alma ve kurs özellikleri (geniş ekran) ──────── */}
+          <aside className="hidden lg:block lg:col-span-4">
             <div className="lg:sticky lg:top-20 space-y-4">
-              {/* Satın alma */}
-              <div className="bg-white border border-slate-200 rounded-lg p-4 border-t-[3px] border-t-brand-700 shadow-sm">
-                <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="font-montserrat text-[28px] font-extrabold text-slate-900 tracking-[-0.03em] leading-none">
-                    {appliedCoupon
-                      ? formatPrice(appliedCoupon.discount_price)
-                      : Number(course.price) > 0 ? formatPrice(Number(course.price)) : 'Ücretsiz'}
-                  </span>
-                  {(appliedCoupon || Number(course.original_price) > Number(course.price)) && (
-                    <span className="text-[15px] text-slate-400 line-through">
-                      {formatPrice(Number(appliedCoupon ? course.price : course.original_price))}
-                    </span>
-                  )}
-                </div>
-                <p className="text-[12px] text-slate-400 mt-1.5">KDV dahil · Ömür boyu erişim</p>
-
-                <div className="space-y-2 mt-4">
-                  <Button
-                    onClick={handleAddToCart}
-                    disabled={addToCartMutation.isPending}
-                    className="w-full h-11 rounded-md bg-brand-700 hover:bg-brand-800 text-white text-[14.5px] font-semibold"
-                  >
-                    {addToCartMutation.isPending ? 'Ekleniyor…' : 'Sepete ekle'}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={handleEnroll}
-                    disabled={enrollMutation.isPending}
-                    className="w-full h-11 rounded-md border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-800 text-[14.5px] font-semibold"
-                  >
-                    Hemen satın al
-                  </Button>
-                </div>
-
-                {!showCoupon && !appliedCoupon ? (
-                  <button
-                    onClick={() => setShowCoupon(true)}
-                    className="text-[13px] font-medium text-slate-500 hover:text-brand-800 transition-colors mt-3"
-                  >
-                    Kuponum var
-                  </button>
-                ) : (
-                  <div className="flex items-center gap-2 mt-3">
-                    <Input
-                      placeholder="Kupon kodu"
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                      className="h-9 rounded-md text-[13px] font-mono tracking-wider"
-                      disabled={!!appliedCoupon}
-                    />
-                    {appliedCoupon ? (
-                      <Button
-                        variant="ghost"
-                        className="h-9 px-3 rounded-md text-rose-600 hover:bg-rose-50 text-[13px] font-semibold shrink-0"
-                        onClick={() => { setAppliedCoupon(null); setCouponCode(''); setShowCoupon(false); }}
-                      >
-                        Kaldır
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        className="h-9 px-4 rounded-md text-[13px] font-semibold shrink-0"
-                        disabled={!couponCode || couponLoading}
-                        onClick={applyCoupon}
-                      >
-                        {couponLoading ? '…' : 'Uygula'}
-                      </Button>
-                    )}
-                  </div>
-                )}
-              </div>
+              <PurchaseBox />
 
               {/* Kurs özellikleri */}
               <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
@@ -1046,55 +1161,55 @@ export const CourseDetailPage = () => {
                   ))}
                 </dl>
               </div>
-
-              {/* Eğitmen */}
-              <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
-                <p className="font-montserrat text-[10px] font-extrabold uppercase tracking-[0.14em] text-brand-800 bg-brand-50 px-4 py-2.5 border-b border-brand-100">
-                  Eğitmen
-                </p>
-                <div className="p-4">
-                  <InstructorLink className="flex items-center gap-3 group">
-                    <Avatar className="w-12 h-12 ring-2 ring-white shadow-sm">
-                      <AvatarImage src={instructorAvatar} alt={instructorFullName} className="object-cover" />
-                      <AvatarFallback className="bg-brand-100 text-brand-800 font-bold text-[16px]">
-                        {instructorFullName.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="min-w-0">
-                      <span className="block text-[14.5px] font-bold text-slate-900 group-hover:text-brand-800 transition-colors truncate">
-                        {instructorFullName}
-                      </span>
-                      <span className="block text-[12.5px] text-slate-500 truncate">
-                        {Number(course.instructor_total_students || course.instructor_students || 0).toLocaleString('tr-TR')} öğrenci
-                        {' · '}
-                        {course.instructor_course_count || course.instructor_courses || 1} kurs
-                      </span>
-                    </span>
-                  </InstructorLink>
-
-                  <p className="text-[13px] text-slate-600 leading-[1.7] mt-3 line-clamp-4 whitespace-pre-wrap break-words">
-                    {instructorBio}
-                  </p>
-
-                  {instructorSlug && (
-                    <Link
-                      to={`/user/${instructorSlug}`}
-                      className="inline-block text-[12.5px] font-semibold text-brand-700 hover:text-brand-900 hover:underline mt-3"
-                    >
-                      Profili gör
-                    </Link>
-                  )}
-                </div>
-              </div>
             </div>
           </aside>
         </div>
       </div>
 
+
+      {/*
+        Mobil alt çubuk.
+
+        Dar ekranda sağ ray yok ve içerik uzun; kullanıcı aşağı indiğinde
+        fiyata ulaşamıyordu. Künyedeki satın alma bloğu ekrandan çıkınca bu
+        çubuk beliriyor. Geniş ekranda hiç basılmıyor — orada ray zaten sabit.
+      */}
+      <div
+        className={cn(
+          'lg:hidden fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur transition-transform duration-300',
+          showMobileBar ? 'translate-y-0' : 'translate-y-full'
+        )}
+      >
+        <div className="container mx-auto px-4 py-2.5 flex items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="font-montserrat text-[19px] font-extrabold text-slate-900 tracking-[-0.03em] leading-none">
+              {appliedCoupon
+                ? formatPrice(appliedCoupon.discount_price)
+                : Number(course.price) > 0 ? formatPrice(Number(course.price)) : 'Ücretsiz'}
+            </p>
+            <p className="text-[11px] text-slate-400 mt-1 truncate">Ömür boyu erişim</p>
+          </div>
+          <Button
+            variant="outline"
+            onClick={handleEnroll}
+            disabled={enrollMutation.isPending}
+            className="h-10 px-4 rounded-md border-slate-300 text-slate-800 text-[13.5px] font-semibold shrink-0"
+          >
+            Hemen al
+          </Button>
+          <Button
+            onClick={handleAddToCart}
+            disabled={addToCartMutation.isPending}
+            className="h-10 px-5 rounded-md bg-brand-700 hover:bg-brand-800 text-white text-[13.5px] font-semibold shrink-0"
+          >
+            Sepete ekle
+          </Button>
+        </div>
+      </div>
       {/* Tüm değerlendirmeler penceresi */}
       <Dialog open={reviewsOpen} onOpenChange={setReviewsOpen}>
-        <DialogContent className="max-w-2xl p-0 gap-0 rounded-xl overflow-hidden">
-          <DialogHeader className="px-6 py-4 border-b border-slate-200">
+        <DialogContent className="max-w-2xl w-[calc(100vw-2rem)] p-0 gap-0 rounded-xl overflow-hidden">
+          <DialogHeader className="px-4 sm:px-6 py-4 border-b border-slate-200 text-left">
             <DialogTitle className="font-montserrat text-[17px] font-extrabold text-slate-900 tracking-[-0.02em]">
               Değerlendirmeler
             </DialogTitle>
@@ -1105,7 +1220,7 @@ export const CourseDetailPage = () => {
               </p>
             )}
           </DialogHeader>
-          <div className="max-h-[70vh] overflow-y-auto px-6 divide-y divide-slate-200">
+          <div className="max-h-[70vh] overflow-y-auto px-4 sm:px-6 divide-y divide-slate-200">
             {reviewsList.map((review: any) => (
               <ReviewItem key={review.review_id} review={review} />
             ))}
