@@ -536,6 +536,18 @@ export const CourseDetailPage = () => {
     all: 'Tüm seviyeler',
   } as Record<string, string>)[course.level] || 'Tüm seviyeler';
 
+
+  /** Dil kodunu okunur ada çevir — tabloda "TR" yerine "Türkçe" yazsın. */
+  const languageLabel = ({
+    tr: 'Türkçe',
+    en: 'İngilizce',
+    de: 'Almanca',
+    fr: 'Fransızca',
+    es: 'İspanyolca',
+    ar: 'Arapça',
+    ru: 'Rusça',
+  } as Record<string, string>)[String(course.language || 'tr').toLowerCase()]
+    || String(course.language || 'Türkçe');
   /** Oynat düğmesi tanıtım videosu yoksa ilk ücretsiz dersi açar. */
   const firstPreviewLesson = allLessons.find((l: any) => l.preview || l.is_free) || null;
   const hasAnyPreview = Boolean(course.preview_video || firstPreviewLesson);
@@ -566,7 +578,7 @@ export const CourseDetailPage = () => {
     .slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-white font-sans text-slate-800">
+    <div className="min-h-screen bg-slate-50/60 font-sans text-slate-800">
       <div className="container mx-auto px-4 max-w-6xl">
         <nav className="flex items-center text-[13px] text-slate-500 gap-2 pt-5 pb-4 overflow-hidden whitespace-nowrap">
           {categorySlug ? (
@@ -604,193 +616,155 @@ export const CourseDetailPage = () => {
         )}
 
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 mt-6 pb-10">
-          {/* ── Sol: önizleme listesi + oynatıcı + künye satırı ────────── */}
+          {/* ── Sol: oynatıcı + künye satırı + içerik ──────────────────── */}
           <div className="lg:col-span-8 min-w-0">
-            <div className="grid sm:grid-cols-12 gap-4">
-              {/*
-                Önizlemeye açık dersler soldaki listede sırayla duruyor;
-                tıklanınca sağdaki oynatıcıda açılıyor. Böylece ziyaretçi
-                hangi derslerin ücretsiz izlenebildiğini tek bakışta görüyor.
-              */}
-              <div className="sm:col-span-4 order-2 sm:order-1">
-                <p className="font-montserrat text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-500 mb-2">
-                  Ücretsiz izlenebilir
-                </p>
-
-                {previewLessons.length > 0 ? (
-                  <ol className="border border-slate-200 rounded-lg divide-y divide-slate-100 overflow-hidden max-h-[266px] overflow-y-auto">
-                    {previewLessons.map((lesson: any, i: number) => {
-                      const lessonId = lesson.id ?? lesson.lesson_id ?? i;
-                      const active = previewLesson?.lesson_id === lessonId;
-                      const seconds = lesson.duration || lesson.duration_seconds || 0;
-                      return (
-                        <li key={lessonId}>
-                          <button
-                            onClick={() => openLessonPreview(lesson)}
-                            className={cn(
-                              'w-full text-left px-3 py-2.5 flex items-start gap-2.5 transition-colors',
-                              active ? 'bg-brand-50' : 'hover:bg-slate-50'
-                            )}
-                          >
-                            <Play
-                              className={cn('w-3 h-3 mt-1 shrink-0', active ? 'text-brand-700' : 'text-slate-300')}
-                              fill="currentColor"
-                            />
-                            <span className="min-w-0 flex-1">
-                              <span className={cn(
-                                'block text-[13px] leading-snug line-clamp-2',
-                                active ? 'text-brand-900 font-semibold' : 'text-slate-700'
-                              )}>
-                                {lesson.title}
-                              </span>
-                              <span className="block text-[11.5px] text-slate-400 tabular-nums mt-0.5">
-                                {previewLoading === lessonId
-                                  ? 'Açılıyor…'
-                                  : seconds
-                                    ? `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`
-                                    : '—'}
-                              </span>
-                            </span>
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ol>
-                ) : (
-                  <p className="text-[13px] text-slate-400 border border-dashed border-slate-200 rounded-lg px-3 py-4">
-                    Bu kursta ücretsiz izlenebilen ders yok.
-                  </p>
-                )}
-              </div>
-
-              {/* Oynatıcı */}
-              <div className="sm:col-span-8 order-1 sm:order-2">
-                <div className="relative aspect-video bg-slate-900 rounded-lg overflow-hidden group">
-                  {isVideoPlaying && (previewLesson || course.preview_video) ? (
-                    <>
-                      {previewLesson?.video_type === 'hls' ? (
-                        <HLSVideoPlayer
-                          key={previewLesson.lesson_id}
-                          src={previewLesson.video_url}
-                          videoType="hls"
-                          autoPlay
-                          poster={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
-                          title={previewLesson.title}
-                        />
-                      ) : (
-                        <video
-                          ref={videoRef}
-                          src={previewLesson?.video_url || course.preview_video}
-                          className="w-full h-full object-contain bg-black"
-                          controls
-                          autoPlay
-                          playsInline
-                          onEnded={() => setIsVideoPlaying(false)}
-                          onError={() => {
-                            toast.error('Video yüklenemedi');
-                            setIsVideoPlaying(false);
-                          }}
-                        />
-                      )}
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setIsVideoPlaying(false);
-                          setPreviewLesson(null);
-                          videoRef.current?.pause();
-                        }}
-                        className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors z-10"
-                      >
-                        <XIcon className="w-4 h-4" />
-                      </button>
-                    </>
+            {/*
+              Oynatıcı sütunun tamamını kaplıyor. Önizlemeye açık dersler
+              müfredat listesinde "Önizle" etiketiyle zaten işaretli; yanda
+              ikinci bir liste tutmak videoyu daraltıyordu.
+            */}
+            <div className="relative aspect-video bg-slate-900 rounded-xl overflow-hidden group ring-1 ring-slate-900/5">
+              {isVideoPlaying && (previewLesson || course.preview_video) ? (
+                <>
+                  {previewLesson?.video_type === 'hls' ? (
+                    <HLSVideoPlayer
+                      key={previewLesson.lesson_id}
+                      src={previewLesson.video_url}
+                      videoType="hls"
+                      autoPlay
+                      poster={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
+                      title={previewLesson.title}
+                    />
                   ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (course.preview_video) setIsVideoPlaying(true);
-                        else if (previewLessons[0]) openLessonPreview(previewLessons[0]);
+                    <video
+                      ref={videoRef}
+                      src={previewLesson?.video_url || course.preview_video}
+                      className="w-full h-full object-contain bg-black"
+                      controls
+                      autoPlay
+                      playsInline
+                      onEnded={() => setIsVideoPlaying(false)}
+                      onError={() => {
+                        toast.error('Video yüklenemedi');
+                        setIsVideoPlaying(false);
                       }}
-                      disabled={!hasAnyPreview}
-                      className="absolute inset-0 w-full h-full disabled:cursor-default"
-                    >
-                      <img
-                        src={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
-                        alt={course.title}
-                        className="w-full h-full object-cover"
-                        onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-course.jpg'; }}
-                      />
-                      <span className="absolute inset-0 bg-slate-900/40" />
-                      <span className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                        {hasAnyPreview ? (
-                          <>
-                            <span className="w-12 h-12 rounded-full bg-white flex items-center justify-center group-hover:scale-105 transition-transform">
-                              <Play className="w-4 h-4 text-brand-800 fill-brand-800 ml-0.5" />
-                            </span>
-                            <span className="text-white text-[12.5px] font-semibold">Bu kursu önizle</span>
-                          </>
-                        ) : (
-                          <span className="text-white/80 text-[12.5px]">Önizleme eklenmemiş</span>
-                        )}
-                      </span>
-                    </button>
+                    />
                   )}
-                </div>
 
-                {previewLesson && (
-                  <p className="text-[12.5px] text-slate-500 mt-2 truncate">
-                    <span className="font-semibold text-brand-800">Önizleme:</span> {previewLesson.title}
-                  </p>
-                )}
-              </div>
+                  {previewLesson && (
+                    <div className="absolute top-0 inset-x-0 bg-gradient-to-b from-black/70 to-transparent px-4 pt-2.5 pb-10 pointer-events-none">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-brand-300">
+                        Ücretsiz önizleme
+                      </p>
+                      <p className="text-[13.5px] font-medium text-white truncate pr-12">
+                        {previewLesson.title}
+                      </p>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsVideoPlaying(false);
+                      setPreviewLesson(null);
+                      videoRef.current?.pause();
+                    }}
+                    className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors z-10"
+                  >
+                    <XIcon className="w-4 h-4" />
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (course.preview_video) setIsVideoPlaying(true);
+                    else if (previewLessons[0]) openLessonPreview(previewLessons[0]);
+                  }}
+                  disabled={!hasAnyPreview}
+                  className="absolute inset-0 w-full h-full disabled:cursor-default"
+                >
+                  <img
+                    src={getCourseImageUrl(course.course_id || course.id, course.thumbnail || course.image_url || course.image_path)}
+                    alt={course.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-course.jpg'; }}
+                  />
+                  <span className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/25 to-slate-950/40" />
+                  <span className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                    {hasAnyPreview ? (
+                      <>
+                        <span className="w-16 h-16 rounded-full bg-white/95 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                          <Play className="w-6 h-6 text-brand-800 fill-brand-800 ml-0.5" />
+                        </span>
+                        <span className="text-white text-[13.5px] font-semibold">
+                          {previewLessons.length > 0
+                            ? `${previewLessons.length} ders ücretsiz izlenebilir`
+                            : 'Bu kursu önizle'}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-white/80 text-[13px]">Önizleme eklenmemiş</span>
+                    )}
+                  </span>
+                </button>
+              )}
             </div>
 
-            {/* Künye satırı — videonun altında */}
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-5 pt-4 border-t border-slate-200 text-[13.5px] text-slate-500">
-              {reviewsCount > 0 && (
-                <>
-                  <span className="flex items-center gap-1.5">
-                    <span className="font-bold text-amber-600 tabular-nums">
-                      {Number(course.rating || 0).toFixed(1)}
-                    </span>
-                    <StarRating rating={Number(course.rating || 0)} />
-                    <span>({reviewsCount})</span>
-                  </span>
-                  <span className="text-slate-300">·</span>
-                </>
-              )}
-              <span>{Number(course.student_count || 0).toLocaleString('tr-TR')} öğrenci</span>
-              <span className="text-slate-300">·</span>
-              <span>{totalLessons} ders</span>
-              <span className="text-slate-300">·</span>
-              <span>{totalDurationLabel}</span>
-              <span className="text-slate-300">·</span>
-              <span>{levelLabel}</span>
-              <span className="text-slate-300">·</span>
-              <span>{(course.language || 'tr').toUpperCase()}</span>
+            {/*
+              Künye satırı — videonun altında.
 
-              <InstructorLink className="flex items-center gap-2 group ml-auto">
-                <Avatar className="w-6 h-6 ring-1 ring-slate-200">
-                  <AvatarImage src={instructorAvatar} alt={instructorFullName} />
-                  <AvatarFallback className="bg-slate-100 text-slate-500 text-[10px] font-semibold">
-                    {instructorFullName.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-[13px]">
-                  <span className="font-semibold text-slate-800 group-hover:text-brand-800 transition-colors">
-                    {instructorFullName}
+              Ders sayısı, süre, seviye ve dil buradan çıkarıldı; hepsi sağdaki
+              "Kurs özellikleri" tablosunda zaten var, iki kez yazmak satırı
+              kalabalıklaştırıyordu.
+            */}
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-3 mt-4 rounded-xl border border-slate-200 bg-gradient-to-r from-brand-50/70 to-white px-4 py-3">
+              {reviewsCount > 0 && (
+                <span className="flex items-center gap-2">
+                  <span className="font-montserrat text-[17px] font-extrabold text-amber-600 tabular-nums leading-none">
+                    {Number(course.rating || 0).toFixed(1)}
                   </span>
-                  {' · '}
+                  <StarRating rating={Number(course.rating || 0)} />
+                  <span className="text-[13px] text-slate-500">({reviewsCount})</span>
+                </span>
+              )}
+
+              <span className="text-[13.5px] text-slate-600">
+                <span className="font-semibold text-slate-900">
+                  {Number(course.student_count || 0).toLocaleString('tr-TR')}
+                </span>{' '}
+                öğrenci
+              </span>
+
+              <span className="text-[13.5px] text-slate-600">
+                <span className="font-semibold text-slate-900">
                   {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
                     month: 'long', year: 'numeric',
                   })}
+                </span>{' '}
+                güncellemesi
+              </span>
+
+              <InstructorLink className="flex items-center gap-2.5 group ml-auto">
+                <Avatar className="w-8 h-8 ring-2 ring-white shadow-sm">
+                  <AvatarImage src={instructorAvatar} alt={instructorFullName} />
+                  <AvatarFallback className="bg-brand-100 text-brand-800 text-[11px] font-bold">
+                    {instructorFullName.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="leading-tight">
+                  <span className="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
+                    Eğitmen
+                  </span>
+                  <span className="block text-[13.5px] font-semibold text-slate-900 group-hover:text-brand-800 transition-colors">
+                    {instructorFullName}
+                  </span>
                 </span>
               </InstructorLink>
             </div>
 
             {/* ── Genel bakış ─────────────────────────────────────────── */}
-            <section id="genel-bakis" className="scroll-mt-24 mt-10">
+            <section id="genel-bakis" className="scroll-mt-24 mt-8 rounded-xl border border-brand-100 bg-gradient-to-br from-brand-50/80 to-white p-6">
               <SectionTitle>Neler öğreneceksiniz</SectionTitle>
               <div className="grid sm:grid-cols-2 gap-x-8 gap-y-2.5">
                 {learnItems.map((item: string, i: number) => (
@@ -811,10 +785,10 @@ export const CourseDetailPage = () => {
                 </p>
               </div>
 
-              <div className="mt-5 border border-slate-200 rounded-lg divide-y divide-slate-200 overflow-hidden">
+              <div className="mt-5 bg-white border border-slate-200 rounded-lg divide-y divide-slate-200 overflow-hidden">
                 {course.sections?.map((section: any, idx: number) => (
                   <div key={section.id ?? section.section_id ?? idx}>
-                    <div className="bg-slate-50/80 px-4 py-2.5 flex items-center justify-between gap-4">
+                    <div className="bg-brand-50/60 px-4 py-2.5 flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3 min-w-0">
                         <span className="font-montserrat text-[11px] font-extrabold text-brand-700 tabular-nums shrink-0">
                           {(idx + 1).toString().padStart(2, '0')}
@@ -882,7 +856,7 @@ export const CourseDetailPage = () => {
                   {course.description}
                   {/* Kısaltılmış metnin altına yumuşak geçiş */}
                   {!descExpanded && isLongDescription && (
-                    <span className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+                    <span className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-slate-50 to-transparent pointer-events-none" />
                   )}
                 </div>
                 {isLongDescription && (
@@ -916,6 +890,30 @@ export const CourseDetailPage = () => {
               </section>
             )}
 
+            {/* ── Eğitmenin diğer kursları ────────────────────────────── */}
+            {suggestions?.instructorCourses?.length > 0 && (
+              <section className="mt-10 pt-8 border-t border-slate-200">
+                <div className="flex flex-wrap items-baseline justify-between gap-3">
+                  <SectionTitle className="mb-0">
+                    {instructorFullName} eğitmenin diğer kursları
+                  </SectionTitle>
+                  {instructorSlug && (
+                    <Link
+                      to={`/user/${instructorSlug}`}
+                      className="text-[13.5px] font-semibold text-brand-700 hover:text-brand-900 hover:underline"
+                    >
+                      Eğitmen profili
+                    </Link>
+                  )}
+                </div>
+                <div className="mt-5 flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x">
+                  {suggestions.instructorCourses.slice(0, 8).map((c: any) => (
+                    <MiniCourseCard key={c.course_id ?? c.id} course={c} className="w-[210px]" />
+                  ))}
+                </div>
+              </section>
+            )}
+
             {/* ── Değerlendirmeler ────────────────────────────────────── */}
             <section id="degerlendirmeler" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
@@ -930,7 +928,7 @@ export const CourseDetailPage = () => {
 
               {topReviews.length > 0 ? (
                 <>
-                  <div className="mt-5 divide-y divide-slate-200 border-y border-slate-200">
+                  <div className="mt-5 bg-white border border-slate-200 rounded-lg divide-y divide-slate-100 px-4">
                     {topReviews.map((review: any) => (
                       <ReviewItem key={review.review_id} review={review} />
                     ))}
@@ -957,7 +955,7 @@ export const CourseDetailPage = () => {
           <aside className="lg:col-span-4">
             <div className="lg:sticky lg:top-20 space-y-4">
               {/* Satın alma */}
-              <div className="border border-slate-200 rounded-lg p-4">
+              <div className="bg-white border border-slate-200 rounded-lg p-4 border-t-[3px] border-t-brand-700 shadow-sm">
                 <div className="flex items-baseline gap-2 flex-wrap">
                   <span className="font-montserrat text-[28px] font-extrabold text-slate-900 tracking-[-0.03em] leading-none">
                     {appliedCoupon
@@ -1028,21 +1026,20 @@ export const CourseDetailPage = () => {
                 )}
               </div>
 
-              {/* Kurs künyesi */}
-              <div className="border border-slate-200 rounded-lg overflow-hidden">
-                <p className="font-montserrat text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-500 bg-slate-50 px-4 py-2 border-b border-slate-200">
-                  Kurs künyesi
+              {/* Kurs özellikleri */}
+              <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+                <p className="font-montserrat text-[10px] font-extrabold uppercase tracking-[0.14em] text-brand-800 bg-brand-50 px-4 py-2.5 border-b border-brand-100">
+                  Kurs özellikleri
                 </p>
                 <dl className="divide-y divide-slate-100">
                   {[
-                    { label: 'Ders', value: `${totalLessons}` },
                     { label: 'Toplam süre', value: totalDurationLabel },
                     { label: 'Seviye', value: levelLabel },
-                    { label: 'Dil', value: (course.language || 'tr').toUpperCase() },
+                    { label: 'Dil', value: languageLabel },
                     { label: 'Erişim', value: 'Ömür boyu' },
                     { label: 'Sertifika', value: 'Var' },
                   ].map(row => (
-                    <div key={row.label} className="flex items-center justify-between gap-4 px-4 py-2">
+                    <div key={row.label} className="flex items-center justify-between gap-4 px-4 py-2.5">
                       <dt className="text-[13px] text-slate-500">{row.label}</dt>
                       <dd className="text-[13px] font-semibold text-slate-900 text-right">{row.value}</dd>
                     </div>
@@ -1050,16 +1047,16 @@ export const CourseDetailPage = () => {
                 </dl>
               </div>
 
-              {/* Eğitmen ve diğer kursları */}
-              <div className="border border-slate-200 rounded-lg overflow-hidden">
-                <p className="font-montserrat text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-500 bg-slate-50 px-4 py-2 border-b border-slate-200">
+              {/* Eğitmen */}
+              <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+                <p className="font-montserrat text-[10px] font-extrabold uppercase tracking-[0.14em] text-brand-800 bg-brand-50 px-4 py-2.5 border-b border-brand-100">
                   Eğitmen
                 </p>
                 <div className="p-4">
                   <InstructorLink className="flex items-center gap-3 group">
-                    <Avatar className="w-11 h-11 ring-1 ring-slate-200">
+                    <Avatar className="w-12 h-12 ring-2 ring-white shadow-sm">
                       <AvatarImage src={instructorAvatar} alt={instructorFullName} className="object-cover" />
-                      <AvatarFallback className="bg-slate-100 text-slate-500 font-semibold text-[15px]">
+                      <AvatarFallback className="bg-brand-100 text-brand-800 font-bold text-[16px]">
                         {instructorFullName.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
@@ -1078,29 +1075,16 @@ export const CourseDetailPage = () => {
                   <p className="text-[13px] text-slate-600 leading-[1.7] mt-3 line-clamp-4 whitespace-pre-wrap break-words">
                     {instructorBio}
                   </p>
-                </div>
 
-                {/* Eğitmenin diğer kursları — küçük yatay kartlar */}
-                {suggestions?.instructorCourses?.length > 0 && (
-                  <div className="border-t border-slate-200 p-4 pt-3">
-                    <p className="text-[12px] font-semibold text-slate-500 mb-2.5">
-                      Eğitmenin diğer kursları
-                    </p>
-                    <div className="space-y-2">
-                      {suggestions.instructorCourses.slice(0, 4).map((c: any) => (
-                        <MiniCourseRow key={c.course_id ?? c.id} course={c} />
-                      ))}
-                    </div>
-                    {instructorSlug && (
-                      <Link
-                        to={`/user/${instructorSlug}`}
-                        className="inline-block text-[12.5px] font-semibold text-brand-700 hover:text-brand-900 hover:underline mt-3"
-                      >
-                        Tüm kursları
-                      </Link>
-                    )}
-                  </div>
-                )}
+                  {instructorSlug && (
+                    <Link
+                      to={`/user/${instructorSlug}`}
+                      className="inline-block text-[12.5px] font-semibold text-brand-700 hover:text-brand-900 hover:underline mt-3"
+                    >
+                      Profili gör
+                    </Link>
+                  )}
+                </div>
               </div>
             </div>
           </aside>
@@ -1218,31 +1202,3 @@ const MiniCourseCard: React.FC<{ course: any; className?: string }> = ({ course,
     </div>
   </Link>
 );
-
-/** Eğitmen kartının altındaki küçük yatay satır. */
-const MiniCourseRow: React.FC<{ course: any }> = ({ course }) => (
-  <Link
-    to={`/course/${course.slug || course.course_id || course.id}`}
-    target="_blank"
-    rel="noopener"
-    className="group flex gap-2.5 items-center"
-  >
-    <span className="w-14 h-10 shrink-0 rounded bg-slate-100 overflow-hidden">
-      <img
-        src={getCourseImageUrl(course.course_id ?? course.id, course.image)}
-        alt={course.title}
-        loading="lazy"
-        className="w-full h-full object-cover"
-      />
-    </span>
-    <span className="min-w-0 flex-1">
-      <span className="block text-[12.5px] font-semibold text-slate-800 leading-snug line-clamp-2 group-hover:text-brand-800 transition-colors">
-        {course.title}
-      </span>
-      <span className="block text-[11.5px] text-slate-400 mt-0.5">
-        {Number(course.price) > 0 ? formatPrice(Number(course.price)) : 'Ücretsiz'}
-      </span>
-    </span>
-  </Link>
-);
-
