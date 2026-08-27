@@ -577,21 +577,19 @@ export const CourseDetailPage = () => {
     ru: 'Rusça',
   } as Record<string, string>)[String(course.language || 'tr').toLowerCase()]
     || String(course.language || 'Türkçe');
-
-  /**
-   * Kursun özellikleri — satın alma kutusundaki tek liste.
-   *
-   * Her madde kendi başına anlamlı bir cümle; "Dil: Türkçe" gibi etiket-değer
-   * ikilisi yok. Boş/bilinmeyen değerler listeye hiç girmiyor.
-   */
-  const courseFeatures: Array<{ text: string; icon: 'check' | 'access' | 'certificate' | 'devices' | 'support' | 'resource' }> = [
-    { text: `${levelLabel} seviye`, icon: 'check' },
-    { text: languageLabel, icon: 'check' },
-    ...(totalSeconds > 0 ? [{ text: `${totalDurationLabel} video içeriği`, icon: 'check' as const }] : []),
-    ...(totalLessons > 0 ? [{ text: `${totalLessons} ders`, icon: 'check' as const }] : []),
+  /** Kursun ölçüleri — onay işaretiyle listeleniyor. */
+  const courseSpecs: string[] = [
+    `${levelLabel} seviye`,
+    languageLabel,
+    ...(totalSeconds > 0 ? [`${totalDurationLabel} video içeriği`] : []),
+    ...(totalLessons > 0 ? [`${totalLessons} ders`] : []),
     ...(Number(course.downloadable_resources) > 0
-      ? [{ text: `${course.downloadable_resources} indirilebilir kaynak`, icon: 'check' as const }]
+      ? [`${course.downloadable_resources} indirilebilir kaynak`]
       : []),
+  ];
+
+  /** Kursla birlikte gelen haklar — her biri kendi simgesiyle. */
+  const courseBenefits: Array<{ text: string; icon: string }> = [
     { text: 'Ömür boyu erişim, süre sınırı yok', icon: 'access' },
     { text: 'Tamamlayanlara bitirme sertifikası', icon: 'certificate' },
     { text: 'Telefon, tablet ve bilgisayardan izleme', icon: 'devices' },
@@ -677,14 +675,24 @@ export const CourseDetailPage = () => {
       )}
 
       {/*
-        Kursun sunduğu her şey tek listede.
+        İki ayrı liste.
 
-        Öncesinde "Toplam süre: 6 dk" gibi etiket–değer tablosu ve ayrı bir
-        güvence listesi vardı; ikisi de aynı soruyu yanıtlıyordu. Artık her
-        satır doğrudan özelliği söylüyor, iki sütuna bölünmüş etiket yok.
+        Üstte kursun ölçüleri (seviye, dil, süre, ders sayısı) — hepsi aynı
+        tür bilgi olduğu için tek işaretle. Altta kursla birlikte gelen
+        haklar; bunlar farklı şeyler olduğu için her biri kendi simgesiyle.
+        İkisi bir arada listelenince ayrım kayboluyordu.
       */}
-      <ul className="mt-4 pt-4 border-t border-slate-100 space-y-2.5">
-        {courseFeatures.map(item => (
+      <ul className="mt-4 pt-4 border-t border-slate-100 space-y-2">
+        {courseSpecs.map(text => (
+          <li key={text} className="flex items-start gap-2.5 text-[13px] text-slate-700">
+            <Check className="w-3.5 h-3.5 shrink-0 mt-[3px] text-brand-700 stroke-[3]" />
+            <span>{text}</span>
+          </li>
+        ))}
+      </ul>
+
+      <ul className="mt-3.5 pt-3.5 border-t border-slate-100 space-y-3">
+        {courseBenefits.map(item => (
           <li key={item.text} className="flex items-start gap-2.5 text-[13px] text-slate-700">
             <FeatureIcon kind={item.icon} />
             <span>{item.text}</span>
@@ -942,7 +950,7 @@ export const CourseDetailPage = () => {
 
             {/* ── Genel bakış ─────────────────────────────────────────── */}
             <section id="genel-bakis" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
-              <SectionTitle hint="Kursu bitirdiğinizde yapabilecekleriniz">Neler öğreneceksiniz</SectionTitle>
+              <SectionTitle>Neler öğreneceksiniz</SectionTitle>
               <div className="grid sm:grid-cols-2 gap-x-8 gap-y-2.5">
                 {learnItems.map((item: string, i: number) => (
                   <div key={i} className="flex gap-2.5 items-start">
@@ -1090,7 +1098,7 @@ export const CourseDetailPage = () => {
             <section id="egitmen" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
               <SectionTitle>Eğitmen</SectionTitle>
 
-              <div>
+              <div className="rounded-xl border border-brand-100 bg-brand-50/40 p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
                   <InstructorLink className="shrink-0">
                     <Avatar className="w-16 h-16 ring-2 ring-white shadow-sm">
@@ -1165,17 +1173,26 @@ export const CourseDetailPage = () => {
                       </button>
                     )}
 
-                    {/* Uzmanlık alanları — çerçeveli hap yerine işaretli liste */}
+                    {/*
+                      Uzmanlık alanları — akan etiketler.
+
+                      İki sütunlu işaretli liste, kısa etiketlerde bol boşluk
+                      bırakıp düzensiz görünüyordu. Etiketler kendi
+                      genişliklerinde ve satır sonunda kendiliğinden alta
+                      geçiyor.
+                    */}
                     {instructorExpertiseArray.length > 0 && (
                       <div className="mt-4">
-                        <p className="text-[12px] font-semibold uppercase tracking-wide text-slate-400 mb-2">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-700/70 mb-2.5">
                           Uzmanlık alanları
                         </p>
-                        <div className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5">
+                        <div className="flex flex-wrap gap-1.5">
                           {instructorExpertiseArray.map((exp: string, idx: number) => (
-                            <span key={idx} className="flex items-start gap-2 text-[13.5px] text-slate-600">
-                              <Check className="w-3.5 h-3.5 text-brand-700 stroke-[3] mt-1 shrink-0" />
-                              <span className="break-words">{exp}</span>
+                            <span
+                              key={idx}
+                              className="inline-block text-[12.5px] font-medium text-brand-900 bg-white border border-brand-200 rounded-full px-3 py-1"
+                            >
+                              {exp}
                             </span>
                           ))}
                         </div>
@@ -1191,8 +1208,8 @@ export const CourseDetailPage = () => {
                   gezinirken kapak görselinden çok başlık ve fiyat karşılaştırılıyor.
                 */}
                 {suggestions?.instructorCourses?.length > 0 && (
-                  <div className="mt-5 pt-5 border-t border-slate-100">
-                    <p className="text-[13px] font-semibold text-slate-700 mb-3">
+                  <div className="mt-6 pt-5 border-t border-brand-100">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-700/70 mb-3">
                       Eğitmenin diğer kursları
                     </p>
                     <div className="space-y-2">
@@ -1411,7 +1428,7 @@ const CourseListRow: React.FC<{ course: any }> = ({ course }) => {
       to={`/course/${course.slug || id}`}
       target="_blank"
       rel="noopener"
-      className="group flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-2.5 transition-colors hover:border-brand-300 hover:bg-brand-50/30"
+      className="group flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-2.5 transition-colors hover:border-brand-400 hover:shadow-sm"
     >
       <span className="w-14 h-14 shrink-0 rounded-md bg-slate-100 overflow-hidden">
         <img
