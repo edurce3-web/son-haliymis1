@@ -584,18 +584,19 @@ export const CourseDetailPage = () => {
    * Her madde kendi başına anlamlı bir cümle; "Dil: Türkçe" gibi etiket-değer
    * ikilisi yok. Boş/bilinmeyen değerler listeye hiç girmiyor.
    */
-  const courseFeatures: string[] = [
-    totalSeconds > 0 && `${totalDurationLabel} video içeriği`,
-    totalLessons > 0 && `${totalLessons} ders`,
-    `${levelLabel} seviyesine uygun`,
-    `${languageLabel} anlatım`,
-    'Ömür boyu erişim, süre sınırı yok',
-    'Tamamlayanlara bitirme sertifikası',
-    'Telefon, tablet ve bilgisayardan izleme',
-    'Eğitmene soru sorma hakkı',
-    Number(course.downloadable_resources) > 0
-      && `${course.downloadable_resources} indirilebilir kaynak`,
-  ].filter(Boolean) as string[];
+  const courseFeatures: Array<{ text: string; icon: 'check' | 'access' | 'certificate' | 'devices' | 'support' | 'resource' }> = [
+    { text: `${levelLabel} seviye`, icon: 'check' },
+    { text: languageLabel, icon: 'check' },
+    ...(totalSeconds > 0 ? [{ text: `${totalDurationLabel} video içeriği`, icon: 'check' as const }] : []),
+    ...(totalLessons > 0 ? [{ text: `${totalLessons} ders`, icon: 'check' as const }] : []),
+    ...(Number(course.downloadable_resources) > 0
+      ? [{ text: `${course.downloadable_resources} indirilebilir kaynak`, icon: 'check' as const }]
+      : []),
+    { text: 'Ömür boyu erişim, süre sınırı yok', icon: 'access' },
+    { text: 'Tamamlayanlara bitirme sertifikası', icon: 'certificate' },
+    { text: 'Telefon, tablet ve bilgisayardan izleme', icon: 'devices' },
+    { text: 'Eğitmene soru sorma hakkı', icon: 'support' },
+  ];
 
   /**
    * Satın alma kutusu.
@@ -682,11 +683,11 @@ export const CourseDetailPage = () => {
         güvence listesi vardı; ikisi de aynı soruyu yanıtlıyordu. Artık her
         satır doğrudan özelliği söylüyor, iki sütuna bölünmüş etiket yok.
       */}
-      <ul className="mt-4 pt-4 border-t border-slate-100 space-y-2">
+      <ul className="mt-4 pt-4 border-t border-slate-100 space-y-2.5">
         {courseFeatures.map(item => (
-          <li key={item} className="flex items-start gap-2.5 text-[13px] text-slate-700">
-            <Check className="w-3.5 h-3.5 text-brand-700 stroke-[3] mt-[3px] shrink-0" />
-            <span>{item}</span>
+          <li key={item.text} className="flex items-start gap-2.5 text-[13px] text-slate-700">
+            <FeatureIcon kind={item.icon} />
+            <span>{item.text}</span>
           </li>
         ))}
       </ul>
@@ -1110,24 +1111,40 @@ export const CourseDetailPage = () => {
                       {course.instructor_title || 'Eğitmen'}
                     </p>
 
-                    <div className="flex flex-wrap gap-x-5 gap-y-1 mt-2.5 text-[13.5px] text-slate-500">
-                      <span>
-                        <span className="font-semibold text-slate-900">
-                          {Number(course.instructor_total_students || course.instructor_students || 0).toLocaleString('tr-TR')}
-                        </span> öğrenci
-                      </span>
-                      <span>
-                        <span className="font-semibold text-slate-900">
-                          {course.instructor_course_count || course.instructor_courses || 1}
-                        </span> kurs
-                      </span>
-                      {Number(course.instructor_avg_rating || 0) > 0 && (
-                        <span>
-                          <span className="font-semibold text-slate-900">
-                            {Number(course.instructor_avg_rating).toFixed(1)}
-                          </span> ortalama puan
-                        </span>
-                      )}
+                    {/*
+                      Eğitmen ölçüleri — ayrı hücrelerde.
+
+                      "1 öğrenci · 1 kurs" düz metin olarak akıp gidiyordu;
+                      küçük sayılarda özellikle zayıf duruyordu. Her ölçü
+                      kendi hücresinde, sayı iri ve etiketi altında.
+                    */}
+                    <div className="flex flex-wrap gap-6 mt-3.5">
+                      {[
+                        {
+                          value: Number(course.instructor_total_students || course.instructor_students || 0)
+                            .toLocaleString('tr-TR'),
+                          label: 'Öğrenci',
+                        },
+                        {
+                          value: String(course.instructor_course_count || course.instructor_courses || 1),
+                          label: 'Kurs',
+                        },
+                        ...(Number(course.instructor_avg_rating || 0) > 0
+                          ? [{
+                            value: Number(course.instructor_avg_rating).toFixed(1),
+                            label: 'Ortalama puan',
+                          }]
+                          : []),
+                      ].map(stat => (
+                        <div key={stat.label}>
+                          <p className="font-montserrat text-[19px] font-extrabold text-brand-800 tabular-nums leading-none">
+                            {stat.value}
+                          </p>
+                          <p className="text-[11.5px] uppercase tracking-wider text-slate-400 font-semibold mt-1">
+                            {stat.label}
+                          </p>
+                        </div>
+                      ))}
                     </div>
 
                     {/* Uzun biyografi kırpılıyor */}
@@ -1441,4 +1458,70 @@ const CourseListRow: React.FC<{ course: any }> = ({ course }) => {
       </span>
     </Link>
   );
+};
+
+/**
+ * Özellik listesindeki simgeler.
+ *
+ * Ölçüler (seviye, dil, süre, ders, kaynak) onay işaretiyle; kursla birlikte
+ * gelen haklar kendi çizimiyle gösteriliyor. Simgeler hazır ikon setinden
+ * değil, doğrudan SVG olarak çiziliyor — böylece dördü de aynı kalınlıkta ve
+ * aynı ızgarada duruyor.
+ */
+const FeatureIcon: React.FC<{ kind: string }> = ({ kind }) => {
+  const common = 'w-4 h-4 shrink-0 mt-[2px] text-brand-700';
+  const stroke = {
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.8,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+  };
+
+  if (kind === 'check') {
+    return <Check className="w-3.5 h-3.5 shrink-0 mt-[3px] text-brand-700 stroke-[3]" />;
+  }
+
+  if (kind === 'access') {
+    // Sonsuzluk döngüsü — süresiz erişim
+    return (
+      <svg viewBox="0 0 24 24" className={common} {...stroke}>
+        <path d="M6.5 8.5c-2 0-3.5 1.6-3.5 3.5s1.5 3.5 3.5 3.5c3.5 0 5.5-7 9-7 2 0 3.5 1.6 3.5 3.5s-1.5 3.5-3.5 3.5c-3.5 0-5.5-7-9-7Z" />
+      </svg>
+    );
+  }
+
+  if (kind === 'certificate') {
+    // Kurdeleli belge
+    return (
+      <svg viewBox="0 0 24 24" className={common} {...stroke}>
+        <circle cx="12" cy="9" r="5" />
+        <path d="M9 13.5 8 21l4-2 4 2-1-7.5" />
+      </svg>
+    );
+  }
+
+  if (kind === 'devices') {
+    // Ekran + telefon
+    return (
+      <svg viewBox="0 0 24 24" className={common} {...stroke}>
+        <rect x="2" y="4" width="13" height="9" rx="1.5" />
+        <path d="M6 17h5" />
+        <rect x="17" y="9" width="5" height="11" rx="1.5" />
+      </svg>
+    );
+  }
+
+  if (kind === 'support') {
+    // Konuşma balonu + soru
+    return (
+      <svg viewBox="0 0 24 24" className={common} {...stroke}>
+        <path d="M20 12a7.5 7.5 0 0 1-10.9 6.7L4 20l1.3-4.1A7.5 7.5 0 1 1 20 12Z" />
+        <path d="M10.4 9.6a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.8.7-.8 1.2" />
+        <path d="M12 15.4h.01" />
+      </svg>
+    );
+  }
+
+  return <Check className="w-3.5 h-3.5 shrink-0 mt-[3px] text-brand-700 stroke-[3]" />;
 };
