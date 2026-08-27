@@ -252,22 +252,20 @@ const UserProfile: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-white">
-            {/* Üst band — markanın yeşili, tek renk */}
-            <div className="bg-brand-900 h-28 sm:h-32" />
-
+            
             <div className="container mx-auto px-4 max-w-6xl">
-                <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 -mt-16 sm:-mt-20 pb-16">
+                <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 pt-10 pb-16">
 
                     {/* ── Sol: kimlik, biyografi, kurslar ─────────────────── */}
                     <div className="lg:col-span-8 min-w-0">
-                        <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-5">
+                        <div className="flex items-center gap-4 sm:gap-5">
                             <UserAvatar
                                 src={user.image || undefined}
                                 name={user.name}
-                                className="w-24 h-24 sm:w-28 sm:h-28 ring-4 ring-white shadow-md shrink-0"
+                                className="w-20 h-20 sm:w-24 sm:h-24 ring-1 ring-slate-200 shrink-0"
                             />
-                            <div className="min-w-0 pb-1">
-                                <h1 className="font-montserrat text-[28px] sm:text-[34px] font-extrabold text-slate-900 tracking-[-0.025em] leading-tight break-words">
+                            <div className="min-w-0">
+                                <h1 className="font-montserrat text-[24px] sm:text-[30px] font-extrabold text-slate-900 tracking-[-0.025em] leading-tight break-words">
                                     {user.name}
                                 </h1>
                                 {subtitle && (
@@ -368,7 +366,7 @@ const UserProfile: React.FC = () => {
                     </div>
 
                     {/* ── Sağ ray: alanlar, kategoriler, bağlantılar ──────── */}
-                    <aside className="lg:col-span-4 lg:pt-24">
+                    <aside className="lg:col-span-4">
                         <div className="lg:sticky lg:top-20 space-y-8">
                             {isInstructor && (
                                 <p className="font-montserrat text-[19px] font-extrabold text-slate-900 tracking-[-0.02em]">
@@ -421,7 +419,7 @@ const UserProfile: React.FC = () => {
 
             {/* ── İlgini çekebilecek kurslar ─────────────────────────────── */}
             {notOwnedSuggestions.length > 0 && (
-                <section className="border-t border-slate-200 bg-slate-50">
+                <section className="border-t border-slate-200">
                     <div className="container mx-auto px-4 max-w-6xl py-12">
                         <h2 className="font-montserrat text-[22px] font-extrabold text-slate-900 tracking-[-0.02em]">
                             İlgini çekebilecek kurslar
