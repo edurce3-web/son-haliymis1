@@ -12,6 +12,8 @@ import HLSVideoPlayer from '@/components/video/HLSVideoPlayer';
 import { coursesAPI, cartAPI, enrollmentAPI, reviewsAPI, qaAPI, getCourseImageUrl, API_BASE_URL } from '@/lib/api';
 import { useSeo } from '@/hooks/useSeo';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
+import { useOwnedCourses } from '@/hooks/useOwnedCourses';
+import CatalogCourseCard from '@/components/catalog/CatalogCourseCard';
 
 /** Kanonik adreslerin tabanı. */
 const SITE_URL = 'https://edurce.com';
@@ -68,6 +70,8 @@ export const CourseDetailPage = () => {
   const [descExpanded, setDescExpanded] = useState(false);
   // Tum degerlendirmeler penceresi
   const [reviewsOpen, setReviewsOpen] = useState(false);
+  // Uzun egitmen biyografisi kirpiliyor
+  const [bioExpanded, setBioExpanded] = useState(false);
 
   /**
    * Mobil alt çubuğun görünürlüğü.
@@ -164,6 +168,9 @@ export const CourseDetailPage = () => {
    * Hook oldukları için erken return'lerden ÖNCE duruyorlar.
    */
   const { data: navData } = useCategoryNav();
+
+  // Ilgili kurs kartlarinin dogru butonu gostermesi icin
+  const { ownedIds, cartIds, progressById } = useOwnedCourses();
 
   const categorySlug = useMemo(() => {
     const source = courseData?.course;
@@ -648,6 +655,21 @@ export const CourseDetailPage = () => {
           )}
         </div>
       )}
+
+      {/* Kursla birlikte gelenler — kutunun altında kısa bir güvence listesi */}
+      <ul className="mt-4 pt-4 border-t border-slate-100 space-y-1.5">
+        {[
+          'Ömür boyu erişim, süre sınırı yok',
+          'Tamamlayanlara bitirme sertifikası',
+          'Telefon, tablet ve bilgisayardan izleme',
+          'Eğitmene soru sorma hakkı',
+        ].map(item => (
+          <li key={item} className="flex items-start gap-2 text-[12.5px] text-slate-600">
+            <Check className="w-3.5 h-3.5 text-brand-700 stroke-[3] mt-0.5 shrink-0" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 
@@ -665,6 +687,9 @@ export const CourseDetailPage = () => {
 
   /** Uzun açıklamalar kırpılıyor; eşik kabaca 6-7 satıra denk geliyor. */
   const isLongDescription = String(course.description || '').length > 600;
+
+  /** Egitmen biyografisi 320 karakteri asarsa kirpiliyor. */
+  const isLongBio = String(instructorBio || '').length > 320;
 
   /**
    * En iyi üç değerlendirme.
@@ -888,7 +913,7 @@ export const CourseDetailPage = () => {
 
             {/* ── Genel bakış ─────────────────────────────────────────── */}
             <section id="genel-bakis" className="scroll-mt-24 mt-8 rounded-xl border border-brand-100 bg-gradient-to-br from-brand-50/80 to-white p-4 sm:p-6">
-              <SectionTitle>Neler öğreneceksiniz</SectionTitle>
+              <SectionTitle hint="Kursu bitirdiğinizde yapabilecekleriniz">Neler öğreneceksiniz</SectionTitle>
               <div className="grid sm:grid-cols-2 gap-x-8 gap-y-2.5">
                 {learnItems.map((item: string, i: number) => (
                   <div key={i} className="flex gap-2.5 items-start">
@@ -969,7 +994,7 @@ export const CourseDetailPage = () => {
             {/* ── Kurs hakkında ───────────────────────────────────────── */}
             {course.description && (
               <section id="hakkinda" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
-                <SectionTitle>Kurs hakkında</SectionTitle>
+                <SectionTitle hint="Eğitmenin kendi anlatımıyla kursun kapsamı">Kurs hakkında</SectionTitle>
                 <div
                   className={cn(
                     'text-[15.5px] text-slate-600 leading-[1.8] break-words whitespace-pre-wrap relative',
@@ -997,7 +1022,12 @@ export const CourseDetailPage = () => {
             {suggestions?.relatedCourses?.length > 0 && (
               <section className="mt-10 pt-8 border-t border-slate-200">
                 <div className="flex flex-wrap items-baseline justify-between gap-3">
-                  <SectionTitle className="mb-0">Bu kursla ilgili kurslar</SectionTitle>
+                  <SectionTitle
+                    className="mb-0"
+                    hint="Aynı alanda öğrenenlerin birlikte aldığı kurslar"
+                  >
+                    Bu kursla ilgili kurslar
+                  </SectionTitle>
                   <Link
                     to={categorySlug ? `/courses/${categorySlug}` : '/courses'}
                     className="text-[13.5px] font-semibold text-brand-700 hover:text-brand-900 hover:underline"
@@ -1005,9 +1035,21 @@ export const CourseDetailPage = () => {
                     Tümünü gör
                   </Link>
                 </div>
-                <div className="mt-5 flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x">
-                  {suggestions.relatedCourses.slice(0, 8).map((c: any) => (
-                    <MiniCourseCard key={c.course_id ?? c.id} course={c} className="w-[210px]" />
+
+                {/*
+                  Kategori sayfasındaki kartın aynısı kullanılıyor. İkinci bir
+                  kart biçimi tutmak, biri değişince diğerinin geride kalması
+                  demek; tek bileşen iki yerde de aynı görünüyor.
+                */}
+                <div className="mt-5 grid grid-cols-1 min-[420px]:grid-cols-2 xl:grid-cols-3 gap-2.5">
+                  {suggestions.relatedCourses.slice(0, 6).map((c: any) => (
+                    <CatalogCourseCard
+                      key={c.course_id ?? c.id}
+                      course={c}
+                      owned={ownedIds.has(Number(c.course_id ?? c.id))}
+                      inCart={cartIds.has(Number(c.course_id ?? c.id))}
+                      progress={progressById.get(Number(c.course_id ?? c.id)) ?? 0}
+                    />
                   ))}
                 </div>
               </section>
@@ -1015,7 +1057,7 @@ export const CourseDetailPage = () => {
 
             {/* ── Eğitmen ─────────────────────────────────────────────── */}
             <section id="egitmen" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
-              <SectionTitle>Eğitmen</SectionTitle>
+              <SectionTitle hint="Bu kursu hazırlayan kişi">Eğitmen</SectionTitle>
 
               <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
                 <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
@@ -1058,24 +1100,45 @@ export const CourseDetailPage = () => {
                       )}
                     </div>
 
-                    <p className="text-[14px] text-slate-600 leading-[1.75] mt-3 whitespace-pre-wrap break-words">
+                    {/* Uzun biyografi kırpılıyor */}
+                    <p
+                      className={cn(
+                        'text-[14px] text-slate-600 leading-[1.75] mt-3 whitespace-pre-wrap break-words',
+                        !bioExpanded && isLongBio && 'line-clamp-4'
+                      )}
+                    >
                       {instructorBio}
                     </p>
+                    {isLongBio && (
+                      <button
+                        onClick={() => setBioExpanded(v => !v)}
+                        className="text-[13.5px] font-semibold text-brand-700 hover:text-brand-900 hover:underline mt-2"
+                      >
+                        {bioExpanded ? 'Daha az göster' : 'Daha fazlasını gör'}
+                      </button>
+                    )}
 
+                    {/* Uzmanlık alanları — çerçeveli hap yerine işaretli liste */}
                     {instructorExpertiseArray.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 mt-3">
-                        {instructorExpertiseArray.slice(0, 8).map((exp: string, idx: number) => (
-                          <span key={idx} className="text-[12.5px] text-slate-600 border border-slate-200 rounded-full px-2.5 py-0.5">
-                            {exp}
-                          </span>
-                        ))}
+                      <div className="mt-4">
+                        <p className="text-[12px] font-semibold uppercase tracking-wide text-slate-400 mb-2">
+                          Uzmanlık alanları
+                        </p>
+                        <div className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5">
+                          {instructorExpertiseArray.map((exp: string, idx: number) => (
+                            <span key={idx} className="flex items-start gap-2 text-[13.5px] text-slate-600">
+                              <Check className="w-3.5 h-3.5 text-brand-700 stroke-[3] mt-1 shrink-0" />
+                              <span className="break-words">{exp}</span>
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     )}
 
                     {instructorSlug && (
                       <Link
                         to={`/user/${instructorSlug}`}
-                        className="inline-block text-[13.5px] font-semibold text-brand-700 hover:text-brand-900 hover:underline mt-3"
+                        className="inline-block text-[13.5px] font-semibold text-brand-700 hover:text-brand-900 hover:underline mt-4"
                       >
                         Profili gör
                       </Link>
@@ -1083,17 +1146,30 @@ export const CourseDetailPage = () => {
                   </div>
                 </div>
 
-                {/* Eğitmenin diğer kursları — kartın hemen altında */}
+                {/*
+                  Eğitmenin diğer kursları — sıkı satırlar.
+
+                  Yan yana kart yerine liste: aynı eğitmenin kursları arasında
+                  gezinirken kapak görselinden çok başlık ve fiyat karşılaştırılıyor.
+                */}
                 {suggestions?.instructorCourses?.length > 0 && (
                   <div className="mt-5 pt-5 border-t border-slate-100">
                     <p className="text-[13px] font-semibold text-slate-700 mb-3">
                       Eğitmenin diğer kursları
                     </p>
-                    <div className="flex gap-3 overflow-x-auto pb-2 -mx-5 px-5 snap-x">
-                      {suggestions.instructorCourses.slice(0, 8).map((c: any) => (
-                        <MiniCourseCard key={c.course_id ?? c.id} course={c} className="w-[190px]" />
+                    <div className="space-y-2">
+                      {suggestions.instructorCourses.slice(0, 5).map((c: any) => (
+                        <CourseListRow key={c.course_id ?? c.id} course={c} />
                       ))}
                     </div>
+                    {instructorSlug && (
+                      <Link
+                        to={`/user/${instructorSlug}`}
+                        className="inline-block text-[13px] font-semibold text-brand-700 hover:text-brand-900 hover:underline mt-3"
+                      >
+                        Eğitmenin tüm kursları
+                      </Link>
+                    )}
                   </div>
                 )}
               </div>
@@ -1102,7 +1178,7 @@ export const CourseDetailPage = () => {
             {/* ── Değerlendirmeler ────────────────────────────────────── */}
             <section id="degerlendirmeler" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
-                <SectionTitle className="mb-0">Değerlendirmeler</SectionTitle>
+                <SectionTitle className="mb-0" hint="Kursu satın alan öğrencilerin yorumları">Değerlendirmeler</SectionTitle>
                 {reviewsCount > 0 && (
                   <p className="text-[13.5px] text-slate-500">
                     <span className="font-semibold text-slate-900">{Number(course.rating || 0).toFixed(1)}</span>
@@ -1232,12 +1308,18 @@ export const CourseDetailPage = () => {
 };
 
 /** Bölüm başlığı — altında markanın kısa çizgisi. */
-const SectionTitle: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
+const SectionTitle: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+  /** Basligin altina tek satirlik aciklama */
+  hint?: string;
+}> = ({ children, className, hint }) => (
   <div className={cn('mb-5', className)}>
     <h2 className="font-montserrat text-[19px] font-extrabold text-slate-900 tracking-[-0.02em]">
       {children}
     </h2>
     <span className="block w-8 h-[3px] rounded-full bg-brand-700 mt-2" />
+    {hint && <p className="text-[13.5px] text-slate-500 mt-2">{hint}</p>}
   </div>
 );
 
@@ -1287,33 +1369,75 @@ const ReviewItem: React.FC<{ review: any }> = ({ review }) => (
   </article>
 );
 
-/** İlgili kurslar şeridindeki küçük dikey kart. */
-const MiniCourseCard: React.FC<{ course: any; className?: string }> = ({ course, className }) => (
-  <Link
-    to={`/course/${course.slug || course.course_id || course.id}`}
-    target="_blank"
-    rel="noopener"
-    className={cn(
-      'group shrink-0 snap-start bg-white border border-slate-200 rounded-lg overflow-hidden flex flex-col transition-colors hover:border-brand-300',
-      className
-    )}
-  >
-    <div className="aspect-[16/9] bg-slate-100 overflow-hidden">
-      <img
-        src={getCourseImageUrl(course.course_id ?? course.id, course.image)}
-        alt={course.title}
-        loading="lazy"
-        className="w-full h-full object-cover"
-      />
-    </div>
-    <div className="p-2.5 flex flex-col flex-1">
-      <h3 className="text-[13px] font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-brand-800 transition-colors">
-        {course.title}
-      </h3>
-      <p className="text-[11.5px] text-slate-400 truncate mt-1">{course.instructor_name}</p>
-      <p className="text-[14px] font-bold text-slate-900 mt-auto pt-2">
-        {Number(course.price) > 0 ? formatPrice(Number(course.price)) : 'Ücretsiz'}
-      </p>
-    </div>
-  </Link>
-);
+/**
+ * Eğitmenin diğer kurslarında kullanılan sıkı liste satırı.
+ *
+ * Küçük kare kapak, başlık ve rozetler solda; fiyat sağda ayrı bir sütunda.
+ * Kapak görselinden çok başlık/puan/fiyat karşılaştırıldığı için kart yerine
+ * satır tercih edildi.
+ */
+const CourseListRow: React.FC<{ course: any }> = ({ course }) => {
+  const id = course.course_id ?? course.id;
+  const rating = Number(course.rating) || 0;
+  const reviewCount = Number(course.review_count) || 0;
+  const price = Number(course.price) || 0;
+
+  const chips = [
+    Number(course.student_count) > 0 && `${Number(course.student_count).toLocaleString('tr-TR')} öğrenci`,
+    Number(course.duration_hours) > 0 && `${Math.round(Number(course.duration_hours))} saat`,
+    course.level,
+  ].filter(Boolean) as string[];
+
+  return (
+    <Link
+      to={`/course/${course.slug || id}`}
+      target="_blank"
+      rel="noopener"
+      className="group flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-2.5 transition-colors hover:border-brand-300 hover:bg-brand-50/30"
+    >
+      <span className="w-14 h-14 shrink-0 rounded-md bg-slate-100 overflow-hidden">
+        <img
+          src={getCourseImageUrl(id, course.image)}
+          alt={course.title}
+          loading="lazy"
+          className="w-full h-full object-cover"
+        />
+      </span>
+
+      <span className="min-w-0 flex-1">
+        <span className="block text-[14px] font-bold text-slate-900 leading-snug line-clamp-1 group-hover:text-brand-800 transition-colors">
+          {course.title}
+        </span>
+        <span className="flex flex-wrap items-center gap-1.5 mt-1.5">
+          {reviewCount > 0 && (
+            <span className="inline-flex items-center gap-1 rounded bg-amber-50 border border-amber-200 px-1.5 py-0.5">
+              <span className="text-[11.5px] font-bold text-amber-700 tabular-nums">
+                {rating.toFixed(1)}
+              </span>
+              <Star className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
+            </span>
+          )}
+          {chips.map(chip => (
+            <span
+              key={chip}
+              className="text-[11.5px] text-slate-500 border border-slate-200 rounded px-1.5 py-0.5"
+            >
+              {chip}
+            </span>
+          ))}
+        </span>
+      </span>
+
+      <span className="shrink-0 pl-3 border-l border-slate-100 text-right">
+        <span className="block text-[15px] font-bold text-slate-900 whitespace-nowrap">
+          {price > 0 ? formatPrice(price) : 'Ücretsiz'}
+        </span>
+        {Number(course.original_price) > price && (
+          <span className="block text-[12px] text-slate-400 line-through whitespace-nowrap">
+            {formatPrice(Number(course.original_price))}
+          </span>
+        )}
+      </span>
+    </Link>
+  );
+};
