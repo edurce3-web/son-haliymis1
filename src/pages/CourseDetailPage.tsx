@@ -590,10 +590,10 @@ export const CourseDetailPage = () => {
 
   /** Kursla birlikte gelen haklar — her biri kendi simgesiyle. */
   const courseBenefits: Array<{ text: string; icon: string }> = [
-    { text: 'Ömür boyu erişim, süre sınırı yok', icon: 'access' },
-    { text: 'Tamamlayanlara bitirme sertifikası', icon: 'certificate' },
-    { text: 'Telefon, tablet ve bilgisayardan izleme', icon: 'devices' },
-    { text: 'Eğitmene soru sorma hakkı', icon: 'support' },
+    { text: 'Ömür Boyu Erişim', icon: 'access' },
+    { text: 'Bitirme Sertifikası', icon: 'certificate' },
+    { text: 'Mobil & TV İzleme', icon: 'devices' },
+    { text: 'Eğitmene Soru Sorma', icon: 'support' },
   ];
 
   /**
@@ -741,7 +741,7 @@ export const CourseDetailPage = () => {
         böylece sayfa renkli bir başlangıçla açılıyor ama gövde beyaz kalıyor.
       */}
       <div className="bg-brand-900 pt-4 pb-24 lg:pb-28">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <nav className="flex items-center text-[13px] text-brand-200 gap-2 overflow-hidden whitespace-nowrap">
             {categorySlug ? (
               <Link to={`/courses/${categorySlug}`} className="hover:text-white transition-colors truncate max-w-[170px]">
@@ -769,10 +769,10 @@ export const CourseDetailPage = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 max-w-6xl">
+      <div className="container mx-auto px-4 max-w-[1400px]">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 -mt-20 lg:-mt-24 pb-10 relative">
           {/* ── Sol: oynatıcı, başlık, künye, satın alma, içerik ───────── */}
-          <div className="lg:col-span-8 min-w-0">
+          <div className="lg:col-span-8 xl:col-span-9 min-w-0">
             {/*
               Oynatıcı en üstte ve sütunun tamamını kaplıyor. Önizlemeye açık
               dersler müfredat listesinde "Önizle" etiketiyle zaten işaretli;
@@ -1233,7 +1233,7 @@ export const CourseDetailPage = () => {
             {/* ── Değerlendirmeler ────────────────────────────────────── */}
             <section id="degerlendirmeler" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
-                <SectionTitle className="mb-0" hint="Kursu satın alan öğrencilerin yorumları">Değerlendirmeler</SectionTitle>
+                <SectionTitle className="mb-0">Değerlendirmeler</SectionTitle>
                 {reviewsCount > 0 && (
                   <p className="text-[13.5px] text-slate-500">
                     <span className="font-semibold text-slate-900">{Number(course.rating || 0).toFixed(1)}</span>
@@ -1268,7 +1268,7 @@ export const CourseDetailPage = () => {
           </div>
 
           {/* ── Sağ: satın alma ve kurs özellikleri (geniş ekran) ──────── */}
-          <aside className="hidden lg:block lg:col-span-4">
+          <aside className="hidden lg:block lg:col-span-4 xl:col-span-3">
             <div className="lg:sticky lg:top-20">
               <PurchaseBox />
 
