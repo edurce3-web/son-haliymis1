@@ -734,6 +734,22 @@ export const CourseDetailPage = () => {
     })
     .slice(0, 3);
 
+  /**
+   * Puan dağılımı — 5'ten 1'e yüzdeler.
+   *
+   * Sunucu dağılımı ayrıca vermiyor; elimizdeki yorum listesinden
+   * hesaplanıyor. Liste kırpılmış olabileceği için yüzdeler "gösterilen
+   * yorumlar" üzerinden çıkıyor, bu da eğilimi görmek için yeterli.
+   */
+  const ratingBreakdown = [5, 4, 3, 2, 1].map(star => {
+    const count = reviewsList.filter((r: any) => Math.round(Number(r.rating) || 0) === star).length;
+    return {
+      star,
+      count,
+      percent: reviewsList.length > 0 ? Math.round((count / reviewsList.length) * 100) : 0,
+    };
+  });
+
   return (
     <div className="min-h-screen bg-white font-sans text-slate-800 pb-20 lg:pb-0">
       {/*
@@ -741,7 +757,7 @@ export const CourseDetailPage = () => {
         böylece sayfa renkli bir başlangıçla açılıyor ama gövde beyaz kalıyor.
       */}
       <div className="bg-brand-900 pt-4 pb-24 lg:pb-28">
-        <div className="container mx-auto px-4 max-w-[1400px]">
+        <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px]">
           <nav className="flex items-center text-[13px] text-brand-200 gap-2 overflow-hidden whitespace-nowrap">
             {categorySlug ? (
               <Link to={`/courses/${categorySlug}`} className="hover:text-white transition-colors truncate max-w-[170px]">
@@ -769,7 +785,7 @@ export const CourseDetailPage = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 max-w-[1400px]">
+      <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px]">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 -mt-20 lg:-mt-24 pb-10 relative">
           {/* ── Sol: oynatıcı, başlık, künye, satın alma, içerik ───────── */}
           <div className="lg:col-span-8 xl:col-span-9 min-w-0">
@@ -778,7 +794,7 @@ export const CourseDetailPage = () => {
               dersler müfredat listesinde "Önizle" etiketiyle zaten işaretli;
               yanda ikinci bir liste tutmak videoyu daraltıyordu.
             */}
-            <div className="relative aspect-video bg-slate-900 rounded-xl overflow-hidden group ring-1 ring-slate-900/5">
+            <div className="relative aspect-video bg-slate-900 rounded-xl overflow-hidden group ring-1 ring-slate-900/5 max-w-3xl">
               {isVideoPlaying && (previewLesson || course.preview_video) ? (
                 <>
                   {previewLesson?.video_type === 'hls' ? (
@@ -1232,35 +1248,69 @@ export const CourseDetailPage = () => {
 
             {/* ── Değerlendirmeler ────────────────────────────────────── */}
             <section id="degerlendirmeler" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
-              <div className="flex flex-wrap items-baseline justify-between gap-3">
-                <SectionTitle className="mb-0">Değerlendirmeler</SectionTitle>
-                {reviewsCount > 0 && (
-                  <p className="text-[13.5px] text-slate-500">
-                    <span className="font-semibold text-slate-900">{Number(course.rating || 0).toFixed(1)}</span>
-                    {' '}ortalama · {reviewsCount} değerlendirme
-                  </p>
-                )}
-              </div>
+              <SectionTitle>Değerlendirmeler</SectionTitle>
 
               {topReviews.length > 0 ? (
                 <>
-                  <div className="mt-5 border-t border-slate-200 divide-y divide-slate-100">
+                  {/*
+                    Özet paneli.
+
+                    Solda ortalama puan iri rakamla, sağda puan dağılımı.
+                    Dağılım tek başına "4,6" rakamının söylemediğini söylüyor:
+                    puanın az sayıda uç yorumdan mı yoksa geneli memnun bir
+                    kitleden mi geldiği görünüyor.
+                  */}
+                  <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 rounded-xl border border-slate-200 bg-slate-50/60 p-5 sm:p-6">
+                    <div className="flex sm:flex-col items-center sm:items-start gap-4 sm:gap-1 shrink-0">
+                      <span className="font-montserrat text-[44px] font-extrabold text-slate-900 tabular-nums leading-none">
+                        {Number(course.rating || 0).toFixed(1).replace('.', ',')}
+                      </span>
+                      <span className="sm:mt-2">
+                        <StarRating rating={Number(course.rating || 0)} size={18} />
+                        <span className="block text-[13px] text-slate-500 mt-1.5">
+                          {reviewsCount} değerlendirme
+                        </span>
+                      </span>
+                    </div>
+
+                    <div className="flex-1 min-w-0 space-y-1.5">
+                      {ratingBreakdown.map(row => (
+                        <div key={row.star} className="flex items-center gap-3">
+                          <span className="text-[12.5px] text-slate-500 tabular-nums w-8 shrink-0">
+                            {row.star} ★
+                          </span>
+                          <span className="flex-1 h-2 rounded-full bg-slate-200 overflow-hidden">
+                            <span
+                              className="block h-full rounded-full bg-amber-400"
+                              style={{ width: `${row.percent}%` }}
+                            />
+                          </span>
+                          <span className="text-[12.5px] text-slate-400 tabular-nums w-9 text-right shrink-0">
+                            %{row.percent}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Öne çıkan yorumlar */}
+                  <div className="grid sm:grid-cols-2 gap-3 mt-5">
                     {topReviews.map((review: any) => (
-                      <ReviewItem key={review.review_id} review={review} />
+                      <ReviewCard key={review.review_id} review={review} />
                     ))}
                   </div>
 
                   {reviewsList.length > topReviews.length && (
                     <button
                       onClick={() => setReviewsOpen(true)}
-                      className="h-10 px-5 mt-4 rounded-md border border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-700 text-[14px] font-semibold transition-colors"
+                      className="h-11 px-6 mt-4 rounded-lg border border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-700 text-[14px] font-semibold transition-colors"
                     >
                       {reviewsList.length} değerlendirmenin tümünü gör
                     </button>
                   )}
                 </>
               ) : (
-                <p className="text-[14.5px] text-slate-500 mt-4">
+                <p className="text-[14.5px] text-slate-500">
                   Bu kurs için henüz değerlendirme yapılmamış.
                 </p>
               )}
@@ -1542,3 +1592,36 @@ const FeatureIcon: React.FC<{ kind: string }> = ({ kind }) => {
 
   return <Check className="w-3.5 h-3.5 shrink-0 mt-[3px] text-brand-700 stroke-[3]" />;
 };
+
+/**
+ * Öne çıkan yorum kartı.
+ *
+ * Pencerede kullanılan liste satırından ayrı: sayfada iki sütuna dizildiği
+ * için sabit yükseklikte durması ve uzun yorumların kırpılması gerekiyor.
+ */
+const ReviewCard: React.FC<{ review: any }> = ({ review }) => (
+  <article className="rounded-xl border border-slate-200 p-4 flex flex-col transition-colors hover:border-brand-300">
+    <div className="flex items-center gap-3">
+      <Avatar className="w-9 h-9 ring-1 ring-slate-200">
+        <AvatarFallback className="bg-brand-50 text-brand-800 font-bold text-[13px]">
+          {review.reviewer_name?.charAt(0)}
+        </AvatarFallback>
+      </Avatar>
+      <div className="min-w-0 flex-1">
+        <h4 className="font-semibold text-[14px] text-slate-900 truncate">{review.reviewer_name}</h4>
+        <span className="text-[12px] text-slate-400">
+          {new Date(review.created_at).toLocaleDateString('tr-TR', {
+            day: 'numeric', month: 'long', year: 'numeric',
+          })}
+        </span>
+      </div>
+      <StarRating rating={Number(review.rating || 0)} size={13} />
+    </div>
+
+    {review.comment && (
+      <p className="text-slate-600 text-[14px] leading-[1.7] mt-3 line-clamp-5">
+        {review.comment}
+      </p>
+    )}
+  </article>
+);

@@ -163,14 +163,7 @@ const UserProfile: React.FC = () => {
     /** Üstteki büyük ölçüler — role göre değişiyor. */
     const stats = isInstructor && instructor
         ? [
-            { value: compact(instructor.totalStudents), label: 'Toplam öğrenci' },
-            { value: String(instructor.courseCount), label: 'Yayındaki kurs' },
-            ...(instructor.totalReviews > 0
-                ? [{ value: compact(instructor.totalReviews), label: 'Değerlendirme' }]
-                : []),
-            ...(instructor.totalHours > 0
-                ? [{ value: String(instructor.totalHours), label: 'Saat içerik' }]
-                : []),
+            { value: compact(instructor.totalStudents), label: 'Öğrenci' },
         ]
         : [
             { value: String(learning.enrolledCount), label: 'Kayıtlı kurs' },
@@ -208,83 +201,94 @@ const UserProfile: React.FC = () => {
     return (
         <div className="min-h-screen bg-white">
             {/*
-                Üst band.
+                Kimlik bloğu.
 
-                Koyu bir kapak yerine markanın açık tonunda bir zemin; üzerine
-                ince bir ızgara dokusu bindiriliyor. İsim bandın içinde,
-                fotoğraf ise bandın alt kenarına oturan beyaz bir kartta —
-                sayfa düz bir başlıkla değil, katmanla açılıyor.
+                Fotoğraf ve künye tek satırda: solda büyük yuvarlak fotoğraf,
+                sağda rol etiketi, ad, unvan ve ölçüler. Ölçüler ayrı bir
+                şeride bölünmüyordu — "0 Toplam öğrenci" gibi tek haneli
+                değerler kocaman rakamlarla boşlukta duruyordu. Burada
+                değerler satır hâlinde, puan yıldızla.
             */}
-            <div className="relative bg-gradient-to-br from-brand-50 via-brand-100/70 to-brand-50 border-b border-brand-100">
+            <div className="relative bg-gradient-to-br from-brand-50 via-brand-100/60 to-white border-b border-brand-100">
                 <div
                     aria-hidden
                     className="absolute inset-0 opacity-40"
                     style={{
                         backgroundImage:
-                            'linear-gradient(to right, rgba(23,93,93,0.07) 1px, transparent 1px),'
-                            + 'linear-gradient(to bottom, rgba(23,93,93,0.07) 1px, transparent 1px)',
-                        backgroundSize: '32px 32px',
+                            'linear-gradient(to right, rgba(23,93,93,0.06) 1px, transparent 1px),'
+                            + 'linear-gradient(to bottom, rgba(23,93,93,0.06) 1px, transparent 1px)',
+                        backgroundSize: '34px 34px',
                     }}
                 />
 
-                <div className="container relative mx-auto px-4 max-w-[1400px]">
-                    <div className="grid lg:grid-cols-12 gap-6 items-start pt-10 pb-14 lg:pb-16">
-                        <div className="lg:col-span-8 min-w-0">
+                <div className="container relative mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-10 lg:py-14">
+                    <div className="flex flex-col sm:flex-row gap-6 sm:gap-9 items-start">
+                        <UserAvatar
+                            src={user.image || undefined}
+                            name={user.name}
+                            className="w-32 h-32 sm:w-40 sm:h-40 shrink-0 ring-4 ring-white shadow-[0_16px_40px_-18px_rgba(15,23,42,0.4)]"
+                        />
+
+                        <div className="min-w-0 flex-1">
                             <p className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.2em] text-brand-700">
                                 {isInstructor ? 'Eğitmen' : 'Öğrenci'}
                             </p>
-                            <h1 className="font-montserrat text-[30px] sm:text-[40px] lg:text-[46px] font-extrabold text-slate-900 tracking-[-0.03em] leading-[1.05] mt-2 break-words">
+                            <h1 className="font-montserrat text-[30px] sm:text-[40px] font-extrabold text-slate-900 tracking-[-0.03em] leading-[1.05] mt-1.5 break-words">
                                 {user.name}
                             </h1>
-                            <p className="text-[15px] sm:text-[17px] text-slate-600 mt-3">
+                            <p className="text-[15px] sm:text-[16px] text-slate-600 mt-2">
                                 {title || (isInstructor ? 'Eğitmen' : 'Öğrenci')}
                                 {joined && (
                                     <span className="text-slate-400"> · {joined} tarihinde katıldı</span>
                                 )}
                             </p>
 
-                            {isOwnProfile && (
-                                <Link
-                                    to="/home/settings/profile"
-                                    className="inline-block text-[13.5px] font-semibold text-brand-800 hover:text-brand-900 hover:underline mt-4"
-                                >
-                                    Profili düzenle
-                                </Link>
-                            )}
-                        </div>
-
-                        {/* Fotoğraf kartı — bandın alt kenarına oturuyor */}
-                        <div className="lg:col-span-4 lg:justify-self-end w-full lg:w-auto">
-                            <div className="bg-white rounded-2xl border border-brand-100 shadow-[0_18px_44px_-22px_rgba(15,23,42,0.35)] p-5 w-full lg:w-[250px] lg:-mb-20">
-                                <UserAvatar
-                                    src={user.image || undefined}
-                                    name={user.name}
-                                    className="w-28 h-28 mx-auto ring-1 ring-slate-200"
-                                />
-
-                                {instructor && instructor.averageRating > 0 && (
-                                    <div className="flex flex-col items-center gap-1 mt-4">
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-montserrat text-[18px] font-extrabold text-amber-600 tabular-nums leading-none">
-                                                {instructor.averageRating.toFixed(1)}
-                                            </span>
-                                            <StarRating rating={instructor.averageRating} size={14} />
-                                        </div>
-                                        <span className="text-[12px] text-slate-400">
-                                            {compact(instructor.totalReviews)} değerlendirme
+                            {/* Ölçüler — puan yıldızla, diğerleri sayı olarak */}
+                            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 mt-5">
+                                {isInstructor && instructor && instructor.averageRating > 0 && (
+                                    <span className="flex items-center gap-2.5">
+                                        <span className="font-montserrat text-[24px] font-extrabold text-amber-600 tabular-nums leading-none">
+                                            {instructor.averageRating.toFixed(1).replace('.', ',')}
                                         </span>
-                                    </div>
+                                        <span>
+                                            <StarRating rating={instructor.averageRating} size={17} />
+                                            <span className="block text-[12.5px] text-slate-500 mt-1">
+                                                {compact(instructor.totalReviews)} değerlendirme
+                                            </span>
+                                        </span>
+                                    </span>
                                 )}
 
+                                {stats.map(stat => (
+                                    <span key={stat.label}>
+                                        <span className="block font-montserrat text-[24px] font-extrabold text-slate-900 tabular-nums leading-none">
+                                            {stat.value}
+                                        </span>
+                                        <span className="block text-[12.5px] text-slate-500 mt-1">
+                                            {stat.label}
+                                        </span>
+                                    </span>
+                                ))}
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-4 mt-5">
                                 {user.website && (
                                     <a
                                         href={user.website}
                                         target="_blank"
                                         rel="noopener noreferrer nofollow"
-                                        className="block text-center text-[13px] font-semibold text-brand-700 hover:text-brand-900 hover:underline mt-4 break-all"
+                                        className="text-[13.5px] font-semibold text-brand-700 hover:text-brand-900 hover:underline break-all"
                                     >
                                         {user.website.replace(/^https?:\/\//, '')}
                                     </a>
+                                )}
+                                {isOwnProfile && (
+                                    <Link
+                                        to="/home/settings/profile"
+                                        className="text-[13.5px] font-semibold text-brand-800 hover:text-brand-900 hover:underline"
+                                    >
+                                        Profili düzenle
+                                    </Link>
                                 )}
                             </div>
                         </div>
@@ -292,21 +296,11 @@ const UserProfile: React.FC = () => {
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 max-w-[1400px]">
+            <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px]">
                 <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 pt-10 pb-16">
 
-                    {/* ── Sol: ölçüler, hakkında, kurslar ─────────────────── */}
+                    {/* ── Sol: hakkında ve kurslar ────────────────────────── */}
                     <div className="lg:col-span-8 min-w-0">
-                        <div className="flex flex-wrap gap-x-10 gap-y-5 pb-8 border-b border-slate-200">
-                            {stats.map(stat => (
-                                <div key={stat.label}>
-                                    <p className="font-montserrat text-[26px] sm:text-[30px] font-extrabold text-slate-900 tabular-nums leading-none">
-                                        {stat.value}
-                                    </p>
-                                    <p className="text-[12.5px] text-slate-500 mt-1.5">{stat.label}</p>
-                                </div>
-                            ))}
-                        </div>
 
                         {user.bio && (
                             <section className="mt-9">
@@ -431,28 +425,6 @@ const UserProfile: React.FC = () => {
                                 </div>
                             )}
 
-                            {isInstructor && instructor && (
-                                <div className="rounded-xl border border-slate-200 p-4">
-                                    <p className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400 mb-3">
-                                        Özet
-                                    </p>
-                                    <dl className="space-y-2.5 text-[13.5px]">
-                                        {[
-                                            { k: 'Yayındaki kurs', v: String(instructor.courseCount) },
-                                            { k: 'Toplam öğrenci', v: compact(instructor.totalStudents) },
-                                            ...(instructor.totalHours > 0
-                                                ? [{ k: 'İçerik süresi', v: `${instructor.totalHours} saat` }]
-                                                : []),
-                                            ...(joined ? [{ k: 'Katılım', v: joined }] : []),
-                                        ].map(row => (
-                                            <div key={row.k} className="flex items-center justify-between gap-4">
-                                                <dt className="text-slate-500">{row.k}</dt>
-                                                <dd className="font-semibold text-slate-900 text-right">{row.v}</dd>
-                                            </div>
-                                        ))}
-                                    </dl>
-                                </div>
-                            )}
                         </div>
                     </aside>
                 </div>
@@ -461,7 +433,7 @@ const UserProfile: React.FC = () => {
             {/* ── İlgini çekebilecek kurslar ─────────────────────────────── */}
             {notOwnedSuggestions.length > 0 && (
                 <section className="border-t border-slate-200 bg-slate-50/70">
-                    <div className="container mx-auto px-4 max-w-[1400px] py-12">
+                    <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-12">
                         <Heading>İlgini çekebilecek kurslar</Heading>
                         <div className="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-4 gap-2.5">
                             {notOwnedSuggestions.slice(0, 8).map((c: any) => (
