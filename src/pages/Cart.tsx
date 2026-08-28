@@ -34,7 +34,6 @@ const Cart = () => {
   const [removingId, setRemovingId] = useState<number | null>(null);
   // Sepettekilere göre öneriler ve kullanılabilir kredi
   const [recommended, setRecommended] = useState<CartItem[]>([]);
-  const [creditQuote, setCreditQuote] = useState<{ usableCredits: number; discount: number } | null>(null);
   const [addingId, setAddingId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -143,10 +142,6 @@ const Cart = () => {
       .then(d => setRecommended(d.courses || []))
       .catch(() => setRecommended([]));
 
-    fetch(`${API_BASE_URL}/credits/quote?total=${total}`, { headers: auth })
-      .then(r => (r.ok ? r.json() : null))
-      .then(setCreditQuote)
-      .catch(() => setCreditQuote(null));
   }, [cartItems, total]);
 
   if (isLoading) {
@@ -275,19 +270,6 @@ const Cart = () => {
                     {formatPrice(total)}
                   </span>
                 </div>
-
-                {/* Kredi indirimi — kullanılabilir bakiye varsa göster */}
-                {creditQuote && creditQuote.usableCredits > 0 && (
-                  <div className="mt-4 bg-brand-50 border border-brand-100 rounded-xl px-4 py-3">
-                    <p className="text-sm text-brand-800">
-                      <strong>{creditQuote.usableCredits.toLocaleString('tr-TR')} kredin</strong>{' '}
-                      bu siparişte {formatPrice(creditQuote.discount)} indirim sağlar.
-                    </p>
-                    <p className="text-xs text-brand-700/70 mt-1">
-                      Ödeme sayfasında uygulayabilirsin.
-                    </p>
-                  </div>
-                )}
 
                 <Button
                   onClick={() => navigate('/checkout')}
