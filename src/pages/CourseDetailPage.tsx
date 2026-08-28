@@ -753,14 +753,29 @@ export const CourseDetailPage = () => {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-800 pb-20 lg:pb-0">
       {/*
-        Üst band markanın yeşilinde. Oynatıcı bandın alt kenarına biniyor;
-        böylece sayfa renkli bir başlangıçla açılıyor ama gövde beyaz kalıyor.
+        Üst band.
+
+        Profil sayfasıyla aynı dil: markanın açık tonunda bir zemin ve ince
+        ızgara dokusu. Bandın içinde ekmek kırıntısı ve kursun künyesi var;
+        oynatıcı ile satın alma kutusu bandın hemen altından, aynı hizadan
+        başlıyor.
       */}
-      <div className="bg-brand-900 pt-4 pb-24 lg:pb-28">
-        <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px]">
-          <nav className="flex items-center text-[13px] text-brand-200 gap-2 overflow-hidden whitespace-nowrap">
+      <div className="relative bg-gradient-to-br from-brand-50 via-brand-100/60 to-white border-b border-brand-100">
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage:
+              'linear-gradient(to right, rgba(23,93,93,0.06) 1px, transparent 1px),'
+              + 'linear-gradient(to bottom, rgba(23,93,93,0.06) 1px, transparent 1px)',
+            backgroundSize: '34px 34px',
+          }}
+        />
+
+        <div className="container relative mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-5">
+          <nav className="flex items-center text-[13px] text-slate-500 gap-2 overflow-hidden whitespace-nowrap">
             {categorySlug ? (
-              <Link to={`/courses/${categorySlug}`} className="hover:text-white transition-colors truncate max-w-[170px]">
+              <Link to={`/courses/${categorySlug}`} className="hover:text-brand-800 transition-colors truncate max-w-[170px]">
                 {course.category_name}
               </Link>
             ) : (
@@ -768,11 +783,11 @@ export const CourseDetailPage = () => {
             )}
             {course.subcategory_name && (
               <>
-                <span className="text-brand-600">/</span>
+                <span className="text-slate-300">/</span>
                 {categorySlug && subcategorySlug ? (
                   <Link
                     to={`/courses/${categorySlug}/${subcategorySlug}`}
-                    className="hover:text-white transition-colors truncate max-w-[170px]"
+                    className="hover:text-brand-800 transition-colors truncate max-w-[170px]"
                   >
                     {course.subcategory_name}
                   </Link>
@@ -782,80 +797,61 @@ export const CourseDetailPage = () => {
               </>
             )}
           </nav>
+
+          {/* Künye — tek satır düz metin, bandın içinde */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-3 text-[14px] text-slate-600">
+            {reviewsCount > 0 && (
+              <>
+                <span className="flex items-center gap-1.5">
+                  <span className="font-bold text-amber-600 tabular-nums">
+                    {Number(course.rating || 0).toFixed(1).replace('.', ',')}
+                  </span>
+                  <StarRating rating={Number(course.rating || 0)} size={14} />
+                  <span className="text-slate-500">({reviewsCount} değerlendirme)</span>
+                </span>
+                <span className="text-slate-300">·</span>
+              </>
+            )}
+
+            <span className="text-slate-500">
+              <span className="font-semibold text-slate-900">
+                {Number(course.student_count || 0).toLocaleString('tr-TR')}
+              </span> öğrenci
+            </span>
+
+            <span className="text-slate-300">·</span>
+            <span className="text-slate-500">
+              {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
+                month: 'long', year: 'numeric',
+              })} güncellemesi
+            </span>
+
+            <span className="text-slate-300">·</span>
+            <InstructorLink className="inline-flex items-center gap-2 group">
+              <Avatar className="w-6 h-6 ring-1 ring-white shrink-0">
+                <AvatarImage src={instructorAvatar} alt={instructorFullName} />
+                <AvatarFallback className="bg-brand-200 text-brand-900 text-[10px] font-bold">
+                  {instructorFullName.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <span className="font-semibold text-slate-900 group-hover:text-brand-800 transition-colors">
+                {instructorFullName}
+              </span>
+            </InstructorLink>
+          </div>
         </div>
       </div>
 
       <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px]">
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 -mt-20 lg:-mt-24 pb-10 relative">
-          {/* ── Sol: oynatıcı, başlık, künye, satın alma, içerik ───────── */}
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 pt-8 pb-10">
+          {/* ── Sol: oynatıcı, başlık, içerik ──────────────────────────── */}
           <div className="lg:col-span-8 min-w-0">
-            {/* Başlık ve alt başlık — sayfanın en üstünde */}
-            <h1 className="font-montserrat text-[24px] sm:text-[30px] font-extrabold text-slate-900 leading-[1.15] tracking-[-0.025em] break-words">
-              {course.title}
-            </h1>
-
-            {course.short_description && (
-              <p className="text-[15.5px] sm:text-[16.5px] text-slate-600 leading-[1.6] mt-3 break-words max-w-2xl">
-                {course.short_description}
-              </p>
-            )}
-
             {/*
-              Künye — tek satır düz metin.
-
-              Dört hücreli çerçeveli şerit sayfanın üstünde ağır duruyordu.
-              Bilgiler aynı, sunumu sade: noktalarla ayrılmış bir satır ve
-              sonunda eğitmen bağlantısı.
-            */}
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-4 text-[14px] text-slate-500">
-              {reviewsCount > 0 && (
-                <>
-                  <span className="flex items-center gap-1.5">
-                    <span className="font-bold text-amber-600 tabular-nums">
-                      {Number(course.rating || 0).toFixed(1).replace('.', ',')}
-                    </span>
-                    <StarRating rating={Number(course.rating || 0)} size={14} />
-                    <span>({reviewsCount} değerlendirme)</span>
-                  </span>
-                  <span className="text-slate-300">·</span>
-                </>
-              )}
-
-              <span>
-                <span className="font-semibold text-slate-900">
-                  {Number(course.student_count || 0).toLocaleString('tr-TR')}
-                </span> öğrenci
-              </span>
-
-              <span className="text-slate-300">·</span>
-              <span>
-                {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
-                  month: 'long', year: 'numeric',
-                })} güncellemesi
-              </span>
-
-              <span className="text-slate-300">·</span>
-              <InstructorLink className="inline-flex items-center gap-2 group">
-                <Avatar className="w-6 h-6 ring-1 ring-slate-200 shrink-0">
-                  <AvatarImage src={instructorAvatar} alt={instructorFullName} />
-                  <AvatarFallback className="bg-brand-100 text-brand-800 text-[10px] font-bold">
-                    {instructorFullName.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="font-semibold text-slate-900 group-hover:text-brand-800 transition-colors">
-                  {instructorFullName}
-                </span>
-              </InstructorLink>
-            </div>
-
-            {/*
-              Oynatıcı — künyenin altında ve ölçülü.
-
+              Oynatıcı en üstte; satın alma kutusuyla aynı hizadan başlıyor.
               Önizlemeye açık dersler müfredat listesinde "Önizle" etiketiyle
-              zaten işaretli; yanda ikinci bir liste tutmak videoyu
-              daraltıyordu.
+              zaten işaretli; yanda ikinci bir liste videoyu daraltıyordu.
             */}
-            <div className="relative aspect-video bg-slate-900 rounded-xl overflow-hidden group ring-1 ring-slate-900/5 max-w-2xl mt-6">
+            <div className="relative aspect-video bg-slate-900 rounded-xl overflow-hidden group ring-1 ring-slate-900/5 max-w-2xl">
               {isVideoPlaying && (previewLesson || course.preview_video) ? (
                 <>
                   {previewLesson?.video_type === 'hls' ? (
@@ -942,6 +938,17 @@ export const CourseDetailPage = () => {
                 </button>
               )}
             </div>
+
+            {/* Başlık ve alt başlık — oynatıcının altında */}
+            <h1 className="font-montserrat text-[24px] sm:text-[30px] font-extrabold text-slate-900 leading-[1.15] tracking-[-0.025em] break-words mt-6">
+              {course.title}
+            </h1>
+
+            {course.short_description && (
+              <p className="text-[15.5px] sm:text-[16.5px] text-slate-600 leading-[1.6] mt-3 break-words max-w-2xl">
+                {course.short_description}
+              </p>
+            )}
 
             {/*
               Mobil satın alma bloğu.

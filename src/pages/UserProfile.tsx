@@ -226,7 +226,7 @@ const UserProfile: React.FC = () => {
                         <UserAvatar
                             src={user.image || undefined}
                             name={user.name}
-                            className="w-32 h-32 sm:w-40 sm:h-40 shrink-0 ring-4 ring-white shadow-[0_16px_40px_-18px_rgba(15,23,42,0.4)]"
+                            className="w-36 h-36 sm:w-52 sm:h-52 shrink-0 ring-4 ring-white shadow-[0_20px_50px_-20px_rgba(15,23,42,0.45)]"
                         />
 
                         <div className="min-w-0 flex-1">
@@ -236,12 +236,26 @@ const UserProfile: React.FC = () => {
                             <h1 className="font-montserrat text-[30px] sm:text-[40px] font-extrabold text-slate-900 tracking-[-0.03em] leading-[1.05] mt-1.5 break-words">
                                 {user.name}
                             </h1>
-                            <p className="text-[15px] sm:text-[16px] text-slate-600 mt-2">
-                                {title || (isInstructor ? 'Eğitmen' : 'Öğrenci')}
-                                {joined && (
-                                    <span className="text-slate-400"> · {joined} tarihinde katıldı</span>
-                                )}
-                            </p>
+                            {/*
+                              Ad altındaki satır: unvan ve uzmanlık alanları.
+
+                              Öncesinde "Eğitmen · Ağustos 2026 tarihinde
+                              katıldı" yazıyordu; rol zaten üstteki etikette,
+                              tarih ise kimseye bir şey söylemiyordu.
+                            */}
+                            {(title || expertise?.length > 0) && (
+                                <p className="text-[15px] sm:text-[16.5px] text-slate-600 mt-2.5 leading-relaxed">
+                                    {title}
+                                    {title && expertise?.length > 0 && (
+                                        <span className="text-slate-300"> · </span>
+                                    )}
+                                    {expertise?.length > 0 && (
+                                        <span className="text-slate-500">
+                                            {expertise.slice(0, 4).join(', ')}
+                                        </span>
+                                    )}
+                                </p>
+                            )}
 
                             {/* Ölçüler — puan yıldızla, diğerleri sayı olarak */}
                             <div className="flex flex-wrap items-center gap-x-8 gap-y-3 mt-5">
