@@ -64,12 +64,12 @@ export const PageLayout: React.FC<Props> = ({
         <div className="min-h-screen bg-white">
             <PageHeader title={title} lead={lead} updatedAt={updatedAt} />
 
-            <div className="container px-4 py-16 lg:py-24">
+            <div className="container px-5 sm:px-8 py-14 lg:py-20 max-w-[1100px]">
                 {sections?.length ? (
                     <div className="flex flex-col lg:flex-row gap-14 lg:gap-20">
                         <TableOfContents sections={sections} activeId={activeId} />
 
-                        <div className="flex-1 min-w-0 max-w-[42rem]">
+                        <div className="flex-1 min-w-0">
                             {sections.map((s, i) => (
                                 <section
                                     key={s.id}
@@ -88,7 +88,7 @@ export const PageLayout: React.FC<Props> = ({
                         </div>
                     </div>
                 ) : (
-                    <div className="max-w-[42rem] prose-page">{children}</div>
+                    <div className="max-w-[46rem] mx-auto prose-page">{children}</div>
                 )}
             </div>
 
@@ -152,28 +152,41 @@ export const PageHeader: React.FC<{
     /** Başlığın altına giren ek içerik (ör. arama kutusu) */
     children?: React.ReactNode;
 }> = ({ title, lead, updatedAt, children }) => (
-    <header className="border-b border-slate-200 bg-white">
-        <div className="container px-4 pt-12 pb-12 lg:pt-16 lg:pb-14">
+    <header className="relative overflow-hidden border-b border-brand-100 bg-gradient-to-br from-brand-50 via-brand-100/60 to-white">
+        <div
+            aria-hidden
+            className="absolute inset-0 opacity-40"
+            style={{
+                backgroundImage:
+                    'linear-gradient(to right, rgba(23,93,93,0.06) 1px, transparent 1px),'
+                    + 'linear-gradient(to bottom, rgba(23,93,93,0.06) 1px, transparent 1px)',
+                backgroundSize: '34px 34px',
+            }}
+        />
+
+        <div className="container relative px-5 sm:px-8 pt-12 pb-14 lg:pt-16 lg:pb-16 text-center">
             <nav className="text-[13px] mb-6">
-                <Link to="/" className="text-slate-500 hover:text-brand-700 transition-colors">
+                <Link to="/" className="text-slate-500 hover:text-brand-800 transition-colors">
                     Ana sayfa
                 </Link>
                 <span className="mx-2.5 text-slate-300">/</span>
                 <span className="text-slate-700">{title}</span>
             </nav>
 
-            <h1 className="font-montserrat text-[34px] sm:text-[40px] lg:text-[48px] font-extrabold text-slate-900 tracking-[-0.03em] leading-[1.05] max-w-4xl">
+            <h1 className="font-montserrat text-[32px] sm:text-[40px] lg:text-[46px] font-extrabold text-slate-900 tracking-[-0.03em] leading-[1.05] max-w-4xl mx-auto">
                 {title}
             </h1>
 
+            <span className="block w-12 h-1 rounded-full bg-brand-700 mx-auto mt-5" />
+
             {lead && (
-                <p className="text-[17px] lg:text-[18px] text-slate-600 mt-5 max-w-2xl leading-[1.7]">
+                <p className="text-[17px] lg:text-[18px] text-slate-600 mt-5 max-w-2xl mx-auto leading-[1.7]">
                     {lead}
                 </p>
             )}
 
             {updatedAt && (
-                <p className="text-[13.5px] text-slate-500 mt-7">
+                <p className="inline-block text-[13px] font-medium text-brand-900 bg-white/70 border border-brand-200 rounded-full px-4 py-1.5 mt-7">
                     Yürürlük tarihi: {updatedAt}
                 </p>
             )}

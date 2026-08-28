@@ -137,7 +137,7 @@ const BecomeInstructor: React.FC = () => {
 
         {/* ── Kazanç modeli ─────────────────────────────────────────── */}
         <section id="kazanc" className="scroll-mt-24 py-14 lg:py-16 border-t border-slate-200">
-          <SectionTitle hint="Tek kural: brüt tutardan yasal vergi düşülür, kalanın %55'i eğitmenindir.">
+          <SectionTitle hint="Pay kursun niteliğine göre değişir; kendi kuponunuzla gelen satışın tamamı sizindir.">
             Ne kazanırsınız
           </SectionTitle>
 
@@ -146,7 +146,7 @@ const BecomeInstructor: React.FC = () => {
               <table className="w-full text-[14.5px] min-w-[380px]">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-200 text-left">
-                    {['Kalem', 'Oran', '1.000 ₺ satışta'].map(h => (
+                    {['Kursun durumu', 'Payınız', '1.000 ₺ satışta'].map(h => (
                       <th
                         key={h}
                         className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.12em] text-slate-500 px-5 py-3 whitespace-nowrap"
@@ -158,9 +158,8 @@ const BecomeInstructor: React.FC = () => {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {[
-                    ['Brüt satış', '—', '1.000,00 ₺'],
-                    ['Yasal vergi', '%20', '−200,00 ₺'],
-                    ['Platform payı', "Net tutarın %45'i", '−360,00 ₺'],
+                    ['Yalnızca Edurce\'de, özgün içerik', '%70', '700,00 ₺'],
+                    ['Başka platformlarda da yayında', '%55', '550,00 ₺'],
                   ].map(row => (
                     <tr key={row[0]}>
                       <td className="px-5 py-3 font-medium text-slate-800">{row[0]}</td>
@@ -169,9 +168,9 @@ const BecomeInstructor: React.FC = () => {
                     </tr>
                   ))}
                   <tr className="bg-brand-50">
-                    <td className="px-5 py-3 font-semibold text-brand-900">Eğitmenin kazancı</td>
-                    <td className="px-5 py-3 font-semibold text-brand-900">Net tutarın %55'i</td>
-                    <td className="px-5 py-3 font-bold text-brand-900 whitespace-nowrap">440,00 ₺</td>
+                    <td className="px-5 py-3 font-semibold text-brand-900">Kendi kuponunuzla gelen satış</td>
+                    <td className="px-5 py-3 font-semibold text-brand-900">%100</td>
+                    <td className="px-5 py-3 font-bold text-brand-900 whitespace-nowrap">1.000,00 ₺</td>
                   </tr>
                 </tbody>
               </table>

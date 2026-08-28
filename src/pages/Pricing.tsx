@@ -83,36 +83,38 @@ const Pricing: React.FC = () => (
                 body: (
                     <>
                         <P>
-                            Platformda geçirdiğiniz zaman karşılığında Edurce Kredi kazanırsınız.
-                            Ders tamamlamak, kurs bitirmek, değerlendirme yazmak, soru sormak,
-                            günlük giriş yapmak ve alışveriş yapmak kredi kazandırır. Krediyi kurs
-                            alırken indirim olarak kullanırsınız.
-                        </P>
-                        <P>
-                            Kredinin lira karşılığı seviyenize göre değişir. Seviye, hayat boyu
-                            kazandığınız toplam krediye göre belirlenir ve kredi harcadığınızda
-                            düşmez. Seviye yükseldikçe hem daha hızlı kredi kazanır hem de aynı
-                            kredi daha çok değer eder:
+                            Kurs satın aldığınızda ve satın aldığınız bir kursu tamamladığınızda
+                            Edurce Kredi kazanırsınız. Kredi birikince indirim kuponuna çevirir,
+                            kuponu sonraki alışverişinizde kullanırsınız.
                         </P>
                         <Table
-                            head={['Seviye', 'Toplam kazanç', 'Kazanç katsayısı', '1.000 kredinin değeri']}
+                            head={['Ne yaparsanız', 'Kazandığınız kredi']}
                             rows={[
-                                ['Bronz', '0+', '×1,00', '10,00 ₺'],
-                                ['Gümüş', '2.000+', '×1,15', '11,11 ₺'],
-                                ['Altın', '6.000+', '×1,30', '12,50 ₺'],
-                                ['Platin', '15.000+', '×1,50', '14,29 ₺'],
-                                ['Elmas', '40.000+', '×1,75', '16,67 ₺'],
+                                ['Her 10 ₺\'lik alışveriş', '5 kredi'],
+                                ['Bir kursu tamamlama', '200 kredi'],
+                            ]}
+                        />
+                        <P>
+                            Biriken krediyi sabit basamaklarda kupona çevirirsiniz. Yukarı
+                            basamaklarda kredi başına değer artar:
+                        </P>
+                        <Table
+                            head={['Harcanan kredi', 'Kupon değeri']}
+                            rows={[
+                                ['500 kredi', '50 ₺'],
+                                ['1.000 kredi', '120 ₺'],
+                                ['2.200 kredi', '300 ₺'],
+                                ['4.500 kredi', '700 ₺'],
                             ]}
                             emphasizeLast
                         />
                         <P>
-                            Bir siparişin en fazla yarısı krediyle ödenebilir; kalan tutarı kartla
-                            ödersiniz. Kredinin nakit karşılığı yoktur, banka hesabına aktarılamaz
-                            ve başka bir kullanıcıya devredilemez.
+                            Oluşturduğunuz kupon 90 gün geçerlidir ve ödeme adımında kullanılır.
+                            Kredinin nakit karşılığı yoktur, banka hesabına aktarılamaz ve başka
+                            bir kullanıcıya devredilemez.
                         </P>
                         <Note>
-                            Güncel bakiyenizi, seviyenizi ve bir sonraki seviyeye ne kadar
-                            kaldığını{' '}
+                            Bakiyenizi ve kuponlarınızı{' '}
                             <Link to="/home/gamification" className="text-brand-700 hover:underline">
                                 Edurce Kredi sayfasından
                             </Link>{' '}
@@ -172,26 +174,35 @@ const Pricing: React.FC = () => (
 
                         <H3>Ne kazanırsınız</H3>
                         <P>
-                            Brüt satış tutarından önce yasal vergi (%20) düşülür. Kalan tutarın
-                            %55'i eğitmene, %45'i platforma aittir.
+                            Eğitmen payı kursun niteliğine göre değişir. Yalnızca Edurce'de
+                            yayınlanan, size ait özgün ders videolarından oluşan kurslarda pay
+                            <strong> %70</strong>; başka platformlarda da yayınlanan kurslarda
+                            <strong> %55</strong>'tir.
                         </P>
                         <Stats
                             items={[
-                                { value: '0 ₺', label: 'Kurs açma, video yükleme ve yayınlama' },
-                                { value: '%55', label: 'Vergi sonrası tutardan eğitmen payı' },
-                                { value: '440 ₺', label: '1.000 ₺\'lik satışta eline geçen' },
+                                { value: '%70', label: 'Yalnızca Edurce\'de olan özgün kurslar' },
+                                { value: '%55', label: 'Başka platformlarda da yayınlanan kurslar' },
+                                { value: '%100', label: 'Kendi kuponunuzla gelen satışlar' },
                             ]}
                         />
                         <Table
-                            head={['Kalem', 'Oran', '1.000 ₺ satışta']}
+                            head={['Kursun durumu', 'Eğitmen payı', '1.000 ₺ satışta']}
                             rows={[
-                                ['Brüt satış', '—', '1.000,00 ₺'],
-                                ['Yasal vergi', '%20', '−200,00 ₺'],
-                                ['Platform payı', 'Net tutarın %45\'i', '−360,00 ₺'],
-                                ['Eğitmenin kazancı', 'Net tutarın %55\'i', '440,00 ₺'],
+                                ['Yalnızca Edurce\'de, özgün içerik', '%70', '700,00 ₺'],
+                                ['Başka platformlarda da yayında', '%55', '550,00 ₺'],
+                                ['Kendi kupon kodunuzla gelen satış', '%100', '1.000,00 ₺'],
                             ]}
                             emphasizeLast
                         />
+
+                        <H3>Kendi kuponunuzla gelen satışlar</H3>
+                        <P>
+                            Kursunuz için oluşturduğunuz indirim kuponuyla yapılan satışlarda
+                            platform pay almaz; o satıştan elde edilen gelirin tamamı size aittir.
+                            Kendi kitlenizi getirdiğiniz satışlarda aracılık ücreti almak
+                            doğru olmazdı.
+                        </P>
                         <P>
                             Platform payı; barındırma, video işleme, dağıtım ağı, ödeme altyapısı
                             ve destek maliyetlerini karşılar. Bunun dışında gizli kesinti yoktur.

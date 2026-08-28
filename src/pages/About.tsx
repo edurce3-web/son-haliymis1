@@ -75,20 +75,21 @@ const About: React.FC = () => (
                 body: (
                     <>
                         <P lead>
-                            Eğitmenin kazancı şeffaf ve tek bir kurala bağlıdır: brüt satış tutarından
-                            önce yasal vergi düşülür, kalan tutarın %55'i eğitmene aittir.
+                            Eğitmenin kazancı kursun niteliğine bağlıdır. Yalnızca Edurce'de
+                            yayınlanan özgün kurslarda pay %70, başka platformlarda da yayınlanan
+                            kurslarda %55'tir.
                         </P>
                         <Stats
                             items={[
-                                { value: '%20', label: 'Brüt tutardan düşülen yasal vergi' },
-                                { value: '%55', label: 'Kalan tutardan eğitmenin payı' },
-                                { value: '440 ₺', label: '1.000 ₺\'lik satışta eğitmene kalan' },
+                                { value: '%70', label: 'Yalnızca Edurce\'de olan özgün kurslar' },
+                                { value: '%55', label: 'Başka platformlarda da yayınlananlar' },
+                                { value: '%100', label: 'Eğitmenin kendi kuponuyla gelen satışlar' },
                             ]}
                         />
                         <P>
-                            Örnek olarak 1.000 ₺'lik bir satışta 200 ₺ vergi kesilir, kalan 800 ₺'nin
-                            440 ₺'si eğitmene, 360 ₺'si platforma kalır. Her satışın dökümü eğitmen
-                            panelindeki satış raporunda kalem kalem görülebilir.
+                            Eğitmen kendi indirim kuponunu paylaşıp satış getirdiğinde platform pay
+                            almaz; o satışın geliri tamamen eğitmenindir. Her satışın dökümü
+                            eğitmen panelindeki satış raporunda kalem kalem görülebilir.
                         </P>
                         <P>
                             Platform payı; barındırma, video işleme, dağıtım, ödeme altyapısı ve

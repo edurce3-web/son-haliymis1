@@ -8,7 +8,7 @@ const UPDATED = '17 Ağustos 2026';
  * Kullanım şartları.
  *
  * Metin platformun gerçek işleyişine göre yazıldı (tek seferlik satın alma,
- * süresiz erişim, %20 vergi + %55 eğitmen payı, kredi programı, video işleme).
+ * süresiz erişim, kursun niteliğine göre %70/%55 eğitmen payı, kredi programı).
  * Genel geçer şablon cümleler yerine burada gerçekten geçerli olan kurallar var.
  */
 const Terms: React.FC = () => (
@@ -206,22 +206,26 @@ const Terms: React.FC = () => (
 
                         <H3>Gelir paylaşımı ve ödeme</H3>
                         <P>
-                            Brüt satış tutarından önce yasal vergi (%20) düşülür, kalan tutarın
-                            %55'i eğitmene aittir.
+                            Eğitmen payı kursun niteliğine göre belirlenir:
                         </P>
                         <Table
-                            head={['Kalem', '1.000 ₺ satışta']}
+                            head={['Kursun durumu', 'Eğitmen payı', '1.000 ₺ satışta']}
                             rows={[
-                                ['Brüt satış', '1.000,00 ₺'],
-                                ['Vergi (%20)', '−200,00 ₺'],
-                                ['Eğitmen payı (kalanın %55\'i)', '440,00 ₺'],
-                                ['Platform payı', '360,00 ₺'],
+                                ['Yalnızca Edurce\'de yayınlanan özgün kurs', '%70', '700,00 ₺'],
+                                ['Başka platformlarda da yayınlanan kurs', '%55', '550,00 ₺'],
+                                ['Eğitmenin kendi kupon koduyla gelen satış', '%100', '1.000,00 ₺'],
                             ]}
                         />
                         <P>
+                            Kursunuzu yalnızca Edurce'de yayınladığınızı beyan eder ve sonradan
+                            başka bir platformda yayınlarsanız, o tarihten sonraki satışlara %55
+                            oranı uygulanır. Kendi oluşturduğunuz kupon koduyla gelen satışlarda
+                            platform pay almaz.
+                        </P>
+                        <P>
                             Ödemeler, eğitmen panelinde belirttiğiniz IBAN'a ve seçtiğiniz ödeme
                             gününde yapılır. Ödeme yapılabilmesi için hesap bilgilerinizin eksiksiz
-                            ve doğru olması gerekir. Vergisel yükümlülükleriniz size aittir.
+                            ve doğru olması gerekir.
                         </P>
                         <P>
                             İade edilen bir satışın eğitmen payı, sonraki ödeme döneminde bakiyenizden
