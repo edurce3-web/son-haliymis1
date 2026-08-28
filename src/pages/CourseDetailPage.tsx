@@ -577,19 +577,30 @@ export const CourseDetailPage = () => {
     ru: 'Rusça',
   } as Record<string, string>)[String(course.language || 'tr').toLowerCase()]
     || String(course.language || 'Türkçe');
-  /** Kursun ölçüleri — onay işaretiyle listeleniyor. */
-  const courseSpecs: string[] = [
-    `${levelLabel} seviye`,
-    languageLabel,
-    ...(totalSeconds > 0 ? [`${totalDurationLabel} video içeriği`] : []),
-    ...(totalLessons > 0 ? [`${totalLessons} ders`] : []),
+  /**
+   * Kursun künyesi — başlığın altında yatay bir simge şeridi olarak duruyor.
+   *
+   * Önceden bunlar sağdaki satın alma kutusunda onay işaretli bir listeydi;
+   * seviye ve dil orada satın almayla ilgisiz duruyor, kutuyu da gereksiz
+   * uzatıyordu. Ders sayısı müfredat başlığında zaten yazdığı için tümden
+   * kaldırıldı.
+   */
+  const courseFacts: Array<{ label: string; value: string; icon: string }> = [
+    { label: 'Seviye', value: levelLabel, icon: 'level' },
+    { label: 'Dil', value: languageLabel, icon: 'language' },
+    ...(totalSeconds > 0
+      ? [{ label: 'Süre', value: totalDurationLabel, icon: 'duration' }]
+      : []),
     ...(Number(course.downloadable_resources) > 0
-      ? [`${course.downloadable_resources} indirilebilir kaynak`]
+      ? [{ label: 'Kaynak', value: `${course.downloadable_resources} dosya`, icon: 'resource' }]
       : []),
   ];
 
   /** Kursla birlikte gelen haklar — her biri kendi simgesiyle. */
   const courseBenefits: Array<{ text: string; icon: string }> = [
+    ...(totalSeconds > 0
+      ? [{ text: `${totalDurationLabel} video içeriği`, icon: 'duration' }]
+      : []),
     { text: 'Ömür Boyu Erişim', icon: 'access' },
     { text: 'Bitirme Sertifikası', icon: 'certificate' },
     { text: 'Mobil & TV İzleme', icon: 'devices' },
@@ -675,23 +686,11 @@ export const CourseDetailPage = () => {
       )}
 
       {/*
-        İki ayrı liste.
-
-        Üstte kursun ölçüleri (seviye, dil, süre, ders sayısı) — hepsi aynı
-        tür bilgi olduğu için tek işaretle. Altta kursla birlikte gelen
-        haklar; bunlar farklı şeyler olduğu için her biri kendi simgesiyle.
-        İkisi bir arada listelenince ayrım kayboluyordu.
+        Kutuda artık yalnızca kursla birlikte gelen haklar var; her satır kendi
+        simgesiyle. Seviye ve dil künyeye, ders sayısı müfredat başlığına
+        taşındığı için burada onay işaretli ikinci bir liste kalmadı.
       */}
-      <ul className="mt-4 pt-4 border-t border-slate-100 space-y-2">
-        {courseSpecs.map(text => (
-          <li key={text} className="flex items-start gap-2.5 text-[13px] text-slate-700">
-            <Check className="w-3.5 h-3.5 shrink-0 mt-[3px] text-brand-700 stroke-[3]" />
-            <span>{text}</span>
-          </li>
-        ))}
-      </ul>
-
-      <ul className="mt-3.5 pt-3.5 border-t border-slate-100 space-y-3">
+      <ul className="mt-4 pt-4 border-t border-slate-100 space-y-3">
         {courseBenefits.map(item => (
           <li key={item.text} className="flex items-start gap-2.5 text-[13px] text-slate-700">
             <FeatureIcon kind={item.icon} />
@@ -949,6 +948,35 @@ export const CourseDetailPage = () => {
                 {course.short_description}
               </p>
             )}
+
+            {/*
+              Künye şeridi.
+
+              Seviye, dil, süre ve kaynak sayısı; her biri kendi simgesiyle ve
+              üstünde ne olduğunu söyleyen küçük bir etiketle. Değerler tek
+              başına ("Başlangıç", "Türkçe") neyin ölçüsü olduğunu
+              anlatmıyordu; etiket bunu okumadan görünür kılıyor.
+            */}
+            <div className="mt-5 flex flex-wrap items-stretch gap-2.5">
+              {courseFacts.map(fact => (
+                <div
+                  key={fact.label}
+                  className="flex items-center gap-2.5 rounded-xl border border-brand-100 bg-brand-50/50 pl-3 pr-4 py-2"
+                >
+                  <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-white border border-brand-100 shrink-0">
+                    <FeatureIcon kind={fact.icon} bare />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[10.5px] font-semibold uppercase tracking-[0.09em] text-brand-700/70 leading-none">
+                      {fact.label}
+                    </span>
+                    <span className="block text-[13.5px] font-semibold text-slate-900 leading-tight mt-1 whitespace-nowrap">
+                      {fact.value}
+                    </span>
+                  </span>
+                </div>
+              ))}
+            </div>
 
             {/*
               Mobil satın alma bloğu.
@@ -1532,8 +1560,16 @@ const CourseListRow: React.FC<{ course: any }> = ({ course }) => {
  * değil, doğrudan SVG olarak çiziliyor — böylece dördü de aynı kalınlıkta ve
  * aynı ızgarada duruyor.
  */
-const FeatureIcon: React.FC<{ kind: string }> = ({ kind }) => {
-  const common = 'w-4 h-4 shrink-0 mt-[2px] text-brand-700';
+/**
+ * Kurs özelliklerinin simgeleri.
+ *
+ * `bare` künye şeridinde kullanılıyor: orada simge kendi kutusunda ortalı
+ * durduğu için listedeki hizalama payı (mt) ve küçük boyut yanlış görünüyor.
+ */
+const FeatureIcon: React.FC<{ kind: string; bare?: boolean }> = ({ kind, bare }) => {
+  const common = bare
+    ? 'w-[18px] h-[18px] shrink-0 text-brand-700'
+    : 'w-4 h-4 shrink-0 mt-[2px] text-brand-700';
   const stroke = {
     fill: 'none',
     stroke: 'currentColor',
@@ -1541,6 +1577,45 @@ const FeatureIcon: React.FC<{ kind: string }> = ({ kind }) => {
     strokeLinecap: 'round' as const,
     strokeLinejoin: 'round' as const,
   };
+
+  if (kind === 'level') {
+    // Yükselen üç çubuk — seviye
+    return (
+      <svg viewBox="0 0 24 24" className={common} {...stroke}>
+        <path d="M5 19v-4M12 19V9M19 19V5" />
+      </svg>
+    );
+  }
+
+  if (kind === 'language') {
+    // Küre + meridyen — ders dili
+    return (
+      <svg viewBox="0 0 24 24" className={common} {...stroke}>
+        <circle cx="12" cy="12" r="8.5" />
+        <path d="M3.5 12h17M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5S14.2 18.1 12 20.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5Z" />
+      </svg>
+    );
+  }
+
+  if (kind === 'duration') {
+    // Saat — toplam video süresi
+    return (
+      <svg viewBox="0 0 24 24" className={common} {...stroke}>
+        <circle cx="12" cy="12" r="8.5" />
+        <path d="M12 7.2V12l3.2 1.9" />
+      </svg>
+    );
+  }
+
+  if (kind === 'resource') {
+    // Aşağı oklu sayfa — indirilebilir kaynak
+    return (
+      <svg viewBox="0 0 24 24" className={common} {...stroke}>
+        <path d="M14 3H7.5A1.5 1.5 0 0 0 6 4.5v15A1.5 1.5 0 0 0 7.5 21h9a1.5 1.5 0 0 0 1.5-1.5V7l-4-4Z" />
+        <path d="M12 10.5v5m0 0 2-2m-2 2-2-2" />
+      </svg>
+    );
+  }
 
   if (kind === 'check') {
     return <Check className="w-3.5 h-3.5 shrink-0 mt-[3px] text-brand-700 stroke-[3]" />;

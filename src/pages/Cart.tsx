@@ -123,14 +123,12 @@ const Cart = () => {
   const total = cartItems.reduce((sum, item) => sum + Number(item.price || 0), 0);
 
   /**
-   * Öneriler ve kredi bilgisi sepet değiştikçe tazelenir.
-   * İkisi de başarısız olabilir — sepet yine çalışmalı, o yüzden hataları
-   * yutuyoruz ve bölümleri boş bırakıyoruz.
+   * Öneriler sepet değiştikçe tazelenir. İstek başarısız olabilir — sepet
+   * yine çalışmalı, o yüzden hata yutuluyor ve bölüm boş bırakılıyor.
    */
   useEffect(() => {
     if (cartItems.length === 0) {
       setRecommended([]);
-      setCreditQuote(null);
       return;
     }
     const token = localStorage.getItem('token');

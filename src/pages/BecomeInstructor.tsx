@@ -143,10 +143,10 @@ const BecomeInstructor: React.FC = () => {
 
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-start">
             <div className="overflow-x-auto rounded-xl border border-slate-200">
-              <table className="w-full text-[14.5px] min-w-[380px]">
+              <table className="w-full text-[14.5px] min-w-[320px]">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-200 text-left">
-                    {['Kursun durumu', 'Payınız', '1.000 ₺ satışta'].map(h => (
+                    {['Kursun durumu', 'Payınız'].map(h => (
                       <th
                         key={h}
                         className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.12em] text-slate-500 px-5 py-3 whitespace-nowrap"
@@ -157,43 +157,48 @@ const BecomeInstructor: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
+                  <tr className="bg-brand-50">
+                    <td className="px-5 py-3.5 font-semibold text-brand-900">
+                      Kendi kupon kodunuzla gelen satış
+                    </td>
+                    <td className="px-5 py-3.5 font-montserrat text-[18px] font-extrabold text-brand-900">
+                      %100
+                    </td>
+                  </tr>
                   {[
-                    ['Yalnızca Edurce\'de, özgün içerik', '%70', '700,00 ₺'],
-                    ['Başka platformlarda da yayında', '%55', '550,00 ₺'],
+                    ['Yalnızca Edurce\'de, özgün içerik', '%70'],
+                    ['Başka platformlarda da yayında', '%55'],
                   ].map(row => (
                     <tr key={row[0]}>
-                      <td className="px-5 py-3 font-medium text-slate-800">{row[0]}</td>
-                      <td className="px-5 py-3 text-slate-600">{row[1]}</td>
-                      <td className="px-5 py-3 text-slate-600 whitespace-nowrap">{row[2]}</td>
+                      <td className="px-5 py-3.5 font-medium text-slate-800">{row[0]}</td>
+                      <td className="px-5 py-3.5 font-montserrat text-[18px] font-extrabold text-slate-700">
+                        {row[1]}
+                      </td>
                     </tr>
                   ))}
-                  <tr className="bg-brand-50">
-                    <td className="px-5 py-3 font-semibold text-brand-900">Kendi kuponunuzla gelen satış</td>
-                    <td className="px-5 py-3 font-semibold text-brand-900">%100</td>
-                    <td className="px-5 py-3 font-bold text-brand-900 whitespace-nowrap">1.000,00 ₺</td>
-                  </tr>
                 </tbody>
               </table>
             </div>
 
             <div className="space-y-5">
-              <p className="text-[15.5px] text-slate-600 leading-[1.8]">
-                Platform payı; barındırma, video işleme, dağıtım ağı, ödeme altyapısı
-                ve destek maliyetlerini karşılar. Bunun dışında gizli kesinti yoktur.
+              <p className="text-[17px] font-semibold text-slate-900 leading-[1.6]">
+                Bildiğinizi anlatın, kazancın büyük kısmı sizde kalsın.
               </p>
               <p className="text-[15.5px] text-slate-600 leading-[1.8]">
-                Her satışın dökümünü eğitmen panelindeki satış raporunda kalem kalem
-                görürsünüz. İade edilen satışların tutarı hakedişinizden düşülür.
+                Kursunuzu yalnızca Edurce'de yayınlarsanız her satışın %70'i sizindir.
+                Kendi kupon kodunuzu paylaşıp öğrenci getirdiğinizde ise platform hiç
+                pay almaz — o satışın tamamı size kalır.
               </p>
               <p className="text-[15.5px] text-slate-600 leading-[1.8]">
-                Ödeme yapılabilmesi için IBAN ve kimlik bilgilerinizin eksiksiz olması
-                gerekir. Ödeme gününü panelden siz seçersiniz.
+                Başlamak için ne bir ücret ne de bir taahhüt gerekiyor. Kurs açmak,
+                video yüklemek ve yayınlamak baştan sona ücretsiz; kazanmaya ilk
+                satışınızla başlarsınız.
               </p>
               <Link
-                to="/pricing"
-                className="inline-block text-[14.5px] font-semibold text-brand-700 hover:text-brand-900 hover:underline"
+                to="/instructor-application"
+                className="inline-block h-11 px-6 leading-[44px] rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold transition-colors"
               >
-                Fiyatlandırmanın tamamı
+                Hemen başvur
               </Link>
             </div>
           </div>

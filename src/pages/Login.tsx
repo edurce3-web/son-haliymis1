@@ -94,9 +94,7 @@ const Login = () => {
             <Label htmlFor="password" className="text-sm font-medium text-slate-700">
               Şifre
             </Label>
-            {/* Parola sıfırlama akışı henüz yok; kullanıcıyı 404'e düşürmek
-                yerine destek sayfasına yönlendiriyoruz. */}
-            <Link to="/help" className="text-sm font-medium text-brand-700 hover:text-brand-800">
+            <Link to="/forgot-password" className="text-sm font-medium text-brand-700 hover:text-brand-800">
               Şifremi unuttum
             </Link>
           </div>

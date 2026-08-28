@@ -38,10 +38,9 @@ export const CategoryMegaMenu: React.FC = () => {
 
     useEffect(() => () => clearTimeout(closeTimer.current), []);
 
-    // Menü açıldığında ilk kategori seçili gelsin; sağ panel boş durmasın
-    useEffect(() => {
-        if (open && !hovered && categories.length > 0) setHovered(categories[0]);
-    }, [open, hovered, categories]);
+    // Sağ panel, bir kategorinin üzerine gelinene kadar boş kalır. Menü
+    // açılır açılmaz ilk kategoriyi seçmek, kullanıcı henüz hiçbir şey
+    // seçmemişken alt kategori göstermek anlamına geliyordu.
 
     // Esc ile kapat — klavye kullanıcısı menüde sıkışmasın
     useEffect(() => {
@@ -157,22 +156,6 @@ export const CategoryMegaMenu: React.FC = () => {
                                     </p>
                                 )}
 
-                                <div className="mt-7 pt-5 border-t border-slate-100 flex items-center justify-between gap-4">
-                                    <Link
-                                        to={`/courses/${hovered.slug}`}
-                                        onClick={() => setOpen(false)}
-                                        className="text-[14px] font-semibold text-brand-700 hover:text-brand-900 hover:underline"
-                                    >
-                                        {hovered.name} kurslarını gör
-                                    </Link>
-                                    <Link
-                                        to="/courses"
-                                        onClick={() => setOpen(false)}
-                                        className="text-[14px] text-slate-500 hover:text-slate-900"
-                                    >
-                                        Tüm kurslar
-                                    </Link>
-                                </div>
                             </>
                         ) : (
                             <p className="text-sm text-slate-400">

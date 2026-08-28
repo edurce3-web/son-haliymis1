@@ -61,19 +61,24 @@ import PaymentSettings from './pages/settings/PaymentSettings';
 import PurchaseHistorySettings from './pages/settings/PurchaseHistorySettings';
 import CloseAccountSettings from './pages/settings/CloseAccountSettings';
 
+import ForgotPassword from './pages/ForgotPassword';
 import ScrollToTop from './components/layout/ScrollToTop';
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const path = location.pathname;
+  // Kimlik sayfalarında üst menü gizli ama footer duruyor: kullanıcı kayıt
+  // olurken de şartlara, gizliliğe ve iletişime ulaşabilmeli.
+  const isAuthPage =
+    path.startsWith('/login') ||
+    path.startsWith('/register') ||
+    path.startsWith('/forgot-password');
 
-  // Hide header/footer/nav on these pages
   const hideLayout =
     !!path.match(/^\/learning\/.+/) ||  // Course player (not /learning dashboard)
     path.startsWith('/instructor') ||
-    path.startsWith('/login') ||
-    path.startsWith('/register') ||
-    path.startsWith('/admin');
+    path.startsWith('/admin') ||
+    isAuthPage;
 
   return (
     <div className="min-h-screen bg-background">
@@ -82,7 +87,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
       {/* Kategori sayfalarında alt kategori şeridi — header'ın hemen altında */}
       {!hideLayout && <CategoryBar />}
       {children}
-      {!hideLayout && <Footer />}
+      {(!hideLayout || isAuthPage) && <Footer />}
       {!hideLayout && <MobileNavigation />}
     </div>
   );
@@ -171,6 +176,7 @@ const App = () => (
 
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/instructor-application" element={
                   <ProtectedRoute requiresAuth={true}>
                     <InstructorApplication />
