@@ -10,6 +10,7 @@ import { enrollmentAPI, certificatesAPI, getCourseImageUrl } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { drawCertificate } from '@/lib/certificateGenerator';
+import { PageBand } from '@/components/layout/PageBand';
 
 const Learning = () => {
     const navigate = useNavigate();
@@ -70,45 +71,38 @@ const Learning = () => {
     );
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-white">
             <canvas ref={canvasRef} className="hidden" />
 
-            {/* Header */}
-            <div className="border-b border-slate-200 bg-white">
-                <div className="max-w-7xl mx-auto px-6 py-8">
-                    <nav className="flex items-center gap-2 text-xs text-slate-500 mb-5">
-                        <Link to="/" className="hover:text-brand-700 transition-colors">Ana Sayfa</Link>
-                        <ChevronRight className="w-3 h-3" />
-                        <span className="text-slate-700 font-medium">Eğitimlerim</span>
-                    </nav>
+            <PageBand
+                breadcrumb={
+                    <>
+                        <Link to="/" className="hover:text-brand-800 transition-colors">Ana sayfa</Link>
+                        <ChevronRight className="w-3 h-3 text-slate-300" />
+                        <span className="text-slate-700">Eğitimlerim</span>
+                    </>
+                }
+                title="Eğitimlerim"
+                subtitle="Kurslarını buradan takip et, tamamladıklarının sertifikasını al."
+                actions={
+                    <>
+                        <Link
+                            to="/home/gamification"
+                            className="h-10 px-4 leading-10 rounded-lg border border-slate-300 bg-white hover:border-brand-400 hover:text-brand-800 text-slate-700 text-sm font-semibold transition-colors"
+                        >
+                            Edurce Kredi
+                        </Link>
+                        <Link
+                            to="/home/certificates"
+                            className="h-10 px-4 leading-10 rounded-lg border border-slate-300 bg-white hover:border-brand-400 hover:text-brand-800 text-slate-700 text-sm font-semibold transition-colors"
+                        >
+                            Sertifikalarım
+                        </Link>
+                    </>
+                }
+            />
 
-                    <div className="flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
-                        <div>
-                            <h1 className="text-[28px] font-bold text-slate-900 tracking-tight">Eğitimlerim</h1>
-                            <p className="text-slate-500 text-[15px] mt-1.5">
-                                Tüm kurslarını buradan takip et, sertifikanı al.
-                            </p>
-                        </div>
-
-                        <div className="flex gap-3">
-                            <Link
-                                to="/home/gamification"
-                                className="px-4 py-2.5 border border-slate-200 bg-white hover:border-brand-300 hover:text-brand-800 text-slate-700 rounded-xl text-sm font-semibold transition-colors"
-                            >
-                                Başarılarım
-                            </Link>
-                            <Link
-                                to="/home/certificates"
-                                className="px-4 py-2.5 border border-slate-200 bg-white hover:border-brand-300 hover:text-brand-800 text-slate-700 rounded-xl text-sm font-semibold transition-colors"
-                            >
-                                Sertifikalarım
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="max-w-7xl mx-auto px-6 py-8">
+            <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-8">
 
                 {/* Filters & Search */}
                 <div className="flex flex-col sm:flex-row gap-3 mb-7">
@@ -129,8 +123,8 @@ const Learning = () => {
                                 onClick={() => setFilter(f)}
                                 className={`px-5 py-3 text-sm font-semibold transition-all ${
                                     filter === f
-                                        ? 'bg-brand-700 text-slate-900 shadow-lg' 
-                                        : 'text-slate-500 hover:text-slate-200'
+                                        ? 'bg-brand-700 text-white'
+                                        : 'text-slate-500 hover:text-slate-900'
                                 }`}
                             >
                                 {f === 'all' ? 'Tümü' : f === 'ongoing' ? 'Devam Eden' : 'Tamamlanan'}
@@ -154,23 +148,18 @@ const Learning = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center py-32 text-center">
-                        <div className="w-24 h-24 rounded-3xl bg-white border border-slate-200 flex items-center justify-center mb-6 shadow-2xl">
-                            <GraduationCap className="w-12 h-12 text-slate-600" />
-                        </div>
-                        <h3 className="text-xl font-bold text-slate-900 mb-2">
-                            {search ? 'Sonuç Bulunamadı' : 'Henüz Kursun Yok'}
-                        </h3>
-                        <p className="text-slate-500 text-sm mb-8 max-w-sm">
-                            {search ? 'Farklı bir kelime deneyin.' : 'Kurslarını keşfetmek için alttaki butona tıkla.'}
+                    <div className="py-16">
+                        <p className="text-[15px] text-slate-500">
+                            {search
+                                ? `"${search}" için sonuç bulunamadı.`
+                                : 'Henüz bir kursa kayıtlı değilsin.'}
                         </p>
                         {!search && (
                             <button
                                 onClick={() => navigate('/courses')}
-                                className="flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-brand-600 to-brand-800 hover:from-brand-600 hover:to-brand-800 text-slate-900 font-bold rounded-2xl transition-all shadow-lg shadow-brand-600/25 hover:-translate-y-0.5"
+                                className="h-10 px-5 mt-4 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[14px] font-semibold transition-colors"
                             >
-                                <BookOpen className="w-4 h-4" />
-                                Kursları Keşfet
+                                Kurslara göz at
                             </button>
                         )}
                     </div>

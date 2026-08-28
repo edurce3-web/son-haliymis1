@@ -25,7 +25,8 @@ async function drawLogo(
   centerX: number,
   centerY: number,
   maxW: number,
-  maxH: number
+  maxH: number,
+  tintColor: string
 ): Promise<boolean> {
   try {
     const img = await new Promise<HTMLImageElement>((resolve, reject) => {
@@ -52,7 +53,7 @@ async function drawLogo(
 
     tctx.drawImage(img, 0, 0, tint.width, tint.height);
     tctx.globalCompositeOperation = 'source-in';
-    tctx.fillStyle = '#ffffff';
+    tctx.fillStyle = tintColor;
     tctx.fillRect(0, 0, tint.width, tint.height);
 
     ctx.drawImage(tint, centerX - w / 2, centerY - h / 2, w, h);
@@ -62,245 +63,150 @@ async function drawLogo(
   }
 }
 
+/**
+ * Sertifikayı çizer.
+ *
+ * Tasarım bilinçli olarak sade: beyaz zemin, tek ince çerçeve, ortada büyük
+ * logo. Önceki sürümde koyu gradyan zemin, altın çerçeve, köşe süsleri, mühür
+ * ve yıldızlar vardı; çıktı basıldığında hem mürekkep yiyor hem de belgeden
+ * çok afişe benziyordu. Bilgi hiyerarşisi: kim (öğrenci), ne (kurs), kimden
+ * (eğitmen), ne zaman ve belge numarası.
+ */
 export async function drawCertificate(
   canvas: HTMLCanvasElement,
   data: CertificateData
 ): Promise<void> {
-  canvas.width = 1414;   // A4 landscape @ 150 dpi
+  canvas.width = 1414;   // A4 yatay @ 150 dpi
   canvas.height = 1000;
 
   const ctx = canvas.getContext('2d')!;
   const W = canvas.width;
   const H = canvas.height;
 
-  // ── Background: deep navy gradient ────────────────────────────────────────
-  const bgGrad = ctx.createLinearGradient(0, 0, W, H);
-  bgGrad.addColorStop(0,   '#072424');
-  bgGrad.addColorStop(0.5, '#0D3838');
-  bgGrad.addColorStop(1,   '#124A4A');
-  ctx.fillStyle = bgGrad;
-  ctx.fillRect(0, 0, W, H);
-
-  // ── Decorative radial glow (top-left) ─────────────────────────────────────
-  const glow1 = ctx.createRadialGradient(0, 0, 0, 0, 0, 600);
-  glow1.addColorStop(0, 'rgba(42,133,128,0.30)');
-  glow1.addColorStop(1, 'transparent');
-  ctx.fillStyle = glow1;
-  ctx.fillRect(0, 0, W, H);
-
-  // ── Decorative radial glow (bottom-right) ─────────────────────────────────
-  const glow2 = ctx.createRadialGradient(W, H, 0, W, H, 700);
-  glow2.addColorStop(0, 'rgba(124,194,189,0.18)');
-  glow2.addColorStop(1, 'transparent');
-  ctx.fillStyle = glow2;
-  ctx.fillRect(0, 0, W, H);
-
-  // ── Outer border (golden) ─────────────────────────────────────────────────
-  const borderGrad = ctx.createLinearGradient(0, 0, W, H);
-  borderGrad.addColorStop(0,    '#f59e0b');
-  borderGrad.addColorStop(0.5,  '#fbbf24');
-  borderGrad.addColorStop(1,    '#d97706');
-  ctx.strokeStyle = borderGrad;
-  ctx.lineWidth = 8;
-  roundRect(ctx, 30, 30, W - 60, H - 60, 20);
-  ctx.stroke();
-
-  // ── Inner border (thin purple) ────────────────────────────────────────────
-  ctx.strokeStyle = 'rgba(124,194,189,0.45)';
-  ctx.lineWidth = 2;
-  roundRect(ctx, 52, 52, W - 104, H - 104, 14);
-  ctx.stroke();
-
-  // ── Corner ornaments ──────────────────────────────────────────────────────
-  drawCornerOrnament(ctx, 30,      30,      0);
-  drawCornerOrnament(ctx, W - 30,  30,      Math.PI / 2);
-  drawCornerOrnament(ctx, W - 30,  H - 30,  Math.PI);
-  drawCornerOrnament(ctx, 30,      H - 30, -Math.PI / 2);
-
-  // ── Top decorative line ────────────────────────────────────────────────────
-  const lineGrad = ctx.createLinearGradient(200, 0, W - 200, 0);
-  lineGrad.addColorStop(0,   'transparent');
-  lineGrad.addColorStop(0.2, 'rgba(251,191,36,0.7)');
-  lineGrad.addColorStop(0.8, 'rgba(251,191,36,0.7)');
-  lineGrad.addColorStop(1,   'transparent');
-  ctx.strokeStyle = lineGrad;
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(200, 145);
-  ctx.lineTo(W - 200, 145);
-  ctx.stroke();
-
-  // ── Marka / logo alanı ────────────────────────────────────────────────────
-  // Gerçek logo görseli çizilir. Görsel yüklenemezse (ağ hatası, dosya yok)
-  // sertifikanın tamamı boş çıkmasın diye yazıyla yedeğe düşülür.
-  const logoY = 112;
-  const logoDrawn = await drawLogo(ctx, W / 2, logoY, 320, 92);
-
-  if (!logoDrawn) {
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 44px Georgia, serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.letterSpacing = '0.08em';
-    ctx.fillText('edurce', W / 2, logoY);
-    ctx.textBaseline = 'alphabetic';
-    ctx.letterSpacing = '0px';
-  }
-
-  ctx.fillStyle = 'rgba(174,219,215,0.85)';
-  ctx.font = '13px Georgia, serif';
-  ctx.textAlign = 'center';
-  ctx.letterSpacing = '0.18em';
-  ctx.fillText('ONLINE EĞİTİM PLATFORMU', W / 2, 186);
-  ctx.letterSpacing = '0px';
-
-  // ── Bottom decorative line ────────────────────────────────────────────────
-  ctx.strokeStyle = lineGrad;
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(200, 215);
-  ctx.lineTo(W - 200, 215);
-  ctx.stroke();
-
-  // ── "BAŞARI SERTİFİKASI" title ────────────────────────────────────────────
-  ctx.fillStyle = 'rgba(255,255,255,0.08)';
-  ctx.font = 'bold 85px Georgia, serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('SERTİFİKA', W / 2 + 3, 343);
-
-  ctx.fillStyle = '#f8fafc';
-  ctx.font = 'bold 80px Georgia, serif';
-  ctx.fillText('SERTİFİKA', W / 2, 340);
-
-  // sub label
-  ctx.font = '600 18px Georgia, serif';
-  ctx.fillStyle = 'rgba(251,191,36,0.9)';
-  const label = 'B A Ş A R I   B E L G E S İ';
-  ctx.fillText(label, W / 2, 375);
-
-  // ── "This is to certify that" ─────────────────────────────────────────────
-  ctx.fillStyle = 'rgba(203,213,225,0.85)';
-  ctx.font = 'italic 18px Georgia, serif';
-  ctx.fillText('Bu belge, aşağıdaki bireyin başarıyla tamamladığını onaylar:', W / 2, 430);
-
-  // ── Student name ──────────────────────────────────────────────────────────
-  // Underline bar
-  const nameGrad = ctx.createLinearGradient(W / 2 - 280, 0, W / 2 + 280, 0);
-  nameGrad.addColorStop(0,    'transparent');
-  nameGrad.addColorStop(0.15, 'rgba(42,133,128,0.5)');
-  nameGrad.addColorStop(0.85, 'rgba(42,133,128,0.5)');
-  nameGrad.addColorStop(1,    'transparent');
-  ctx.fillStyle = nameGrad;
-  ctx.fillRect(W / 2 - 280, 478, 560, 52);
-
+  // ── Zemin ─────────────────────────────────────────────────────────────────
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 46px Georgia, serif';
-  ctx.fillText(data.studentName.toUpperCase(), W / 2, 518);
+  ctx.fillRect(0, 0, W, H);
 
-  // ── "kursunu başarıyla tamamlamıştır" ─────────────────────────────────────
-  ctx.fillStyle = 'rgba(203,213,225,0.85)';
-  ctx.font = 'italic 18px Georgia, serif';
-  ctx.fillText('eğitimini başarıyla tamamlamıştır.', W / 2, 565);
+  // ── Çerçeve: ince dış çizgi, üstte marka renginde kalın şerit ─────────────
+  ctx.fillStyle = '#175D5D';
+  ctx.fillRect(0, 0, W, 14);
 
-  // ── Course title ──────────────────────────────────────────────────────────
-  ctx.fillStyle = '#fbbf24';
-  ctx.font = 'bold 30px Georgia, serif';
-  // Truncate long titles
-  const maxW = W - 300;
-  let courseTitle = data.courseTitle;
-  while (ctx.measureText(courseTitle).width > maxW && courseTitle.length > 10) {
-    courseTitle = courseTitle.slice(0, -1);
+  ctx.strokeStyle = '#E2E8F0';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(48, 48, W - 96, H - 96);
+
+  // ── Logo ──────────────────────────────────────────────────────────────────
+  const logoDrawn = await drawLogo(ctx, W / 2, 190, 460, 150, '#175D5D');
+  if (!logoDrawn) {
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#175D5D';
+    ctx.font = 'bold 60px Georgia, serif';
+    ctx.fillText('edurce', W / 2, 205);
   }
-  if (courseTitle !== data.courseTitle) courseTitle += '...';
-  ctx.fillText(`"${courseTitle}"`, W / 2, 615);
 
-  // ── Divider ────────────────────────────────────────────────────────────────
-  ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+  ctx.textAlign = 'center';
+
+  // ── Başlık ────────────────────────────────────────────────────────────────
+  ctx.fillStyle = '#0F172A';
+  ctx.font = 'bold 44px Georgia, serif';
+  ctx.fillText('BAŞARI SERTİFİKASI', W / 2, 320);
+
+  ctx.strokeStyle = '#175D5D';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(W / 2 - 60, 345);
+  ctx.lineTo(W / 2 + 60, 345);
+  ctx.stroke();
+
+  // ── Öğrenci ───────────────────────────────────────────────────────────────
+  ctx.fillStyle = '#64748B';
+  ctx.font = '20px Georgia, serif';
+  ctx.fillText('Bu belge', W / 2, 415);
+
+  ctx.fillStyle = '#0F172A';
+  ctx.font = 'bold 52px Georgia, serif';
+  ctx.fillText(data.studentName, W / 2, 480);
+
+  ctx.fillStyle = '#64748B';
+  ctx.font = '20px Georgia, serif';
+  ctx.fillText('adlı katılımcının aşağıdaki eğitimi tamamladığını onaylar.', W / 2, 528);
+
+  // ── Kurs adı — uzunsa iki satıra bölünüyor ───────────────────────────────
+  ctx.fillStyle = '#175D5D';
+  ctx.font = 'bold 34px Georgia, serif';
+  const lines = wrapText(ctx, data.courseTitle, W - 340, 2);
+  let y = lines.length > 1 ? 596 : 610;
+  for (const line of lines) {
+    ctx.fillText(line, W / 2, y);
+    y += 44;
+  }
+
+  // ── Alt bilgiler: eğitmen ve tarih ───────────────────────────────────────
+  const baseY = 790;
+
+  ctx.strokeStyle = '#CBD5E1';
   ctx.lineWidth = 1;
   ctx.beginPath();
-  ctx.moveTo(120, 658);
-  ctx.lineTo(W - 120, 658);
+  ctx.moveTo(240, baseY);
+  ctx.lineTo(560, baseY);
+  ctx.moveTo(W - 560, baseY);
+  ctx.lineTo(W - 240, baseY);
   ctx.stroke();
 
-  // ── Footer: 3 columns ──────────────────────────────────────────────────────
-  // Left: Instructor
-  ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(148,163,184,0.8)';
-  ctx.font = '13px Georgia, serif';
-  ctx.fillText('EĞİTMEN', 260, 695);
-  ctx.strokeStyle = 'rgba(42,133,128,0.5)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(120, 705);
-  ctx.lineTo(400, 705);
-  ctx.stroke();
-  ctx.fillStyle = '#e2e8f0';
-  ctx.font = 'bold 17px Georgia, serif';
-  ctx.fillText(data.instructorName, 260, 730);
+  ctx.fillStyle = '#0F172A';
+  ctx.font = 'bold 22px Georgia, serif';
+  ctx.fillText(data.instructorName, 400, baseY - 16);
+  ctx.fillText(data.issuedDate, W - 400, baseY - 16);
 
-  // Center: Official seal
-  const sealX = W / 2;
-  const sealY = 710;
-  const sealR = 48;
-  // Outer ring
-  const sealGrad = ctx.createRadialGradient(sealX, sealY, sealR * 0.5, sealX, sealY, sealR);
-  sealGrad.addColorStop(0, 'rgba(42,133,128,0.3)');
-  sealGrad.addColorStop(1, 'rgba(42,133,128,0.1)');
-  ctx.fillStyle = sealGrad;
-  ctx.beginPath();
-  ctx.arc(sealX, sealY, sealR, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(251,191,36,0.8)';
-  ctx.lineWidth = 2.5;
-  ctx.stroke();
-  // Inner ring
-  ctx.strokeStyle = 'rgba(251,191,36,0.4)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.arc(sealX, sealY, sealR - 10, 0, Math.PI * 2);
-  ctx.stroke();
-  // Star
-  drawStar(ctx, sealX, sealY - 8, 5, 16, 7, '#fbbf24');
-  ctx.fillStyle = '#fbbf24';
-  ctx.font = 'bold 9px Georgia, serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('RESMİ', sealX, sealY + 14);
-  ctx.fillText('ONAYLI', sealX, sealY + 26);
+  ctx.fillStyle = '#94A3B8';
+  ctx.font = '15px Georgia, serif';
+  ctx.fillText('EĞİTMEN', 400, baseY + 28);
+  ctx.fillText('VERİLİŞ TARİHİ', W - 400, baseY + 28);
 
-  // Right: Date & ID
-  ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(148,163,184,0.8)';
-  ctx.font = '13px Georgia, serif';
-  ctx.fillText('VERİLDİĞİ TARİH', W - 260, 695);
-  ctx.strokeStyle = 'rgba(42,133,128,0.5)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(W - 400, 705);
-  ctx.lineTo(W - 120, 705);
-  ctx.stroke();
-  ctx.fillStyle = '#e2e8f0';
-  ctx.font = 'bold 17px Georgia, serif';
-  ctx.fillText(data.issuedDate, W - 260, 730);
+  // ── Belge numarası ────────────────────────────────────────────────────────
+  ctx.fillStyle = '#94A3B8';
+  ctx.font = '14px Georgia, serif';
+  ctx.fillText(`Belge no: ${data.certificateId}  ·  edurce.com`, W / 2, H - 78);
+}
 
-  // ── Certificate ID (bottom) ────────────────────────────────────────────────
-  ctx.fillStyle = 'rgba(148,163,184,0.5)';
-  ctx.font = '11px "Courier New", monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText(`Sertifika No: ${data.certificateId}`, W / 2, 790);
+/**
+ * Metni verilen genişliğe sığdırır.
+ *
+ * Satır sayısı aşılırsa son satır üç noktayla kesiliyor; uzun kurs adları
+ * sertifikanın dışına taşmasın.
+ */
+function wrapText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  maxLines: number
+): string[] {
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  let current = '';
 
-  // ── Bottom bar ─────────────────────────────────────────────────────────────
-  const bottomBarGrad = ctx.createLinearGradient(0, 820, W, 840);
-  bottomBarGrad.addColorStop(0,   '#2A8580');
-  bottomBarGrad.addColorStop(0.5, '#7CC2BD');
-  bottomBarGrad.addColorStop(1,   '#2A8580');
-  ctx.fillStyle = bottomBarGrad;
-  roundRect(ctx, 30, 820, W - 60, 28, { tl: 0, tr: 0, br: 14, bl: 14 });
-  ctx.fill();
+  for (const word of words) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (ctx.measureText(candidate).width <= maxWidth) {
+      current = candidate;
+    } else {
+      if (current) lines.push(current);
+      current = word;
+      if (lines.length === maxLines) break;
+    }
+  }
+  if (current && lines.length < maxLines) lines.push(current);
 
-  ctx.fillStyle = 'rgba(255,255,255,0.85)';
-  ctx.font = '11px Georgia, serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('Edurce  •  neuralakademi.com  •  Bu sertifika dijital olarak imzalanmıştır.', W / 2, 839);
+  if (lines.length === maxLines) {
+    let last = lines[maxLines - 1];
+    while (last.length > 4 && ctx.measureText(`${last}…`).width > maxWidth) {
+      last = last.slice(0, -1);
+    }
+    const consumed = lines.join(' ');
+    if (consumed.length < text.length) lines[maxLines - 1] = `${last}…`;
+  }
+
+  return lines;
 }
 
 // ─── Export as PNG (download) ───────────────────────────────────────────────
@@ -322,67 +228,3 @@ export async function downloadPDF(canvas: HTMLCanvasElement, filename: string) {
   pdf.save(`${filename}.pdf`);
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-function roundRect(
-  ctx: CanvasRenderingContext2D,
-  x: number, y: number, w: number, h: number,
-  radius: number | { tl: number; tr: number; br: number; bl: number }
-) {
-  const r = typeof radius === 'number'
-    ? { tl: radius, tr: radius, br: radius, bl: radius }
-    : radius;
-  ctx.beginPath();
-  ctx.moveTo(x + r.tl, y);
-  ctx.lineTo(x + w - r.tr, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r.tr);
-  ctx.lineTo(x + w, y + h - r.br);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
-  ctx.lineTo(x + r.bl, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r.bl);
-  ctx.lineTo(x, y + r.tl);
-  ctx.quadraticCurveTo(x, y, x + r.tl, y);
-  ctx.closePath();
-}
-
-function drawCornerOrnament(
-  ctx: CanvasRenderingContext2D,
-  x: number, y: number, angle: number
-) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(angle);
-  const g = ctx.createLinearGradient(0, 0, 60, 60);
-  g.addColorStop(0, 'rgba(251,191,36,0.9)');
-  g.addColorStop(1, 'rgba(251,191,36,0.2)');
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(60, 0);
-  ctx.lineTo(0, 60);
-  ctx.closePath();
-  ctx.fill();
-  ctx.restore();
-}
-
-function drawStar(
-  ctx: CanvasRenderingContext2D,
-  cx: number, cy: number,
-  spikes: number,
-  outerR: number, innerR: number,
-  color: string
-) {
-  let rot = (Math.PI / 2) * 3;
-  const step = Math.PI / spikes;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy - outerR);
-  for (let i = 0; i < spikes; i++) {
-    ctx.lineTo(cx + Math.cos(rot) * outerR, cy + Math.sin(rot) * outerR);
-    rot += step;
-    ctx.lineTo(cx + Math.cos(rot) * innerR, cy + Math.sin(rot) * innerR);
-    rot += step;
-  }
-  ctx.lineTo(cx, cy - outerR);
-  ctx.closePath();
-  ctx.fillStyle = color;
-  ctx.fill();
-}

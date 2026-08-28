@@ -1,4 +1,5 @@
 import React from 'react';
+import { PageBand } from '@/components/layout/PageBand';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { API_BASE_URL } from '@/lib/api';
@@ -33,59 +34,25 @@ const MyBooks = () => {
     );
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-white">
 
-            {/* Header */}
-            <div className="border-b border-slate-200 bg-black/20 backdrop-blur-sm">
-                <div className="max-w-6xl mx-auto px-6 py-8">
-                    <nav className="flex items-center gap-2 text-xs text-slate-500 mb-5">
-                        <Link to="/" className="hover:text-brand-700 transition-colors">Ana Sayfa</Link>
-                        <ChevronRight className="w-3 h-3" />
-                        <span className="text-slate-600 font-medium">Kitaplarım</span>
-                    </nav>
+            <PageBand
+                breadcrumb={
+                    <>
+                        <Link to="/" className="hover:text-brand-800 transition-colors">Ana sayfa</Link>
+                        <ChevronRight className="w-3 h-3 text-slate-300" />
+                        <span className="text-slate-700">Kitaplarım</span>
+                    </>
+                }
+                title="Kitaplarım"
+                subtitle={books.length > 0 ? `${books.length} kitap` : undefined}
+            />
 
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                        <div>
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center shadow-lg shadow-brand-600/25">
-                                    <BookMarked className="w-5 h-5 text-slate-900" />
-                                </div>
-                                <h1 className="text-2xl font-black text-slate-900 tracking-tight">Kitaplarım</h1>
-                            </div>
-                            <p className="text-slate-500 text-sm pl-1">
-                                Satın aldığın kitapları oku ve indir.
-                            </p>
-                        </div>
-
-                        {books.length > 0 && (
-                            <div className="flex items-center gap-2 bg-brand-700/10 border border-brand-200/20 rounded-2xl px-5 py-3">
-                                <BookOpen className="w-4 h-4 text-brand-700" />
-                                <span className="text-brand-700 font-bold text-sm">{books.length} Kitap</span>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            {/* Content */}
-            <div className="max-w-6xl mx-auto px-6 py-10">
+            <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-10">
                 {books.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-32 text-center">
-                        <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-200 flex items-center justify-center mb-8 shadow-2xl">
-                            <BookMarked className="w-14 h-14 text-slate-600" />
-                        </div>
-                        <h3 className="text-2xl font-bold text-slate-900 mb-3">Henüz Kitabın Yok</h3>
-                        <p className="text-slate-500 text-sm max-w-sm mb-8 leading-relaxed">
-                            Mağazadan kitap satın aldığında burada görünecek. Edurce kütüphanesini keşfet!
-                        </p>
-                        <Link
-                            to="/courses"
-                            className="flex items-center gap-2.5 px-7 py-3.5 bg-gradient-to-r from-brand-600 to-brand-800 hover:from-brand-600 hover:to-brand-800 text-slate-900 font-bold rounded-2xl transition-all shadow-lg shadow-brand-600/25 hover:shadow-brand-600/40 hover:-translate-y-0.5"
-                        >
-                            <ShoppingBag className="w-4 h-4" />
-                            Mağazaya Git
-                        </Link>
-                    </div>
+                    <p className="text-[15px] text-slate-500">
+                        Henüz bir kitabın yok.
+                    </p>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {books.map((book: any) => (
