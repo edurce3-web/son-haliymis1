@@ -198,17 +198,17 @@ export const PageHeader: React.FC<{
 
 /** Sayfaların altındaki ortak iletişim şeridi. */
 export const ContactBand: React.FC = () => (
-    <section className="border-t border-slate-200 bg-slate-50">
-        <div className="container px-4 py-14 lg:py-16">
-            <div className="max-w-3xl">
+    <section className="border-t border-brand-100 bg-gradient-to-br from-brand-50 via-brand-100/50 to-white">
+        <div className="container px-5 sm:px-8 py-14 lg:py-16">
+            <div className="max-w-2xl mx-auto text-center">
                 <h2 className="font-montserrat text-[24px] lg:text-[28px] font-extrabold text-slate-900 tracking-[-0.02em]">
                     Sorunuz mu var?
                 </h2>
-                <p className="text-[16px] text-slate-600 mt-3 leading-[1.7] max-w-xl">
+                <p className="text-[16px] text-slate-600 mt-3 leading-[1.7] max-w-xl mx-auto">
                     Yardım merkezinde aradığınızı bulamazsanız doğrudan yazın. Mesajınıza
-                    talep numarası verilir, en geç iki iş günü içinde dönüş yapılır.
+                    talep numarası verilir ve 48 saat içinde yanıtlanır.
                 </p>
-                <div className="flex flex-wrap gap-3 mt-7">
+                <div className="flex flex-wrap gap-3 mt-7 justify-center">
                     <Link
                         to="/contact"
                         className="h-11 px-7 leading-[44px] rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-sm font-semibold transition-colors"

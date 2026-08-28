@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSeo } from '@/hooks/useSeo';
 import { PageHeader, ContactBand } from '@/components/content/PageLayout';
 import { cn } from '@/lib/utils';
+import { UserRound, CreditCard, PlayCircle, Coins, GraduationCap, Search } from 'lucide-react';
 
 interface Entry {
     q: string;
@@ -60,10 +61,10 @@ const GROUPS: Group[] = [
                 text: 'parola şifre unuttum sıfırlama',
                 a: (
                     <>
-                        Şu anda kendi kendine parola sıfırlama akışı bulunmuyor.{' '}
-                        <L to="/contact">İletişim formundan</L> "Teknik arıza" konusuyla yazarsanız
-                        hesabınızı doğrulayıp sıfırlama işlemini biz başlatıyoruz. Google veya
-                        Facebook ile giriş yaptıysanız parolaya ihtiyacınız yoktur.
+                        Giriş ekranındaki <L to="/forgot-password">Şifremi unuttum</L>
+                        bağlantısını kullanın. E-postanıza 6 haneli bir kod gönderilir; kodu
+                        girdikten sonra yeni şifrenizi belirlersiniz. Kod 10 dakika geçerlidir.
+                        Google veya Facebook ile giriş yaptıysanız parolaya ihtiyacınız yoktur.
                     </>
                 ),
             },
@@ -343,6 +344,21 @@ const GROUPS: Group[] = [
     },
 ];
 
+/**
+ * Bölüm renkleri ve simgeleri.
+ *
+ * Sayfa tek renk gri metin yığınıyken hangi bölümde olunduğu ancak başlık
+ * okunarak anlaşılıyordu. Her bölüm kendi rengini taşıyınca, kart ızgarasından
+ * seçilen bölüm aşağıda da aynı renkle karşılıyor.
+ */
+const GROUP_THEME: Record<string, { icon: React.ElementType; card: string; chip: string; text: string }> = {
+    hesap: { icon: UserRound, card: 'border-brand-200 bg-brand-50/70 hover:bg-brand-50', chip: 'bg-brand-700', text: 'text-brand-800' },
+    'satin-alma': { icon: CreditCard, card: 'border-amber-200 bg-amber-50/70 hover:bg-amber-50', chip: 'bg-amber-500', text: 'text-amber-700' },
+    kurslar: { icon: PlayCircle, card: 'border-sky-200 bg-sky-50/70 hover:bg-sky-50', chip: 'bg-sky-600', text: 'text-sky-700' },
+    kredi: { icon: Coins, card: 'border-violet-200 bg-violet-50/70 hover:bg-violet-50', chip: 'bg-violet-600', text: 'text-violet-700' },
+    egitmen: { icon: GraduationCap, card: 'border-rose-200 bg-rose-50/70 hover:bg-rose-50', chip: 'bg-rose-500', text: 'text-rose-700' },
+};
+
 const Help: React.FC = () => {
     const [query, setQuery] = useState('');
     const [open, setOpen] = useState<string | null>(null);
@@ -376,56 +392,75 @@ const Help: React.FC = () => {
                 title="Yardım merkezi"
                 lead="Hesap, satın alma, kurslar, Edurce Kredi ve eğitmenlik hakkında en sık sorulan soruların yanıtları. Aramak için yazmaya başlayın."
             >
-                <div className="mt-8 max-w-lg">
+                <div className="mt-8 max-w-xl mx-auto">
                     <label htmlFor="help-search" className="sr-only">Yardım konularında ara</label>
-                    <input
-                        id="help-search"
-                        value={query}
-                        onChange={e => setQuery(e.target.value)}
-                        placeholder="Konu ara — iade, sertifika, video, kredi…"
-                        className="w-full h-12 px-4 rounded-lg border border-slate-300 bg-white text-[15.5px] placeholder:text-slate-400 focus:outline-none focus:border-brand-600 focus:ring-4 focus:ring-brand-500/10 transition-all"
-                    />
+                    <div className="relative">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400 pointer-events-none" />
+                        <input
+                            id="help-search"
+                            value={query}
+                            onChange={e => setQuery(e.target.value)}
+                            placeholder="Konu ara — iade, sertifika, video, kredi…"
+                            className="w-full h-[52px] pl-12 pr-4 rounded-xl border border-brand-200 bg-white text-[15.5px] placeholder:text-slate-400 shadow-[0_2px_10px_-4px_rgba(23,93,93,0.18)] focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/12 transition-all"
+                        />
+                    </div>
                     {query && (
-                        <p className="text-[14px] text-slate-500 mt-2.5">
+                        <p className="text-[13.5px] text-slate-500 mt-3">
                             {totalHits > 0 ? `${totalHits} sonuç bulundu` : 'Sonuç bulunamadı'}
                         </p>
                     )}
                 </div>
             </PageHeader>
 
-            <div className="container px-4 py-16 lg:py-24">
-                <div className="flex flex-col lg:flex-row gap-14 lg:gap-20">
+            <div className="container px-5 sm:px-8 py-12 lg:py-16">
+                <div className="max-w-3xl mx-auto">
 
-                    {/* Bölüm listesi */}
+                    {/*
+                        Bölüm kartları.
+
+                        Eskiden solda ince, gri, yapışkan bir bağlantı listesi vardı; içeriği
+                        ekranın kenarına itiyor ve hiçbir şey anlatmıyordu. Kartlar hem
+                        bölümlere atlıyor hem de sayfada ne bulunacağını tek bakışta gösteriyor.
+                    */}
                     {!query && (
-                        <nav className="lg:w-64 shrink-0" aria-label="Bölümler">
-                            <div className="lg:sticky lg:top-28">
-                                <p className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400 mb-5">
-                                    Bu sayfada
-                                </p>
-                                <ol className="border-l border-slate-200">
-                                    {GROUPS.map(g => (
-                                        <li key={g.id}>
-                                            <a
-                                                href={`#${g.id}`}
-                                                className="block pl-5 pr-2 py-2 text-[13.5px] leading-snug text-slate-500 hover:text-slate-900 transition-colors"
-                                            >
-                                                {g.title}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ol>
-                            </div>
+                        <nav aria-label="Bölümler" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                            {GROUPS.map(g => {
+                                const theme = GROUP_THEME[g.id];
+                                const Icon = theme?.icon;
+                                return (
+                                    <a
+                                        key={g.id}
+                                        href={`#${g.id}`}
+                                        className={cn(
+                                            'rounded-2xl border p-5 transition-colors',
+                                            theme?.card || 'border-slate-200 bg-slate-50'
+                                        )}
+                                    >
+                                        <span className={cn(
+                                            'flex items-center justify-center w-9 h-9 rounded-lg text-white',
+                                            theme?.chip || 'bg-slate-500'
+                                        )}>
+                                            {Icon && <Icon className="w-[18px] h-[18px]" />}
+                                        </span>
+                                        <span className="block mt-3.5 text-[14.5px] font-bold text-slate-900 leading-snug">
+                                            {g.title}
+                                        </span>
+                                        <span className={cn('block mt-1 text-[13px] font-medium', theme?.text || 'text-slate-500')}>
+                                            {g.entries.length} başlık
+                                        </span>
+                                    </a>
+                                );
+                            })}
                         </nav>
                     )}
 
-                    <div className="flex-1 min-w-0 max-w-[42rem]">
+                    <div className={cn(!query && 'mt-14')}>
                         {totalHits === 0 ? (
-                            <div className="rounded-xl border border-slate-200 py-16 px-6 text-center">
+                            <div className="rounded-2xl border border-slate-200 bg-slate-50/60 py-16 px-6 text-center">
                                 <p className="font-montserrat text-[18px] font-extrabold text-slate-900 tracking-tight">
                                     "{query}" için sonuç bulunamadı
                                 </p>
-                                <p className="text-[16px] text-slate-600 mt-3 max-w-md mx-auto leading-[1.75]">
+                                <p className="text-[15.5px] text-slate-600 mt-3 max-w-md mx-auto leading-[1.75]">
                                     Farklı bir kelime deneyin ya da{' '}
                                     <Link to="/contact" className="text-brand-700 font-medium hover:underline">
                                         doğrudan bize yazın
@@ -434,68 +469,80 @@ const Help: React.FC = () => {
                                 </p>
                             </div>
                         ) : (
-                            filtered.map((group, gi) => (
-                                <section
-                                    key={group.id}
-                                    id={group.id}
-                                    className={cn('scroll-mt-28', gi > 0 && 'mt-16 pt-16 border-t border-slate-100')}
-                                >
-                                    <h2 className="font-montserrat text-[26px] lg:text-[30px] font-extrabold text-slate-900 tracking-[-0.02em] leading-[1.15] mb-6">
-                                        {group.title}
-                                    </h2>
+                            filtered.map((group, gi) => {
+                                const theme = GROUP_THEME[group.id];
+                                const Icon = theme?.icon;
+                                return (
+                                    <section
+                                        key={group.id}
+                                        id={group.id}
+                                        className={cn('scroll-mt-28', gi > 0 && 'mt-14')}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <span className={cn(
+                                                'flex items-center justify-center w-10 h-10 rounded-xl text-white shrink-0',
+                                                theme?.chip || 'bg-slate-500'
+                                            )}>
+                                                {Icon && <Icon className="w-5 h-5" />}
+                                            </span>
+                                            <h2 className="font-montserrat text-[22px] lg:text-[25px] font-extrabold text-slate-900 tracking-[-0.02em] leading-tight">
+                                                {group.title}
+                                            </h2>
+                                        </div>
 
-                                    <div className="divide-y divide-slate-100 border-t border-slate-100">
-                                        {group.entries.map(entry => {
-                                            const key = `${group.id}-${entry.q}`;
-                                            const isOpen = open === key || Boolean(query);
-                                            return (
-                                                <div key={key}>
-                                                    <button
-                                                        onClick={() => setOpen(isOpen && !query ? null : key)}
-                                                        aria-expanded={isOpen}
-                                                        className="w-full flex items-start justify-between gap-6 py-5 text-left group"
-                                                    >
-                                                        <span className={cn(
-                                                            'text-[16.5px] leading-snug transition-colors',
-                                                            isOpen
-                                                                ? 'text-brand-800 font-semibold'
-                                                                : 'text-slate-800 font-medium group-hover:text-brand-800'
-                                                        )}>
-                                                            {entry.q}
-                                                        </span>
-                                                        {!query && (
-                                                            <span
-                                                                aria-hidden
-                                                                className={cn(
-                                                                    'shrink-0 mt-1 w-5 h-5 relative transition-transform duration-300',
-                                                                    isOpen && 'rotate-90'
-                                                                )}
-                                                            >
-                                                                {/* İki çizgiden artı — açılınca çarpıya döner */}
-                                                                <span className={cn(
-                                                                    'absolute left-0 top-1/2 w-5 h-[1.5px] -translate-y-1/2 rounded-full transition-colors',
-                                                                    isOpen ? 'bg-brand-700' : 'bg-slate-400 group-hover:bg-brand-600'
-                                                                )} />
-                                                                <span className={cn(
-                                                                    'absolute left-1/2 top-0 h-5 w-[1.5px] -translate-x-1/2 rounded-full transition-all duration-300',
-                                                                    isOpen ? 'opacity-0' : 'bg-slate-400 group-hover:bg-brand-600'
-                                                                )} />
+                                        <div className="mt-5 rounded-2xl border border-slate-200 divide-y divide-slate-100 overflow-hidden">
+                                            {group.entries.map(entry => {
+                                                const key = `${group.id}-${entry.q}`;
+                                                const isOpen = open === key || Boolean(query);
+                                                return (
+                                                    <div key={key} className={cn(isOpen && 'bg-slate-50/60')}>
+                                                        <button
+                                                            onClick={() => setOpen(isOpen && !query ? null : key)}
+                                                            aria-expanded={isOpen}
+                                                            className="w-full flex items-start justify-between gap-6 px-5 sm:px-6 py-4 text-left group"
+                                                        >
+                                                            <span className={cn(
+                                                                'text-[15.5px] leading-snug transition-colors py-0.5',
+                                                                isOpen
+                                                                    ? cn('font-semibold', theme?.text || 'text-slate-900')
+                                                                    : 'text-slate-800 font-medium group-hover:text-slate-950'
+                                                            )}>
+                                                                {entry.q}
                                                             </span>
+                                                            {!query && (
+                                                                <span
+                                                                    aria-hidden
+                                                                    className={cn(
+                                                                        'shrink-0 mt-1.5 w-4 h-4 relative transition-transform duration-300',
+                                                                        isOpen && 'rotate-90'
+                                                                    )}
+                                                                >
+                                                                    {/* İki çizgiden artı — açılınca eksiye döner */}
+                                                                    <span className={cn(
+                                                                        'absolute left-0 top-1/2 w-4 h-[2px] -translate-y-1/2 rounded-full transition-colors',
+                                                                        isOpen ? (theme?.chip || 'bg-slate-500') : 'bg-slate-400 group-hover:bg-slate-600'
+                                                                    )} />
+                                                                    <span className={cn(
+                                                                        'absolute left-1/2 top-0 h-4 w-[2px] -translate-x-1/2 rounded-full transition-all duration-300',
+                                                                        isOpen ? 'opacity-0' : 'bg-slate-400 group-hover:bg-slate-600'
+                                                                    )} />
+                                                                </span>
+                                                            )}
+                                                        </button>
+                                                        {isOpen && (
+                                                            <div className="px-5 sm:px-6 pb-5 -mt-1">
+                                                                <p className="text-[15px] text-slate-600 leading-[1.8]">
+                                                                    {entry.a}
+                                                                </p>
+                                                            </div>
                                                         )}
-                                                    </button>
-                                                    {isOpen && (
-                                                        <div className="pb-6 pr-10 -mt-1">
-                                                            <p className="text-[16px] text-slate-600 leading-[1.8]">
-                                                                {entry.a}
-                                                            </p>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </section>
-                            ))
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </section>
+                                );
+                            })
                         )}
                     </div>
                 </div>

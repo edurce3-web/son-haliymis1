@@ -90,14 +90,9 @@ const Login = () => {
         </div>
 
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password" className="text-sm font-medium text-slate-700">
-              Şifre
-            </Label>
-            <Link to="/forgot-password" className="text-sm font-medium text-brand-700 hover:text-brand-800">
-              Şifremi unuttum
-            </Link>
-          </div>
+          <Label htmlFor="password" className="text-sm font-medium text-slate-700">
+            Şifre
+          </Label>
           <div className="relative">
             <Input
               id="password"
@@ -118,6 +113,16 @@ const Login = () => {
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
+          </div>
+          {/* Etiket hizasında değil, alanın altında: kullanıcı önce şifresini
+              yazmayı deniyor, bağlantı ancak o iş bitince gerekiyor. */}
+          <div className="flex justify-end pt-0.5">
+            <Link
+              to="/forgot-password"
+              className="text-[13px] font-medium text-brand-700 hover:text-brand-900 transition-colors"
+            >
+              Şifremi unuttum
+            </Link>
           </div>
         </div>
 

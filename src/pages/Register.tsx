@@ -8,6 +8,7 @@ import AuthLayout from "@/components/auth/AuthLayout";
 import SocialLogin from "@/components/auth/SocialLogin";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import CodeInput from "@/components/auth/CodeInput";
 
 type Step = "details" | "code" | "password";
 
@@ -23,7 +24,6 @@ const Register = () => {
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [resendIn, setResendIn] = useState(0);
   const [verifyToken, setVerifyToken] = useState("");
-  const codeInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -42,13 +42,6 @@ const Register = () => {
       [name]: type === "checkbox" ? checked : value
     }));
   };
-
-  // Kod adımına geçince geri sayımı başlat ve alana odaklan
-  useEffect(() => {
-    if (step === "code") {
-      codeInputRef.current?.focus();
-    }
-  }, [step]);
 
   useEffect(() => {
     if (resendIn <= 0) return;
@@ -295,18 +288,9 @@ const Register = () => {
                   <Label htmlFor="code" className="text-sm font-medium text-slate-700">
                     Doğrulama kodu
                   </Label>
-                  <Input
-                    ref={codeInputRef}
-                    id="code"
-                    name="code"
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
-                    placeholder="000000"
-                    maxLength={6}
+                  <CodeInput
                     value={formData.code}
-                    onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.replace(/\D/g, "") }))}
-                    required
-                    className="h-14 rounded-xl border-slate-200 bg-slate-50/60 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-center text-2xl font-semibold tracking-[0.5em] indent-[0.5em]"
+                    onChange={(code) => setFormData(prev => ({ ...prev, code }))}
                   />
                   <p className="text-xs text-slate-400">Kod 10 dakika geçerlidir.</p>
                 </div>
