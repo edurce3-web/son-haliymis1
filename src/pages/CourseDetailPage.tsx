@@ -788,13 +788,74 @@ export const CourseDetailPage = () => {
       <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px]">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 -mt-20 lg:-mt-24 pb-10 relative">
           {/* ── Sol: oynatıcı, başlık, künye, satın alma, içerik ───────── */}
-          <div className="lg:col-span-8 xl:col-span-9 min-w-0">
+          <div className="lg:col-span-8 min-w-0">
+            {/* Başlık ve alt başlık — sayfanın en üstünde */}
+            <h1 className="font-montserrat text-[24px] sm:text-[30px] font-extrabold text-slate-900 leading-[1.15] tracking-[-0.025em] break-words">
+              {course.title}
+            </h1>
+
+            {course.short_description && (
+              <p className="text-[15.5px] sm:text-[16.5px] text-slate-600 leading-[1.6] mt-3 break-words max-w-2xl">
+                {course.short_description}
+              </p>
+            )}
+
             {/*
-              Oynatıcı en üstte ve sütunun tamamını kaplıyor. Önizlemeye açık
-              dersler müfredat listesinde "Önizle" etiketiyle zaten işaretli;
-              yanda ikinci bir liste tutmak videoyu daraltıyordu.
+              Künye — tek satır düz metin.
+
+              Dört hücreli çerçeveli şerit sayfanın üstünde ağır duruyordu.
+              Bilgiler aynı, sunumu sade: noktalarla ayrılmış bir satır ve
+              sonunda eğitmen bağlantısı.
             */}
-            <div className="relative aspect-video bg-slate-900 rounded-xl overflow-hidden group ring-1 ring-slate-900/5 max-w-3xl">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-4 text-[14px] text-slate-500">
+              {reviewsCount > 0 && (
+                <>
+                  <span className="flex items-center gap-1.5">
+                    <span className="font-bold text-amber-600 tabular-nums">
+                      {Number(course.rating || 0).toFixed(1).replace('.', ',')}
+                    </span>
+                    <StarRating rating={Number(course.rating || 0)} size={14} />
+                    <span>({reviewsCount} değerlendirme)</span>
+                  </span>
+                  <span className="text-slate-300">·</span>
+                </>
+              )}
+
+              <span>
+                <span className="font-semibold text-slate-900">
+                  {Number(course.student_count || 0).toLocaleString('tr-TR')}
+                </span> öğrenci
+              </span>
+
+              <span className="text-slate-300">·</span>
+              <span>
+                {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
+                  month: 'long', year: 'numeric',
+                })} güncellemesi
+              </span>
+
+              <span className="text-slate-300">·</span>
+              <InstructorLink className="inline-flex items-center gap-2 group">
+                <Avatar className="w-6 h-6 ring-1 ring-slate-200 shrink-0">
+                  <AvatarImage src={instructorAvatar} alt={instructorFullName} />
+                  <AvatarFallback className="bg-brand-100 text-brand-800 text-[10px] font-bold">
+                    {instructorFullName.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="font-semibold text-slate-900 group-hover:text-brand-800 transition-colors">
+                  {instructorFullName}
+                </span>
+              </InstructorLink>
+            </div>
+
+            {/*
+              Oynatıcı — künyenin altında ve ölçülü.
+
+              Önizlemeye açık dersler müfredat listesinde "Önizle" etiketiyle
+              zaten işaretli; yanda ikinci bir liste tutmak videoyu
+              daraltıyordu.
+            */}
+            <div className="relative aspect-video bg-slate-900 rounded-xl overflow-hidden group ring-1 ring-slate-900/5 max-w-2xl mt-6">
               {isVideoPlaying && (previewLesson || course.preview_video) ? (
                 <>
                   {previewLesson?.video_type === 'hls' ? (
@@ -880,77 +941,6 @@ export const CourseDetailPage = () => {
                   </span>
                 </button>
               )}
-            </div>
-
-            {/* Başlık ve alt başlık — videonun hemen altında */}
-            <h1 className="font-montserrat text-[24px] sm:text-[29px] font-extrabold text-slate-900 leading-[1.15] tracking-[-0.025em] break-words mt-6">
-              {course.title}
-            </h1>
-
-            {course.short_description && (
-              <p className="text-[15.5px] sm:text-[16px] text-slate-600 leading-[1.6] mt-2.5 break-words">
-                {course.short_description}
-              </p>
-            )}
-
-            {/*
-              Künye — dört ölçü, her biri etiketli.
-
-              Öncesinde hepsi tek satırda noktalarla ayrılmış düz metindi ve
-              hangi sayının ne olduğu okunmuyordu. Artık her ölçünün üstünde
-              küçük bir etiket var, aralarında dikey ayraç.
-            */}
-            <div className="mt-5 border-y border-slate-200">
-              <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-y sm:divide-y-0 divide-slate-100">
-                <div className="px-4 py-3">
-                  <p className="text-[10px] uppercase tracking-wider text-brand-700 font-semibold">Puan</p>
-                  {reviewsCount > 0 ? (
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <span className="font-montserrat text-[16px] font-extrabold text-amber-600 tabular-nums leading-none">
-                        {Number(course.rating || 0).toFixed(1)}
-                      </span>
-                      <StarRating rating={Number(course.rating || 0)} size={12} />
-                    </div>
-                  ) : (
-                    <p className="text-[14px] text-slate-400 mt-1">—</p>
-                  )}
-                  <p className="text-[11.5px] text-slate-400 mt-0.5">
-                    {reviewsCount > 0 ? `${reviewsCount} değerlendirme` : 'Değerlendirilmemiş'}
-                  </p>
-                </div>
-
-                <div className="px-4 py-3">
-                  <p className="text-[10px] uppercase tracking-wider text-brand-700 font-semibold">Öğrenci</p>
-                  <p className="font-montserrat text-[16px] font-extrabold text-slate-900 tabular-nums leading-none mt-1">
-                    {Number(course.student_count || 0).toLocaleString('tr-TR')}
-                  </p>
-                  <p className="text-[11.5px] text-slate-400 mt-0.5">kayıtlı</p>
-                </div>
-
-                <div className="px-4 py-3">
-                  <p className="text-[10px] uppercase tracking-wider text-brand-700 font-semibold">Güncelleme</p>
-                  <p className="text-[14px] font-semibold text-slate-900 leading-tight mt-1.5">
-                    {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
-                      month: 'long', year: 'numeric',
-                    })}
-                  </p>
-                </div>
-
-                <InstructorLink className="px-4 py-3 group block">
-                  <p className="text-[10px] uppercase tracking-wider text-brand-700 font-semibold">Eğitmen</p>
-                  <span className="flex items-center gap-2 mt-1.5">
-                    <Avatar className="w-6 h-6 ring-1 ring-slate-200 shrink-0">
-                      <AvatarImage src={instructorAvatar} alt={instructorFullName} />
-                      <AvatarFallback className="bg-brand-100 text-brand-800 text-[10px] font-bold">
-                        {instructorFullName.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-[13.5px] font-semibold text-slate-900 group-hover:text-brand-800 transition-colors truncate">
-                      {instructorFullName}
-                    </span>
-                  </span>
-                </InstructorLink>
-              </div>
             </div>
 
             {/*
@@ -1126,49 +1116,49 @@ export const CourseDetailPage = () => {
                   </InstructorLink>
 
                   <div className="min-w-0 flex-1">
-                    <InstructorLink className="inline-block group">
-                      <h3 className="text-[17px] font-bold text-slate-900 group-hover:text-brand-800 transition-colors">
-                        {instructorFullName}
-                      </h3>
-                    </InstructorLink>
-                    <p className="text-[13.5px] text-slate-500">
-                      {course.instructor_title || 'Eğitmen'}
-                    </p>
+                    <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
+                      <div className="min-w-0">
+                        <InstructorLink className="inline-block group">
+                          <h3 className="text-[17px] font-bold text-slate-900 group-hover:text-brand-800 transition-colors">
+                            {instructorFullName}
+                          </h3>
+                        </InstructorLink>
+                        <p className="text-[13.5px] text-slate-500">
+                          {course.instructor_title || 'Eğitmen'}
+                        </p>
+                      </div>
 
-                    {/*
-                      Eğitmen ölçüleri — ayrı hücrelerde.
+                      {/*
+                        Eğitmen ölçüleri — sağ üstte, küçük ve tek satır.
 
-                      "1 öğrenci · 1 kurs" düz metin olarak akıp gidiyordu;
-                      küçük sayılarda özellikle zayıf duruyordu. Her ölçü
-                      kendi hücresinde, sayı iri ve etiketi altında.
-                    */}
-                    <div className="flex flex-wrap gap-6 mt-3.5">
-                      {[
-                        {
-                          value: Number(course.instructor_total_students || course.instructor_students || 0)
-                            .toLocaleString('tr-TR'),
-                          label: 'Öğrenci',
-                        },
-                        {
-                          value: String(course.instructor_course_count || course.instructor_courses || 1),
-                          label: 'Kurs',
-                        },
-                        ...(Number(course.instructor_avg_rating || 0) > 0
-                          ? [{
-                            value: Number(course.instructor_avg_rating).toFixed(1),
-                            label: 'Ortalama puan',
-                          }]
-                          : []),
-                      ].map(stat => (
-                        <div key={stat.label}>
-                          <p className="font-montserrat text-[19px] font-extrabold text-brand-800 tabular-nums leading-none">
-                            {stat.value}
-                          </p>
-                          <p className="text-[11.5px] uppercase tracking-wider text-slate-400 font-semibold mt-1">
-                            {stat.label}
-                          </p>
-                        </div>
-                      ))}
+                        Ayrı hücrelerdeki iri rakamlar "1 öğrenci · 1 kurs"
+                        gibi küçük değerlerde orantısız duruyordu. Burada
+                        başlıkla aynı hizada, yardımcı bilgi ölçeğinde.
+                      */}
+                      <p className="text-[12.5px] text-slate-500 shrink-0 flex flex-wrap items-center gap-x-2 gap-y-1">
+                        {Number(course.instructor_avg_rating || 0) > 0 && (
+                          <>
+                            <span className="flex items-center gap-1.5">
+                              <span className="font-bold text-amber-600 tabular-nums">
+                                {Number(course.instructor_avg_rating).toFixed(1).replace('.', ',')}
+                              </span>
+                              <StarRating rating={Number(course.instructor_avg_rating)} size={12} />
+                            </span>
+                            <span className="text-slate-300">·</span>
+                          </>
+                        )}
+                        <span>
+                          <span className="font-semibold text-slate-800">
+                            {Number(course.instructor_total_students || course.instructor_students || 0).toLocaleString('tr-TR')}
+                          </span> öğrenci
+                        </span>
+                        <span className="text-slate-300">·</span>
+                        <span>
+                          <span className="font-semibold text-slate-800">
+                            {course.instructor_course_count || course.instructor_courses || 1}
+                          </span> kurs
+                        </span>
+                      </p>
                     </div>
 
                     {/* Uzun biyografi kırpılıyor */}
@@ -1318,7 +1308,7 @@ export const CourseDetailPage = () => {
           </div>
 
           {/* ── Sağ: satın alma ve kurs özellikleri (geniş ekran) ──────── */}
-          <aside className="hidden lg:block lg:col-span-4 xl:col-span-3">
+          <aside className="hidden lg:block lg:col-span-4">
             <div className="lg:sticky lg:top-20">
               <PurchaseBox />
 
