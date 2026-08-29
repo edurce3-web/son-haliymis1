@@ -12,7 +12,6 @@ const CloseAccountSettings: React.FC = () => {
         <div className="space-y-6 max-w-2xl">
             <div>
                 <h1 className="text-2xl font-bold text-red-600">Hesabı Kapat</h1>
-                <p className="text-slate-500 mt-2">Educre platformundaki üyeliğinizi kalıcı olarak sonlandırın.</p>
             </div>
 
             <div className="bg-red-50 border border-red-100 rounded-3xl p-6 lg:p-8 space-y-6 relative overflow-hidden">

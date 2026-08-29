@@ -418,7 +418,7 @@ export const Header = () => {
           <div className="flex items-center gap-3 p-3 bg-indigo-50/60 rounded-xl mb-2">
             <Avatar className="h-9 w-9 border-2 border-white shadow-sm shrink-0">
               <AvatarImage src={user?.profile_image || ''} className="object-cover" />
-              <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-xs">
+              <AvatarFallback className="bg-brand-700 text-white font-bold text-xs">
                 {user?.first_name?.[0]}{user?.last_name?.[0]}
               </AvatarFallback>
             </Avatar>
@@ -521,7 +521,7 @@ export const Header = () => {
               variant="outline"
               size="sm"
               onClick={() => navigate('/instructor')}
-              className="hidden md:flex rounded-full text-brand-700 border-brand-200 hover:bg-brand-700 hover:text-white text-xs px-4 h-8 font-semibold transition-colors"
+              className="hidden md:flex rounded-md bg-transparent text-slate-600 hover:bg-transparent hover:text-brand-800 text-[13px] px-3 h-8 font-semibold transition-colors"
             >
               Eğitmen Paneli
             </Button>
@@ -530,7 +530,7 @@ export const Header = () => {
               variant="outline"
               size="sm"
               onClick={() => navigate('/become-instructor')}
-              className="hidden md:flex rounded-full text-brand-700 border-brand-200 hover:bg-brand-700 hover:text-white text-xs px-4 h-8 font-semibold transition-colors"
+              className="hidden md:flex rounded-md bg-transparent text-slate-600 hover:bg-transparent hover:text-brand-800 text-[13px] px-3 h-8 font-semibold transition-colors"
             >
               Eğitimci Ol
             </Button>
@@ -539,7 +539,7 @@ export const Header = () => {
               variant="outline"
               size="sm"
               onClick={() => navigate('/become-instructor')}
-              className="hidden md:flex rounded-full text-brand-700 border-brand-200 hover:bg-brand-700 hover:text-white text-xs px-4 h-8 font-semibold transition-colors"
+              className="hidden md:flex rounded-md bg-transparent text-slate-600 hover:bg-transparent hover:text-brand-800 text-[13px] px-3 h-8 font-semibold transition-colors"
             >
               Eğitimci Ol
             </Button>
@@ -594,7 +594,7 @@ export const Header = () => {
               {isAuthenticated && user ? (
                 <Avatar className="w-full h-full">
                   <AvatarImage src={user.profile_image || ''} className="object-cover" />
-                  <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-xs">
+                  <AvatarFallback className="bg-brand-700 text-white font-bold text-xs">
                     {user.first_name?.[0]}{user.last_name?.[0]}
                   </AvatarFallback>
                 </Avatar>

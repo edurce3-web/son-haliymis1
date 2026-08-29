@@ -114,7 +114,6 @@ const SecuritySettings: React.FC = () => {
                 <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
                     <Key className="w-6 h-6 text-slate-400" /> Hesap Güvenliği
                 </h1>
-                <p className="text-slate-500 mt-1 text-sm">Parolanı değiştir ve giriş bilgilerini görüntüle.</p>
             </div>
 
             {/* E-posta */}
@@ -209,18 +208,11 @@ const SecuritySettings: React.FC = () => {
                             )}
                         </div>
 
-                        <div className="flex items-start gap-2 bg-blue-50 rounded-xl p-3">
-                            <ShieldCheck className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-                            <p className="text-xs text-blue-700 leading-relaxed">
-                                Güvenlik için e-posta adresine 6 haneli bir doğrulama kodu göndereceğiz.
-                                Parola ancak kodu girdikten sonra değişir.
-                            </p>
-                        </div>
 
                         <Button
                             onClick={() => requestCode(false)}
                             disabled={busy || !form.current_password || !isPasswordValid || !passwordsMatch}
-                            className="h-11 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-700"
+                            className="h-11 px-6 rounded-xl bg-brand-700 hover:bg-brand-800"
                         >
                             {busy ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Gönderiliyor</> : 'Doğrulama kodu gönder'}
                         </Button>
@@ -228,8 +220,8 @@ const SecuritySettings: React.FC = () => {
                 ) : (
                     <div className="p-6 space-y-5">
                         <div className="flex items-center justify-center py-2">
-                            <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center">
-                                <Mail className="w-6 h-6 text-indigo-600" />
+                            <div className="w-12 h-12 rounded-full bg-brand-50 flex items-center justify-center">
+                                <Mail className="w-6 h-6 text-brand-700" />
                             </div>
                         </div>
 
@@ -253,7 +245,7 @@ const SecuritySettings: React.FC = () => {
                             <Button
                                 onClick={confirmChange}
                                 disabled={busy || form.code.length !== 6}
-                                className="h-11 px-8 rounded-xl bg-indigo-600 hover:bg-indigo-700"
+                                className="h-11 px-8 rounded-xl bg-brand-700 hover:bg-brand-800"
                             >
                                 {busy ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Değiştiriliyor</> : 'Parolayı değiştir'}
                             </Button>
@@ -268,7 +260,7 @@ const SecuritySettings: React.FC = () => {
                                 <button
                                     onClick={() => requestCode(true)}
                                     disabled={resendIn > 0 || busy}
-                                    className="text-xs font-medium text-indigo-600 hover:underline disabled:text-slate-400 disabled:no-underline"
+                                    className="text-xs font-medium text-brand-700 hover:underline disabled:text-slate-400 disabled:no-underline"
                                 >
                                     {resendIn > 0 ? `Tekrar gönder (${resendIn}s)` : 'Kodu tekrar gönder'}
                                 </button>

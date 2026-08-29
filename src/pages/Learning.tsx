@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, Link } from 'react-router-dom';
 import {
-    PlayCircle, BookOpen, Award, Search, CheckCircle,
+    PlayCircle, BookOpen, Award, CheckCircle,
     GraduationCap, BarChart2, ChevronRight, Flame,
     Trophy, Loader2, Clock, Star
 } from 'lucide-react';
@@ -15,8 +15,6 @@ import { PageBand } from '@/components/layout/PageBand';
 const Learning = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
-    const [search, setSearch] = useState('');
-    const [filter, setFilter] = useState<'all' | 'ongoing' | 'completed'>('all');
     const [isClaiming, setIsClaiming] = useState<number | null>(null);
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
@@ -27,12 +25,7 @@ const Learning = () => {
 
     const courses = enrollmentsData?.items || [];
 
-    const filtered = courses.filter((c: any) => {
-        const matchSearch = c.title?.toLowerCase().includes(search.toLowerCase());
-        if (filter === 'ongoing') return matchSearch && (c.progress || 0) < 100;
-        if (filter === 'completed') return matchSearch && (c.progress || 0) === 100;
-        return matchSearch;
-    });
+    // Süzme denetimleri kaldırıldı; liste satın alınan kursların tamamı.
 
     const generateCertificate = async (course: any) => {
         if (!canvasRef.current || !user) return;
@@ -103,40 +96,10 @@ const Learning = () => {
             />
 
             <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-8">
-
-                {/* Filters & Search */}
-                <div className="flex flex-col sm:flex-row gap-3 mb-7">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
-                            placeholder="Kurs ara..."
-                            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/25 transition-all"
-                        />
-                    </div>
-                    <div className="flex rounded-2xl overflow-hidden border border-slate-200 bg-white">
-                        {(['all', 'ongoing', 'completed'] as const).map(f => (
-                            <button
-                                key={f}
-                                onClick={() => setFilter(f)}
-                                className={`px-5 py-3 text-sm font-semibold transition-all ${
-                                    filter === f
-                                        ? 'bg-brand-700 text-white'
-                                        : 'text-slate-500 hover:text-slate-900'
-                                }`}
-                            >
-                                {f === 'all' ? 'Tümü' : f === 'ongoing' ? 'Devam Eden' : 'Tamamlanan'}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Course Grid */}
-                {filtered.length > 0 ? (
+                {/* Kurs listesi */}
+                {courses.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                        {filtered.map((course: any) => (
+                        {courses.map((course: any) => (
                             <CourseCard
                                 key={course.course_id}
                                 course={course}
@@ -148,20 +111,16 @@ const Learning = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="py-16">
-                        <p className="text-[15px] text-slate-500">
-                            {search
-                                ? `"${search}" için sonuç bulunamadı.`
-                                : 'Henüz bir kursa kayıtlı değilsin.'}
+                    <div className="py-20 text-center">
+                        <p className="text-[16px] text-slate-500">
+                            Henüz bir kursa kayıtlı değilsin.
                         </p>
-                        {!search && (
-                            <button
-                                onClick={() => navigate('/courses')}
-                                className="h-10 px-5 mt-4 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[14px] font-semibold transition-colors"
-                            >
-                                Kurslara göz at
-                            </button>
-                        )}
+                        <button
+                            onClick={() => navigate('/courses')}
+                            className="h-11 px-6 mt-5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[14.5px] font-semibold transition-colors"
+                        >
+                            Kurslara göz at
+                        </button>
                     </div>
                 )}
             </div>

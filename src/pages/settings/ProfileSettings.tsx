@@ -173,9 +173,6 @@ const ProfileSettings: React.FC = () => {
         <div className="space-y-6 max-w-2xl">
             <div>
                 <h1 className="text-2xl font-bold text-slate-900">Hesap profili</h1>
-                <p className="text-slate-500 mt-1.5 text-sm">
-                    Bu bilgiler herkese açık profilinde görünür.
-                </p>
             </div>
 
             {/* Fotoğraf */}
@@ -212,9 +209,6 @@ const ProfileSettings: React.FC = () => {
                                 </Button>
                             )}
                         </div>
-                        <p className="text-xs text-slate-400 mt-2">
-                            Seçtikten sonra kırpma penceresi açılır. JPG veya PNG, en fazla 10MB.
-                        </p>
                     </div>
                 </div>
             </section>
@@ -247,7 +241,6 @@ const ProfileSettings: React.FC = () => {
                         value={formData.bio}
                         onChange={handleChange}
                     />
-                    <p className="text-xs text-slate-400">Profil sayfanda adının altında görünür.</p>
                 </div>
 
                 <div className="space-y-1.5">

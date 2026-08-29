@@ -57,7 +57,7 @@ const Toggle: React.FC<{ checked: boolean; onChange: (v: boolean) => void; disab
         disabled={disabled}
         onClick={() => onChange(!checked)}
         className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-            } ${checked ? 'bg-indigo-600' : 'bg-slate-300'}`}
+            } ${checked ? 'bg-brand-700' : 'bg-slate-300'}`}
     >
         <span
             className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${checked ? 'translate-x-5' : 'translate-x-0'
@@ -184,7 +184,7 @@ const NotificationSettings: React.FC = () => {
                 <Button
                     onClick={save}
                     disabled={!dirty || saving}
-                    className="h-10 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-700"
+                    className="h-10 px-6 rounded-xl bg-brand-700 hover:bg-brand-800"
                 >
                     {saving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Kaydediliyor</> : 'Tercihleri kaydet'}
                 </Button>

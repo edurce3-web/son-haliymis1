@@ -87,7 +87,10 @@ export const CategoryMegaMenu: React.FC = () => {
                     role="menu"
                 >
                     {/* Sol sütun: kategoriler */}
-                    <div className="w-[248px] py-2 max-h-[70vh] overflow-y-auto bg-slate-50/70 border-r border-slate-200">
+                    <div className={cn(
+                        'w-[248px] py-2 max-h-[70vh] overflow-y-auto bg-slate-50/70',
+                        hovered && 'border-r border-slate-200'
+                    )}>
                         {categories.length === 0 && (
                             <p className="px-4 py-6 text-sm text-slate-400 text-center">
                                 Henüz kategori yok
@@ -124,45 +127,42 @@ export const CategoryMegaMenu: React.FC = () => {
                         })}
                     </div>
 
-                    {/* Sağ sütun: seçili kategorinin alt dalları */}
-                    <div className="w-[560px] p-7 max-h-[70vh] overflow-y-auto">
-                        {hovered ? (
-                            <>
-                                <Link
-                                    to={`/courses/${hovered.slug}`}
-                                    onClick={() => setOpen(false)}
-                                    className="text-[17px] font-bold text-slate-900 hover:text-brand-800 transition-colors"
-                                >
-                                    {hovered.name}
-                                </Link>
-                                <span className="block w-8 h-[3px] rounded-full bg-brand-700 mt-2.5 mb-5" />
+                    {/*
+                        Sağ sütun yalnızca bir kategorinin üzerine gelindiğinde basılır.
+                        Boş bir panel ve "bir kategorinin üzerine gel" yazısı, menü
+                        açılır açılmaz ekranın yarısını kaplayıp hiçbir şey anlatmıyordu.
+                    */}
+                    {hovered && (
+                        <div className="w-[560px] p-7 max-h-[70vh] overflow-y-auto">
+                            <Link
+                                to={`/courses/${hovered.slug}`}
+                                onClick={() => setOpen(false)}
+                                className="text-[17px] font-bold text-slate-900 hover:text-brand-800 transition-colors"
+                            >
+                                {hovered.name}
+                            </Link>
+                            <span className="block w-8 h-[3px] rounded-full bg-brand-700 mt-2.5 mb-5" />
 
-                                {hovered.subcategories.length > 0 ? (
-                                    <div className="grid grid-cols-2 gap-x-8 gap-y-1">
-                                        {hovered.subcategories.map(sub => (
-                                            <Link
-                                                key={sub.slug}
-                                                to={`/courses/${hovered.slug}/${sub.slug}`}
-                                                onClick={() => setOpen(false)}
-                                                className="block py-1.5 text-[14px] text-slate-600 hover:text-brand-800 transition-colors truncate"
-                                            >
-                                                {sub.name}
-                                            </Link>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className="text-sm text-slate-500">
-                                        Bu kategoride alt dal yok.
-                                    </p>
-                                )}
-
-                            </>
-                        ) : (
-                            <p className="text-sm text-slate-400">
-                                Alt kategorileri görmek için bir kategorinin üzerine gel.
-                            </p>
-                        )}
-                    </div>
+                            {hovered.subcategories.length > 0 ? (
+                                <div className="grid grid-cols-2 gap-x-8 gap-y-1">
+                                    {hovered.subcategories.map(sub => (
+                                        <Link
+                                            key={sub.slug}
+                                            to={`/courses/${hovered.slug}/${sub.slug}`}
+                                            onClick={() => setOpen(false)}
+                                            className="block py-1.5 text-[14px] text-slate-600 hover:text-brand-800 transition-colors truncate"
+                                        >
+                                            {sub.name}
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-sm text-slate-500">
+                                    Bu kategoride alt dal yok.
+                                </p>
+                            )}
+                        </div>
+                    )}
                 </div>
             )}
         </div>

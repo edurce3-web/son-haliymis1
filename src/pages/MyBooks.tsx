@@ -48,9 +48,9 @@ const MyBooks = () => {
                 subtitle={books.length > 0 ? `${books.length} kitap` : undefined}
             />
 
-            <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-10">
+            <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-8">
                 {books.length === 0 ? (
-                    <p className="text-[15px] text-slate-500">
+                    <p className="py-20 text-center text-[16px] text-slate-500">
                         Henüz bir kitabın yok.
                     </p>
                 ) : (

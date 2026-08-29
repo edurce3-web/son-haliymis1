@@ -86,11 +86,11 @@ const PurchaseHistorySettings: React.FC = () => {
                         <History className="w-6 h-6 text-slate-400" />
                         Satın Alma Geçmişi
                     </h1>
-                    <p className="text-slate-500 mt-1 text-sm">
-                        {purchases.length > 0
-                            ? `${purchases.length} kurs · toplam ${formatPrice(total)}`
-                            : 'Satın aldığın kurslar burada listelenir.'}
-                    </p>
+                    {purchases.length > 0 && (
+                        <p className="text-slate-500 mt-1 text-sm">
+                            {purchases.length} kurs · toplam {formatPrice(total)}
+                        </p>
+                    )}
                 </div>
                 {purchases.length > 0 && (
                     <Button variant="outline" onClick={exportCsv} className="h-10 rounded-xl gap-2">
@@ -106,7 +106,7 @@ const PurchaseHistorySettings: React.FC = () => {
                     </div>
                     <p className="text-sm text-slate-500 mb-4">Henüz bir satın alma yapmadın.</p>
                     <Link to="/courses">
-                        <Button className="h-10 px-5 rounded-xl bg-indigo-600 hover:bg-indigo-700">
+                        <Button className="h-10 px-5 rounded-xl bg-brand-700 hover:bg-brand-800">
                             Kursları keşfet
                         </Button>
                     </Link>
@@ -119,7 +119,7 @@ const PurchaseHistorySettings: React.FC = () => {
                             value={query}
                             onChange={e => setQuery(e.target.value)}
                             placeholder="Kurs veya eğitmen ara"
-                            className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                            className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                         />
                     </div>
 
@@ -139,7 +139,7 @@ const PurchaseHistorySettings: React.FC = () => {
                                 <div className="flex-1 min-w-0">
                                     <Link
                                         to={`/course/${p.course_id}`}
-                                        className="font-medium text-slate-900 hover:text-indigo-600 line-clamp-1"
+                                        className="font-medium text-slate-900 hover:text-brand-700 line-clamp-1"
                                     >
                                         {p.title}
                                     </Link>
@@ -156,7 +156,7 @@ const PurchaseHistorySettings: React.FC = () => {
                                     <p className="font-semibold text-slate-900 whitespace-nowrap">{formatPrice(p.amount)}</p>
                                     <Link
                                         to={`/learning`}
-                                        className="text-xs text-indigo-600 hover:underline"
+                                        className="text-xs text-brand-700 hover:underline"
                                     >
                                         Kursa git
                                     </Link>
