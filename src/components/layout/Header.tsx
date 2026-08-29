@@ -228,9 +228,9 @@ export const Header = () => {
   // ─── Cart Popover Content ───
   const CartPopoverContent = () => (
     <div>
-      <div className="p-3 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-t-2xl border-b flex items-center justify-between">
+      <div className="p-3 bg-brand-50 rounded-t-2xl border-b flex items-center justify-between">
         <p className="font-bold text-slate-800 text-sm">Sepetim ({cartCount})</p>
-        {cartCount > 0 && <span className="text-xs font-bold text-indigo-600">₺{cartTotal.toFixed(2)}</span>}
+        {cartCount > 0 && <span className="text-xs font-bold text-brand-700">₺{cartTotal.toFixed(2)}</span>}
       </div>
       <div className="max-h-[300px] overflow-y-auto">
         {cartItems.length === 0 ? (
@@ -241,19 +241,19 @@ export const Header = () => {
         ) : (
           cartItems.slice(0, 4).map((item) => (
             <div key={item.course_id} className="flex items-center gap-3 p-3 hover:bg-slate-50 transition-colors group">
-              <div className="w-14 h-10 bg-gradient-to-br from-indigo-100 to-violet-100 rounded-lg flex-shrink-0 overflow-hidden">
+              <div className="w-14 h-10 bg-brand-50 rounded-lg flex-shrink-0 overflow-hidden">
                 {(item.image_path || item.image_url) ? (
                   <img src={item.image_path || item.image_url} className="w-full h-full object-cover" alt="" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <BookOpen className="w-5 h-5 text-indigo-400" />
+                    <BookOpen className="w-5 h-5 text-brand-300" />
                   </div>
                 )}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold text-slate-800 truncate">{item.title}</p>
                 <p className="text-[11px] text-slate-500">{item.instructor_name || `${item.instructor_first_name || ''} ${item.instructor_last_name || ''}`.trim()}</p>
-                <p className="text-xs font-bold text-indigo-600">₺{parseFloat(item.price).toFixed(2)}</p>
+                <p className="text-xs font-bold text-brand-700">₺{parseFloat(item.price).toFixed(2)}</p>
               </div>
               <button onClick={(e) => handleRemoveFromCart(item.course_id, e)} className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-red-50 rounded-md transition-all">
                 <X className="w-4 h-4 text-red-500" />
@@ -268,7 +268,7 @@ export const Header = () => {
             <span className="text-slate-600">Toplam:</span>
             <span className="font-bold text-slate-900">₺{cartTotal.toFixed(2)}</span>
           </div>
-          <Button onClick={() => navigate('/cart')} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm h-9">
+          <Button onClick={() => navigate('/cart')} className="w-full bg-brand-700 hover:bg-brand-800 text-white rounded-xl text-sm h-9">
             Sepete Git
           </Button>
         </div>
@@ -297,8 +297,8 @@ export const Header = () => {
                 {(fav.image_path || fav.image_url) ? (
                   <img src={fav.image_path || fav.image_url} className="w-full h-full object-cover" alt={fav.title} />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-50 to-violet-50">
-                    <BookOpen className="w-6 h-6 text-indigo-300" />
+                  <div className="w-full h-full flex items-center justify-center bg-brand-50">
+                    <BookOpen className="w-6 h-6 text-brand-300" />
                   </div>
                 )}
               </div>
@@ -310,7 +310,7 @@ export const Header = () => {
                 {/* Add to cart button */}
                 <button
                   onClick={(e) => handleAddToCart(fav.course_id, e)}
-                  className="mt-2 w-full py-1.5 text-xs font-bold text-indigo-600 border border-indigo-600 rounded-md hover:bg-indigo-600 hover:text-white transition-all text-center"
+                  className="mt-2 w-full py-1.5 text-xs font-bold text-brand-700 border border-brand-700 rounded-md hover:bg-brand-700 hover:text-white transition-all text-center"
                 >
                   Sepete ekle
                 </button>
@@ -340,12 +340,12 @@ export const Header = () => {
   // ─── Notifications Popover Content ───
   const NotificationsPopoverContent = () => (
     <div>
-      <div className="p-3 bg-gradient-to-r from-violet-50 to-purple-50 rounded-t-2xl border-b flex items-center justify-between">
+      <div className="p-3 bg-brand-50 rounded-t-2xl border-b flex items-center justify-between">
         <p className="font-bold text-slate-800 text-sm">
           Bildirimler {unreadCount > 0 && <span className="ml-1 text-xs bg-red-500 text-white px-1.5 py-0.5 rounded-full">{unreadCount}</span>}
         </p>
         {unreadCount > 0 && (
-          <button onClick={handleMarkAllRead} className="text-[11px] text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1">
+          <button onClick={handleMarkAllRead} className="text-[11px] text-brand-700 hover:text-brand-900 font-medium flex items-center gap-1">
             <CheckCheck className="w-3 h-3" /> Tümünü oku
           </button>
         )}
@@ -362,7 +362,7 @@ export const Header = () => {
               key={notif.notification_id}
               className={cn(
                 "flex items-start gap-3 p-3 hover:bg-slate-50 transition-colors cursor-pointer group",
-                !notif.is_read && "bg-indigo-50/40"
+                !notif.is_read && "bg-brand-50/40"
               )}
               onClick={() => {
                 handleMarkNotifRead(notif.notification_id);
@@ -375,13 +375,13 @@ export const Header = () => {
                 <p className="text-[11px] text-slate-500 line-clamp-2 mt-0.5">{notif.message}</p>
                 <p className="text-[10px] text-slate-400 mt-1">{notifTimeAgo(notif.created_at)}</p>
               </div>
-              {!notif.is_read && <div className="w-2 h-2 bg-indigo-500 rounded-full mt-2 flex-shrink-0" />}
+              {!notif.is_read && <div className="w-2 h-2 bg-brand-600 rounded-full mt-2 flex-shrink-0" />}
             </div>
           ))
         )}
       </div>
       <div className="p-3 border-t bg-slate-50/50 rounded-b-2xl">
-        <Button onClick={() => navigate('/notifications')} variant="outline" className="w-full rounded-xl text-sm h-9 border-violet-200 text-violet-600 hover:bg-violet-50">
+        <Button onClick={() => navigate('/notifications')} variant="outline" className="w-full rounded-xl text-sm h-9 border-brand-200 text-brand-700 hover:bg-brand-50">
           Tüm Bildirimleri Gör
         </Button>
       </div>
@@ -391,9 +391,9 @@ export const Header = () => {
 
   // ─── Kullanıcı Menüsü İçeriği ───
   const MenuRow = ({
-    onClick, icon, label, badge, tone = 'default',
+    onClick, label, badge, tone = 'default',
   }: {
-    onClick: () => void; icon: React.ReactNode; label: string;
+    onClick: () => void; label: string;
     badge?: React.ReactNode; tone?: 'default' | 'primary' | 'danger';
   }) => (
     <button
@@ -401,11 +401,10 @@ export const Header = () => {
       className={cn(
         'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-left transition-colors',
         tone === 'danger' ? 'text-red-600 hover:bg-red-50'
-          : tone === 'primary' ? 'font-bold text-indigo-700 hover:bg-indigo-50'
+          : tone === 'primary' ? 'font-semibold text-brand-800 hover:bg-brand-50'
             : 'text-slate-700 hover:bg-slate-50'
       )}
     >
-      {icon}
       <span className="flex-1">{label}</span>
       {badge}
     </button>
@@ -415,7 +414,7 @@ export const Header = () => {
     <div className="p-2">
       {isAuthenticated ? (
         <>
-          <div className="flex items-center gap-3 p-3 bg-indigo-50/60 rounded-xl mb-2">
+          <div className="flex items-center gap-3 p-3 bg-brand-50/70 rounded-xl mb-2">
             <Avatar className="h-9 w-9 border-2 border-white shadow-sm shrink-0">
               <AvatarImage src={user?.profile_image || ''} className="object-cover" />
               <AvatarFallback className="bg-brand-700 text-white font-bold text-xs">
@@ -429,43 +428,43 @@ export const Header = () => {
           </div>
 
           <MenuRow onClick={() => navigate('/home/learning')} tone="primary"
-            icon={<PlayCircle className="w-4 h-4 text-indigo-500" />} label="Eğitimlerim" />
+            label="Eğitimlerim" />
           <MenuRow onClick={() => navigate('/home/gamification')}
-            icon={<Trophy className="w-4 h-4 text-amber-500" />} label="Başarılarım" />
+            label="Başarılarım" />
           <MenuRow onClick={() => navigate('/home/certificates')}
-            icon={<Award className="w-4 h-4 text-emerald-500" />} label="Sertifikalarım" />
+            label="Sertifikalarım" />
           <MenuRow onClick={() => navigate('/home/books')}
-            icon={<BookMarked className="w-4 h-4 text-violet-500" />} label="Kitaplarım" />
+            label="Kitaplarım" />
           <MenuRow onClick={() => navigate('/favorites')}
-            icon={<Heart className="w-4 h-4 text-pink-500" />} label="Favorilerim"
-            badge={favorites.length > 0 && <span className="text-xs bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded-full font-bold">{favorites.length}</span>} />
+            label="Favorilerim"
+            badge={favorites.length > 0 && <span className="text-xs bg-brand-100 text-brand-800 px-1.5 py-0.5 rounded-full font-bold">{favorites.length}</span>} />
           <MenuRow onClick={() => navigate('/cart')}
-            icon={<ShoppingCart className="w-4 h-4 text-blue-500" />} label="Sepetim"
-            badge={cartCount > 0 && <span className="text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full font-bold">{cartCount}</span>} />
+            label="Sepetim"
+            badge={cartCount > 0 && <span className="text-xs bg-brand-100 text-brand-800 px-1.5 py-0.5 rounded-full font-bold">{cartCount}</span>} />
 
           <div className="h-px bg-slate-100 my-1.5" />
           <p className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">İletişim &amp; Bildirimler</p>
           <MenuRow onClick={() => navigate('/notifications')}
-            icon={<Bell className="w-4 h-4 text-violet-500" />} label="Bildirimler"
+            label="Bildirimler"
             badge={unreadCount > 0 && <span className="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full font-bold">{unreadCount}</span>} />
           <MenuRow onClick={() => navigate('/messages')}
-            icon={<MessageSquare className="w-4 h-4 text-cyan-500" />} label="Mesajlar" />
+            label="Mesajlar" />
 
           {isInstructor && (
             <>
               <div className="h-px bg-slate-100 my-1.5" />
               <MenuRow onClick={() => navigate('/instructor')} tone="primary"
-                icon={<BarChart3 className="w-4 h-4 text-blue-600" />} label="Eğitmen Paneli" />
+                label="Eğitmen Paneli" />
               <MenuRow onClick={() => navigate('/instructor/courses/create')}
-                icon={<BookOpen className="w-4 h-4 text-slate-500" />} label="Kurs Oluşturucu" />
+                label="Kurs Oluşturucu" />
             </>
           )}
 
           <div className="h-px bg-slate-100 my-1.5" />
           <MenuRow onClick={() => navigate('/home/settings/profile')}
-            icon={<Settings className="w-4 h-4 text-slate-400" />} label="Ayarlar" />
+            label="Ayarlar" />
           <MenuRow onClick={() => { logout(); navigate('/login'); }} tone="danger"
-            icon={<LogOut className="w-4 h-4" />} label="Çıkış Yap" />
+            label="Çıkış Yap" />
         </>
       ) : (
         <div className="p-1.5 space-y-2">
@@ -483,17 +482,12 @@ export const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white/95 backdrop-blur-xl shadow-sm">
       {/* Top gradient line */}
-      <div className="h-[2px] w-full bg-gradient-to-r from-indigo-500 via-violet-500 to-purple-600" />
+      <div className="h-[2px] w-full bg-gradient-to-r from-brand-600 via-brand-700 to-brand-800" />
 
       <div className="container flex h-16 items-center px-4 gap-3">
         {/* Logo */}
-        <Link to="/" className="flex items-center mr-4 shrink-0 overflow-hidden h-14">
-          <img
-            src="/logo.png"
-            alt="Edurce"
-            className="h-44 w-auto object-contain"
-            style={{ mixBlendMode: 'multiply' }}
-          />
+        <Link to="/" className="flex items-center mr-4 shrink-0" aria-label="Edurce ana sayfa">
+          <img src="/logo-wordmark.png" alt="Edurce" className="h-[30px] w-auto" />
         </Link>
 
         {/* Kategoriler — fareyle üzerine gelince açılan iki sütunlu menü.
@@ -503,11 +497,11 @@ export const Header = () => {
 
         {/* Search */}
         <form onSubmit={handleSearch} className="flex-1 relative group hidden md:block">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-[17px] h-[17px] text-slate-400 group-focus-within:text-brand-600 transition-colors" />
           <input
             type="search"
-            placeholder="Kurs veya eğitmen ara..."
-            className="w-full h-9 pl-9 pr-4 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-300 outline-none placeholder:text-slate-400 transition-all"
+            placeholder="Kurs veya eğitmen ara"
+            className="w-full h-10 pl-10 pr-4 rounded-xl border-[1.5px] border-slate-200 bg-slate-50/70 text-[14px] hover:border-slate-300 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none placeholder:text-slate-400 transition-all"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -515,48 +509,23 @@ export const Header = () => {
 
         {/* Actions */}
         <div className="flex items-center gap-1 ml-auto">
-          {/* Eğitimci ol / Eğitmen paneli */}
-          {isInstructor ? (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/instructor')}
-              className="hidden md:flex rounded-md bg-transparent text-slate-600 hover:bg-transparent hover:text-brand-800 text-[13px] px-3 h-8 font-semibold transition-colors"
+          {/*
+              Eğitmen bağlantısı — düğme değil, menü bağlantısı.
+              Çerçeveli bir düğme, başlıktaki tek eylem çağrısı gibi
+              görünüp gerçek eylemlerin (sepet, giriş) önüne geçiyordu.
+          */}
+          {!loading && (
+            <button
+              onClick={() => navigate(isInstructor ? '/instructor' : '/become-instructor')}
+              className="hidden md:inline-flex items-center h-8 px-3 text-[13.5px] font-semibold text-slate-600 hover:text-brand-800 transition-colors"
             >
-              Eğitmen Paneli
-            </Button>
-          ) : !loading && isAuthenticated ? (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/become-instructor')}
-              className="hidden md:flex rounded-md bg-transparent text-slate-600 hover:bg-transparent hover:text-brand-800 text-[13px] px-3 h-8 font-semibold transition-colors"
-            >
-              Eğitimci Ol
-            </Button>
-          ) : !isAuthenticated ? (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/become-instructor')}
-              className="hidden md:flex rounded-md bg-transparent text-slate-600 hover:bg-transparent hover:text-brand-800 text-[13px] px-3 h-8 font-semibold transition-colors"
-            >
-              Eğitimci Ol
-            </Button>
-          ) : null}
-
-          {/* Favorites with Hover Popover */}
-          {isAuthenticated && (
-            <HoverPopover content={<FavoritesPopoverContent />}>
-              <button onClick={() => navigate('/favorites')} className="w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:text-pink-500 hover:bg-pink-50 transition-all relative">
-                <Heart className="w-4.5 h-4.5" />
-              </button>
-            </HoverPopover>
+              {isInstructor ? 'Eğitmen paneli' : 'Eğitimci ol'}
+            </button>
           )}
 
           {/* Cart with Hover Popover */}
           <HoverPopover content={<CartPopoverContent />}>
-            <button onClick={() => navigate('/cart')} className="w-9 h-9 rounded-full flex items-center justify-center relative text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all">
+            <button onClick={() => navigate('/cart')} className="w-9 h-9 rounded-full flex items-center justify-center relative text-slate-500 hover:text-brand-700 hover:bg-brand-50 transition-all">
               <ShoppingCart className="w-[18px] h-[18px]" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 bg-[#0D9488] text-white text-[11px] font-black rounded-full flex items-center justify-center shadow-md shadow-teal-200 ring-2 ring-white">
@@ -569,7 +538,7 @@ export const Header = () => {
           {/* Notifications with Hover Popover */}
           {isAuthenticated && (
             <HoverPopover content={<NotificationsPopoverContent />} width="w-96">
-              <button onClick={() => navigate('/notifications')} className="w-8 h-8 rounded-full flex items-center justify-center relative text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all">
+              <button onClick={() => navigate('/notifications')} className="w-8 h-8 rounded-full flex items-center justify-center relative text-slate-500 hover:text-brand-700 hover:bg-brand-50 transition-all">
                 <Bell className="w-4.5 h-4.5" />
                 {unreadCount > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white">
@@ -589,7 +558,7 @@ export const Header = () => {
             <button
               onClick={() => navigate(isAuthenticated ? '/home/settings/profile' : '/login')}
               aria-label={isAuthenticated ? 'Hesap menüsü' : 'Giriş yap'}
-              className="w-8 h-8 rounded-full border-2 border-slate-200 hover:border-indigo-300 transition-all overflow-hidden"
+              className="w-8 h-8 rounded-full border-2 border-slate-200 hover:border-brand-300 transition-all overflow-hidden"
             >
               {isAuthenticated && user ? (
                 <Avatar className="w-full h-full">

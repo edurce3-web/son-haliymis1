@@ -40,11 +40,11 @@ export const AuthLayout: React.FC<Props> = ({ title, subtitle, points, children 
 
                 <div className="relative">
                     {/* Logo görselinin çevresi boş olduğu için büyütülüp kırpılıyor */}
-                    <Link to="/" className="flex items-center overflow-hidden h-12 w-max -ml-1">
+                    <Link to="/" className="inline-flex items-center" aria-label="Edurce ana sayfa">
                         <img
-                            src="/logo.png"
+                            src="/logo-wordmark.png"
                             alt="Edurce"
-                            className="h-40 w-auto object-contain brightness-0 invert"
+                            className="h-8 w-auto brightness-0 invert"
                         />
                     </Link>
                 </div>
@@ -73,7 +73,7 @@ export const AuthLayout: React.FC<Props> = ({ title, subtitle, points, children 
                 <div className="w-full max-w-[420px] mx-auto">
                     {/* Dar ekranda sol panel gizli; logo forma taşınıyor */}
                     <Link to="/" className="lg:hidden flex items-center justify-center overflow-hidden h-11 mb-8">
-                        <img src="/logo.png" alt="Edurce" className="h-36 w-auto object-contain" style={{ mixBlendMode: 'multiply' }} />
+                        <img src="/logo-wordmark.png" alt="Edurce" className="h-7 w-auto" />
                     </Link>
                     {children}
                 </div>

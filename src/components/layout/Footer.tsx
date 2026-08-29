@@ -102,13 +102,8 @@ const Footer = () => {
                             Header'daki yöntemin aynısı: görsel büyütülüp dar bir
                             kutuda kırpılıyor, böylece yazı gerçek boyutunda
                             oturuyor. */}
-                        <Link to="/" className="flex items-center overflow-hidden h-14 -ml-1 mb-3 w-max">
-                            <img
-                                src="/logo.png"
-                                alt="Edurce"
-                                className="h-44 w-auto object-contain"
-                                style={{ mixBlendMode: 'multiply' }}
-                            />
+                        <Link to="/" className="inline-flex items-center mb-4" aria-label="Edurce ana sayfa">
+                            <img src="/logo-wordmark.png" alt="Edurce" className="h-8 w-auto" />
                         </Link>
                         <p className="text-sm leading-relaxed text-slate-600 max-w-xs">
                             Yazılımdan tasarıma, mühendislikten müziğe; alanında uzman

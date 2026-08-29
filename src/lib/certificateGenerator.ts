@@ -36,7 +36,7 @@ async function drawLogo(
       image.crossOrigin = 'anonymous';
       image.onload = () => resolve(image);
       image.onerror = () => reject(new Error('logo yüklenemedi'));
-      image.src = '/logo.png';
+      image.src = '/logo-wordmark.png';
     });
 
     // Oranı koruyarak sığdır
@@ -96,7 +96,9 @@ export async function drawCertificate(
   ctx.strokeRect(48, 48, W - 96, H - 96);
 
   // ── Logo ──────────────────────────────────────────────────────────────────
-  const logoDrawn = await drawLogo(ctx, W / 2, 190, 460, 150, '#175D5D');
+  // Kutu, kirpilmis logonun 3.6:1 oranina gore: eskiden gorselin
+  // cevresindeki beyaz bosluk da bu alani yiyordu.
+  const logoDrawn = await drawLogo(ctx, W / 2, 190, 420, 116, '#175D5D');
   if (!logoDrawn) {
     ctx.textAlign = 'center';
     ctx.fillStyle = '#175D5D';
