@@ -15,6 +15,8 @@ type Cert = {
     category_name?: string;
     issued_at: string;
     certificate_url?: string;
+    /** Kursun toplam ders süresi — sertifikada gösteriliyor. */
+    duration_seconds?: number | null;
 };
 
 const Certificates = () => {
@@ -57,6 +59,8 @@ const Certificates = () => {
             instructorName: cert.instructor_name || 'Edurce',
             issuedDate: formatDate(cert.issued_at),
             certificateId: cert.certificate_id,
+            // Süre saniye olarak geliyor; belgede dakika gösteriliyor
+            durationMinutes: cert.duration_seconds ? Math.round(cert.duration_seconds / 60) : null,
         });
         return canvasRef.current;
     };

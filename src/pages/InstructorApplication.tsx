@@ -9,19 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import {
-  GraduationCap,
-  User,
-  Mail,
-  Globe,
-  BookOpen,
-  Award,
-  Briefcase,
-  Upload,
-  CheckCircle,
-  AlertCircle,
-  ChevronDown
-} from 'lucide-react';
+import { GraduationCap, User, Mail, Globe, BookOpen, Award, Briefcase, Upload, CheckCircle, AlertCircle, ChevronDown, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import Cropper from 'react-easy-crop';
@@ -85,13 +73,14 @@ interface InstructorApplicationData {
   bio: string;
   expertise: string[];
 
-  // Additional Information (Social Media Links)
-  youtube?: string;
-  instagram?: string;
-  facebook?: string;
-  twitter?: string;
+  /**
+   * Bağlantılar.
+   *
+   * Yalnızca web sitesi soruluyor. YouTube/Instagram/TikTok alanları profilde
+   * hiçbir yerde gösterilmiyordu; doldurulan veri hiçbir işe yaramıyor,
+   * form ise iki kat uzuyordu.
+   */
   website?: string;
-  tiktok?: string;
 }
 
 const InstructorApplication = () => {
@@ -101,6 +90,9 @@ const InstructorApplication = () => {
   const [dataLoading, setDataLoading] = useState(true);
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
+
+  /** İlerleme çubuğundaki adım adları — kart içindeki ikinci başlığın yerini aldı. */
+  const STEP_LABELS = ['Kişisel bilgiler', 'Profil fotoğrafı', 'Profesyonel bilgiler', 'Bağlantılar'];
 
   // If user is already an instructor, redirect immediately
   useEffect(() => {
@@ -118,12 +110,7 @@ const InstructorApplication = () => {
     title: '',
     bio: '',
     expertise: [],
-    youtube: '',
-    instagram: '',
-    facebook: '',
-    twitter: '',
-    website: '',
-    tiktok: ''
+    website: ''
   });
 
   const [expertiseInput, setExpertiseInput] = useState('');
@@ -380,17 +367,17 @@ const InstructorApplication = () => {
     // Validation for each step
     if (currentStep === 1) {
       if (!formData.fullName) {
-        newErrors.fullName = 'Ad soyad gereklidir';
+        newErrors.fullName = 'Ad soyad gerekli';
       }
       if (!formData.email) {
-        newErrors.email = 'E-posta gereklidir';
+        newErrors.email = 'E-posta gerekli';
       }
     } else if (currentStep === 3) {
       if (!formData.title) {
-        newErrors.title = 'Unvan gereklidir';
+        newErrors.title = 'Unvan gerekli';
       }
       if (!formData.bio) {
-        newErrors.bio = 'Kendinizi tanıtın alanı gereklidir';
+        newErrors.bio = 'Kendini tanıtan bir metin gerekli';
       }
       // Expertise artık zorunlu değil - kullanıcı isterse boş bırakabilir
     }
@@ -417,15 +404,13 @@ const InstructorApplication = () => {
       case 1:
         return (
           <div className="space-y-6">
-            <div className="text-center mb-8">
-              <User className="w-16 h-16 mx-auto text-primary mb-4" />
-              <h3 className="text-2xl font-bold">Kişisel Bilgiler</h3>
-              <p className="text-muted-foreground">Temel bilgilerinizi paylaşın</p>
-            </div>
-
+            <p className="text-[15px] text-slate-600 leading-relaxed">
+              Adın, e-posta adresin ve ders vereceğin dil. Bu bilgiler hesabında
+              kayıtlıysa otomatik dolduruldu.
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="fullName">Ad Soyad *</Label>
+                <Label htmlFor="fullName" className="text-[14px] font-semibold text-slate-800">Ad soyad</Label>
                 {errors.fullName && (
                   <p className="text-sm text-red-600 mb-2">{errors.fullName}</p>
                 )}
@@ -441,7 +426,7 @@ const InstructorApplication = () => {
               </div>
 
               <div>
-                <Label htmlFor="email">E-posta *</Label>
+                <Label htmlFor="email" className="text-[14px] font-semibold text-slate-800">E-posta</Label>
                 {errors.email && (
                   <p className="text-sm text-red-600 mb-2">{errors.email}</p>
                 )}
@@ -458,7 +443,7 @@ const InstructorApplication = () => {
               </div>
 
               <div className="md:col-span-2">
-                <Label htmlFor="language">Dil *</Label>
+                <Label htmlFor="language" className="text-[14px] font-semibold text-slate-800">Ders dili</Label>
                 <Select value={formData.language} onValueChange={(value) => setFormData(prev => ({ ...prev, language: value }))}>
                   <SelectTrigger>
                     <SelectValue placeholder="Dil seçiniz" />
@@ -484,12 +469,10 @@ const InstructorApplication = () => {
       case 2:
         return (
           <div className="space-y-6">
-            <div className="text-center mb-8">
-              <User className="w-16 h-16 mx-auto text-primary mb-4" />
-              <h3 className="text-2xl font-bold">Profil Fotoğrafı</h3>
-              <p className="text-muted-foreground">Profilinizi kişiselleştirin</p>
-            </div>
-
+            <p className="text-[15px] text-slate-600 leading-relaxed">
+              Fotoğrafın kurs sayfalarında ve profilinde görünür. Yüzünün net
+              göründüğü bir kare seç; öğrenciler eğitmeni tanımak istiyor.
+            </p>
             <div className="flex flex-col items-center space-y-6">
               <div className="relative">
                 <div className="w-32 h-32 rounded-full border-4 border-primary/20 overflow-hidden bg-gray-100 flex items-center justify-center">
@@ -543,15 +526,20 @@ const InstructorApplication = () => {
       case 3:
         return (
           <div className="space-y-6">
-            <div className="text-center mb-8">
-              <Briefcase className="w-16 h-16 mx-auto text-primary mb-4" />
-              <h3 className="text-2xl font-bold">Profesyonel Bilgiler</h3>
-              <p className="text-muted-foreground">Mesleki deneyiminizi anlatın</p>
-            </div>
-
+            <p className="text-[15px] text-slate-600 leading-relaxed">
+              Bu iki alan profilinde adının hemen altında görünür; öğrencilerin
+              seni tanıdığı ilk yer burası.
+            </p>
             <div className="space-y-6">
               <div>
-                <Label htmlFor="title">Unvan/Pozisyon *</Label>
+                <div className="flex items-baseline justify-between">
+                  <Label htmlFor="title" className="text-[14px] font-semibold text-slate-800">
+                    Unvan
+                  </Label>
+                  <span className="text-[12px] text-slate-400 tabular-nums">
+                    {formData.title.length}/40
+                  </span>
+                </div>
                 {errors.title && (
                   <p className="text-sm text-red-600 mb-2">{errors.title}</p>
                 )}
@@ -560,14 +548,17 @@ const InstructorApplication = () => {
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  placeholder="ör. Senior Software Developer, Marketing Uzmanı"
+                  placeholder="Örn: Yazılım Mühendisi · Grafik Tasarımcı · Matematik Öğretmeni"
+                  maxLength={40}
                   required
                   className={errors.title ? 'border-red-500' : ''}
                 />
               </div>
 
               <div>
-                <Label htmlFor="bio">Kendinizi Tanıtın *</Label>
+                <Label htmlFor="bio" className="text-[14px] font-semibold text-slate-800">
+                  Kendini tanıt
+                </Label>
                 {errors.bio && (
                   <p className="text-sm text-red-600 mb-2">{errors.bio}</p>
                 )}
@@ -576,7 +567,7 @@ const InstructorApplication = () => {
                   name="bio"
                   value={formData.bio}
                   onChange={handleInputChange}
-                  placeholder="Kendinizi kısaca tanıtın..."
+                  placeholder="Kendinizi kısaca tanıtın: ne iş yapıyorsunuz, kaç yıldır bu alandasınız, hangi konuları anlatacaksınız?"
                   rows={6}
                   required
                   className={errors.bio ? 'border-red-500' : ''}
@@ -584,12 +575,14 @@ const InstructorApplication = () => {
               </div>
 
               <div>
-                <Label htmlFor="expertise">Uzmanlık Alanları (İsteğe bağlı)</Label>
+                <Label htmlFor="expertise" className="text-[14px] font-semibold text-slate-800">
+                  Uzmanlık alanları
+                </Label>
                 <div className="flex gap-2 mb-2">
                   <Input
                     value={expertiseInput}
                     onChange={(e) => setExpertiseInput(e.target.value)}
-                    placeholder="ör. JavaScript, Marketing, Tasarım (isteğe bağlı)"
+                    placeholder="Örn: JavaScript — yazıp Ekle'ye basın"
                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addExpertise())}
                   />
                   <Button
@@ -618,80 +611,22 @@ const InstructorApplication = () => {
       case 4:
         return (
           <div className="space-y-6">
-            <div className="text-center mb-8">
-              <Award className="w-16 h-16 mx-auto text-primary mb-4" />
-              <h3 className="text-2xl font-bold">Son Adım - Eğitmen Hesabı Oluştur</h3>
-              <p className="text-muted-foreground">Sosyal medya hesaplarınızı paylaşın ve eğitmen hesabınızı oluşturun</p>
-            </div>
-
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="youtube">YouTube Kanalı</Label>
-                  <Input
-                    id="youtube"
-                    name="youtube"
-                    value={formData.youtube}
-                    onChange={handleInputChange}
-                    placeholder="https://youtube.com/@kanal"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="instagram">Instagram</Label>
-                  <Input
-                    id="instagram"
-                    name="instagram"
-                    value={formData.instagram}
-                    onChange={handleInputChange}
-                    placeholder="https://instagram.com/kullanici"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="facebook">Facebook</Label>
-                  <Input
-                    id="facebook"
-                    name="facebook"
-                    value={formData.facebook}
-                    onChange={handleInputChange}
-                    placeholder="https://facebook.com/sayfa"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="twitter">X (Twitter)</Label>
-                  <Input
-                    id="twitter"
-                    name="twitter"
-                    value={formData.twitter}
-                    onChange={handleInputChange}
-                    placeholder="https://x.com/kullanici"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="website">Web Sitesi</Label>
-                  <Input
-                    id="website"
-                    name="website"
-                    value={formData.website}
-                    onChange={handleInputChange}
-                    placeholder="https://websitesi.com"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="tiktok">TikTok</Label>
-                  <Input
-                    id="tiktok"
-                    name="tiktok"
-                    value={formData.tiktok}
-                    onChange={handleInputChange}
-                    placeholder="https://tiktok.com/@kullanici"
-                  />
-                </div>
-              </div>
+            <p className="text-[15px] text-slate-600 leading-relaxed">
+              İstersen kendi sitenin adresini ekle; profilinde bağlantı olarak
+              görünür. Boş bırakabilirsin.
+            </p>
+            <div className="space-y-2">
+              <Label htmlFor="website" className="text-[14px] font-semibold text-slate-800">
+                Web sitesi
+              </Label>
+              <Input
+                id="website"
+                name="website"
+                value={formData.website}
+                onChange={handleInputChange}
+                placeholder="https://siteniz.com"
+              />
+              <p className="text-[12.5px] text-slate-500">İsteğe bağlı.</p>
             </div>
           </div>
         );
@@ -705,10 +640,10 @@ const InstructorApplication = () => {
   // Loading state
   if (dataLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Bilgileriniz yükleniyor...</p>
+          <div className="animate-spin rounded-full h-9 w-9 border-2 border-brand-600 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-[15px] text-slate-500">Bilgilerin yükleniyor…</p>
         </div>
       </div>
     );
@@ -717,137 +652,166 @@ const InstructorApplication = () => {
   // Success page after submission
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md mx-auto text-center">
-          <CardContent className="p-8">
-            <div className="mb-6">
-              <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-green-800 mb-2">Başvurunuz Onaylandı!</h2>
-            </div>
+      <div className="min-h-screen bg-white flex items-center justify-center px-5 py-16">
+        <div className="w-full max-w-md text-center">
+          <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-brand-700 text-white">
+            <CheckCircle className="w-7 h-7" />
+          </span>
+          <h1 className="font-montserrat text-[26px] font-extrabold text-slate-900 tracking-[-0.02em] mt-5">
+            Eğitmen hesabın hazır
+          </h1>
+          <p className="text-[15.5px] text-slate-600 leading-[1.7] mt-3">
+            Artık kurs ve e-kitap oluşturabilirsin. İlk kursunu yayınlamadan
+            önce panelden fiyat ve ödeme bilgilerini tamamlamayı unutma.
+          </p>
 
-            <div className="space-y-4">
-              <Button
-                onClick={() => navigate('/instructor')}
-                className="w-full"
-                size="lg"
-              >
-                <GraduationCap className="w-4 h-4 mr-2" />
-                Eğitmen Paneline Git
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => navigate('/')}
-                className="w-full"
-              >
-                Ana Sayfaya Dön
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+          <div className="flex flex-col sm:flex-row gap-2.5 mt-8">
+            <button
+              onClick={() => navigate('/instructor')}
+              className="flex-1 h-11 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold transition-colors"
+            >
+              Eğitmen paneline git
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="flex-1 h-11 rounded-lg border border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-700 text-[15px] font-semibold transition-colors"
+            >
+              Ana sayfa
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-12">
-      <div className="container mx-auto px-4 max-w-4xl">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-full mb-6">
-            <GraduationCap className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Eğitmen Başvurusu
+    <div className="min-h-screen bg-white">
+      {/* Üst bant — platformun diğer sayfalarındaki açık yeşil zemin */}
+      <div className="relative border-b border-brand-100 bg-gradient-to-br from-brand-50 via-brand-100/60 to-white">
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage:
+              'linear-gradient(to right, rgba(23,93,93,0.06) 1px, transparent 1px),'
+              + 'linear-gradient(to bottom, rgba(23,93,93,0.06) 1px, transparent 1px)',
+            backgroundSize: '34px 34px',
+          }}
+        />
+        <div className="container relative mx-auto px-5 sm:px-8 max-w-3xl py-8 lg:py-10">
+          {/*
+            Çıkış yolu. Başvuru yarıda bırakılabilmeli; bu ekrana girip
+            vazgeçen kullanıcının geri dönebileceği tek yer tarayıcının geri
+            düğmesiydi.
+          */}
+          <button
+            onClick={() => navigate('/become-instructor')}
+            className="inline-flex items-center gap-2 text-[13.5px] font-semibold text-slate-500 hover:text-brand-800 transition-colors mb-5"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Eğitmenlik sayfasına dön
+          </button>
+
+          {/*
+            Tek başlık. Önceden hem sayfa başında hem kart içinde aynı şey
+            iki kez yazıyordu; adım adı artık ilerleme çubuğunda duruyor.
+          */}
+          <h1 className="font-montserrat text-[28px] sm:text-[34px] font-extrabold text-slate-900 tracking-[-0.025em] leading-tight">
+            Eğitmen başvurusu
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Bilginizi paylaşın, öğrencilerin hayatına dokunun. EduPlatform ailesine katılmak için başvurunuzu tamamlayın.
+          <p className="text-[15px] text-slate-600 mt-2.5 max-w-xl leading-relaxed">
+            Dört kısa adım. Bilgilerini tamamladığında eğitmen hesabın anında
+            açılır, kurs oluşturmaya başlayabilirsin.
+          </p>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-5 sm:px-8 max-w-3xl py-10">
+
+        {/* İlerleme */}
+        <div className="mb-8">
+          <div className="flex items-center gap-2">
+            {STEP_LABELS.map((label, i) => {
+              const done = i + 1 < currentStep;
+              const active = i + 1 === currentStep;
+              return (
+                <div key={label} className="flex items-center gap-2 min-w-0">
+                  <span
+                    className={
+                      'flex items-center justify-center w-7 h-7 rounded-full text-[12px] font-bold shrink-0 transition-colors '
+                      + (done || active ? 'bg-brand-700 text-white' : 'bg-slate-100 text-slate-400')
+                    }
+                  >
+                    {done ? <CheckCircle className="w-4 h-4" /> : i + 1}
+                  </span>
+                  <span
+                    className={
+                      'text-[13px] font-medium whitespace-nowrap hidden sm:inline '
+                      + (active ? 'text-slate-900' : 'text-slate-400')
+                    }
+                  >
+                    {label}
+                  </span>
+                  {i < STEP_LABELS.length - 1 && (
+                    <span className={'h-px w-6 sm:w-10 ' + (done ? 'bg-brand-300' : 'bg-slate-200')} />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-[12.5px] text-slate-400 mt-3 sm:hidden">
+            Adım {currentStep} / {totalSteps} · {STEP_LABELS[currentStep - 1]}
           </p>
         </div>
 
-        {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            {Array.from({ length: totalSteps }, (_, i) => (
-              <div key={i} className="flex items-center">
-                <div className={`
-                  w-10 h-10 rounded-full flex items-center justify-center font-semibold
-                  ${i + 1 <= currentStep ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'}
-                `}>
-                  {i + 1 <= currentStep ? <CheckCircle className="w-5 h-5" /> : i + 1}
-                </div>
-                {i < totalSteps - 1 && (
-                  <div className={`
-                    h-1 w-full mx-4
-                    ${i + 1 < currentStep ? 'bg-primary' : 'bg-gray-200'}
-                  `} />
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="text-center text-sm text-gray-600">
-            Adım {currentStep} / {totalSteps}
-          </div>
-        </div>
-
         {/* Form */}
-        <Card className="shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-center">
-              {currentStep === 1 && "Kişisel Bilgileriniz"}
-              {currentStep === 2 && "Profil Fotoğrafınız"}
-              {currentStep === 3 && "Profesyonel Deneyiminiz"}
-              {currentStep === 4 && "Ek Bilgiler (Opsiyonel)"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
             <form onSubmit={handleSubmit}>
               {renderStepContent()}
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between mt-8 pt-6 border-t">
+              <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
                 <Button
                   type="button"
                   variant="outline"
+                  className="h-11 px-6 rounded-xl"
                   onClick={(e) => {
                     e.preventDefault();
                     prevStep();
                   }}
                   disabled={currentStep === 1}
                 >
-                  Önceki
+                  Geri
                 </Button>
 
                 {currentStep < totalSteps ? (
                   <Button
                     type="button"
+                    className="h-11 px-7 rounded-xl bg-brand-700 hover:bg-brand-800 font-semibold"
                     onClick={(e) => {
                       e.preventDefault();
                       nextStep();
                     }}
                   >
-                    Sonraki
+                    Devam et
                   </Button>
                 ) : (
-                  <Button type="submit" disabled={loading} className="min-w-[120px]">
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="h-11 px-7 rounded-xl bg-brand-700 hover:bg-brand-800 font-semibold"
+                  >
                     {loading ? (
-                      <div className="flex items-center">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Gönderiliyor...
-                      </div>
-                    ) : (
-                      <>
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Eğitmen Hesabı Oluştur
-                      </>
-                    )}
+                      <span className="flex items-center">
+                        <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+                        Gönderiliyor
+                      </span>
+                    ) : 'Başvuruyu tamamla'}
                   </Button>
                 )}
               </div>
             </form>
-          </CardContent>
-        </Card>
-
+        </div>
       </div>
 
       {/* Crop Dialog */}

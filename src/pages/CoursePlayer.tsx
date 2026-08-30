@@ -458,6 +458,9 @@ const CoursePlayer = () => {
                 instructorName,
                 issuedDate: dateStr,
                 certificateId: certNo,
+                durationMinutes: content.course.duration_seconds
+                    ? Math.round(Number(content.course.duration_seconds) / 60)
+                    : null,
             });
 
             const imageData = canvas.toDataURL('image/png');

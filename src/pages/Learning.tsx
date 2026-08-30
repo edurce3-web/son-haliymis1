@@ -40,6 +40,7 @@ const Learning = () => {
                 instructorName: course.instructor_name || 'Edurce',
                 issuedDate: dateStr,
                 certificateId: certNo,
+                durationMinutes: course.total_duration || null,
             });
             const imageData = canvas.toDataURL('image/png');
             const result = await certificatesAPI.claimCertificate(course.course_id, imageData);

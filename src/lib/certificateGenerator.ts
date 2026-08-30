@@ -1,11 +1,17 @@
 import jsPDF from 'jspdf';
 
+/** Logodaki turkuaz — belgedeki tüm vurgular bu renkten türüyor. */
+const BRAND = '#175D5D';
+
 export interface CertificateData {
   studentName: string;
   courseTitle: string;
   instructorName: string;
+  /** Belgenin düzenlendiği tarih — kursun tamamlandığı gün. */
   issuedDate: string;
   certificateId: string;
+  /** Toplam ders süresi, dakika. Bilinmiyorsa satır çizilmez. */
+  durationMinutes?: number | null;
 }
 
 // ─── Draw the professional certificate on a canvas ─────────────────────────
@@ -22,8 +28,9 @@ export interface CertificateData {
  */
 async function drawLogo(
   ctx: CanvasRenderingContext2D,
-  centerX: number,
-  centerY: number,
+  /** Sol üst köşe — logo artık ortada değil, antetli kâğıt gibi köşede. */
+  x: number,
+  y: number,
   maxW: number,
   maxH: number,
   tintColor: string
@@ -56,7 +63,7 @@ async function drawLogo(
     tctx.fillStyle = tintColor;
     tctx.fillRect(0, 0, tint.width, tint.height);
 
-    ctx.drawImage(tint, centerX - w / 2, centerY - h / 2, w, h);
+    ctx.drawImage(tint, x, y, w, h);
     return true;
   } catch {
     return false;
@@ -87,88 +94,135 @@ export async function drawCertificate(
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
 
-  // ── Çerçeve: ince dış çizgi, üstte marka renginde kalın şerit ─────────────
-  ctx.fillStyle = '#175D5D';
-  ctx.fillRect(0, 0, W, 14);
+  // ── Çerçeve ───────────────────────────────────────────────────────────────
+  // Üstte kalın marka şeridi, sayfayı saran ince bir çizgi ve sol kenarda
+  // şeridin devamı gibi duran dar bir sütun. Belgeye ağırlık veriyor ama
+  // baskıda mürekkep yemiyor.
+  ctx.fillStyle = BRAND;
+  ctx.fillRect(0, 0, W, 16);
+  ctx.fillRect(0, 0, 16, H);
 
   ctx.strokeStyle = '#E2E8F0';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(48, 48, W - 96, H - 96);
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(56, 56, W - 112, H - 112);
 
-  // ── Logo ──────────────────────────────────────────────────────────────────
-  // Kutu, kirpilmis logonun 3.6:1 oranina gore: eskiden gorselin
-  // cevresindeki beyaz bosluk da bu alani yiyordu.
-  const logoDrawn = await drawLogo(ctx, W / 2, 190, 420, 116, '#175D5D');
+  // ── Logo — sol üstte, antetli kâğıt düzeni ───────────────────────────────
+  const LEFT = 104;
+  const logoDrawn = await drawLogo(ctx, LEFT, 104, 230, 62, BRAND);
   if (!logoDrawn) {
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#175D5D';
-    ctx.font = 'bold 60px Georgia, serif';
-    ctx.fillText('edurce', W / 2, 205);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = BRAND;
+    ctx.font = 'bold 40px Georgia, serif';
+    ctx.fillText('edurce', LEFT, 148);
   }
 
-  ctx.textAlign = 'center';
+  // Logonun karşısında belge numarası — üst satır dengede dursun
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#94A3B8';
+  ctx.font = '15px Georgia, serif';
+  ctx.fillText(`BELGE NO  ${data.certificateId}`, W - LEFT, 148);
 
   // ── Başlık ────────────────────────────────────────────────────────────────
-  ctx.fillStyle = '#0F172A';
-  ctx.font = 'bold 44px Georgia, serif';
-  ctx.fillText('BAŞARI SERTİFİKASI', W / 2, 320);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#94A3B8';
+  ctx.font = '17px Georgia, serif';
+  ctx.letterSpacing = '6px';
+  ctx.fillText('EDURCE ONLINE EĞİTİM PLATFORMU', W / 2, 268);
+  ctx.letterSpacing = '0px';
 
-  ctx.strokeStyle = '#175D5D';
+  ctx.fillStyle = '#0F172A';
+  ctx.font = 'bold 50px Georgia, serif';
+  ctx.fillText('BAŞARI SERTİFİKASI', W / 2, 334);
+
+  ctx.strokeStyle = BRAND;
   ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(W / 2 - 60, 345);
-  ctx.lineTo(W / 2 + 60, 345);
+  ctx.moveTo(W / 2 - 54, 362);
+  ctx.lineTo(W / 2 + 54, 362);
   ctx.stroke();
 
   // ── Öğrenci ───────────────────────────────────────────────────────────────
   ctx.fillStyle = '#64748B';
   ctx.font = '20px Georgia, serif';
-  ctx.fillText('Bu belge', W / 2, 415);
+  ctx.fillText('Bu belge', W / 2, 432);
 
   ctx.fillStyle = '#0F172A';
-  ctx.font = 'bold 52px Georgia, serif';
-  ctx.fillText(data.studentName, W / 2, 480);
+  ctx.font = 'bold 54px Georgia, serif';
+  ctx.fillText(data.studentName, W / 2, 500);
 
   ctx.fillStyle = '#64748B';
   ctx.font = '20px Georgia, serif';
-  ctx.fillText('adlı katılımcının aşağıdaki eğitimi tamamladığını onaylar.', W / 2, 528);
+  ctx.fillText('adlı katılımcının aşağıdaki eğitimi tamamladığını onaylar.', W / 2, 548);
 
   // ── Kurs adı — uzunsa iki satıra bölünüyor ───────────────────────────────
-  ctx.fillStyle = '#175D5D';
+  ctx.fillStyle = BRAND;
   ctx.font = 'bold 34px Georgia, serif';
-  const lines = wrapText(ctx, data.courseTitle, W - 340, 2);
-  let y = lines.length > 1 ? 596 : 610;
+  const lines = wrapText(ctx, data.courseTitle, W - 360, 2);
+  let y = lines.length > 1 ? 618 : 632;
   for (const line of lines) {
     ctx.fillText(line, W / 2, y);
     y += 44;
   }
 
-  // ── Alt bilgiler: eğitmen ve tarih ───────────────────────────────────────
-  const baseY = 790;
+  // ── Künye: eğitmen · süre · tamamlanma tarihi ────────────────────────────
+  //
+  // Üç sütun eşit aralıkta. Süre bilinmiyorsa sütun düşürülüp kalan ikisi
+  // yeniden ortalanıyor; boş bir "—" bırakmak belgeyi eksik gösteriyordu.
+  const facts: Array<[string, string]> = [
+    ['EĞİTMEN', data.instructorName],
+    ...(data.durationMinutes && data.durationMinutes > 0
+      ? [['EĞİTİM SÜRESİ', formatDuration(data.durationMinutes)] as [string, string]]
+      : []),
+    ['TAMAMLANMA TARİHİ', data.issuedDate],
+  ];
 
-  ctx.strokeStyle = '#CBD5E1';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(240, baseY);
-  ctx.lineTo(560, baseY);
-  ctx.moveTo(W - 560, baseY);
-  ctx.lineTo(W - 240, baseY);
-  ctx.stroke();
+  const factsY = 800;
+  const span = W - 2 * 300;
+  const step = facts.length > 1 ? span / (facts.length - 1) : 0;
 
-  ctx.fillStyle = '#0F172A';
-  ctx.font = 'bold 22px Georgia, serif';
-  ctx.fillText(data.instructorName, 400, baseY - 16);
-  ctx.fillText(data.issuedDate, W - 400, baseY - 16);
+  facts.forEach(([label, value], i) => {
+    const cx = facts.length > 1 ? 300 + step * i : W / 2;
 
-  ctx.fillStyle = '#94A3B8';
-  ctx.font = '15px Georgia, serif';
-  ctx.fillText('EĞİTMEN', 400, baseY + 28);
-  ctx.fillText('VERİLİŞ TARİHİ', W - 400, baseY + 28);
+    ctx.strokeStyle = '#CBD5E1';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - 150, factsY);
+    ctx.lineTo(cx + 150, factsY);
+    ctx.stroke();
 
-  // ── Belge numarası ────────────────────────────────────────────────────────
+    ctx.fillStyle = '#0F172A';
+    ctx.font = 'bold 22px Georgia, serif';
+    ctx.fillText(fit(ctx, value, 296), cx, factsY - 16);
+
+    ctx.fillStyle = '#94A3B8';
+    ctx.font = '14px Georgia, serif';
+    ctx.letterSpacing = '2px';
+    ctx.fillText(label, cx, factsY + 30);
+    ctx.letterSpacing = '0px';
+  });
+
+  // ── Alt satır ─────────────────────────────────────────────────────────────
   ctx.fillStyle = '#94A3B8';
   ctx.font = '14px Georgia, serif';
-  ctx.fillText(`Belge no: ${data.certificateId}  ·  edurce.com`, W / 2, H - 78);
+  ctx.fillText('Bu belgenin geçerliliği edurce.com adresinden doğrulanabilir.', W / 2, H - 84);
+}
+
+/** 195 dakika -> "3 sa 15 dk" */
+function formatDuration(minutes: number): string {
+  const m = Math.max(1, Math.round(minutes));
+  const h = Math.floor(m / 60);
+  const rest = m % 60;
+  if (h === 0) return `${rest} dk`;
+  if (rest === 0) return `${h} saat`;
+  return `${h} sa ${rest} dk`;
+}
+
+/** Tek satırlık metni verilen genişliğe sığdırır; taşarsa üç noktayla keser. */
+function fit(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string {
+  if (ctx.measureText(text).width <= maxWidth) return text;
+  let out = text;
+  while (out.length > 2 && ctx.measureText(`${out}…`).width > maxWidth) out = out.slice(0, -1);
+  return `${out}…`;
 }
 
 /**
