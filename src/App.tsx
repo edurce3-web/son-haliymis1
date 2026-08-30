@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -78,6 +79,8 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     !!path.match(/^\/learning\/.+/) ||  // Course player (not /learning dashboard)
     path.startsWith('/instructor') ||
     path.startsWith('/admin') ||
+    // Moderasyon paneli platformun kabuğunu hiç kullanmıyor
+    (staffPanelEnabled && path.startsWith('/' + STAFF_PATH)) ||
     isAuthPage;
 
   return (
@@ -92,6 +95,17 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     </div>
   );
 };
+
+/**
+ * Moderasyon paneli.
+ *
+ * Ayrı bir parça olarak yükleniyor: paneli kullanmayan ziyaretçilerin ana
+ * paketine moderasyon kodunun girmesi gereksiz. Panel yolu derleme sırasında
+ * VITE_ADMIN_PATH ile geliyor; tanımlı değilse rota hiç oluşturulmuyor.
+ */
+const StaffPortal = lazy(() => import('./staff/StaffPortal'));
+const STAFF_PATH = String((import.meta as any).env?.VITE_ADMIN_PATH || '').replace(/^\/+|\/+$/g, '');
+const staffPanelEnabled = STAFF_PATH.length >= 16;
 
 const queryClient = new QueryClient();
 
@@ -109,6 +123,18 @@ const App = () => (
             <LayoutWrapper>
               <Routes>
                 <Route path="/" element={<Home />} />
+
+                {/* Moderasyon paneli — gizli yol ön ekinin altında */}
+                {staffPanelEnabled && (
+                  <Route
+                    path={`/${STAFF_PATH}/*`}
+                    element={
+                      <Suspense fallback={<div className="min-h-screen bg-slate-950" />}>
+                        <StaffPortal />
+                      </Suspense>
+                    }
+                  />
+                )}
 
                 {/* Instructor Course Creation & Editing Routes */}
                 <Route path="/instructor/courses/create" element={
