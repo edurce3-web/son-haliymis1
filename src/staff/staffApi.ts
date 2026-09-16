@@ -80,6 +80,10 @@ async function request<T = any>(
 }
 
 export const staffApi = {
+    /** 1. adım — parolayı doğrular, kodun mu QR'ın mı gerektiğini söyler. */
+    beginLogin: (email: string, password: string) =>
+        request<any>('/auth/login/begin', { method: 'POST', body: { email, password }, auth: false }),
+
     login: (email: string, password: string, code: string) =>
         request<any>('/auth/login', { method: 'POST', body: { email, password, code }, auth: false }),
 
