@@ -302,6 +302,15 @@ const CoursePlayer = () => {
         enabled: !!id,
     });
 
+    /*
+     * Moderasyon ekibinin elle açtığı erişim.
+     *
+     * Bu kursta yalnızca izleme, not alma ve duyuru okuma var. Soru-cevap
+     * sekmesi hiç çizilmiyor; sunucu da bu istekleri reddediyor, burası
+     * yalnızca çalışmayacak bir düğme göstermemek için.
+     */
+    const isStaffGrant = Boolean((content as any)?.isStaffGrant);
+
     // Fetch Questions
     const { data: questionsData, refetch: refetchQuestions } = useQuery({
         queryKey: ['course-questions', id],
@@ -575,7 +584,7 @@ const CoursePlayer = () => {
                         </div>
                     </div>
 
-                    {!content?.hasReviewed && !hasReviewedLocal && (
+                    {!content?.hasReviewed && !hasReviewedLocal && !isStaffGrant && (
                         <Dialog open={isReviewModalOpen} onOpenChange={setIsReviewModalOpen}>
                             <DialogTrigger asChild>
                                 <Button
@@ -784,11 +793,32 @@ const CoursePlayer = () => {
                                 </div>
                             )}
 
+                            {/*
+                                Gizli paylaşım şeridi.
+
+                                Kullanıcı bu kursu satın almadığını ve neyin kapalı
+                                olduğunu bilmeli; aksi hâlde eksik sekmeleri bir arıza
+                                sanıp destek hattına yazıyor.
+                            */}
+                            {isStaffGrant && (
+                                <div className="mb-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-5 py-4">
+                                    <p className="text-[13.5px] font-semibold text-amber-300">
+                                        Bu kurs size özel açıldı
+                                    </p>
+                                    <p className="text-[13px] text-amber-200/70 leading-relaxed mt-1.5">
+                                        Dersleri izleyebilir, not alabilir ve duyuruları görebilirsiniz.
+                                        Soru-cevap, değerlendirme ve eğitmene mesaj bu kursta kapalıdır.
+                                    </p>
+                                </div>
+                            )}
+
                             {/* Pill Tabs */}
                             <Tabs defaultValue="overview" className="w-full">
                                 <TabsList className="w-full justify-start h-auto p-1 bg-slate-900/50 backdrop-blur-sm border border-white/5 rounded-2xl mb-6 inline-flex overflow-x-auto no-scrollbar">
                                     <TabsTrigger value="overview" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Genel Bakış</TabsTrigger>
-                                    <TabsTrigger value="qa" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Soru & Cevap</TabsTrigger>
+                                    {!isStaffGrant && (
+                                        <TabsTrigger value="qa" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Soru &amp; Cevap</TabsTrigger>
+                                    )}
                                     <TabsTrigger value="notes" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Notlar</TabsTrigger>
                                     <TabsTrigger value="resources" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Kaynaklar</TabsTrigger>
                                     <TabsTrigger value="announcements" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Duyurular</TabsTrigger>
@@ -811,6 +841,7 @@ const CoursePlayer = () => {
                                     </TabsContent>
 
                                     {/* ===== SORU & CEVAP ===== */}
+                                    {!isStaffGrant && (
                                     <TabsContent value="qa" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
                                         <div className="space-y-6">
                                             {/* Soru Sor Butonu */}
@@ -953,6 +984,7 @@ const CoursePlayer = () => {
                                             )}
                                         </div>
                                     </TabsContent>
+                                    )}
 
                                     <TabsContent value="notes" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
                                         <NotesTab courseId={Number(id)} lessonId={activeLessonId} />

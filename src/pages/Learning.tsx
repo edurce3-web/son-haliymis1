@@ -154,7 +154,7 @@ const CourseCard = ({
         <div className={[
             "group relative bg-white rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col",
             isGrant
-                ? "border-2 border-dashed border-amber-300 hover:border-amber-400 hover:shadow-amber-500/10"
+                ? "border border-amber-200 ring-1 ring-amber-200/60 hover:border-amber-300 hover:shadow-amber-500/10"
                 : "border border-slate-200 hover:border-brand-300 hover:shadow-brand-500/10",
         ].join(" ")}>
             {/* Thumbnail */}
@@ -171,8 +171,9 @@ const CourseCard = ({
                     </div>
                 </div>
                 {isGrant && (
-                    <div className="absolute top-3 right-3 bg-amber-500 text-white px-2.5 py-1 rounded-full text-[10px] font-bold shadow-lg">
-                        Size özel açıldı
+                    <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-white/95 text-amber-700 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-lg backdrop-blur">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                        SİZE ÖZEL
                     </div>
                 )}
                 {isCompleted && (
@@ -204,6 +205,14 @@ const CourseCard = ({
                     {course.title}
                 </h3>
                 <p className="text-xs text-slate-500 mb-4">{course.instructor_name || 'Edurce'}</p>
+
+                {/* Kısıtlamayı kart üzerinde de söyle: kullanıcı oynatıcıya
+                    girmeden neyin kapalı olduğunu bilsin. */}
+                {isGrant && (
+                    <p className="-mt-3 mb-4 text-[11px] text-amber-700 leading-snug">
+                        İzleme ve not için açıldı · soru-cevap kapalı
+                    </p>
+                )}
 
                 <div className="mt-auto space-y-3">
                     {/* Progress bar */}
