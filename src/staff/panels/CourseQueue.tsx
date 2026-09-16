@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { staffApi, PERMISSIONS as P } from '../staffApi';
 import type { StaffUser } from '../StaffPortal';
+import CourseEditForm from './CourseEditForm';
 import {
     Card, Empty, Loading, ErrorBox, Tag, Button, Tabs, ReasonBox,
     inputClass, formatDate, relativeDays,
@@ -97,6 +98,7 @@ const CourseRow: React.FC<{
 }> = ({ course, staff, expanded, onToggle, onDecided }) => {
     const [detail, setDetail] = useState<any>(null);
     const [pending, setPending] = useState<null | 'approved' | 'rejected' | 'taken_down'>(null);
+    const [editing, setEditing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -209,7 +211,13 @@ const CourseRow: React.FC<{
                                 </div>
                             )}
 
-                            {pending ? (
+                            {editing ? (
+                                <CourseEditForm
+                                    course={detail.course}
+                                    onCancel={() => setEditing(false)}
+                                    onSaved={() => { setEditing(false); setDetail(null); onDecided(); }}
+                                />
+                            ) : pending ? (
                                 <ReasonBox
                                     title={
                                         pending === 'approved' ? 'Onay notu (isteğe bağlı)'
@@ -227,6 +235,7 @@ const CourseRow: React.FC<{
                                 />
                             ) : (
                                 <div className="flex flex-wrap gap-2">
+                                    <Button onClick={() => setEditing(true)}>Düzenle</Button>
                                     {detail.course.review_status !== 'approved' && (
                                         <Button variant="primary" onClick={() => setPending('approved')}>
                                             Onayla ve yayınla

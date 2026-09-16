@@ -12,6 +12,9 @@ import ReviewIntegrity from './panels/ReviewIntegrity';
 import Announcements from './panels/Announcements';
 import StaffTeam from './panels/StaffTeam';
 import AuditLog from './panels/AuditLog';
+import CourseGrants from './panels/CourseGrants';
+import MessageViewer from './panels/MessageViewer';
+import Sales from './panels/Sales';
 
 export interface StaffUser {
     user_id: number;
@@ -43,7 +46,12 @@ const SECTIONS: Section[] = [
         render: ({ staff }) => <CourseQueue staff={staff} />,
     },
     {
-        key: 'reviews', label: 'Şüpheli değerlendirmeler', group: 'İçerik',
+        key: 'grants', label: 'Gizli kurs paylaşımı', group: 'İçerik',
+        permission: P.CONTENT_REVIEW,
+        render: () => <CourseGrants />,
+    },
+    {
+        key: 'reviews', label: 'Değerlendirmeler', group: 'İçerik',
         permission: P.REPORT_HANDLE,
         render: () => <ReviewIntegrity />,
     },
@@ -77,9 +85,19 @@ const SECTIONS: Section[] = [
         render: ({ staff }) => <DmcaQueue staff={staff} />,
     },
     {
+        key: 'messages', label: 'Mesajlar', group: 'Destek',
+        permission: P.REPORT_HANDLE,
+        render: () => <MessageViewer />,
+    },
+    {
         key: 'announcements', label: 'Duyurular', group: 'Destek',
         permission: P.ANNOUNCE_SEND,
         render: () => <Announcements />,
+    },
+    {
+        key: 'sales', label: 'Satışlar', group: 'Finans',
+        permission: P.FINANCE_VIEW,
+        render: () => <Sales />,
     },
     {
         key: 'team', label: 'Ekip', group: 'Yönetim',

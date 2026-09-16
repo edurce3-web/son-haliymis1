@@ -141,8 +141,22 @@ const CourseCard = ({
     const isCompleted = course.progress === 100;
     const progress = course.progress || 0;
 
+    /*
+     * Moderasyon ekibinin elle açtığı kurslar.
+     *
+     * Satın alınmış kurslardan görsel olarak ayrılıyor: kesikli kenarlık ve
+     * kapak üstünde bir rozet. Aynı görünmeleri, öğrencinin satın aldığını
+     * sandığı bir kursun erişiminin sonradan kaldırılmasına yol açardı.
+     */
+    const isGrant = Boolean(course.is_staff_grant);
+
     return (
-        <div className="group relative bg-white border border-slate-200 rounded-3xl overflow-hidden hover:border-brand-300 transition-all duration-300 hover:shadow-xl hover:shadow-brand-500/10 hover:-translate-y-1 flex flex-col">
+        <div className={[
+            "group relative bg-white rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col",
+            isGrant
+                ? "border-2 border-dashed border-amber-300 hover:border-amber-400 hover:shadow-amber-500/10"
+                : "border border-slate-200 hover:border-brand-300 hover:shadow-brand-500/10",
+        ].join(" ")}>
             {/* Thumbnail */}
             <div className="relative aspect-video overflow-hidden cursor-pointer shrink-0" onClick={onNavigate}>
                 <img
@@ -156,6 +170,11 @@ const CourseCard = ({
                         <PlayCircle className="w-6 h-6 text-slate-900" />
                     </div>
                 </div>
+                {isGrant && (
+                    <div className="absolute top-3 right-3 bg-amber-500 text-white px-2.5 py-1 rounded-full text-[10px] font-bold shadow-lg">
+                        Size özel açıldı
+                    </div>
+                )}
                 {isCompleted && (
                     <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-emerald-600 text-white px-2.5 py-1 rounded-full text-[10px] font-bold shadow-lg">
                         <CheckCircle className="w-3 h-3" /> Tamamlandı

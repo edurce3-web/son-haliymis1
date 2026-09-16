@@ -140,6 +140,36 @@ export const staffApi = {
     disableStaff: (userId: number) =>
         request(`/staff/${userId}/disable`, { method: 'POST' }),
 
+    // ── Kurs düzenleme ──────────────────────────────────────────────────
+    editCourse: (id: number, fields: Record<string, unknown>) =>
+        request(`/courses/${id}`, { method: 'PATCH', body: fields }),
+
+    // ── Gizli paylaşım ──────────────────────────────────────────────────
+    grants: (params: Record<string, string | number> = {}) =>
+        request<any>(`/grants?${new URLSearchParams(params as any)}`),
+    searchGrantCourses: (q: string) =>
+        request<any>(`/grants/courses?q=${encodeURIComponent(q)}`),
+    searchGrantUsers: (q: string) =>
+        request<any>(`/grants/users?q=${encodeURIComponent(q)}`),
+    createGrant: (course_id: number, user_id: number, note: string) =>
+        request('/grants', { method: 'POST', body: { course_id, user_id, note } }),
+    revokeGrant: (enrollmentId: number) =>
+        request(`/grants/${enrollmentId}`, { method: 'DELETE' }),
+
+    // ── Mesajlar ────────────────────────────────────────────────────────
+    messages: (params: Record<string, string | number> = {}) =>
+        request<any>(`/messages?${new URLSearchParams(params as any)}`),
+    messageThread: (a: number, b: number) =>
+        request<any>(`/messages/thread?a=${a}&b=${b}`),
+
+    // ── Düşük puanlı değerlendirmeler ───────────────────────────────────
+    lowReviews: (params: Record<string, string | number> = {}) =>
+        request<any>(`/reviews/low?${new URLSearchParams(params as any)}`),
+
+    // ── Satışlar ────────────────────────────────────────────────────────
+    sales: (params: Record<string, string | number> = {}) =>
+        request<any>(`/sales?${new URLSearchParams(params as any)}`),
+
     audit: (params: Record<string, string | number> = {}) =>
         request<any>(`/audit?${new URLSearchParams(params as any)}`),
 };
