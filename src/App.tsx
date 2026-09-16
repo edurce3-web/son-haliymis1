@@ -1,4 +1,5 @@
-import { lazy, Suspense } from "react";
+import { Suspense } from "react";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -103,7 +104,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
  * paketine moderasyon kodunun girmesi gereksiz. Panel yolu derleme sırasında
  * VITE_ADMIN_PATH ile geliyor; tanımlı değilse rota hiç oluşturulmuyor.
  */
-const StaffPortal = lazy(() => import('./staff/StaffPortal'));
+const StaffPortal = lazyWithRetry(() => import('./staff/StaffPortal'));
 const STAFF_PATH = String((import.meta as any).env?.VITE_ADMIN_PATH || '').replace(/^\/+|\/+$/g, '');
 const staffPanelEnabled = STAFF_PATH.length >= 16;
 
