@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+// @ts-ignore — paketin tip tanimlari yok, yalnizca toCanvas kullaniliyor
+import QRCode from 'qrcode';
 import { staffApi, staffToken, StaffApiError } from './staffApi';
 import type { StaffUser } from './StaffPortal';
 
@@ -19,6 +21,15 @@ const StaffLogin: React.FC<{ onAuthenticated: (staff: StaffUser) => void }> = ({
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [setup, setSetup] = useState<{ secret: string; otpauthUrl: string } | null>(null);
+    const qrRef = useRef<HTMLCanvasElement>(null);
+
+    // Kare kod, kurulum bilgisi geldiginde ciziliyor. Sunucudan gelen otpauth
+    // adresi zaten hem gizli anahtari hem hesap adini tasiyor.
+    useEffect(() => {
+        if (!setup || !qrRef.current) return;
+        QRCode.toCanvas(qrRef.current, setup.otpauthUrl, { width: 200, margin: 1 })
+            .catch(() => { /* cizilemezse elle girilecek anahtar zaten altta */ });
+    }, [setup]);
 
     const field =
         'w-full h-11 px-3.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-100 text-[14.5px] '
@@ -70,10 +81,19 @@ const StaffLogin: React.FC<{ onAuthenticated: (staff: StaffUser) => void }> = ({
                             İki adımlı doğrulamayı kurun
                         </p>
                         <p className="text-[12.5px] text-slate-400 leading-relaxed mt-2">
-                            Google Authenticator veya benzeri bir uygulamaya aşağıdaki anahtarı
-                            elle ekleyin, sonra uygulamanın ürettiği kodu girin.
+                            Telefonunuzda Google Authenticator uygulamasını açın, artı düğmesine
+                            basıp <strong className="text-slate-300">QR kodunu tara</strong> deyin ve aşağıdaki kodu okutun.
+                            Sonra uygulamanın gösterdiği 6 haneli sayıyı aşağıya yazın.
                         </p>
-                        <code className="block mt-3 px-3 py-2.5 rounded bg-slate-950 border border-slate-800 text-[13px] font-mono tracking-[0.12em] text-emerald-400 break-all select-all">
+                        {/* Telefonla okutulacak kare kod; altinda elle girilebilecek anahtar */}
+                        <div className="flex justify-center my-4">
+                            <canvas ref={qrRef} className="rounded bg-white p-2" />
+                        </div>
+
+                        <p className="text-[12px] text-slate-500 mb-1.5">
+                            Kod okunamazsa anahtarı elle girin:
+                        </p>
+                        <code className="block px-3 py-2.5 rounded bg-slate-950 border border-slate-800 text-[13px] font-mono tracking-[0.12em] text-emerald-400 break-all select-all">
                             {setup.secret}
                         </code>
                         <p className="text-[11.5px] text-slate-500 mt-2.5">
