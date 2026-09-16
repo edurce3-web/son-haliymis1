@@ -174,7 +174,9 @@ const StaffLogin: React.FC<{ onAuthenticated: (staff: StaffUser) => void }> = ({
                             </div>
 
                             <p className="text-[12px] text-slate-500 mb-1.5">
-                                Kamera yoksa anahtarı elle girin:
+                                Kamera çalışmıyorsa uygulamada “Kurulum anahtarını gir” deyin.
+                                Hesap adı: <strong className="text-slate-400">Edurce</strong>, tür:
+                                <strong className="text-slate-400"> Zamana dayalı</strong>. Anahtar:
                             </p>
                             <code className="block px-3 py-2.5 rounded bg-slate-950 border border-slate-800 text-[12.5px] font-mono tracking-[0.1em] text-emerald-400 break-all select-all">
                                 {setup.secret}
