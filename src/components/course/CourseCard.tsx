@@ -233,7 +233,7 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
             </div>
 
             {isBestseller && (
-              <span className="absolute top-2 left-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-[10px] font-black tracking-wider px-2 py-1 rounded shadow-md">
+              <span className="absolute top-2 left-2 bg-brand-700 text-white text-[10px] font-black tracking-wider px-2 py-1 rounded shadow-md">
                 Çok Satan
               </span>
             )}
@@ -245,7 +245,7 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
             {/* Base info Always visible */}
             <div className="mb-2">
               <Link to={courseUrl} target="_blank" rel="noopener">
-                <h3 className="font-extrabold text-slate-900 text-[15px] leading-[1.3] line-clamp-2 hover:text-violet-700 transition-colors">
+                <h3 className="font-extrabold text-slate-900 text-[15px] leading-[1.3] line-clamp-2 hover:text-brand-700 transition-colors">
                   {course.title}
                 </h3>
               </Link>
