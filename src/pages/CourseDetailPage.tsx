@@ -44,7 +44,12 @@ import {
   Shield,
   Volume2,
   X as XIcon,
-  Tag
+  Tag,
+  ChevronDown,
+  Zap,
+  Sparkles,
+  CheckCircle2,
+  BarChart3
 } from 'lucide-react';
 
 export const CourseDetailPage = () => {
@@ -72,6 +77,18 @@ export const CourseDetailPage = () => {
   const [reviewsOpen, setReviewsOpen] = useState(false);
   // Uzun egitmen biyografisi kirpiliyor
   const [bioExpanded, setBioExpanded] = useState(false);
+  /**
+   * Müfredatta açık duran bölümler.
+   *
+   * İlk bölüm açık başlıyor: kullanıcı müfredatın neye benzediğini
+   * tıklamadan görebilmeli. Kapalı bölümlerin dersleri DOM'da kalıyor,
+   * yalnızca gizleniyor — arama motorları müfredatın tamamını görsün.
+   */
+  const [openSections, setOpenSections] = useState<number[]>([0]);
+  const toggleSection = (idx: number) =>
+    setOpenSections(prev =>
+      prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx]
+    );
 
   /**
    * Mobil alt çubuğun görünürlüğü.
@@ -577,25 +594,6 @@ export const CourseDetailPage = () => {
     ru: 'Rusça',
   } as Record<string, string>)[String(course.language || 'tr').toLowerCase()]
     || String(course.language || 'Türkçe');
-  /**
-   * Kursun künyesi — başlığın altında yatay bir simge şeridi olarak duruyor.
-   *
-   * Önceden bunlar sağdaki satın alma kutusunda onay işaretli bir listeydi;
-   * seviye ve dil orada satın almayla ilgisiz duruyor, kutuyu da gereksiz
-   * uzatıyordu. Ders sayısı müfredat başlığında zaten yazdığı için tümden
-   * kaldırıldı.
-   */
-  const courseFacts: Array<{ label: string; value: string; icon: string }> = [
-    { label: 'Seviye', value: levelLabel, icon: 'level' },
-    { label: 'Dil', value: languageLabel, icon: 'language' },
-    ...(totalSeconds > 0
-      ? [{ label: 'Süre', value: totalDurationLabel, icon: 'duration' }]
-      : []),
-    ...(Number(course.downloadable_resources) > 0
-      ? [{ label: 'Kaynak', value: `${course.downloadable_resources} dosya`, icon: 'resource' }]
-      : []),
-  ];
-
   /** Kursla birlikte gelen haklar — her biri kendi simgesiyle. */
   const courseBenefits: Array<{ text: string; icon: string }> = [
     ...(totalSeconds > 0
@@ -752,105 +750,159 @@ export const CourseDetailPage = () => {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-800 pb-20 lg:pb-0">
       {/*
-        Üst band.
+        Üst band — kursun koyu künyesi.
 
-        Profil sayfasıyla aynı dil: markanın açık tonunda bir zemin ve ince
-        ızgara dokusu. Bandın içinde ekmek kırıntısı ve kursun künyesi var;
-        oynatıcı ile satın alma kutusu bandın hemen altından, aynı hizadan
-        başlıyor.
+        Solda kursun kimliği (konum, etiketler, başlık, puan, eğitmen, künye),
+        sağda tanıtım oynatıcısı. Zemin koyu çünkü hemen altından beyaz içerik
+        ızgarası başlıyor; açık zeminde band ile içerik birbirine karışıyor ve
+        sayfanın nerede başladığı belirsiz kalıyordu.
       */}
-      <div className="relative bg-gradient-to-br from-brand-50 via-brand-100/60 to-white border-b border-brand-100">
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-40"
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, rgba(23,93,93,0.06) 1px, transparent 1px),'
-              + 'linear-gradient(to bottom, rgba(23,93,93,0.06) 1px, transparent 1px)',
-            backgroundSize: '34px 34px',
-          }}
-        />
+      <section className="relative overflow-hidden bg-[#0F172A] text-slate-100 border-b border-slate-800">
+        <div className="absolute inset-0 pointer-events-none" aria-hidden>
+          <div className="absolute -top-32 left-1/4 w-[430px] h-[430px] bg-brand-600/20 rounded-full blur-[130px]" />
+          <div className="absolute bottom-0 right-1/3 w-[370px] h-[370px] bg-brand-400/10 rounded-full blur-[120px]" />
+        </div>
 
-        <div className="container relative mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-5">
-          <nav className="flex items-center text-[13px] text-slate-500 gap-2 overflow-hidden whitespace-nowrap">
-            {categorySlug ? (
-              <Link to={`/courses/${categorySlug}`} className="hover:text-brand-800 transition-colors truncate max-w-[170px]">
-                {course.category_name}
-              </Link>
-            ) : (
-              <span className="truncate max-w-[170px]">{course.category_name || 'Kategori'}</span>
-            )}
-            {course.subcategory_name && (
-              <>
-                <span className="text-slate-300">/</span>
-                {categorySlug && subcategorySlug ? (
-                  <Link
-                    to={`/courses/${categorySlug}/${subcategorySlug}`}
-                    className="hover:text-brand-800 transition-colors truncate max-w-[170px]"
-                  >
-                    {course.subcategory_name}
+        <div className="container relative mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-9 lg:py-14">
+          <div className="grid lg:grid-cols-12 gap-9 lg:gap-12 items-center">
+
+            {/* ── Sol: kursun kimliği ──────────────────────────────────── */}
+            <div className="lg:col-span-6 min-w-0">
+
+              <nav aria-label="Konum" className="flex items-center gap-2 text-[13px] text-slate-400 overflow-hidden whitespace-nowrap">
+                {categorySlug ? (
+                  <Link to={`/courses/${categorySlug}`} className="hover:text-brand-300 transition-colors truncate max-w-[160px]">
+                    {course.category_name}
                   </Link>
                 ) : (
-                  <span className="truncate max-w-[170px]">{course.subcategory_name}</span>
+                  <span className="truncate max-w-[160px]">{course.category_name || 'Kategori'}</span>
                 )}
-              </>
-            )}
-          </nav>
+                {course.subcategory_name && (
+                  <>
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+                    {categorySlug && subcategorySlug ? (
+                      <Link
+                        to={`/courses/${categorySlug}/${subcategorySlug}`}
+                        className="text-brand-300 font-semibold hover:text-brand-200 transition-colors truncate max-w-[180px]"
+                      >
+                        {course.subcategory_name}
+                      </Link>
+                    ) : (
+                      <span className="text-brand-300 font-semibold truncate max-w-[180px]">
+                        {course.subcategory_name}
+                      </span>
+                    )}
+                  </>
+                )}
+              </nav>
 
-          {/* Künye — tek satır düz metin, bandın içinde */}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-3 text-[14px] text-slate-600">
-            {reviewsCount > 0 && (
-              <>
-                <span className="flex items-center gap-1.5">
-                  <span className="font-bold text-amber-600 tabular-nums">
-                    {Number(course.rating || 0).toFixed(1).replace('.', ',')}
+              {/* Etiketler — hepsi gerçek veriden; karşılığı yoksa basılmıyor */}
+              <div className="flex flex-wrap items-center gap-2 mt-4">
+                {course.is_featured && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/15 text-amber-300 border border-amber-400/30 text-[11px] font-bold uppercase tracking-wider">
+                    <Zap className="w-3.5 h-3.5 fill-amber-300" />
+                    Öne çıkan
                   </span>
-                  <StarRating rating={Number(course.rating || 0)} size={14} />
-                  <span className="text-slate-500">({reviewsCount} değerlendirme)</span>
+                )}
+
+                {course.updated_at && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/15 text-brand-300 border border-brand-500/30 text-[11px] font-semibold">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Güncel: {new Date(course.updated_at).toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' })}
+                  </span>
+                )}
+
+                {previewLessons.length > 0 && (
+                  <span className="px-2.5 py-1 rounded-md bg-slate-800 text-slate-200 border border-slate-700/80 text-[11px] font-medium">
+                    {previewLessons.length} ders ücretsiz izlenebilir
+                  </span>
+                )}
+              </div>
+
+              <h1 className="font-montserrat text-[25px] sm:text-[31px] lg:text-[34px] font-extrabold text-white leading-[1.18] tracking-[-0.025em] break-words mt-4">
+                {course.title}
+              </h1>
+
+              {course.short_description && (
+                <p className="text-[14.5px] sm:text-[15.5px] text-slate-300 leading-[1.65] mt-3.5 break-words">
+                  {course.short_description}
+                </p>
+              )}
+
+              {/* Puan, öğrenci ve eğitmen */}
+              <div className="flex flex-wrap items-center gap-y-3 gap-x-4 text-[13px] sm:text-[13.5px] text-slate-200 mt-5">
+                {reviewsCount > 0 && (
+                  <span className="flex items-center gap-2 bg-slate-800/90 border border-slate-700 rounded-lg px-3 py-1.5">
+                    <span className="font-extrabold text-amber-400 tabular-nums">
+                      {Number(course.rating || 0).toFixed(1).replace('.', ',')}
+                    </span>
+                    <StarRating rating={Number(course.rating || 0)} size={14} />
+                    <a
+                      href="#degerlendirmeler"
+                      className="text-slate-300 hover:text-white underline decoration-slate-500 underline-offset-2 transition-colors"
+                    >
+                      ({reviewsCount} değerlendirme)
+                    </a>
+                  </span>
+                )}
+
+                {Number(course.student_count) > 0 && (
+                  <span className="flex items-center gap-1.5">
+                    <Users className="w-4 h-4 text-brand-400 shrink-0" />
+                    <span>
+                      <strong className="text-white font-bold tabular-nums">
+                        {Number(course.student_count).toLocaleString('tr-TR')}
+                      </strong>{' '}
+                      öğrenci
+                    </span>
+                  </span>
+                )}
+
+                <span className="flex items-center gap-2">
+                  <span className="text-slate-400">Hazırlayan:</span>
+                  <InstructorLink className="inline-flex items-center gap-1.5 group">
+                    <Avatar className="w-6 h-6 ring-1 ring-slate-700 shrink-0">
+                      <AvatarImage src={instructorAvatar} alt={instructorFullName} />
+                      <AvatarFallback className="bg-brand-700 text-white text-[10px] font-bold">
+                        {instructorFullName.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="font-bold text-white group-hover:text-brand-300 transition-colors">
+                      {instructorFullName}
+                    </span>
+                  </InstructorLink>
                 </span>
-                <span className="text-slate-300">·</span>
-              </>
-            )}
+              </div>
 
-            <span className="text-slate-500">
-              <span className="font-semibold text-slate-900">
-                {Number(course.student_count || 0).toLocaleString('tr-TR')}
-              </span> öğrenci
-            </span>
+              {/* Künye şeridi — dil, seviye, süre */}
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[12.5px] text-slate-300 mt-5 pt-4 border-t border-slate-800">
+                <span className="flex items-center gap-1.5">
+                  <Globe className="w-4 h-4 text-brand-400 shrink-0" />
+                  {languageLabel}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <BarChart3 className="w-4 h-4 text-brand-400 shrink-0" />
+                  {levelLabel}
+                </span>
+                {totalSeconds > 0 && (
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="w-4 h-4 text-brand-400 shrink-0" />
+                    Toplam {totalDurationLabel}
+                  </span>
+                )}
+                {totalLessons > 0 && (
+                  <span className="flex items-center gap-1.5">
+                    <PlayCircle className="w-4 h-4 text-brand-400 shrink-0" />
+                    {totalLessons} ders
+                  </span>
+                )}
+              </div>
+            </div>
 
-            <span className="text-slate-300">·</span>
-            <span className="text-slate-500">
-              {new Date(course.updated_at || Date.now()).toLocaleDateString('tr-TR', {
-                month: 'long', year: 'numeric',
-              })} güncellemesi
-            </span>
+            {/* ── Sağ: tanıtım oynatıcısı ──────────────────────────────── */}
+            <div className="lg:col-span-6 w-full">
+              <div className="relative aspect-video bg-slate-950 rounded-2xl overflow-hidden group ring-1 ring-slate-700/70 shadow-[0_30px_70px_-30px_rgba(0,0,0,0.8)]">
 
-            <span className="text-slate-300">·</span>
-            <InstructorLink className="inline-flex items-center gap-2 group">
-              <Avatar className="w-6 h-6 ring-1 ring-white shrink-0">
-                <AvatarImage src={instructorAvatar} alt={instructorFullName} />
-                <AvatarFallback className="bg-brand-200 text-brand-900 text-[10px] font-bold">
-                  {instructorFullName.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <span className="font-semibold text-slate-900 group-hover:text-brand-800 transition-colors">
-                {instructorFullName}
-              </span>
-            </InstructorLink>
-          </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px]">
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 pt-8 pb-10">
-          {/* ── Sol: oynatıcı, başlık, içerik ──────────────────────────── */}
-          <div className="lg:col-span-8 min-w-0">
-            {/*
-              Oynatıcı en üstte; satın alma kutusuyla aynı hizadan başlıyor.
-              Önizlemeye açık dersler müfredat listesinde "Önizle" etiketiyle
-              zaten işaretli; yanda ikinci bir liste videoyu daraltıyordu.
-            */}
-            <div className="relative aspect-video bg-slate-900 rounded-xl overflow-hidden group ring-1 ring-slate-900/5 max-w-2xl">
               {isVideoPlaying && (previewLesson || course.preview_video) ? (
                 <>
                   {previewLesson?.video_type === 'hls' ? (
@@ -936,42 +988,83 @@ export const CourseDetailPage = () => {
                   </span>
                 </button>
               )}
+              </div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Başlık ve alt başlık — oynatıcının altında */}
-            <h1 className="font-montserrat text-[24px] sm:text-[30px] font-extrabold text-slate-900 leading-[1.15] tracking-[-0.025em] break-words mt-6">
-              {course.title}
-            </h1>
+      {/*
+        Sayfa içi sekmeler.
 
-            {course.short_description && (
-              <p className="text-[15.5px] sm:text-[16.5px] text-slate-600 leading-[1.6] mt-3 break-words max-w-2xl">
-                {course.short_description}
-              </p>
-            )}
+        Kurs sayfası uzun; kullanıcı müfredata ya da yorumlara inmek için
+        tekerleği çevirmek zorunda kalıyordu. Çubuk ana başlığın altına
+        yapışıyor (header 64px, bu yüzden top-16) ve kaydırma sırasında
+        hangi bölümde olunduğunu işaretliyor — bu durum zaten hesaplanıyordu
+        ama hiçbir yerde çizilmiyordu.
+
+        Kazanımlar bölümü kursta madde yoksa basılmıyor; sekmesi de o zaman
+        listeden düşüyor, hiçbir yere gitmeyen sekme bırakmamak için.
+      */}
+      <div className="sticky top-16 z-30 bg-white/95 backdrop-blur border-b border-slate-200">
+        <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px]">
+          <nav
+            aria-label="Kurs bölümleri"
+            className="flex gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          >
+            {PAGE_SECTIONS
+              .filter(sec => sec.id !== 'genel-bakis' || learnItems.length > 0)
+              .map(sec => (
+                <a
+                  key={sec.id}
+                  href={`#${sec.id}`}
+                  className={cn(
+                    'shrink-0 px-4 py-3.5 text-[13.5px] font-semibold border-b-2 -mb-px transition-colors whitespace-nowrap',
+                    activeSection === sec.id
+                      ? 'border-brand-700 text-brand-800'
+                      : 'border-transparent text-slate-500 hover:text-slate-900'
+                  )}
+                >
+                  {sec.label}
+                </a>
+              ))}
+          </nav>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px]">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 pt-8 pb-10">
+          {/* ── Sol: kurs içeriği ──────────────────────────────────────── */}
+          <div className="lg:col-span-8 min-w-0">
 
             {/*
-              Künye şeridi.
+              Kursla birlikte ne geldiğini söyleyen üç kart.
 
-              Seviye, dil, süre ve kaynak sayısı; her biri kendi simgesiyle ve
-              üstünde ne olduğunu söyleyen küçük bir etiketle. Değerler tek
-              başına ("Başlangıç", "Türkçe") neyin ölçüsü olduğunu
-              anlatmıyordu; etiket bunu okumadan görünür kılıyor.
+              Seviye, dil ve süre yukarıdaki koyu künyede zaten yazıyor;
+              burada tekrar etmek yerine satın alanın eline ne geçtiği
+              duruyor: belge, erişim süresi ve içerik hacmi.
             */}
-            <div className="mt-5 flex flex-wrap items-stretch gap-2.5">
-              {courseFacts.map(fact => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {[
+                { icon: 'certificate', label: 'Sertifika', value: 'Onaylı belge' },
+                { icon: 'access', label: 'Erişim', value: 'Ömür boyu' },
+                Number(course.downloadable_resources) > 0
+                  ? { icon: 'resource', label: 'Kaynak', value: `${course.downloadable_resources} dosya` }
+                  : { icon: 'duration', label: 'İçerik', value: totalSeconds > 0 ? totalDurationLabel : `${totalLessons} ders` },
+              ].map(item => (
                 <div
-                  key={fact.label}
-                  className="flex items-center gap-2.5 rounded-xl border border-brand-100 bg-brand-50/50 pl-3 pr-4 py-2"
+                  key={item.label}
+                  className="flex flex-col sm:flex-row items-center sm:items-start gap-3 p-4 bg-white border border-slate-200 rounded-2xl shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
                 >
-                  <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-white border border-brand-100 shrink-0">
-                    <FeatureIcon kind={fact.icon} bare />
+                  <span className="w-10 h-10 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-center shrink-0">
+                    <FeatureIcon kind={item.icon} bare />
                   </span>
-                  <span className="min-w-0">
-                    <span className="block text-[10.5px] font-semibold uppercase tracking-[0.09em] text-brand-700/70 leading-none">
-                      {fact.label}
+                  <span className="text-center sm:text-left min-w-0">
+                    <span className="block text-[10.5px] font-semibold uppercase tracking-[0.09em] text-slate-400">
+                      {item.label}
                     </span>
-                    <span className="block text-[13.5px] font-semibold text-slate-900 leading-tight mt-1 whitespace-nowrap">
-                      {fact.value}
+                    <span className="block text-[13.5px] font-bold text-slate-800 mt-0.5 truncate">
+                      {item.value}
                     </span>
                   </span>
                 </div>
@@ -982,98 +1075,199 @@ export const CourseDetailPage = () => {
               Mobil satın alma bloğu.
 
               Sağ ray masaüstünde sabit duruyor ama dar ekranda içerik
-              yığıldığı için en alta düşüyordu. Burada, künyenin hemen
-              altında; sağdaki kart yalnızca geniş ekranda görünüyor.
+              yığıldığı için en alta düşüyordu. Burada künyenin hemen altında;
+              sağdaki kart yalnızca geniş ekranda görünüyor.
             */}
             <div ref={mobilePurchaseRef} className="lg:hidden mt-5">
               <PurchaseBox />
             </div>
 
-            {/* ── Genel bakış ─────────────────────────────────────────── */}
-            <section id="genel-bakis" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
-              <SectionTitle>Neler öğreneceksiniz</SectionTitle>
-              <div className="grid sm:grid-cols-2 gap-x-8 gap-y-2.5">
-                {learnItems.map((item: string, i: number) => (
-                  <div key={i} className="flex gap-2.5 items-start">
-                    <Check className="w-3.5 h-3.5 text-brand-700 stroke-[3] mt-1.5 shrink-0" />
-                    <span className="text-slate-700 leading-[1.65] break-words text-[14.5px]">{item}</span>
+            {/* ── Kazanımlar ──────────────────────────────────────────── */}
+            {learnItems.length > 0 && (
+              <section id="genel-bakis" className="scroll-mt-32 mt-8">
+                <div className="relative overflow-hidden rounded-3xl border border-brand-200/70 bg-gradient-to-br from-brand-50/70 via-white to-brand-50/40 p-6 sm:p-8 shadow-sm">
+                  <div className="flex items-start justify-between gap-4 mb-6">
+                    <div className="min-w-0">
+                      <span className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-brand-700">
+                        Kazanımlar
+                      </span>
+                      <h2 className="font-montserrat text-[21px] sm:text-[24px] font-extrabold text-slate-900 tracking-tight leading-snug mt-1">
+                        Bu kursta neler öğreneceksiniz?
+                      </h2>
+                    </div>
+                    <span className="w-10 h-10 rounded-full bg-brand-100 text-brand-800 flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="w-5 h-5" />
+                    </span>
                   </div>
-                ))}
-              </div>
-            </section>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    {learnItems.map((item: string, i: number) => (
+                      <div
+                        key={i}
+                        className="flex items-start gap-3.5 bg-white/85 p-3.5 rounded-xl border border-brand-100"
+                      >
+                        <span className="w-5 h-5 rounded-full bg-brand-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+                          <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        </span>
+                        <span className="text-[14px] font-semibold text-slate-800 leading-snug break-words">
+                          {item}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
 
             {/* ── Müfredat ────────────────────────────────────────────── */}
-            <section id="mufredat" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
-              <div className="flex flex-wrap items-baseline justify-between gap-3">
-                <SectionTitle className="mb-0">Müfredat</SectionTitle>
-                <p className="text-[13.5px] text-slate-500">
-                  <span className="font-semibold text-brand-800">{course.sections?.length || 0}</span> bölüm ·{' '}
-                  <span className="font-semibold text-brand-800">{totalLessons}</span> ders ·{' '}
-                  <span className="font-semibold text-brand-800">{totalDurationLabel}</span>
+            <section id="mufredat" className="scroll-mt-32 mt-10">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+                <div>
+                  <span className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-slate-400">
+                    Ders planı
+                  </span>
+                  <h2 className="font-montserrat text-[21px] sm:text-[24px] font-extrabold text-slate-900 tracking-tight mt-1">
+                    Müfredat içeriği
+                  </h2>
+                </div>
+
+                <p className="text-[12.5px] sm:text-[13px] font-semibold text-slate-600 bg-slate-100 border border-slate-200 rounded-lg px-3 py-1.5 shrink-0">
+                  <span className="font-bold text-slate-900">{course.sections?.length || 0}</span> bölüm ·{' '}
+                  <span className="font-bold text-slate-900">{totalLessons}</span> ders ·{' '}
+                  <span className="font-bold text-slate-900">{totalDurationLabel}</span> toplam süre
                 </p>
               </div>
 
-              <div className="mt-5 border-t border-slate-200">
-                {course.sections?.map((section: any, idx: number) => (
-                  <div key={section.id ?? section.section_id ?? idx}>
-                    <div className="px-1 py-3 flex items-center justify-between gap-4 border-b border-slate-200">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <span className="font-montserrat text-[11px] font-extrabold text-brand-700 tabular-nums shrink-0">
-                          {(idx + 1).toString().padStart(2, '0')}
-                        </span>
-                        <span className="text-[14px] sm:text-[14.5px] font-semibold text-slate-900 leading-snug truncate">
-                          {section.title}
-                        </span>
-                      </div>
-                      <span className="text-[12.5px] text-brand-700 font-medium shrink-0 whitespace-nowrap">
-                        {section.lessons?.length || 0} ders
-                      </span>
-                    </div>
+              <div className="mt-5 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-[0_1px_2px_rgba(15,23,42,0.04)] divide-y divide-slate-100">
+                {course.sections?.map((section: any, idx: number) => {
+                  const lessons: any[] = section.lessons || [];
+                  const isOpen = openSections.includes(idx);
 
-                    <div className="divide-y divide-slate-100">
-                      {section.lessons?.map((lesson: any, lessonIdx: number) => {
-                        const isPreview = Boolean(lesson.preview || lesson.is_free);
-                        const lessonId = lesson.id ?? lesson.lesson_id ?? lessonIdx;
-                        const seconds = lesson.duration || lesson.duration_seconds || lesson.duration_minutes || 0;
+                  const sectionSeconds = lessons.reduce(
+                    (sum, l) => sum + (Number(l.duration || l.duration_seconds) || 0),
+                    0
+                  );
+                  const sectionDuration = sectionSeconds > 0
+                    ? (sectionSeconds >= 3600
+                      ? `${Math.floor(sectionSeconds / 3600)} sa ${Math.round((sectionSeconds % 3600) / 60)} dk`
+                      : `${Math.max(1, Math.round(sectionSeconds / 60))} dk`)
+                    : null;
 
-                        return (
-                          <div
-                            key={lessonId}
-                            onClick={() => isPreview && openLessonPreview(lesson)}
-                            className={cn(
-                              'flex items-center justify-between gap-3 px-4 py-2.5 transition-colors',
-                              isPreview ? 'hover:bg-brand-50/50 cursor-pointer' : 'hover:bg-slate-50/60'
-                            )}
-                          >
-                            <div className="flex items-center gap-3 flex-1 min-w-0">
-                              <Play
-                                className={cn('w-3 h-3 shrink-0', isPreview ? 'text-brand-700' : 'text-slate-300')}
-                                fill="currentColor"
-                              />
-                              <span className="text-[14px] sm:text-[14.5px] text-slate-700 truncate">{lesson.title}</span>
-                              {isPreview && (
-                                <span className="shrink-0 text-[11.5px] font-semibold text-brand-800 bg-brand-50 border border-brand-200 rounded px-1.5 py-0.5">
-                                  Önizle
-                                </span>
-                              )}
-                            </div>
-                            <span className="text-[12.5px] text-slate-400 tabular-nums shrink-0">
-                              {seconds
-                                ? `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`
-                                : '—'}
+                  return (
+                    <div key={section.id ?? section.section_id ?? idx}>
+                      <button
+                        type="button"
+                        onClick={() => toggleSection(idx)}
+                        aria-expanded={isOpen}
+                        className="w-full px-4 sm:px-6 py-4 bg-slate-50/90 hover:bg-slate-100/80 flex items-center justify-between gap-3 text-left transition-colors"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className="w-8 h-8 rounded-lg bg-brand-100 text-brand-900 font-bold text-[11px] flex items-center justify-center shrink-0 tabular-nums">
+                            {(idx + 1).toString().padStart(2, '0')}
+                          </span>
+                          <span className="min-w-0">
+                            <span className="block font-bold text-slate-900 text-[14px] sm:text-[15px] leading-snug">
+                              Bölüm {idx + 1}: {section.title}
                             </span>
-                          </div>
-                        );
-                      })}
+                            {section.description && (
+                              <span className="block text-[12px] text-slate-500 font-medium truncate mt-0.5">
+                                {section.description}
+                              </span>
+                            )}
+                          </span>
+                        </div>
+
+                        <span className="flex items-center gap-3 text-[12px] sm:text-[13px] font-semibold text-slate-500 shrink-0">
+                          <span className="hidden sm:inline whitespace-nowrap">
+                            {lessons.length} ders{sectionDuration ? ` · ${sectionDuration}` : ''}
+                          </span>
+                          <ChevronDown
+                            className={cn(
+                              'w-4 h-4 text-slate-500 transition-transform duration-200',
+                              isOpen && 'rotate-180'
+                            )}
+                          />
+                        </span>
+                      </button>
+
+                      {/* Kapalı bölümün dersleri DOM'da kalıyor, yalnızca gizleniyor */}
+                      <div className={cn('divide-y divide-slate-100 bg-white', !isOpen && 'hidden')}>
+                        {lessons.map((lesson: any, lessonIdx: number) => {
+                          const isPreview = Boolean(lesson.preview || lesson.is_free);
+                          const lessonId = lesson.id ?? lesson.lesson_id ?? lessonIdx;
+                          const seconds = Number(lesson.duration || lesson.duration_seconds) || 0;
+
+                          return (
+                            <div
+                              key={lessonId}
+                              onClick={() => isPreview && openLessonPreview(lesson)}
+                              className={cn(
+                                'px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3 group transition-colors',
+                                isPreview ? 'hover:bg-brand-50/60 cursor-pointer' : 'hover:bg-slate-50/80'
+                              )}
+                            >
+                              <div className="flex items-center gap-3.5 min-w-0">
+                                <span
+                                  className={cn(
+                                    'w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors',
+                                    isPreview
+                                      ? 'bg-brand-50 text-brand-700 group-hover:bg-brand-700 group-hover:text-white'
+                                      : 'bg-slate-100 text-slate-400'
+                                  )}
+                                >
+                                  <Play className="w-3 h-3 ml-0.5" fill="currentColor" />
+                                </span>
+
+                                <span
+                                  className={cn(
+                                    'text-[13.5px] sm:text-[14px] font-medium text-slate-800 truncate transition-colors',
+                                    isPreview && 'group-hover:text-brand-800'
+                                  )}
+                                >
+                                  <span className="text-slate-400 tabular-nums mr-1.5">
+                                    {idx + 1}.{lessonIdx + 1}
+                                  </span>
+                                  {lesson.title}
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-2.5 shrink-0">
+                                {isPreview && (
+                                  <span className="hidden sm:inline px-2 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-200 text-[11px] font-bold">
+                                    Ücretsiz önizleme
+                                  </span>
+                                )}
+                                <span className="text-[12px] text-slate-400 font-mono tabular-nums">
+                                  {seconds
+                                    ? `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`
+                                    : '—'}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+
+                        {lessons.length === 0 && (
+                          <p className="px-4 sm:px-6 py-4 text-[13.5px] text-slate-400">
+                            Bu bölüme henüz ders eklenmemiş.
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
+
+                {(course.sections?.length || 0) === 0 && (
+                  <p className="px-6 py-8 text-center text-[14px] text-slate-400">
+                    Müfredat henüz yayınlanmadı.
+                  </p>
+                )}
               </div>
             </section>
 
             {/* ── Kurs hakkında ───────────────────────────────────────── */}
             {course.description && (
-              <section id="hakkinda" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
+              <section id="hakkinda" className="scroll-mt-32 mt-10 pt-8 border-t border-slate-200">
                 <SectionTitle hint="Eğitmenin kendi anlatımıyla kursun kapsamı">Kurs hakkında</SectionTitle>
                 <div
                   className={cn(
@@ -1136,7 +1330,7 @@ export const CourseDetailPage = () => {
             )}
 
             {/* ── Eğitmen ─────────────────────────────────────────────── */}
-            <section id="egitmen" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
+            <section id="egitmen" className="scroll-mt-32 mt-10 pt-8 border-t border-slate-200">
               <SectionTitle>Eğitmen</SectionTitle>
 
               <div className="rounded-xl border border-brand-100 bg-brand-50/40 p-4 sm:p-6">
@@ -1272,7 +1466,7 @@ export const CourseDetailPage = () => {
             </section>
 
             {/* ── Değerlendirmeler ────────────────────────────────────── */}
-            <section id="degerlendirmeler" className="scroll-mt-24 mt-10 pt-8 border-t border-slate-200">
+            <section id="degerlendirmeler" className="scroll-mt-32 mt-10 pt-8 border-t border-slate-200">
               <SectionTitle>Değerlendirmeler</SectionTitle>
 
               {topReviews.length > 0 ? (
