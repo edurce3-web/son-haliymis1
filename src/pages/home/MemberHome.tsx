@@ -17,7 +17,7 @@ interface CategoryShelf {
 }
 
 interface MemberHomeData {
-    continueWatching: any | null;
+    continueWatching: any[] | null;
     inProgress: any[];
     fromSearches: { term: string | null; items: any[] };
     fromCategories: { category: string | null; items: any[] };
@@ -107,24 +107,16 @@ const MemberHome: React.FC = () => {
     return (
         <div className="min-h-screen bg-slate-50/70">
 
-            <ContinueBanner course={mine?.continueWatching} />
+            {/*
+                Devam eden kurslar tek yerde: bu şerit.
+
+                Altında ayrıca bir "Devam eden kurslarım" rafı vardı; aynı
+                kurslar sayfada iki kez çıkıyordu. Geri kalanlar Eğitimlerim
+                sayfasında duruyor.
+            */}
+            <ContinueBanner courses={mine?.continueWatching} />
 
             <div className="container mx-auto px-4 py-8 space-y-10">
-
-                {/* Devam eden kurs yoksa bölüm hiç çizilmiyor: "henüz kurs yok"
-                    diyen boş bir raf, sayfanın en üstünde yer harcıyor. */}
-                {(mineLoading || (mine?.inProgress?.length ?? 0) > 0) && (
-                    <ShelfSection
-                        title="Devam eden kurslarım"
-                        subtitle="Tamamlamadığın kurslar"
-                        href="/home/learning"
-                        courses={mine?.inProgress || []}
-                        loading={mineLoading}
-                        columns={5}
-                        compactCards
-                        owned
-                    />
-                )}
 
                 <ShelfSection
                     title="Sizin için önerilenler"
@@ -132,7 +124,8 @@ const MemberHome: React.FC = () => {
                     href="/courses"
                     courses={recommended}
                     loading={mineLoading}
-                    columns={4}
+                    columns={5}
+                    compactCards
                 />
 
                 {/* Arama geçmişi olmayan kullanıcıda bu raf hiç yok. Hiç arama
@@ -144,7 +137,8 @@ const MemberHome: React.FC = () => {
                         subtitle={`"${mine.fromSearches.term}" aramandan yola çıkarak seçildi`}
                         href={`/search?q=${encodeURIComponent(mine.fromSearches.term || '')}`}
                         courses={mine.fromSearches.items}
-                        columns={4}
+                        columns={5}
+                        compactCards
                     />
                 ) : null}
 
@@ -155,7 +149,8 @@ const MemberHome: React.FC = () => {
                     href="/courses?sort=rating"
                     courses={catalog?.featured_courses || []}
                     loading={catalogLoading}
-                    columns={4}
+                    columns={5}
+                    compactCards
                 />
             </div>
 
@@ -175,7 +170,8 @@ const MemberHome: React.FC = () => {
                     href="/courses?sort=popular"
                     courses={catalog?.top_selling || []}
                     loading={catalogLoading}
-                    columns={4}
+                    columns={5}
+                    compactCards
                 />
 
                 {/*
