@@ -83,22 +83,24 @@ export const ShelfSection: React.FC<{
         : 'w-[262px] sm:w-[272px] lg:w-[calc((100%-3*1.25rem)/4)]';
 
     return (
-        <section className="w-full">
-            <div className="flex items-end justify-between gap-4 pb-1">
+        <section className="w-full font-jakarta">
+            {/* Başlık satırı tasarımdan birebir: Plus Jakarta Sans, 24/32
+                ekstra kalın, rozet başlığın yanında, açıklama altında. */}
+            <div className="flex items-center justify-between gap-4 pb-2">
                 <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                        <h2 className="font-montserrat text-[21px] sm:text-[24px] font-extrabold text-slate-900 tracking-tight">
+                        <h2 className="text-[20px] sm:text-[24px] leading-8 font-extrabold text-[#131b2e] tracking-tight">
                             {title}
                         </h2>
                         {chip && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-brand-50 border border-brand-100 text-brand-800 text-[11px] font-bold">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#005c55]/10 text-[#005c55] text-[11px] leading-[14px] font-bold">
                                 {chip.icon}
                                 {chip.text}
                             </span>
                         )}
                     </div>
                     {subtitle && (
-                        <p className="text-[13.5px] text-slate-500 mt-1">{subtitle}</p>
+                        <p className="text-[14px] leading-5 text-[#3e4947] mt-0.5">{subtitle}</p>
                     )}
                 </div>
 
@@ -106,31 +108,31 @@ export const ShelfSection: React.FC<{
                     {href && (
                         <Link
                             to={href}
-                            className="hidden sm:inline-flex items-center gap-1 text-[13.5px] font-bold text-brand-700 hover:text-brand-900 hover:gap-2 transition-all"
+                            className="hidden sm:inline-flex items-center gap-1 text-[14px] leading-5 font-semibold text-[#005c55] hover:text-[#0f766e] transition-colors"
                         >
                             {hrefLabel}
-                            <ArrowRight className="w-4 h-4" />
+                            <ArrowRight className="w-[18px] h-[18px]" />
                         </Link>
                     )}
 
-                    <div className="hidden md:flex items-center gap-1.5 ml-1">
+                    <div className="hidden md:flex items-center gap-1.5 ml-2">
                         <button
                             type="button"
                             onClick={() => scroll(-1)}
                             disabled={!canLeft}
                             aria-label="Önceki"
-                            className="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 shadow-sm flex items-center justify-center hover:border-brand-400 hover:text-brand-700 disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-slate-600 transition-colors"
+                            className="w-9 h-9 rounded-full bg-white text-[#3e4947] shadow-sm flex items-center justify-center hover:text-[#131b2e] hover:bg-[#eaedff] disabled:opacity-35 disabled:hover:bg-white transition-all"
                         >
-                            <ChevronLeft className="w-[18px] h-[18px]" />
+                            <ChevronLeft className="w-5 h-5" />
                         </button>
                         <button
                             type="button"
                             onClick={() => scroll(1)}
                             disabled={!canRight}
                             aria-label="Sonraki"
-                            className="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 shadow-sm flex items-center justify-center hover:border-brand-400 hover:text-brand-700 disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-slate-600 transition-colors"
+                            className="w-9 h-9 rounded-full bg-white text-[#3e4947] shadow-sm flex items-center justify-center hover:text-[#131b2e] hover:bg-[#eaedff] disabled:opacity-35 disabled:hover:bg-white transition-all"
                         >
-                            <ChevronRight className="w-[18px] h-[18px]" />
+                            <ChevronRight className="w-5 h-5" />
                         </button>
                     </div>
                 </div>

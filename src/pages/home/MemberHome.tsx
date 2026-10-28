@@ -105,7 +105,7 @@ const MemberHome: React.FC = () => {
     const shelves = mine?.categoryShelves || [];
 
     return (
-        <div className="min-h-screen bg-slate-50/70">
+        <div className="min-h-screen bg-[#faf8ff]">
 
             {/*
                 Devam eden kurslar tek yerde: bu şerit.
@@ -216,7 +216,8 @@ const MemberHome: React.FC = () => {
 
                 <ShelfSection
                     title="Yeni eklenenler"
-                    subtitle="Son yayınlanan kurslar"
+                    subtitle="Platforma en son katılan, en taze içerikler"
+                    badgeFor={() => ({ text: 'Yeni', tone: 'brand' })}
                     href="/courses?sort=newest"
                     courses={catalog?.new_courses || []}
                     loading={catalogLoading}

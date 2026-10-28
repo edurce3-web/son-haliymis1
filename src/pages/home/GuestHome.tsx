@@ -118,7 +118,8 @@ const GuestHome: React.FC = () => {
             <div className="container px-4 pt-12 space-y-10">
                 <ShelfSection
                     title="Yeni eklenenler"
-                    subtitle="Son yayınlanan kurslar"
+                    subtitle="Platforma en son katılan, en taze içerikler"
+                    badgeFor={() => ({ text: 'Yeni', tone: 'brand' })}
                     courses={data?.new_courses || []}
                     href="/courses?sort=newest"
                     loading={isLoading}

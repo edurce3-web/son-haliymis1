@@ -19,6 +19,8 @@ export default {
         montserrat: ["Montserrat", "sans-serif"],
         inter: ["Inter", "sans-serif"],
         jetbrains: ["JetBrains Mono", "monospace"],
+        // Kurs kartlari ve raflar — tasarimin yazitipi
+        jakarta: ["Plus Jakarta Sans", "Inter", "sans-serif"],
       },
       colors: {
         /**
