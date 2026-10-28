@@ -110,6 +110,17 @@ export const staffApi = {
     liftSanction: (id: number, note: string) =>
         request(`/users/${id}/lift`, { method: 'POST', body: { note } }),
 
+    // Ana sayfa vitrini — yalnızca iki şerit panelden yönetiliyor.
+    homeShelves: () => request<any>('/home-shelves'),
+    searchShelfCourses: (q: string) =>
+        request<any>(`/home-shelves/search?q=${encodeURIComponent(q)}`),
+    addToShelf: (slot: string, courseId: number) =>
+        request('/home-shelves', { method: 'POST', body: { slot, courseId } }),
+    removeFromShelf: (id: number) =>
+        request(`/home-shelves/${id}`, { method: 'DELETE' }),
+    reorderShelf: (slot: string, ids: number[]) =>
+        request('/home-shelves/reorder', { method: 'POST', body: { slot, ids } }),
+
     applications: (status = 'pending') => request<any>(`/applications?status=${status}`),
     decideApplication: (id: number, approve: boolean, note: string) =>
         request(`/applications/${id}/decision`, { method: 'POST', body: { approve, note } }),

@@ -13,6 +13,7 @@ import Announcements from './panels/Announcements';
 import StaffTeam from './panels/StaffTeam';
 import AuditLog from './panels/AuditLog';
 import CourseGrants from './panels/CourseGrants';
+import HomeShelves from './panels/HomeShelves';
 import MessageViewer from './panels/MessageViewer';
 import Sales from './panels/Sales';
 
@@ -44,6 +45,11 @@ const SECTIONS: Section[] = [
         permission: P.CONTENT_REVIEW,
         badge: c => c.pendingCourses,
         render: ({ staff }) => <CourseQueue staff={staff} />,
+    },
+    {
+        key: 'home-shelves', label: 'Ana sayfa vitrini', group: 'İçerik',
+        permission: P.CONTENT_REVIEW,
+        render: () => <HomeShelves />,
     },
     {
         key: 'grants', label: 'Gizli kurs paylaşımı', group: 'İçerik',

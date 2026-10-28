@@ -22,6 +22,9 @@ interface MemberHomeData {
     fromSearches: { term: string | null; items: any[] };
     fromCategories: { category: string | null; items: any[] };
     popular: any[];
+    popularTurkish?: any[];
+    /** Panelden elle seçilmiş öneri şeridi. Boşsa otomatik listeye düşülür. */
+    curatedRecommended?: any[];
     categoryShelves?: CategoryShelf[];
 }
 
@@ -83,15 +86,21 @@ const MemberHome: React.FC = () => {
      * düşüyor. Yeni hesapta ilk şeridin boş kalması, sayfanın en üstünde
      * kocaman bir boşluk demekti.
      */
-    const recommended = mine?.fromCategories?.items?.length
-        ? mine.fromCategories.items
-        : mine?.popular || [];
+    const curated = mine?.curatedRecommended || [];
 
-    const recommendedReason = mine?.fromCategories?.items?.length
-        ? mine.fromCategories.category
-            ? `${mine.fromCategories.category} alanında izlediklerine göre derlendi`
-            : 'İzleme geçmişine göre derlendi'
-        : 'Platformda en çok tercih edilen, henüz almadığın kurslar';
+    const recommended = curated.length > 0
+        ? curated
+        : mine?.fromCategories?.items?.length
+            ? mine.fromCategories.items
+            : mine?.popular || [];
+
+    const recommendedReason = curated.length > 0
+        ? 'Edurce ekibinin öne çıkardığı eğitimler'
+        : mine?.fromCategories?.items?.length
+            ? mine.fromCategories.category
+                ? `${mine.fromCategories.category} alanında izlediklerine göre derlendi`
+                : 'İzleme geçmişine göre derlendi'
+            : 'Platformda en çok tercih edilen, henüz almadığın kurslar';
 
     const shelves = mine?.categoryShelves || [];
 
@@ -164,6 +173,25 @@ const MemberHome: React.FC = () => {
                 />
 
                 {/*
+                    Popüler Türkçe kurslar.
+
+                    Üstteki şerit öğrenci sayısına, bu şerit puana göre
+                    sıralanıyor. Aynı listeyi iki kez göstermemek için ayrım
+                    sıralamada: biri en kalabalık sınıfları, diğeri en
+                    beğenilenleri öne çıkarıyor.
+                */}
+                <ShelfSection
+                    title="Popüler Türkçe kurslar"
+                    chip={{ text: '%100 Türkçe' }}
+                    subtitle="Tamamı Türkçe anlatımlı, uygulamalı ve güncel eğitimler"
+                    href="/courses?sort=rating"
+                    courses={mine?.popularTurkish || []}
+                    loading={mineLoading}
+                    columns={5}
+                    compactCards
+                />
+
+                {/*
                     Kategori rafları.
 
                     Her ana alan kendi şeridini alıyor; kullanıcı ilgilenmediği
@@ -174,7 +202,7 @@ const MemberHome: React.FC = () => {
                 {shelves.map(shelf => (
                     <ShelfSection
                         key={shelf.slug || shelf.id}
-                        title={`${shelf.name} kursları`}
+                        title={`${shelf.name} Kursları`}
                         chip={{ text: `${shelf.total} kurs` }}
                         subtitle={shelf.description || undefined}
                         href={`/courses/${shelf.slug}`}
