@@ -11,7 +11,7 @@ import GuestHero, { HeroStats } from '@/components/home/GuestHero';
 import CourseShowcase from '@/components/home/CourseShowcase';
 import SkillSpotlight from '@/components/home/SkillSpotlight';
 import CategoryExplorer from '@/components/home/CategoryExplorer';
-import CourseRail from '@/components/home/CourseRail';
+import ShelfSection from '@/components/home/ShelfSection';
 
 interface HomeData {
     featured_courses: any[];
@@ -51,7 +51,7 @@ const STEPS = [
  * panel değil vitrin — sırayla vaat, kanıt (sayılar), kurs ızgaraları, alan
  * keşfi, işleyiş, gerçek yorumlar ve eğitmen çağrısı.
  *
- * Kurslar üstte üçlü ızgaralarda duruyor, aşağıda yatay raflara dönüyor:
+ * Kurslar üstte dörtlü ızgaralarda duruyor, aşağıda yatay raflara dönüyor:
  * ilk bakışta kart tam görünsün, aşağı indikçe daha çok kurs sığsın. Üye
  * sayfası bu bölümlerin hiçbirini taşımıyor; zaten üye olmuş birine platformu
  * anlatmanın anlamı yok.
@@ -89,13 +89,6 @@ const GuestHome: React.FC = () => {
                 href="/courses?sort=rating"
                 courses={data?.featured_courses || []}
                 loading={isLoading}
-                badgeFor={c =>
-                    Number(c.studentCount ?? c.student_count) > 500
-                        ? { text: 'ÇOK SATAN', tone: 'brand' }
-                        : Number(c.rating) >= 4.5
-                            ? { text: 'YÜKSEK PUAN', tone: 'mint' }
-                            : null
-                }
             />
 
             {/* ── En çok tercih edilenler ────────────────────────────────── */}
@@ -113,32 +106,32 @@ const GuestHome: React.FC = () => {
                 href="/courses?sort=popular"
                 courses={data?.top_selling || []}
                 loading={isLoading}
-                badgeFor={(c, i) =>
-                    i === 0
-                        ? { text: 'EN ÇOK SATAN', tone: 'amber' }
-                        : Number(c.studentCount ?? c.student_count) > 500
-                            ? { text: 'ÇOK TERCİH EDİLEN', tone: 'dark' }
-                            : null
-                }
             />
 
             {/* ── Alan keşfi (koyu blok) ─────────────────────────────────── */}
             <SkillSpotlight />
 
-            {/* ── Yeni ve ücretsiz kurslar ───────────────────────────────── */}
-            <div className="container px-4 pt-12">
-                <CourseRail
+            {/* ── Yeni ve ücretsiz kurslar ─────────────────────────────────
+                Üstteki ızgaralarla aynı kartı kullanıyor; tek fark yatay
+                kaydırma. Aynı kursun sayfanın iki yerinde farklı kartla
+                çıkması, hangisinin doğru olduğunu belirsizleştiriyordu. */}
+            <div className="container px-4 pt-12 space-y-10">
+                <ShelfSection
                     title="Yeni eklenenler"
-                    reason="Son yayınlanan kurslar"
+                    subtitle="Son yayınlanan kurslar"
                     courses={data?.new_courses || []}
                     href="/courses?sort=newest"
                     loading={isLoading}
+                    columns={5}
+                    compactCards
                 />
-                <CourseRail
+                <ShelfSection
                     title="Ücretsiz başla"
-                    reason="Ödeme yapmadan izleyebileceğin kurslar"
+                    subtitle="Ödeme yapmadan izleyebileceğin kurslar"
                     courses={data?.free_courses || []}
                     href="/courses?free=1"
+                    columns={5}
+                    compactCards
                 />
             </div>
 

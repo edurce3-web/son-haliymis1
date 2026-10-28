@@ -111,14 +111,17 @@ const MemberHome: React.FC = () => {
 
             <div className="container mx-auto px-4 py-8 space-y-10">
 
+                {/* Devam eden kurs yoksa bölüm hiç çizilmiyor: "henüz kurs yok"
+                    diyen boş bir raf, sayfanın en üstünde yer harcıyor. */}
                 {(mineLoading || (mine?.inProgress?.length ?? 0) > 0) && (
                     <ShelfSection
-                        title="Eğitimlerim"
-                        subtitle="Kayıtlı olduğun kurslar"
+                        title="Devam eden kurslarım"
+                        subtitle="Tamamlamadığın kurslar"
                         href="/home/learning"
                         courses={mine?.inProgress || []}
                         loading={mineLoading}
-                        columns={4}
+                        columns={5}
+                        compactCards
                         owned
                     />
                 )}
@@ -132,10 +135,13 @@ const MemberHome: React.FC = () => {
                     columns={4}
                 />
 
+                {/* Arama geçmişi olmayan kullanıcıda bu raf hiç yok. Hiç arama
+                    yapmamış birine "aramalarına göre" demek, önerinin
+                    gerekçesini uyduruyor. */}
                 {mine?.fromSearches?.items?.length ? (
                     <ShelfSection
-                        title={`"${mine.fromSearches.term}" aramandan`}
-                        subtitle="Son aradığın konuya göre seçildi"
+                        title="Son aramalarına göre"
+                        subtitle={`"${mine.fromSearches.term}" aramandan yola çıkarak seçildi`}
                         href={`/search?q=${encodeURIComponent(mine.fromSearches.term || '')}`}
                         courses={mine.fromSearches.items}
                         columns={4}

@@ -2,12 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import FeatureCard, { FeatureBadge } from './FeatureCard';
+import ShelfCourseCard, { ShelfBadge } from './ShelfCourseCard';
 
 /**
  * Izgara vitrin bölümü — misafir ana sayfasının omurgası.
  *
- * Rafların aksine kaydırma yok: ilk üç kurs tamamen görünür. Misafir için
+ * Rafların aksine kaydırma yok: dört kurs birden tamamen görünür. Misafir için
  * amaç çok kurs taratmak değil, birkaç kursu ikna edici göstermek; yatay
  * kaydırmada kart yarım kalıyor ve kimse kaydırmıyordu.
  */
@@ -22,7 +22,7 @@ export const CourseShowcase: React.FC<{
     courses: any[];
     loading?: boolean;
     /** Kaçıncı karta hangi etiket binecek. */
-    badgeFor?: (course: any, index: number) => FeatureBadge;
+    badgeFor?: (course: any, index: number) => ShelfBadge;
     limit?: number;
     tone?: 'white' | 'tint';
 }> = ({
@@ -36,7 +36,7 @@ export const CourseShowcase: React.FC<{
     courses,
     loading,
     badgeFor,
-    limit = 3,
+    limit = 4,
     tone = 'white',
 }) => {
     const items = (courses || []).slice(0, limit);
@@ -89,7 +89,7 @@ export const CourseShowcase: React.FC<{
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                     {loading
                         ? Array.from({ length: limit }).map((_, i) => (
                             <div
@@ -106,10 +106,10 @@ export const CourseShowcase: React.FC<{
                             </div>
                         ))
                         : items.map((course, i) => (
-                            <FeatureCard
+                            <ShelfCourseCard
                                 key={course.id ?? course.course_id}
                                 course={course}
-                                badge={badgeFor?.(course, i) ?? null}
+                                badge={badgeFor ? badgeFor(course, i) : undefined}
                             />
                         ))}
                 </div>
