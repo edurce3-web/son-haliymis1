@@ -1,0 +1,184 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import ShelfCourseCard, { ShelfBadge } from './ShelfCourseCard';
+
+/**
+ * Kurs rafı — başlık, açıklama ve kart ızgarası.
+ *
+ * Izgara yatay kaydırılıyor ama kartlar satır düzeninde duruyor: dar
+ * ekranda tek tek kayıyor, geniş ekranda dört ya da beş kart yan yana
+ * sığıyor ve ok düğmeleri sönükleşiyor. Böylece aynı bileşen hem "sizin
+ * için önerilenler" gibi kısa raflarda hem de kategori raflarında
+ * çalışıyor.
+ *
+ * Oklar yalnızca kaydırılacak yer varken etkin; her rafın altına çalışmayan
+ * iki düğme koymak, raf kısa olduğunda kullanıcıyı boşa tıklatıyordu.
+ */
+export const ShelfSection: React.FC<{
+    title: string;
+    subtitle?: string;
+    /** Başlığın yanındaki küçük rozet — "Editör seçimi", "%100 Türkçe" gibi. */
+    chip?: { text: string; icon?: React.ReactNode };
+    href?: string;
+    hrefLabel?: string;
+    courses: any[];
+    loading?: boolean;
+    /** Geniş ekranda yan yana kaç kart duracak. */
+    columns?: 4 | 5;
+    compactCards?: boolean;
+    /** Kayıtlı olunan kurslar: kartta fiyat yerine ilerleme çıkar. */
+    owned?: boolean;
+    badgeFor?: (course: any, index: number) => ShelfBadge;
+    emptyText?: string;
+}> = ({
+    title,
+    subtitle,
+    chip,
+    href,
+    hrefLabel = 'Tümünü gör',
+    courses,
+    loading,
+    columns = 4,
+    compactCards,
+    owned,
+    badgeFor,
+    emptyText,
+}) => {
+    const railRef = useRef<HTMLDivElement>(null);
+    const [canLeft, setCanLeft] = useState(false);
+    const [canRight, setCanRight] = useState(false);
+
+    const update = () => {
+        const el = railRef.current;
+        if (!el) return;
+        setCanLeft(el.scrollLeft > 4);
+        setCanRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+    };
+
+    useEffect(() => {
+        const el = railRef.current;
+        if (!el) return;
+        update();
+        el.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        return () => {
+            el.removeEventListener('scroll', update);
+            window.removeEventListener('resize', update);
+        };
+    }, [courses.length, loading]);
+
+    const scroll = (dir: 1 | -1) => {
+        const el = railRef.current;
+        if (!el) return;
+        el.scrollBy({ left: dir * Math.round(el.clientWidth * 0.8), behavior: 'smooth' });
+    };
+
+    if (!loading && courses.length === 0 && !emptyText) return null;
+
+    // Kart genişliği sütun sayısına göre; aradaki boşluk da hesaba katılıyor.
+    const cardWidth = columns === 5
+        ? 'w-[228px] sm:w-[236px] lg:w-[calc((100%-4*1rem)/5)]'
+        : 'w-[262px] sm:w-[272px] lg:w-[calc((100%-3*1.25rem)/4)]';
+
+    return (
+        <section className="w-full">
+            <div className="flex items-end justify-between gap-4 pb-1">
+                <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <h2 className="font-montserrat text-[21px] sm:text-[24px] font-extrabold text-slate-900 tracking-tight">
+                            {title}
+                        </h2>
+                        {chip && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-brand-50 border border-brand-100 text-brand-800 text-[11px] font-bold">
+                                {chip.icon}
+                                {chip.text}
+                            </span>
+                        )}
+                    </div>
+                    {subtitle && (
+                        <p className="text-[13.5px] text-slate-500 mt-1">{subtitle}</p>
+                    )}
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                    {href && (
+                        <Link
+                            to={href}
+                            className="hidden sm:inline-flex items-center gap-1 text-[13.5px] font-bold text-brand-700 hover:text-brand-900 hover:gap-2 transition-all"
+                        >
+                            {hrefLabel}
+                            <ArrowRight className="w-4 h-4" />
+                        </Link>
+                    )}
+
+                    <div className="hidden md:flex items-center gap-1.5 ml-1">
+                        <button
+                            type="button"
+                            onClick={() => scroll(-1)}
+                            disabled={!canLeft}
+                            aria-label="Önceki"
+                            className="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 shadow-sm flex items-center justify-center hover:border-brand-400 hover:text-brand-700 disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-slate-600 transition-colors"
+                        >
+                            <ChevronLeft className="w-[18px] h-[18px]" />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => scroll(1)}
+                            disabled={!canRight}
+                            aria-label="Sonraki"
+                            className="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 shadow-sm flex items-center justify-center hover:border-brand-400 hover:text-brand-700 disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-slate-600 transition-colors"
+                        >
+                            <ChevronRight className="w-[18px] h-[18px]" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {!loading && courses.length === 0 ? (
+                <p className="text-[14px] text-slate-500 py-6">{emptyText}</p>
+            ) : (
+                <div
+                    ref={railRef}
+                    className={cn(
+                        'flex overflow-x-auto overflow-y-visible pt-4 pb-2 -mx-1 px-1 snap-x',
+                        '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]',
+                        columns === 5 ? 'gap-4' : 'gap-5'
+                    )}
+                >
+                    {loading
+                        ? Array.from({ length: columns }).map((_, i) => (
+                            <div
+                                key={i}
+                                className={cn(cardWidth, 'shrink-0 bg-white border border-slate-200 rounded-xl overflow-hidden animate-pulse')}
+                            >
+                                <div className="aspect-video bg-slate-100" />
+                                <div className="p-4 space-y-2.5">
+                                    <div className="h-3.5 bg-slate-100 rounded w-full" />
+                                    <div className="h-3.5 bg-slate-100 rounded w-3/5" />
+                                    <div className="h-3 bg-slate-100 rounded w-2/5 mt-4" />
+                                    <div className="h-6 bg-slate-100 rounded w-1/3 mt-4" />
+                                </div>
+                            </div>
+                        ))
+                        : courses.map((course, i) => (
+                            <div
+                                key={course.id ?? course.course_id}
+                                className={cn(cardWidth, 'shrink-0 snap-start')}
+                            >
+                                <ShelfCourseCard
+                                    course={course}
+                                    compact={compactCards}
+                                    owned={owned}
+                                    badge={badgeFor ? badgeFor(course, i) : undefined}
+                                />
+                            </div>
+                        ))}
+                </div>
+            )}
+        </section>
+    );
+};
+
+export default ShelfSection;
