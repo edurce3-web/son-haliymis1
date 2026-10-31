@@ -28,12 +28,18 @@ export const ContinueBanner: React.FC<{ courses?: any[] | null }> = ({ courses }
             <div className="container mx-auto px-4 py-3">
                 <div
                     className={cn(
-                        'grid gap-3',
-                        list.length > 1 ? 'lg:grid-cols-2' : 'grid-cols-1'
+                        'flex gap-3 overflow-x-auto snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]',
+                        'lg:grid lg:overflow-visible',
+                        list.length > 1 ? 'lg:grid-cols-2' : 'lg:grid-cols-1'
                     )}
                 >
                     {list.map(course => (
-                        <ContinueCard key={course.id ?? course.course_id} course={course} />
+                        <div
+                            key={course.id ?? course.course_id}
+                            className={cn('shrink-0 snap-start lg:w-auto', list.length > 1 ? 'w-[88%] sm:w-[70%]' : 'w-full')}
+                        >
+                            <ContinueCard course={course} />
+                        </div>
                     ))}
                 </div>
             </div>

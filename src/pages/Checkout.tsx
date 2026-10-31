@@ -34,8 +34,12 @@ export const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get('courseId');
-  const couponFromUrl = searchParams.get('coupon');
-  const isDirectBuy = !!courseId;
+  // Paket alımı: fiyat ve kalemler sunucudan geliyor (/bundles/:id/quote).
+  const bundleId = searchParams.get('bundle');
+  const isBundle = !!bundleId;
+  // Paket zaten indirimli fiyat; kupon pakette geçmiyor (sunucu da yok sayıyor).
+  const couponFromUrl = isBundle ? null : searchParams.get('coupon');
+  const isDirectBuy = !!courseId || isBundle;
 
   const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'fail' | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -62,10 +66,37 @@ export const Checkout: React.FC = () => {
     enabled: isDirectBuy,
   });
 
+  const { data: bundleQuote, isLoading: isLoadingBundle, error: bundleError } = useQuery({
+    queryKey: ['bundle-quote', bundleId],
+    queryFn: async () => {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE_URL}/bundles/${bundleId}/quote`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Paket bilgisi alınamadı');
+      return data;
+    },
+    enabled: isBundle,
+    retry: false,
+  });
+
   const courseData = courseResp?.course;
-  const isLoading = isDirectBuy ? isLoadingCourse : isLoadingCart;
+  const isLoading = isBundle ? isLoadingBundle : isDirectBuy ? isLoadingCourse : isLoadingCart;
 
   const items = useMemo(() => {
+    if (isBundle) {
+      // Fiyat, kursun paketteki payı — liste fiyatı değil. Toplamları ödenen
+      // tutara kuruşu kuruşuna eşit.
+      return (bundleQuote?.items || []).map((i: any) => ({
+        course_id: i.id,
+        title: i.name,
+        price: Number(i.price) || 0,
+        list_price: Number(i.list_price) || 0,
+        image_url: i.thumbnail,
+        instructor_name: i.instructor_name || 'Eğitmen',
+      }));
+    }
     if (isDirectBuy && courseData) {
       return [{
         title: courseData.title,
@@ -76,16 +107,17 @@ export const Checkout: React.FC = () => {
       }];
     }
     return cartData?.items || [];
-  }, [isDirectBuy, courseData, cartData]);
+  }, [isBundle, bundleQuote, isDirectBuy, courseData, cartData]);
 
   const originalTotalPrice = useMemo(() => {
+    if (isBundle) return Number(bundleQuote?.total) || 0;
     if (isDirectBuy && courseData) {
       return typeof courseData.price === 'number' ? courseData.price : parseFloat(courseData.price);
     }
     // Backend `totalPrice` döner; eskiden yalnızca `total` okunduğu için sepet
     // toplamı hep 0 kalıyor ve ödeme 0₺ ile başlatılmaya çalışılıyordu.
     return cartData?.totalPrice ?? cartData?.total ?? 0;
-  }, [isDirectBuy, courseData, cartData]);
+  }, [isBundle, bundleQuote, isDirectBuy, courseData, cartData]);
 
   // Calculate discounted price
   const discountAmount = useMemo(() => {
@@ -137,17 +169,19 @@ export const Checkout: React.FC = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        navigate('/login?redirect=/checkout' + (courseId ? `?courseId=${courseId}` : ''));
+        const back = '/checkout' + (isBundle ? `?bundle=${bundleId}` : courseId ? `?courseId=${courseId}` : '');
+        navigate(`/login?redirect=${encodeURIComponent(back)}`);
         return;
       }
 
       const payload: any = {
         address: { country, city: 'Online', address: 'Digital Enrollment' },
-        courseId
+        courseId: isBundle ? undefined : courseId,
+        bundleId: isBundle ? Number(bundleId) : undefined,
       };
 
       // Send coupon info to backend if applied
-      if (appliedCoupon) {
+      if (appliedCoupon && !isBundle) {
         payload.couponCode = appliedCoupon.code;
       }
 
@@ -311,6 +345,21 @@ export const Checkout: React.FC = () => {
                 </span>
               </header>
 
+              {isBundle && bundleQuote && (
+                <div className="px-6 py-3 bg-[#f2f3ff] border-b border-slate-100">
+                  <p className="text-[13px] font-bold text-slate-900">{bundleQuote.bundle?.title}</p>
+                  <p className="text-[12px] text-slate-500 mt-0.5">
+                    Paket fiyatı kurslara liste fiyatları oranında dağıtıldı.
+                    {bundleQuote.skipped_owned > 0 && ` Sahip olduğun ${bundleQuote.skipped_owned} kurs paketten düşüldü ve fiyat aynı oranda indi.`}
+                  </p>
+                </div>
+              )}
+              {isBundle && bundleError && (
+                <div className="px-6 py-4 bg-amber-50 border-b border-amber-100 text-[13px] text-amber-800">
+                  {(bundleError as Error).message}
+                </div>
+              )}
+
               <div className="divide-y divide-slate-100">
                 {items.length > 0 ? items.map((item: any, idx: number) => (
                   <div key={item.course_id ?? idx} className="flex gap-4 p-4">
@@ -327,8 +376,11 @@ export const Checkout: React.FC = () => {
                       </h3>
                       <p className="text-xs text-slate-500 mt-1 truncate">{item.instructor_name || 'Eğitmen'}</p>
                     </div>
-                    <span className="text-sm font-semibold text-slate-900 whitespace-nowrap">
-                      {formatPrice(item.price)}
+                    <span className="text-right whitespace-nowrap">
+                      <span className="block text-sm font-semibold text-slate-900">{formatPrice(item.price)}</span>
+                      {isBundle && item.list_price > item.price && (
+                        <span className="block text-[11px] text-slate-400 line-through">{formatPrice(item.list_price)}</span>
+                      )}
                     </span>
                   </div>
                 )) : (
@@ -444,8 +496,9 @@ export const Checkout: React.FC = () => {
                 )}
               </Button>
 
-              {/* KUPON — satın alma butonunun altında */}
-              <div className="mt-4">
+              {/* KUPON — satın alma butonunun altında. Pakette yok: paket
+                  zaten indirimli fiyat, sunucu da kuponu yok sayıyor. */}
+              <div className={isBundle ? 'hidden' : 'mt-4'}>
                 {appliedCoupon ? (
                   <div className="flex items-center justify-between gap-3 bg-emerald-50 rounded-xl px-3 py-2.5">
                     <div className="flex items-center gap-2 min-w-0">

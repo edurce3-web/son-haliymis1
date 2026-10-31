@@ -92,11 +92,17 @@ export const ShelfSection: React.FC<{
             : 'w-[262px] sm:w-[272px] lg:w-[calc((100%-3*1.25rem)/4)]';
 
     const isGrid = Boolean(rows && rows > 0);
+    /*
+     * Izgara yalnızca geniş ekranda. Dar ekranda aynı kartlar yatay kayan
+     * tek satıra diziliyor: iki sütunlu ızgarada on iki kurs altı satır
+     * oluyor ve sayfa kurs listesine dönüşüyordu.
+     */
     const gridCols = columns === 6
-        ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6'
+        ? 'lg:grid-cols-6'
         : columns === 5
-            ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5'
-            : 'grid-cols-2 lg:grid-cols-4';
+            ? 'lg:grid-cols-5'
+            : 'lg:grid-cols-4';
+    const mobileItem = 'w-[196px] sm:w-[220px] shrink-0 snap-start lg:w-auto';
     const gridItems = isGrid ? courses.slice(0, columns * (rows || 1)) : courses;
 
     return (
@@ -158,12 +164,19 @@ export const ShelfSection: React.FC<{
             {!loading && courses.length === 0 ? (
                 <p className="text-[14px] text-slate-500 py-6">{emptyText}</p>
             ) : isGrid ? (
-                <div className={cn('grid gap-4 pt-3', gridCols)}>
+                <div
+                    className={cn(
+                        'flex gap-4 pt-3 pb-2 overflow-x-auto snap-x -mx-1 px-1',
+                        '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]',
+                        'lg:grid lg:overflow-visible lg:pb-0 lg:mx-0 lg:px-0',
+                        gridCols
+                    )}
+                >
                     {loading
                         ? Array.from({ length: columns * (rows || 1) }).map((_, i) => (
                             <div
                                 key={i}
-                                className={cn('bg-white rounded-lg overflow-hidden animate-pulse shadow-[0_1px_3px_rgba(19,27,46,0.08)]')}
+                                className={cn(mobileItem, 'bg-white rounded-lg overflow-hidden animate-pulse shadow-[0_1px_3px_rgba(19,27,46,0.08)]')}
                             >
                                 <div className="aspect-video bg-[#e2e7ff]" />
                                 <div className="p-3 space-y-2">
@@ -175,13 +188,14 @@ export const ShelfSection: React.FC<{
                             </div>
                         ))
                         : gridItems.map((course, i) => (
-                            <ShelfCourseCard
-                                key={course.id ?? course.course_id}
-                                course={course}
-                                compact={compactCards}
-                                owned={owned}
-                                badge={badgeFor ? badgeFor(course, i) : undefined}
-                            />
+                            <div key={course.id ?? course.course_id} className={mobileItem}>
+                                <ShelfCourseCard
+                                    course={course}
+                                    compact={compactCards}
+                                    owned={owned}
+                                    badge={badgeFor ? badgeFor(course, i) : undefined}
+                                />
+                            </div>
                         ))}
                 </div>
             ) : (

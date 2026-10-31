@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { getCourseImageUrl, favoritesAPI, cartAPI } from '@/lib/api';
 import { AddedToCartModal } from '@/components/cart/AddedToCartModal';
+import { CourseHoverPanel, useCourseHoverPanel } from './CourseHoverPanel';
 
 export type ShelfBadge = { text: string; tone: 'brand' | 'amber' | 'mint' | 'sky' } | null;
 
@@ -141,8 +142,20 @@ export const ShelfCourseCard: React.FC<{
         e.stopPropagation();
     };
 
+    // Üzerine gelince yanda açılan özet. Sahip olunan kursta sepet ve
+    // istek listesi anlamsız, panel de açılmıyor.
+    const hover = useCourseHoverPanel(course.id, !owned);
+    const addToCart = (e: React.MouseEvent) => { stop(e); if (!inCart) cartMutation.mutate(course.id); };
+    const toggleFav = (e: React.MouseEvent) => { stop(e); favMutation.mutate(course.id); };
+
     return (
         <>
+            <div
+                ref={hover.anchorRef}
+                className="h-full"
+                onMouseEnter={hover.onEnter}
+                onMouseLeave={hover.onLeave}
+            >
             <article className="group relative h-full flex flex-col font-jakarta bg-white rounded-lg overflow-hidden shadow-[0_1px_3px_rgba(19,27,46,0.08)] hover:shadow-[0_20px_40px_-12px_rgba(19,27,46,0.22)] transition-all duration-300">
 
                 <Link to={url} className="relative block aspect-video overflow-hidden bg-[#eaedff] shrink-0">
@@ -282,6 +295,22 @@ export const ShelfCourseCard: React.FC<{
                     )}
                 </div>
             </article>
+            </div>
+
+            {!owned && (
+                <CourseHoverPanel
+                    course={course}
+                    url={url}
+                    pos={hover.pos}
+                    onEnter={hover.keepOpen}
+                    onLeave={hover.onLeave}
+                    onAddToCart={addToCart}
+                    onToggleFav={toggleFav}
+                    inCart={inCart}
+                    adding={cartMutation.isPending}
+                    favorited={favorited}
+                />
+            )}
 
             {addedCourse && (
                 <AddedToCartModal

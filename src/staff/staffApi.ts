@@ -121,6 +121,15 @@ export const staffApi = {
     reorderShelf: (slot: string, ids: number[]) =>
         request('/home-shelves/reorder', { method: 'POST', body: { slot, ids } }),
 
+    // Kurs paketleri
+    bundles: () => request<any>('/bundles'),
+    createBundle: (body: Record<string, unknown>) =>
+        request<any>('/bundles', { method: 'POST', body }),
+    updateBundle: (id: number, body: Record<string, unknown>) =>
+        request<any>(`/bundles/${id}`, { method: 'PATCH', body }),
+    deleteBundle: (id: number) =>
+        request(`/bundles/${id}`, { method: 'DELETE' }),
+
     applications: (status = 'pending') => request<any>(`/applications?status=${status}`),
     decideApplication: (id: number, approve: boolean, note: string) =>
         request(`/applications/${id}/decision`, { method: 'POST', body: { approve, note } }),

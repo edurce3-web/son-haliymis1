@@ -41,6 +41,11 @@ const SLOTS = [
         label: 'Sizin için önerilenler',
         where: 'Yalnızca giriş yapmış kullanıcının ana sayfasında, en üstteki öneri şeridinde.',
     },
+    {
+        key: 'spotlight',
+        label: 'Kayan vitrin',
+        where: 'Giriş yapmamış ziyaretçinin ana sayfasında, koyu zeminli ve kendiliğinden kayan bölümde.',
+    },
 ];
 
 /**
@@ -62,7 +67,7 @@ const HomeShelves: React.FC = () => {
             <div>
                 <h1 className="text-xl font-bold text-slate-900">Ana sayfa vitrini</h1>
                 <p className="text-[13.5px] text-slate-500 mt-1 max-w-3xl leading-relaxed">
-                    Ana sayfadaki iki şeridin içeriğini buradan seçiyorsun. Diğer şeritler
+                    Ana sayfadaki üç şeridin içeriğini buradan seçiyorsun. Diğer şeritler
                     (en çok tercih edilenler, yeni eklenenler, kategori rafları) kendiliğinden
                     dolduğu için burada görünmüyor. Bir şeridi boş bırakırsan ana sayfada
                     kaybolmaz — otomatik listeye düşer.

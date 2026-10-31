@@ -9,7 +9,8 @@ import { useSeo } from '@/hooks/useSeo';
 import { cn } from '@/lib/utils';
 import GuestHero, { HeroStats } from '@/components/home/GuestHero';
 import CourseShowcase from '@/components/home/CourseShowcase';
-import SkillSpotlight from '@/components/home/SkillSpotlight';
+import SpotlightCarousel from '@/components/home/SpotlightCarousel';
+import BundleDeck, { Bundle } from '@/components/home/BundleDeck';
 import CategoryExplorer from '@/components/home/CategoryExplorer';
 import ShelfSection from '@/components/home/ShelfSection';
 
@@ -21,6 +22,9 @@ interface HomeData {
     testimonials?: any[];
     instructors?: Array<{ id: number; name: string; image: string }>;
     stats?: HeroStats;
+    /** Panelden seçilen kayan vitrin; seçim boşsa sunucu öne çıkanları gönderiyor. */
+    spotlight_courses?: any[];
+    bundles?: Bundle[];
 }
 
 const STEPS = [
@@ -108,8 +112,11 @@ const GuestHome: React.FC = () => {
                 loading={isLoading}
             />
 
-            {/* ── Alan keşfi (koyu blok) ─────────────────────────────────── */}
-            <SkillSpotlight />
+            {/* ── Kayan vitrin (koyu blok) ─────────────────────────────────
+                Eskiden burada kategori kartları vardı; kategoriler zaten
+                aşağıdaki "Tüm kategoriler" bloğunda. Yerine panelden seçilen
+                kurslar, kendiliğinden yavaşça sağa kayarak. */}
+            <SpotlightCarousel courses={data?.spotlight_courses || []} />
 
             {/* ── Yeni ve ücretsiz kurslar ─────────────────────────────────
                 Üstteki ızgaralarla aynı kartı kullanıyor; tek fark yatay
@@ -124,8 +131,17 @@ const GuestHome: React.FC = () => {
                     href="/courses?sort=newest"
                     loading={isLoading}
                     columns={6}
+                    rows={2}
                     compactCards
                 />
+            </div>
+
+            {/* ── Kurs paketleri ─────────────────────────────────────────── */}
+            <div className="mt-12">
+                <BundleDeck bundles={data?.bundles || []} />
+            </div>
+
+            <div className="container px-4 pt-12 space-y-10">
                 <ShelfSection
                     title="Ücretsiz başla"
                     subtitle="Ödeme yapmadan izleyebileceğin kurslar"

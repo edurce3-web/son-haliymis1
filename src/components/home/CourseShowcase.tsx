@@ -89,12 +89,12 @@ export const CourseShowcase: React.FC<{
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div className="flex gap-4 pb-2 overflow-x-auto snap-x -mx-1 px-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] lg:grid lg:grid-cols-6 lg:overflow-visible lg:pb-0 lg:mx-0 lg:px-0">
                     {loading
                         ? Array.from({ length: limit }).map((_, i) => (
                             <div
                                 key={i}
-                                className="bg-white border border-slate-200 rounded-2xl overflow-hidden animate-pulse"
+                                className="w-[196px] sm:w-[220px] shrink-0 lg:w-auto bg-white border border-slate-200 rounded-2xl overflow-hidden animate-pulse"
                             >
                                 <div className="aspect-[16/9] bg-slate-100" />
                                 <div className="p-5 space-y-3">
@@ -106,12 +106,13 @@ export const CourseShowcase: React.FC<{
                             </div>
                         ))
                         : items.map((course, i) => (
+                            <div key={course.id ?? course.course_id} className="w-[196px] sm:w-[220px] shrink-0 snap-start lg:w-auto">
                             <ShelfCourseCard
-                                key={course.id ?? course.course_id}
                                 course={course}
                                 compact
                                 badge={badgeFor ? badgeFor(course, i) : undefined}
                             />
+                            </div>
                         ))}
                 </div>
             </div>

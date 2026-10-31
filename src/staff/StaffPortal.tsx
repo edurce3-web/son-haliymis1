@@ -14,6 +14,7 @@ import StaffTeam from './panels/StaffTeam';
 import AuditLog from './panels/AuditLog';
 import CourseGrants from './panels/CourseGrants';
 import HomeShelves from './panels/HomeShelves';
+import Bundles from './panels/Bundles';
 import MessageViewer from './panels/MessageViewer';
 import Sales from './panels/Sales';
 
@@ -104,6 +105,11 @@ const SECTIONS: Section[] = [
         key: 'sales', label: 'Satışlar', group: 'Finans',
         permission: P.FINANCE_VIEW,
         render: () => <Sales />,
+    },
+    {
+        key: 'bundles', label: 'Kurs paketleri', group: 'Finans',
+        permission: P.FINANCE_VIEW,
+        render: () => <Bundles />,
     },
     {
         key: 'team', label: 'Ekip', group: 'Yönetim',

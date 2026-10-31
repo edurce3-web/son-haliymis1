@@ -105,12 +105,12 @@ export const CategoryExplorer: React.FC<{
                         </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
+                    <div className="flex gap-2.5 overflow-x-auto snap-x pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] md:grid md:grid-cols-3 lg:grid-cols-4 md:overflow-visible md:pb-0">
                         {shown.subcategories.map(sub => (
                             <Link
                                 key={sub.slug}
                                 to={`/courses/${shown.slug}/${sub.slug}`}
-                                className="group flex items-center justify-between gap-2 bg-slate-50 hover:bg-brand-50 rounded-xl px-3.5 py-3 transition-all hover:translate-x-0.5"
+                                className="group shrink-0 w-[220px] snap-start md:w-auto flex items-center justify-between gap-2 bg-slate-50 hover:bg-brand-50 rounded-xl px-3.5 py-3 transition-all hover:translate-x-0.5"
                             >
                                 <span className="flex items-center gap-2 min-w-0">
                                     <ChevronRight className="w-3.5 h-3.5 text-brand-600 shrink-0 group-hover:translate-x-0.5 transition-transform" />
