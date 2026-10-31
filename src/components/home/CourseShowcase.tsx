@@ -36,7 +36,7 @@ export const CourseShowcase: React.FC<{
     courses,
     loading,
     badgeFor,
-    limit = 5,
+    limit = 6,
     tone = 'white',
 }) => {
     const items = (courses || []).slice(0, limit);
@@ -89,7 +89,7 @@ export const CourseShowcase: React.FC<{
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                     {loading
                         ? Array.from({ length: limit }).map((_, i) => (
                             <div

@@ -123,7 +123,7 @@ const GuestHome: React.FC = () => {
                     courses={data?.new_courses || []}
                     href="/courses?sort=newest"
                     loading={isLoading}
-                    columns={5}
+                    columns={6}
                     compactCards
                 />
                 <ShelfSection
@@ -131,7 +131,7 @@ const GuestHome: React.FC = () => {
                     subtitle="Ödeme yapmadan izleyebileceğin kurslar"
                     courses={data?.free_courses || []}
                     href="/courses?free=1"
-                    columns={5}
+                    columns={6}
                     compactCards
                 />
             </div>

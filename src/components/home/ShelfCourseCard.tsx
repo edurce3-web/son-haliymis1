@@ -33,7 +33,7 @@ export function shelfBadge(course: any): ShelfBadge {
     const rating = Number(course.rating) || 0;
 
     if (students >= 500) return { text: 'En çok satan', tone: 'amber' };
-    if (students >= 100) return { text: 'Popüler', tone: 'sky' };
+    if (students >= 100) return { text: 'Popüler', tone: 'brand' };
     if (rating >= 4.7 && students > 0) return { text: 'Öne çıkan', tone: 'mint' };
     return null;
 }
@@ -187,24 +187,24 @@ export const ShelfCourseCard: React.FC<{
                     )}
                 </Link>
 
-                <div className="flex flex-col flex-1 p-4">
+                <div className="flex flex-col flex-1 p-3">
                     <h3
                         className={cn(
-                            'font-bold text-[#131b2e] line-clamp-2 group-hover:text-[#005c55] transition-colors',
-                            compact ? 'text-[14px] leading-[20px]' : 'text-[15px] leading-[22px]'
+                            'font-bold text-[#005c55] line-clamp-2 group-hover:text-[#00443f] transition-colors',
+                            compact ? 'text-[13.5px] leading-[19px]' : 'text-[15px] leading-[22px]'
                         )}
                     >
                         <Link to={url}>{course.title}</Link>
                     </h3>
 
                     {instructor && (
-                        <p className="text-[12px] leading-[18px] text-[#3e4947] mt-1.5 truncate">
+                        <p className="text-[12px] leading-[18px] text-[#3e4947] mt-1 truncate">
                             {instructor}
                         </p>
                     )}
 
                     {rating > 0 ? (
-                        <p className="flex items-center gap-1.5 mt-2">
+                        <p className="flex items-center gap-1 mt-1">
                             <span className="text-[12px] leading-4 font-bold text-[#855300] tabular-nums">
                                 {rating.toFixed(1)}
                             </span>
@@ -216,31 +216,19 @@ export const ShelfCourseCard: React.FC<{
                             )}
                         </p>
                     ) : (
-                        <p className="text-[12px] leading-[18px] text-[#6e7977] mt-2">Yeni yayınlandı</p>
+                        <p className="text-[12px] leading-[18px] text-[#6e7977] mt-1">Yeni yayınlandı</p>
                     )}
 
                     {(hours || lessons > 0) && (
-                        <p className="flex items-center gap-2 mt-2 text-[12px] leading-[18px] text-[#3e4947]">
-                            {hours && (
-                                <span className="flex items-center gap-1">
-                                    <Symbol name="schedule" className="text-[14px]" />
-                                    {hours}
-                                </span>
-                            )}
-                            {hours && lessons > 0 && <span>•</span>}
-                            {lessons > 0 && (
-                                <span className="flex items-center gap-1">
-                                    <Symbol name="video_library" className="text-[14px]" />
-                                    {lessons} ders
-                                </span>
-                            )}
+                        <p className="mt-1 text-[11.5px] leading-[16px] text-[#6e7977]">
+                            {[hours, lessons > 0 ? `${lessons} ders` : null].filter(Boolean).join(' • ')}
                         </p>
                     )}
 
                     {/* Alt satır kartın dibine yapışıyor: farklı uzunluktaki
                         başlıklar yan yana dizilince fiyatlar aynı hizada kalsın. */}
                     {owned ? (
-                        <div className="mt-auto pt-4">
+                        <div className="mt-auto pt-3">
                             <div className="flex items-center gap-2.5">
                                 <div className="flex-1 h-1.5 bg-[#e2e7ff] rounded-full overflow-hidden">
                                     <div
@@ -262,9 +250,9 @@ export const ShelfCourseCard: React.FC<{
                             </Link>
                         </div>
                     ) : (
-                        <div className="mt-auto pt-4 border-t border-[#e2e7ff] flex items-center justify-between gap-2">
+                        <div className="mt-auto pt-3 flex items-center justify-between gap-2">
                             <span className="flex items-baseline gap-2 min-w-0">
-                                <span className="text-[18px] leading-6 font-bold text-[#131b2e] tabular-nums">
+                                <span className="text-[16px] leading-6 font-extrabold text-[#131b2e] tabular-nums">
                                     {price > 0 ? `₺${formatLira(price)}` : 'Ücretsiz'}
                                 </span>
                                 {hasDiscount && (
@@ -280,10 +268,10 @@ export const ShelfCourseCard: React.FC<{
                                 disabled={inCart || cartMutation.isPending}
                                 onClick={e => { stop(e); cartMutation.mutate(course.id); }}
                                 className={cn(
-                                    'shrink-0 p-1.5 rounded-lg flex items-center justify-center transition-colors',
+                                    'shrink-0 p-1 rounded-md flex items-center justify-center transition-colors',
                                     inCart
-                                        ? 'bg-[#005c55] text-white cursor-default'
-                                        : 'bg-[#eaedff] text-[#3e4947] hover:bg-[#005c55] hover:text-white'
+                                        ? 'text-[#005c55] cursor-default'
+                                        : 'text-[#6e7977] hover:text-[#005c55]'
                                 )}
                             >
                                 {cartMutation.isPending

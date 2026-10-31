@@ -27,8 +27,16 @@ const CategoryIcon: React.FC<{ name?: string | null }> = ({ name }) => {
  * değişiyor. Misafirde keşif birincil olduğu için yukarıda, üyede ikincil
  * olduğu için en altta.
  */
-export const CategoryExplorer: React.FC<{ title?: string }> = ({
+export const CategoryExplorer: React.FC<{
+    title?: string;
+    /**
+     * Sayfanın kendi kabının içinde çizilirken: dış kap ve boşluk eklenmez,
+     * başlık raf başlıklarıyla aynı yazıtipini alır.
+     */
+    bare?: boolean;
+}> = ({
     title = 'Ne öğrenmek istersin?',
+    bare,
 }) => {
     const { data } = useCategoryNav();
     const categories = data?.categories || [];
@@ -42,10 +50,18 @@ export const CategoryExplorer: React.FC<{ title?: string }> = ({
     if (categories.length === 0) return null;
 
     return (
-        <section className="container px-4 pt-10 pb-4">
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight mb-4">{title}</h2>
+        <section className={bare ? 'font-jakarta' : 'container px-4 pt-10 pb-4'}>
+            <h2
+                className={
+                    bare
+                        ? 'text-[20px] sm:text-[24px] leading-8 font-extrabold text-[#131b2e] tracking-tight mb-3'
+                        : 'text-2xl font-bold text-slate-900 tracking-tight mb-4'
+                }
+            >
+                {title}
+            </h2>
 
-            <div className="flex gap-2 overflow-x-auto pb-3 mb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex gap-2 overflow-x-auto pb-2 mb-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {categories.map(cat => {
                     const isActive = shown?.slug === cat.slug;
                     return (
@@ -54,10 +70,10 @@ export const CategoryExplorer: React.FC<{ title?: string }> = ({
                             onClick={() => setActive(cat.slug)}
                             onMouseEnter={() => setActive(cat.slug)}
                             className={cn(
-                                'shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium border transition-all whitespace-nowrap',
+                                'shrink-0 px-4 py-2 rounded-full text-[13px] font-semibold transition-all whitespace-nowrap shadow-sm',
                                 isActive
-                                    ? 'bg-brand-700 text-white border-brand-700'
-                                    : 'bg-white text-slate-600 border-slate-200 hover:border-brand-400 hover:text-brand-800'
+                                    ? 'bg-[#005c55] text-white'
+                                    : 'bg-white text-[#3e4947] hover:text-[#131b2e] hover:bg-[#eaedff]'
                             )}
                         >
                             {cat.name}

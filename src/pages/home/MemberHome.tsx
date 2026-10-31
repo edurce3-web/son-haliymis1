@@ -116,7 +116,7 @@ const MemberHome: React.FC = () => {
             */}
             <ContinueBanner courses={mine?.continueWatching} />
 
-            <div className="container mx-auto px-4 py-8 space-y-10">
+            <div className="container mx-auto px-4 py-7 space-y-9">
 
                 <ShelfSection
                     title="Sizin için önerilenler"
@@ -124,7 +124,7 @@ const MemberHome: React.FC = () => {
                     href="/courses"
                     courses={recommended}
                     loading={mineLoading}
-                    columns={5}
+                    columns={6}
                     compactCards
                 />
 
@@ -137,7 +137,7 @@ const MemberHome: React.FC = () => {
                         subtitle={`"${mine.fromSearches.term}" aramandan yola çıkarak seçildi`}
                         href={`/search?q=${encodeURIComponent(mine.fromSearches.term || '')}`}
                         courses={mine.fromSearches.items}
-                        columns={5}
+                        columns={6}
                         compactCards
                     />
                 ) : null}
@@ -149,19 +149,11 @@ const MemberHome: React.FC = () => {
                     href="/courses?sort=rating"
                     courses={catalog?.featured_courses || []}
                     loading={catalogLoading}
-                    columns={5}
+                    columns={6}
                     compactCards
                 />
-            </div>
 
-            {/* Kategori keşfi beyaz zeminde: raflardan ayrışsın */}
-            <div className="bg-white border-y border-slate-200">
-                <div className="container mx-auto px-4 py-10">
-                    <CategoryExplorer title="Ne öğrenmek istersin?" />
-                </div>
-            </div>
-
-            <div className="container mx-auto px-4 py-10 space-y-10">
+                <CategoryExplorer title="Ne öğrenmek istersin?" bare />
 
                 <ShelfSection
                     title="En çok tercih edilenler"
@@ -170,7 +162,7 @@ const MemberHome: React.FC = () => {
                     href="/courses?sort=popular"
                     courses={catalog?.top_selling || []}
                     loading={catalogLoading}
-                    columns={5}
+                    columns={6}
                     compactCards
                 />
 
@@ -189,7 +181,8 @@ const MemberHome: React.FC = () => {
                     href="/courses?sort=rating"
                     courses={mine?.popularTurkish || []}
                     loading={mineLoading}
-                    columns={5}
+                    columns={6}
+                    rows={2}
                     compactCards
                 />
 
@@ -197,9 +190,9 @@ const MemberHome: React.FC = () => {
                     Kategori rafları.
 
                     Her ana alan kendi şeridini alıyor; kullanıcı ilgilenmediği
-                    alanı atlayıp kendi alanına inebiliyor. Kartlar burada dar
-                    kipte — beşli dizilimde süre ve ders sayısı satırı sıkışıp
-                    okunmaz hâle geliyordu.
+                    alanı atlayıp kendi alanına inebiliyor. Raf kaymıyor, iki
+                    satırlık ızgara: on iki kurs kaydırmadan görünüyor, devamı
+                    "Tümünü gör"de.
                 */}
                 {shelves.map(shelf => (
                     <ShelfSection
@@ -209,7 +202,8 @@ const MemberHome: React.FC = () => {
                         subtitle={shelf.description || undefined}
                         href={`/courses/${shelf.slug}`}
                         courses={shelf.courses}
-                        columns={5}
+                        columns={6}
+                        rows={2}
                         compactCards
                     />
                 ))}
@@ -221,7 +215,8 @@ const MemberHome: React.FC = () => {
                     href="/courses?sort=newest"
                     courses={catalog?.new_courses || []}
                     loading={catalogLoading}
-                    columns={5}
+                    columns={6}
+                    rows={2}
                     compactCards
                 />
 
@@ -230,7 +225,7 @@ const MemberHome: React.FC = () => {
                     subtitle="Ödeme yapmadan izleyebileceğin kurslar"
                     href="/courses?free=1"
                     courses={catalog?.free_courses || []}
-                    columns={5}
+                    columns={6}
                     compactCards
                 />
             </div>

@@ -24,11 +24,11 @@ export const ContinueBanner: React.FC<{ courses?: any[] | null }> = ({ courses }
     if (list.length === 0) return null;
 
     return (
-        <section className="w-full bg-gradient-to-r from-brand-100/70 via-brand-50 to-white border-b border-brand-100/80">
-            <div className="container mx-auto px-4 py-6">
+        <section className="w-full font-jakarta bg-gradient-to-r from-[#e2e7ff] via-[#eaedff] to-[#f2f3ff]">
+            <div className="container mx-auto px-4 py-3">
                 <div
                     className={cn(
-                        'grid gap-4',
+                        'grid gap-3',
                         list.length > 1 ? 'lg:grid-cols-2' : 'grid-cols-1'
                     )}
                 >
@@ -53,14 +53,14 @@ const ContinueCard: React.FC<{ course: any }> = ({ course }) => {
     );
 
     return (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-[0_1px_3px_rgba(15,23,42,0.05)]">
+        <div className="flex items-center justify-between gap-3 bg-white px-3 py-2.5 rounded-xl shadow-sm">
 
-            <div className="flex items-start sm:items-center gap-3.5 flex-1 min-w-0">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
                 <button
                     type="button"
                     onClick={open}
                     aria-label={`${course.title} dersine devam et`}
-                    className="relative shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-slate-100 group"
+                    className="relative shrink-0 w-11 h-11 rounded-lg overflow-hidden bg-slate-100 group"
                 >
                     <img
                         src={img}
@@ -69,34 +69,28 @@ const ContinueCard: React.FC<{ course: any }> = ({ course }) => {
                         onError={e => { (e.target as HTMLImageElement).src = '/placeholder-course.jpg'; }}
                     />
                     <span className="absolute inset-0 bg-brand-900/35 flex items-center justify-center group-hover:bg-brand-900/50 transition-colors">
-                        <PlayCircle className="w-6 h-6 text-white" />
+                        <PlayCircle className="w-5 h-5 text-white" />
                     </span>
                 </button>
 
                 <div className="flex flex-col min-w-0 flex-1">
-                    <span className="flex items-center gap-1.5 text-brand-700 text-[10.5px] font-bold uppercase tracking-[0.1em]">
+                    <span className="flex items-center gap-1.5 text-[#005c55] text-[10px] font-bold uppercase tracking-[0.1em]">
                         <GraduationCap className="w-3.5 h-3.5" />
                         Kaldığın yerden devam et
                     </span>
 
-                    <h2 className="text-[15px] font-bold text-slate-900 truncate mt-1">
+                    <h2 className="text-[13.5px] font-bold text-[#131b2e] truncate mt-0.5">
                         {course.title}
                     </h2>
 
-                    {course.last_lesson_title && (
-                        <p className="text-[12px] text-slate-500 truncate mt-0.5">
-                            Son ders: {course.last_lesson_title}
-                        </p>
-                    )}
-
-                    <div className="flex items-center gap-2.5 mt-2">
-                        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="flex items-center gap-2 mt-1 max-w-xs">
+                        <div className="flex-1 h-1 bg-[#e2e7ff] rounded-full overflow-hidden">
                             <div
-                                className="h-full bg-brand-600 rounded-full transition-all duration-500"
+                                className="h-full bg-[#005c55] rounded-full transition-all duration-500"
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
-                        <span className="text-[11.5px] font-bold text-slate-600 tabular-nums shrink-0">
+                        <span className="text-[10.5px] font-bold text-[#3e4947] tabular-nums shrink-0">
                             %{progress}
                         </span>
                     </div>
@@ -106,7 +100,7 @@ const ContinueCard: React.FC<{ course: any }> = ({ course }) => {
             <button
                 type="button"
                 onClick={open}
-                className="shrink-0 self-end sm:self-center inline-flex items-center justify-center gap-2 h-10 px-5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-[13.5px] font-bold transition-colors"
+                className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-lg bg-[#005c55] hover:bg-[#0f766e] text-white text-[12.5px] font-bold transition-colors"
             >
                 <Play className="w-3.5 h-3.5 fill-current" />
                 Derse devam et

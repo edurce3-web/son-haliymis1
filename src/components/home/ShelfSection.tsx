@@ -26,7 +26,13 @@ export const ShelfSection: React.FC<{
     courses: any[];
     loading?: boolean;
     /** Geniş ekranda yan yana kaç kart duracak. */
-    columns?: 4 | 5;
+    columns?: 4 | 5 | 6;
+    /**
+     * Verilirse raf kaymıyor, bu kadar satırlık sabit ızgara oluyor.
+     * Kategori raflarında iki satır: kullanıcı on iki kursu kaydırmadan
+     * görüyor, devamı "Tümünü gör"de. Ok düğmeleri bu kipte çizilmiyor.
+     */
+    rows?: number;
     compactCards?: boolean;
     /** Kayıtlı olunan kurslar: kartta fiyat yerine ilerleme çıkar. */
     owned?: boolean;
@@ -41,6 +47,7 @@ export const ShelfSection: React.FC<{
     courses,
     loading,
     columns = 4,
+    rows,
     compactCards,
     owned,
     badgeFor,
@@ -78,9 +85,19 @@ export const ShelfSection: React.FC<{
     if (!loading && courses.length === 0 && !emptyText) return null;
 
     // Kart genişliği sütun sayısına göre; aradaki boşluk da hesaba katılıyor.
-    const cardWidth = columns === 5
-        ? 'w-[228px] sm:w-[236px] lg:w-[calc((100%-4*1rem)/5)]'
-        : 'w-[262px] sm:w-[272px] lg:w-[calc((100%-3*1.25rem)/4)]';
+    const cardWidth = columns === 6
+        ? 'w-[196px] sm:w-[204px] lg:w-[calc((100%-5*1rem)/6)]'
+        : columns === 5
+            ? 'w-[228px] sm:w-[236px] lg:w-[calc((100%-4*1rem)/5)]'
+            : 'w-[262px] sm:w-[272px] lg:w-[calc((100%-3*1.25rem)/4)]';
+
+    const isGrid = Boolean(rows && rows > 0);
+    const gridCols = columns === 6
+        ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6'
+        : columns === 5
+            ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5'
+            : 'grid-cols-2 lg:grid-cols-4';
+    const gridItems = isGrid ? courses.slice(0, columns * (rows || 1)) : courses;
 
     return (
         <section className="w-full font-jakarta">
@@ -115,7 +132,7 @@ export const ShelfSection: React.FC<{
                         </Link>
                     )}
 
-                    <div className="hidden md:flex items-center gap-1.5 ml-2">
+                    <div className={cn('hidden items-center gap-1.5 ml-2', !isGrid && 'md:flex')}>
                         <button
                             type="button"
                             onClick={() => scroll(-1)}
@@ -140,27 +157,54 @@ export const ShelfSection: React.FC<{
 
             {!loading && courses.length === 0 ? (
                 <p className="text-[14px] text-slate-500 py-6">{emptyText}</p>
+            ) : isGrid ? (
+                <div className={cn('grid gap-4 pt-3', gridCols)}>
+                    {loading
+                        ? Array.from({ length: columns * (rows || 1) }).map((_, i) => (
+                            <div
+                                key={i}
+                                className={cn('bg-white rounded-lg overflow-hidden animate-pulse shadow-[0_1px_3px_rgba(19,27,46,0.08)]')}
+                            >
+                                <div className="aspect-video bg-[#e2e7ff]" />
+                                <div className="p-3 space-y-2">
+                                    <div className="h-3.5 bg-[#eaedff] rounded w-full" />
+                                    <div className="h-3.5 bg-[#eaedff] rounded w-3/5" />
+                                    <div className="h-3 bg-[#eaedff] rounded w-2/5 mt-3" />
+                                    <div className="h-5 bg-[#eaedff] rounded w-1/3 mt-3" />
+                                </div>
+                            </div>
+                        ))
+                        : gridItems.map((course, i) => (
+                            <ShelfCourseCard
+                                key={course.id ?? course.course_id}
+                                course={course}
+                                compact={compactCards}
+                                owned={owned}
+                                badge={badgeFor ? badgeFor(course, i) : undefined}
+                            />
+                        ))}
+                </div>
             ) : (
                 <div
                     ref={railRef}
                     className={cn(
-                        'flex overflow-x-auto overflow-y-visible pt-4 pb-2 -mx-1 px-1 snap-x',
+                        'flex overflow-x-auto overflow-y-visible pt-3 pb-2 -mx-1 px-1 snap-x',
                         '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]',
-                        columns === 5 ? 'gap-4' : 'gap-5'
+                        columns === 4 ? 'gap-5' : 'gap-4'
                     )}
                 >
                     {loading
                         ? Array.from({ length: columns }).map((_, i) => (
                             <div
                                 key={i}
-                                className={cn(cardWidth, 'shrink-0 bg-white border border-slate-200 rounded-xl overflow-hidden animate-pulse')}
+                                className={cn(cardWidth, 'shrink-0 ', 'bg-white rounded-lg overflow-hidden animate-pulse shadow-[0_1px_3px_rgba(19,27,46,0.08)]')}
                             >
-                                <div className="aspect-video bg-slate-100" />
-                                <div className="p-4 space-y-2.5">
-                                    <div className="h-3.5 bg-slate-100 rounded w-full" />
-                                    <div className="h-3.5 bg-slate-100 rounded w-3/5" />
-                                    <div className="h-3 bg-slate-100 rounded w-2/5 mt-4" />
-                                    <div className="h-6 bg-slate-100 rounded w-1/3 mt-4" />
+                                <div className="aspect-video bg-[#e2e7ff]" />
+                                <div className="p-3 space-y-2">
+                                    <div className="h-3.5 bg-[#eaedff] rounded w-full" />
+                                    <div className="h-3.5 bg-[#eaedff] rounded w-3/5" />
+                                    <div className="h-3 bg-[#eaedff] rounded w-2/5 mt-3" />
+                                    <div className="h-5 bg-[#eaedff] rounded w-1/3 mt-3" />
                                 </div>
                             </div>
                         ))
