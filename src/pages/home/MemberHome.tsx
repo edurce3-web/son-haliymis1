@@ -6,6 +6,7 @@ import { useSeo } from '@/hooks/useSeo';
 import ContinueBanner from '@/components/home/ContinueBanner';
 import ShelfSection from '@/components/home/ShelfSection';
 import CategoryExplorer from '@/components/home/CategoryExplorer';
+import BundleDeck, { Bundle } from '@/components/home/BundleDeck';
 
 interface CategoryShelf {
     id: number;
@@ -33,6 +34,7 @@ interface CatalogData {
     top_selling: any[];
     new_courses: any[];
     free_courses: any[];
+    bundles?: Bundle[];
 }
 
 /**
@@ -216,10 +218,16 @@ const MemberHome: React.FC = () => {
                     courses={catalog?.new_courses || []}
                     loading={catalogLoading}
                     columns={6}
-                    rows={2}
                     compactCards
                 />
+            </div>
 
+            {/* Kurs paketleri — tam genişlik bant. Panelde paket yoksa gizli. */}
+            <div className="mt-2 mb-9">
+                <BundleDeck bundles={catalog?.bundles || []} />
+            </div>
+
+            <div className="container mx-auto px-4 pb-7 space-y-9">
                 <ShelfSection
                     title="Ücretsiz başla"
                     subtitle="Ödeme yapmadan izleyebileceğin kurslar"

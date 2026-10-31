@@ -94,6 +94,13 @@ export const BundleDeck: React.FC<{ bundles: Bundle[] }> = ({ bundles }) => {
 
     const scrollable = canLeft || canRight;
 
+    // Bütün paketler aynı sayıda kurs içeriyorsa başlık onu söylüyor
+    // ("3'ü 1 Arada Mega Paketler"); karışıksa genel başlık.
+    const counts = new Set(bundles.map(b => (b.courses || []).length));
+    const heading = counts.size === 1
+        ? `${togetherLabel([...counts][0])}ler`
+        : 'Bir Arada Mega Paketler';
+
     return (
         <section className="w-full bg-[#f2f3ff] py-14 lg:py-16 font-jakarta">
             <div className="container mx-auto px-4">
@@ -104,10 +111,10 @@ export const BundleDeck: React.FC<{ bundles: Bundle[] }> = ({ bundles }) => {
                             Destelenmiş kurs paketleri
                         </span>
                         <h2 className="text-[26px] sm:text-[30px] leading-tight font-extrabold text-[#131b2e] tracking-tight mt-3">
-                            Bir Arada Mega Paketler
+                            {heading}
                         </h2>
                         <p className="text-[14px] text-[#3e4947] mt-2 leading-relaxed">
-                            Birbiri ardına dizilmiş kurs kartları! Desteyi açıp içindeki kursları
+                            Birbiri ardına dizilmiş kurs kartları! Arkasındaki diğer kursları
                             keşfedin, tüm seti tek seferde avantajlı fiyatla edinin.
                         </p>
                     </div>

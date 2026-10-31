@@ -131,7 +131,6 @@ const GuestHome: React.FC = () => {
                     href="/courses?sort=newest"
                     loading={isLoading}
                     columns={6}
-                    rows={2}
                     compactCards
                 />
             </div>
