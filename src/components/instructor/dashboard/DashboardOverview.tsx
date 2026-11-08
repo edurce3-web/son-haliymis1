@@ -1,14 +1,12 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import { ArrowRight, Clapperboard, ListChecks, Send } from 'lucide-react';
-import { API_BASE_URL } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import RevenueChart from './RevenueChart';
 import { StatusDot } from '../shell/InstructorShell';
 import {
-    relativeTime, statusOf, useInstructorCourses, useUnansweredCount, useUnreadMessages, WorkspaceCourse,
+    relativeTime, statusOf, useInstructorCourses, useInstructorDashboard, useUnansweredCount, useUnreadMessages, WorkspaceCourse,
 } from '../shell/useInstructorWorkspace';
 
 const lira = (n: number) =>
@@ -29,20 +27,7 @@ export const DashboardOverview: React.FC = () => {
     const questions = useUnansweredCount();
     const messages = useUnreadMessages();
 
-    const dashboard = useQuery({
-        queryKey: ['instructor-dashboard'],
-        queryFn: async () => {
-            const token = localStorage.getItem('token');
-            if (!token) { navigate('/login'); return null; }
-            const res = await fetch(`${API_BASE_URL}/instructor/dashboard`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (!res.ok) throw new Error('Panel verisi alınamadı');
-            const data = await res.json();
-            if (!data.success) throw new Error('Panel verisi alınamadı');
-            return data;
-        },
-    });
+    const dashboard = useInstructorDashboard();
 
     const list = courses.data || [];
     const inProgress = list.filter(c => c.status !== 'published');

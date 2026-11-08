@@ -58,6 +58,19 @@ export function useInstructorCourses() {
     });
 }
 
+/** Kazanç ve öğrenci özeti. Menü de açılış sayfası da aynı önbellekten okuyor. */
+export function useInstructorDashboard() {
+    return useQuery({
+        queryKey: ['instructor-dashboard'],
+        queryFn: async () => {
+            const data = await authed('/instructor/dashboard');
+            if (!data?.success) throw new Error('Panel verisi alınamadı');
+            return data;
+        },
+        staleTime: 60_000,
+    });
+}
+
 export function useUnansweredCount() {
     const q = useQuery({
         queryKey: ['instructor-questions'],
