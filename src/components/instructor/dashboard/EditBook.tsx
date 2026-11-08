@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Check, FileText, Image as ImageIcon, Loader2, Plus, Upload, X } from 'lucide-react';
+import { Banknote, Eye, FileText, Image as ImageIcon, Loader2, Plus, Upload, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
 import { API_BASE_URL } from '@/lib/api';
@@ -14,6 +14,8 @@ export function EditBook() {
     const qc = useQueryClient();
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
+    const [savedAt, setSavedAt] = useState<Date | null>(null);
+    const [bookFileName, setBookFileName] = useState<string | null>(null);
 
     const token = () => localStorage.getItem('token');
 
@@ -88,7 +90,7 @@ export function EditBook() {
 
     // ─── Mutations ─────────────────────────────────────────────────────────────
     const updateDbMutation = useMutation({
-        mutationFn: async () => {
+        mutationFn: async (_opts?: { silent?: boolean }) => {
             let parsedPrice = 0;
             if (formData.price && formData.price.trim() !== "") {
                 const num = parseFloat(formData.price.replace(',', '.'));
@@ -121,9 +123,9 @@ export function EditBook() {
             }
             return r.json();
         },
-        onSuccess: () => {
-            toast.success('Bilgiler kaydedildi');
-            setStep(s => s + 1);
+        onSuccess: (_data, vars) => {
+            setSavedAt(new Date());
+            if (!vars?.silent) toast.success('Kaydedildi');
         },
         onError: (err) => {
             toast.error(err.message || 'Bir hata oluştu');
@@ -143,7 +145,8 @@ export function EditBook() {
             if (!r.ok) throw new Error('Kapak yüklenemedi');
             return r.json();
         },
-        onSuccess: () => { toast.success('Kapak yüklendi'); }
+        onSuccess: () => { toast.success('Kapak yüklendi'); setCoverFile(null); },
+        onError: () => toast.error('Kapak yüklenemedi. Tekrar dene.'),
     });
 
     const uploadFileMutation = useMutation({
@@ -159,7 +162,12 @@ export function EditBook() {
             if (!r.ok) throw new Error('Kitap dosyası yüklenemedi');
             return r.json();
         },
-        onSuccess: () => { toast.success('Kitap dosyası yüklendi'); }
+        onSuccess: () => {
+            toast.success('Kitap dosyası yüklendi');
+            setBookFile(null);
+            qc.invalidateQueries({ queryKey: ['instructor-book', id] });
+        },
+        onError: () => toast.error('Kitap dosyası yüklenemedi. Tekrar dene.'),
     });
 
     const publishMutation = useMutation({
@@ -179,30 +187,46 @@ export function EditBook() {
     });
 
     // ─── Handlers ─────────────────────────────────────────────────────────────
-    const handleNextStep = () => {
-        if (step === 1) {
-            if (!formData.title || !formData.author_name) return toast.error('Kitabın adı ve yazar adı boş olamaz');
-            updateDbMutation.mutate();
-        } else if (step === 2) {
-            updateDbMutation.mutate();
-        } else if (step === 3) {
-            if (!coverPreview || (!bookFile && !book?.epub_file_path)) return toast.error('Devam etmek için kapak görselini ve kitap dosyasını seç');
-            setStep(4);
+    /** Bulunduğun bölümü kaydeder. Sıra yok; her bölüm kendi başına kaydedilir. */
+    const saveSection = (silent = false) => {
+        if (!formData.title.trim() || !formData.author_name.trim()) {
+            if (!silent) toast.error('Kitabın adı ve yazar adı boş olamaz');
+            return;
         }
+        updateDbMutation.mutate({ silent });
     };
 
+    const goToSection = (n: number) => {
+        if (n === step) return;
+        if (step <= 2) saveSection(true);
+        setStep(n);
+    };
+
+    // Dosyalar seçildiği anda yükleniyor; yayınlamayı beklemiyor.
     const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            setCoverFile(file);
-            setCoverPreview(URL.createObjectURL(file));
-        }
+        const file = e.target.files?.[0];
+        e.target.value = '';
+        if (!file) return;
+        setCoverFile(file);
+        setCoverPreview(URL.createObjectURL(file));
+        uploadCoverMutation.mutate(file);
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setBookFile(e.target.files[0]);
-        }
+        const file = e.target.files?.[0];
+        e.target.value = '';
+        if (!file) return;
+        setBookFile(file);
+        setBookFileName(file.name);
+        uploadFileMutation.mutate(file);
+    };
+
+    /** Yayınla: eksik varsa söyle ve o bölüme götür; yoksa kaydet ve yayınla. */
+    const handlePublish = () => {
+        if (!formData.title.trim() || !formData.author_name.trim()) { toast.error('Kitabın adı ve yazar adı gerekli'); return setStep(1); }
+        if (!coverPreview) { toast.error('Yayınlamak için kapak görseli gerekli'); return setStep(3); }
+        if (!bookFile && !bookFileName && !book?.epub_file_path) { toast.error('Yayınlamak için kitap dosyası gerekli'); return setStep(3); }
+        updateDbMutation.mutate({ silent: true }, { onSuccess: () => startUploads() });
     };
 
     const startUploads = async () => {
@@ -226,10 +250,10 @@ export function EditBook() {
     };
 
     const STEPS = [
-        { title: 'Ayrıntılar', desc: 'Okuyucunun dikkatini çekecek bir başlık ve kısa bir tanıtım yaz.' },
-        { title: 'Kategori ve fiyat', desc: 'Mağazada nerede duracağını ve kaça satılacağını belirle.' },
-        { title: 'Dosyalar', desc: 'Kapak görselini ve kitabın kendisini (EPUB ya da PDF) yükle.' },
-        { title: 'Yayınla', desc: 'Son bir kez bak; her şey yerindeyse satışa aç.' },
+        { title: 'Ayrıntılar', icon: FileText, desc: 'Okuyucunun dikkatini çekecek bir ad ve kısa bir tanıtım.' },
+        { title: 'Kategori ve fiyat', icon: Banknote, desc: 'Mağazada nerede duracağı ve kaça satılacağı.' },
+        { title: 'Dosyalar', icon: Upload, desc: 'Kapak görseli ve kitabın kendisi (EPUB ya da PDF). Seçtiğin anda yüklenir.' },
+        { title: 'Önizleme', icon: Eye, desc: 'Kitabın mağazada nasıl görüneceği.' },
     ];
     const busy = publishMutation.isPending || uploadCoverMutation.isPending || uploadFileMutation.isPending;
     const published = book?.status === 'published';
@@ -248,39 +272,41 @@ export function EditBook() {
             back={{ to: '/instructor/books/manage', label: 'Kitaplarım' }}
             title={formData.title.trim() || 'Yeni e-kitap'}
             status={published ? { label: 'Yayında', tone: 'live' } : { label: 'Taslak', tone: 'draft' }}
-            meta={updateDbMutation.isPending ? 'Kaydediliyor' : 'Her adım kaydedilerek ilerler'}
+            meta={updateDbMutation.isPending
+                ? 'Kaydediliyor'
+                : savedAt
+                    ? `Son kayıt ${savedAt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`
+                    : 'Bölüm değiştirince kendiliğinden kaydedilir'}
+            actions={!published && (
+                <button type="button" onClick={handlePublish} disabled={busy || updateDbMutation.isPending}
+                    className={cn(btn.dark, 'h-9 px-4 text-[13.5px]')}>
+                    {busy ? <><Loader2 className="w-4 h-4 animate-spin" /> Yayınlanıyor</> : 'Yayınla'}
+                </button>
+            )}
         >
 
-            <div className="grid grid-cols-1 lg:grid-cols-[230px_1fr] gap-6 lg:gap-8 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-6 lg:gap-8 items-start">
                 {/* Adımlar */}
                 <div className="lg:sticky lg:top-24 min-w-0">
-                    <nav aria-label="Kitap adımları" className="relative flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0">
-                        <span aria-hidden className="hidden lg:block absolute left-[23px] top-5 bottom-5 w-px bg-[#dcebe8]" />
-                        {STEPS.map((s, idx) => {
+                    <nav aria-label="Kitap bölümleri" className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0">
+                        {STEPS.map((sec, idx) => {
                             const n = idx + 1;
                             const isActive = step === n;
-                            const passed = step > n;
+                            const Icon = sec.icon;
                             return (
                                 <button
-                                    key={s.title}
+                                    key={sec.title}
                                     type="button"
-                                    // Yalnızca geçilmiş adımlara geri dönülebilir; ileri gitmek kaydetmeyi gerektiriyor
-                                    onClick={() => { if (passed) setStep(n); }}
-                                    disabled={!passed && !isActive}
-                                    aria-current={isActive ? 'step' : undefined}
+                                    onClick={() => goToSection(n)}
+                                    aria-current={isActive ? 'page' : undefined}
                                     className={cn(
-                                        'relative shrink-0 lg:w-full flex items-center gap-3 pl-2.5 pr-3 h-11 rounded-xl text-left transition-colors duration-150',
-                                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40 disabled:cursor-default',
-                                        isActive ? 'bg-[#9cf2e8]/45 text-[#00201d]' : passed ? 'text-[#1d3a37] hover:bg-white' : 'text-[#6b827f]'
+                                        'shrink-0 lg:w-full flex items-center gap-3 px-3.5 h-11 rounded-xl text-left transition-colors duration-150',
+                                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40',
+                                        isActive ? 'bg-[#9cf2e8] text-[#00201d]' : 'text-[#3d5754] hover:bg-white hover:text-[#00201d]'
                                     )}
                                 >
-                                    <span className={cn(
-                                        'relative z-[1] shrink-0 w-[26px] h-[26px] rounded-full flex items-center justify-center text-[12px] font-bold tabular-nums',
-                                        isActive ? 'bg-[#00201d] text-[#9cf2e8]' : passed ? 'bg-[#9cf2e8] text-[#00201d]' : 'bg-[#f6fbfa] text-[#6b827f] ring-1 ring-[#cfe3df]'
-                                    )}>
-                                        {passed ? <Check className="w-3.5 h-3.5" strokeWidth={3} /> : n}
-                                    </span>
-                                    <span className={cn('text-[14px] whitespace-nowrap', isActive ? 'font-bold' : 'font-semibold')}>{s.title}</span>
+                                    <Icon className={cn('w-[18px] h-[18px] shrink-0', isActive ? 'text-[#00201d]' : 'text-[#5f8a84]')} strokeWidth={isActive ? 2.2 : 1.9} />
+                                    <span className={cn('text-[14.5px] whitespace-nowrap', isActive ? 'font-bold' : 'font-semibold')}>{sec.title}</span>
                                 </button>
                             );
                         })}
@@ -288,15 +314,9 @@ export function EditBook() {
                 </div>
 
                 <section className="min-w-0 rounded-2xl bg-white ring-1 ring-[#dcebe8] shadow-[0_1px_2px_rgba(0,32,29,0.04)] overflow-hidden">
-                    <div className="px-5 sm:px-8 pt-6 pb-5 border-b border-[#e8f2f0]">
-                        <div className="flex items-baseline justify-between gap-4">
-                            <h2 className="text-[21px] font-extrabold tracking-[-0.015em] text-[#00201d]">{STEPS[step - 1].title}</h2>
-                            <span className="shrink-0 text-[13px] font-bold tabular-nums text-[#4a6360]">{step} / {STEPS.length}</span>
-                        </div>
-                        <p className="text-[14px] text-[#4a6360] mt-1">{STEPS[step - 1].desc}</p>
-                        <div className="mt-4 h-1.5 rounded-full bg-[#e3f6f2] overflow-hidden" aria-hidden>
-                            <div className="h-full rounded-full bg-[#00201d] transition-[width] duration-300 ease-out" style={{ width: `${(step / STEPS.length) * 100}%` }} />
-                        </div>
+                    <div className="px-5 sm:px-8 pt-7 pb-6 border-b border-[#eef5f3]">
+                        <h2 className="text-[24px] font-extrabold tracking-[-0.02em] text-[#00201d]">{STEPS[step - 1].title}</h2>
+                        <p className="text-[14.5px] text-[#4a6360] mt-1">{STEPS[step - 1].desc}</p>
                     </div>
 
                     <div className="px-5 sm:px-8 py-7 animate-in fade-in duration-300" key={step}>
@@ -440,6 +460,11 @@ export function EditBook() {
                                         onClick={() => document.getElementById('cover-upload')?.click()}
                                         className="group relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-[#f4faf8] ring-1 ring-inset ring-[#cfe3df] hover:ring-[#5fb8ac] hover:bg-[#ecfbf8] transition-colors flex items-center justify-center"
                                     >
+                                        {uploadCoverMutation.isPending && (
+                                            <span className="absolute inset-0 z-[1] bg-white/80 flex items-center justify-center text-[13px] font-bold text-[#00201d]">
+                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Yükleniyor
+                                            </span>
+                                        )}
                                         {coverPreview ? (
                                             <>
                                                 <img src={coverPreview} alt="Kapak önizlemesi" className="absolute inset-0 w-full h-full object-cover" />
@@ -466,16 +491,16 @@ export function EditBook() {
                                         className="flex-1 min-h-[180px] w-full rounded-xl bg-[#f4faf8] ring-1 ring-inset ring-[#cfe3df] hover:ring-[#5fb8ac] hover:bg-[#ecfbf8] transition-colors flex items-center justify-center px-6 text-center"
                                     >
                                         <span>
-                                            {bookFile || book?.epub_file_path
+                                            {bookFileName || book?.epub_file_path
                                                 ? <FileText className="w-7 h-7 mx-auto text-[#005c55]" />
                                                 : <Upload className="w-7 h-7 mx-auto text-[#005c55]" />}
                                             <span className="block mt-2 text-[14px] font-bold text-[#00201d] break-all">
-                                                {bookFile ? bookFile.name : book?.epub_file_path ? 'Dosya yüklü' : 'EPUB ya da PDF seç'}
+                                                {uploadFileMutation.isPending ? 'Yükleniyor…' : bookFileName || (book?.epub_file_path ? 'Dosya yüklü' : 'EPUB ya da PDF seç')}
                                             </span>
                                             <span className="block mt-0.5 text-[12.5px] text-[#4a6360]">
-                                                {bookFile
-                                                    ? `${(bookFile.size / 1024 / 1024).toFixed(1).replace('.', ',')} MB · değiştirmek için tıkla`
-                                                    : book?.epub_file_path ? 'Yenisiyle değiştirmek için tıkla' : 'Okuyucunun indireceği asıl içerik · en fazla 150 MB'}
+                                                {uploadFileMutation.isPending && bookFile
+                                                    ? `${(bookFile.size / 1024 / 1024).toFixed(1).replace('.', ',')} MB`
+                                                    : (bookFileName || book?.epub_file_path) ? 'Yenisiyle değiştirmek için tıkla' : 'Okuyucunun indireceği asıl içerik · en fazla 150 MB'}
                                             </span>
                                         </span>
                                     </button>
@@ -500,37 +525,24 @@ export function EditBook() {
                                         <dt className="text-[#4a6360]">Dil</dt>
                                         <dd className="font-bold text-[#00201d]">{formData.language}</dd>
                                         <dt className="text-[#4a6360]">Dosya</dt>
-                                        <dd className="font-bold text-[#00201d] truncate">{bookFile ? bookFile.name : 'Yüklü'}</dd>
+                                        <dd className="font-bold text-[#00201d] truncate">{bookFileName || (book?.epub_file_path ? 'Yüklü' : 'Henüz yok')}</dd>
                                     </dl>
                                     <p className="mt-4 text-[13.5px] text-[#4a6360] max-w-md">
-                                        Yayınladığında kitabın profilinde ve mağazada okuyuculara açılır.
+                                        {published ? 'Kitabın mağazada satışta.' : 'Hazır olduğunda üstteki Yayınla ile satışa açabilirsin.'}
                                     </p>
                                 </div>
                             </div>
                         )}
 
-                        {/* Alt düğmeler */}
-                        <div className="flex flex-col-reverse sm:flex-row justify-between items-stretch sm:items-center gap-3 mt-10 pt-6 border-t border-[#e8f2f0]">
-                            {step > 1 ? (
-                                <button type="button" onClick={() => setStep(s => s - 1)} disabled={busy} className={cn(btn.ghost, btn.lg)}>
-                                    <ArrowLeft className="w-4 h-4" /> Önceki adım
-                                </button>
-                            ) : <span />}
-
-                            {step < 4 ? (
-                                <button type="button" onClick={handleNextStep} disabled={updateDbMutation.isPending} className={cn(btn.primary, btn.lg, 'min-w-[180px]')}>
+                        {step <= 2 && (
+                            <div className="flex justify-end mt-10 pt-6 border-t border-[#eef5f3]">
+                                <button type="button" onClick={() => saveSection()} disabled={updateDbMutation.isPending} className={cn(btn.primary, btn.lg)}>
                                     {updateDbMutation.isPending
                                         ? <><Loader2 className="w-4 h-4 animate-spin" /> Kaydediliyor</>
-                                        : <>Kaydet ve ilerle <ArrowRight className="w-4 h-4" /></>}
+                                        : 'Değişiklikleri kaydet'}
                                 </button>
-                            ) : (
-                                <button type="button" onClick={startUploads} disabled={busy} className={cn(btn.dark, btn.lg, 'min-w-[200px]')}>
-                                    {busy
-                                        ? <><Loader2 className="w-4 h-4 animate-spin" /> Yükleniyor</>
-                                        : <>Yayınla ve satışa aç <ArrowRight className="w-4 h-4" /></>}
-                                </button>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </section>
             </div>
