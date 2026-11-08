@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
-    ArrowLeft, ArrowRight, BookOpen, ChevronDown, ChevronRight, Library, Menu,
+    ArrowRight, BookOpen, GraduationCap, ChevronDown, ChevronRight, Library, Menu,
     Plus, UserRound, Users, Wallet, X,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -13,12 +13,11 @@ import {
 /*
  * Eğitmen paneli iskeleti.
  *
- * Menü logonun koyu teal renginde bir şerit; logo da bu kez nane renginde.
- * Bir kitabın dizini gibi yalnızca büyük başlıklar var. Başlığa tıklamak o
+ * Menü beyaz bir şerit; renk yalnızca seçili başlıkta (nane). Bir kitabın
+ * dizini gibi yalnızca büyük başlıklar var. Başlığa tıklamak o
  * bölümün ilk sayfasını açıyor; üzerine gelince diğer sayfalar yandan
  * açılan bir çekmecede beliriyor.
  *
- * Üzerine gelinen başlık beyaz bir sekmeye dönüşüp çekmeceyle birleşiyor.
  * Çekmecenin tepesi o bölümün o anki durumunu söylüyor (kaç taslak, kaç
  * bekleyen soru, bakiye).
  *
@@ -98,8 +97,8 @@ function useSections(): Section[] {
 /** Bir başlığa tıklayınca gidilecek yer: kendi sayfası ya da ilk alt sayfası. */
 const firstPage = (s: Section) => s.to || s.subs![0].to;
 
-/* Panelin rengi: logonun koyu teali; vurgu nane (#9cf2e8). */
-const RAIL_BG = 'bg-[linear-gradient(180deg,#285955_0%,#1f4b48_100%)]';
+/* Menü beyaz; vurgu nane (#9cf2e8) üstünde koyu mürekkep (#00201d). */
+const RAIL_BG = 'bg-white';
 
 export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [drawer, setDrawer] = useState(false);
@@ -124,18 +123,18 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
             <DesktopNav />
 
             {/* Telefon: üst şerit + çekmece */}
-            <header className={cn('lg:hidden sticky top-0 z-40 h-14 grid grid-cols-[64px_1fr_64px] items-center px-2', RAIL_BG)}>
+            <header className={cn('lg:hidden sticky top-0 z-40 h-14 grid grid-cols-[88px_1fr_88px] items-center px-2 border-b border-[#e3efec]', RAIL_BG)}>
                 <button
                     type="button"
                     onClick={() => setDrawer(true)}
                     aria-label="Menüyü aç"
                     aria-expanded={drawer}
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-[#e3f6f2] hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center text-[#00201d] hover:bg-[#ecfbf8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40"
                 >
                     <Menu className="w-5 h-5" />
                 </button>
                 <Brand size="sm" className="justify-self-center" />
-                <ExitLink compact className="justify-self-end" />
+                <StudentLink compact className="justify-self-end" />
             </header>
 
             <div
@@ -160,7 +159,7 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
                     type="button"
                     onClick={() => setDrawer(false)}
                     aria-label="Menüyü kapat"
-                    className="absolute top-3 right-3 w-9 h-9 rounded-lg flex items-center justify-center text-[#b9ddd6] hover:bg-white/10"
+                    className="absolute top-3 right-3 w-9 h-9 rounded-lg flex items-center justify-center text-[#4a6360] hover:bg-[#ecfbf8]"
                 >
                     <X className="w-4 h-4" />
                 </button>
@@ -168,7 +167,11 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
             </aside>
 
             <main className="lg:pl-[256px]">
-                <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 py-6 lg:py-9 pb-24">
+                {/* Masaüstü üst şerit: öğrenci tarafına geçiş sağ üstte */}
+                <div className="hidden lg:flex h-14 items-center justify-end px-10 max-w-[1280px] mx-auto">
+                    <StudentLink />
+                </div>
+                <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 py-6 lg:pt-2 lg:pb-9 pb-24">
                     {children}
                 </div>
             </main>
@@ -176,53 +179,32 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
     );
 };
 
-/**
- * Logo nane renginde. Ayrı bir logo dosyası yok; mevcut PNG maske olarak
- * kullanılıp nane renkle dolduruluyor.
- */
-const LOGO_RATIO = 579 / 160;
-const Brand: React.FC<{ className?: string; size?: 'lg' | 'sm' }> = ({ className, size = 'lg' }) => {
-    const h = size === 'lg' ? 28 : 22;
-    return (
-        <Link to="/instructor/dashboard" aria-label="Edurce eğitmen paneli" className={cn('inline-flex items-center gap-2', className)}>
-            <span
-                aria-hidden
-                className="block bg-[#9cf2e8]"
-                style={{
-                    width: Math.round(h * LOGO_RATIO),
-                    height: h,
-                    WebkitMaskImage: 'url(/logo-wordmark.png)',
-                    maskImage: 'url(/logo-wordmark.png)',
-                    WebkitMaskSize: 'contain',
-                    maskSize: 'contain',
-                    WebkitMaskRepeat: 'no-repeat',
-                    maskRepeat: 'no-repeat',
-                }}
-            />
-            <span className={cn(
-                'font-bold text-[#cfeee8] translate-y-[2px]',
-                size === 'lg' ? 'text-[15px]' : 'text-[13px]'
-            )}>
-                eğitmen
-            </span>
-        </Link>
-    );
-};
+/** Logo kendi koyu yeşil renginde. */
+const Brand: React.FC<{ className?: string; size?: 'lg' | 'sm' }> = ({ className, size = 'lg' }) => (
+    <Link to="/instructor/dashboard" className={cn('inline-flex items-center gap-2', className)}>
+        <img src="/logo-wordmark.png" alt="Edurce" className={cn('w-auto', size === 'lg' ? 'h-7' : 'h-[22px]')} />
+        <span className={cn('font-bold text-[#005c55] translate-y-[2px]', size === 'lg' ? 'text-[15px]' : 'text-[13px]')}>
+            eğitmen
+        </span>
+    </Link>
+);
 
-/** Panelden çıkıp siteye dönüş. */
-const ExitLink: React.FC<{ compact?: boolean; className?: string }> = ({ compact, className }) => (
+/** Öğrenci tarafına geçiş: sitenin öğrenci görünümüne döner. */
+const StudentLink: React.FC<{ compact?: boolean; className?: string }> = ({ compact, className }) => (
     <Link
         to="/"
+        title="Öğrenci görünümüne geç"
         className={cn(
-            'inline-flex items-center gap-1.5 rounded-full font-semibold transition-colors duration-150',
-            'text-[#b9ddd6] hover:text-white hover:bg-white/10',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60',
-            compact ? 'h-9 px-2.5 text-[12.5px]' : 'h-8 px-3 text-[12.5px] ring-1 ring-inset ring-white/15',
+            'inline-flex items-center gap-2 rounded-xl font-bold text-[#00201d] transition-colors duration-150',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40',
+            compact
+                ? 'h-9 px-2.5 text-[13px] hover:bg-[#ecfbf8]'
+                : 'h-9 px-3.5 text-[13.5px] bg-white ring-1 ring-inset ring-[#d6e8e4] hover:bg-[#ecfbf8] hover:ring-[#9cdcd3]',
             className
         )}
     >
-        <ArrowLeft className="w-3.5 h-3.5" />
-        {compact ? 'Site' : 'Panelden çık, siteye dön'}
+        <GraduationCap className="w-4 h-4 text-[#005c55]" />
+        Öğrenci
     </Link>
 );
 
@@ -285,13 +267,12 @@ const DesktopNav: React.FC = () => {
 
     return (
         <aside
-            className={cn('hidden lg:flex fixed inset-y-0 left-0 z-40 flex-col', RAIL_BG)}
+            className={cn('hidden lg:flex fixed inset-y-0 left-0 z-40 flex-col border-r border-[#e3efec]', RAIL_BG)}
             style={{ width: NAV_WIDTH }}
             onMouseLeave={hide}
         >
-            <div className="shrink-0 flex flex-col items-center justify-center gap-2.5 pt-6 pb-5 border-b border-white/[0.09]">
+            <div className="h-[76px] shrink-0 flex items-center justify-center border-b border-[#eef5f3]">
                 <Brand />
-                <ExitLink />
             </div>
 
             <nav aria-label="Eğitmen paneli" className="relative flex-1 pt-5">
@@ -301,14 +282,14 @@ const DesktopNav: React.FC = () => {
                         const isOpen = openId === s.id;
                         const Icon = s.icon;
                         const row = cn(
-                            'relative flex items-center gap-3 w-full h-[52px] pl-4 pr-5 text-left rounded-l-2xl',
+                            'relative flex items-center gap-3 w-full h-[52px] pl-4 pr-4 text-left rounded-xl',
                             'text-[17px] tracking-[-0.01em] transition-[background-color,color] duration-150',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#9cf2e8]/60',
-                            isOpen
-                                ? 'bg-white text-[#00201d]'
-                                : active
-                                    ? 'bg-[#9cf2e8] text-[#00201d]'
-                                    : 'text-[#d7efea] hover:text-white hover:bg-white/[0.07]',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#005c55]/40',
+                            active
+                                ? 'bg-[#9cf2e8] text-[#00201d]'
+                                : isOpen
+                                    ? 'bg-[#ecfbf8] text-[#00201d]'
+                                    : 'text-[#1d3a37] hover:text-[#00201d] hover:bg-[#f2fbf9]',
                             active ? 'font-bold' : 'font-semibold'
                         );
 
@@ -316,7 +297,7 @@ const DesktopNav: React.FC = () => {
                             <li
                                 key={s.id}
                                 ref={el => { rows.current[s.id] = el; }}
-                                className="pl-3"
+                                className="px-3"
                                 onMouseEnter={() => (s.subs ? show(s.id) : hide())}
                             >
                                 <Link
@@ -342,7 +323,7 @@ const DesktopNav: React.FC = () => {
                                             aria-hidden
                                             className={cn(
                                                 'w-[19px] h-[19px] shrink-0 transition-colors duration-150',
-                                                isOpen ? 'text-[#005c55]' : active ? 'text-[#00201d]' : 'text-[#a7d8cf]'
+                                                active ? 'text-[#00201d]' : isOpen ? 'text-[#005c55]' : 'text-[#4f8079]'
                                             )}
                                             strokeWidth={active || isOpen ? 2.2 : 1.9}
                                         />
@@ -372,7 +353,7 @@ const DesktopNav: React.FC = () => {
                     onMouseEnter={keep}
                     onMouseLeave={hide}
                     className={cn(
-                        'absolute left-full z-50 rounded-r-2xl rounded-bl-2xl bg-white overflow-hidden',
+                        'absolute left-[calc(100%+6px)] z-50 rounded-2xl bg-white overflow-hidden ring-1 ring-[#e3efec]',
                         'shadow-[24px_28px_60px_-28px_rgba(0,48,43,0.5),0_2px_6px_rgba(0,32,29,0.06)]',
                         'transition-[opacity,transform,top] motion-reduce:transition-none',
                         settled ? 'duration-150' : 'duration-200',
@@ -533,26 +514,26 @@ const MonthCard: React.FC = () => {
     return (
         <Link
             to="/instructor/finance/report"
-            className="group mx-3 mb-3 rounded-2xl bg-[#00201d]/30 hover:bg-[#00201d]/40 ring-1 ring-inset ring-white/[0.08] px-4 py-3.5 transition-colors duration-150"
+            className="group mx-3 mb-3 rounded-2xl bg-[#ecfbf8] hover:bg-[#e1f8f3] px-4 py-3.5 transition-colors duration-150"
         >
-            <span className="flex items-center justify-between text-[12px] font-medium text-[#9cf2e8]/85">
+            <span className="flex items-center justify-between text-[12px] font-semibold text-[#4a6360]">
                 Bu ayki kazancın
                 <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-[opacity,transform] duration-150" />
             </span>
             {isLoading || !stats ? (
                 <span className="block mt-2 space-y-1.5" aria-hidden>
-                    <span className="block h-4 w-24 rounded bg-white/10 animate-pulse" />
-                    <span className="block h-2.5 w-16 rounded bg-white/10 animate-pulse" />
+                    <span className="block h-4 w-24 rounded bg-[#d6efe9] animate-pulse" />
+                    <span className="block h-2.5 w-16 rounded bg-[#d6efe9] animate-pulse" />
                 </span>
             ) : (
                 <>
-                    <span className="block mt-1 text-[22px] leading-tight font-bold tabular-nums tracking-tight text-white">
+                    <span className="block mt-1 text-[22px] leading-tight font-extrabold tabular-nums tracking-tight text-[#00201d]">
                         {lira(stats.monthlyRevenue)}
                     </span>
-                    <span className="block mt-0.5 text-[12px] text-[#b9ddd6]">
+                    <span className="block mt-0.5 text-[12px] text-[#4a6360]">
                         {stats.monthlySales || 0} satış
                         {stats.monthlyChange != null && (
-                            <span className={stats.monthlyChange >= 0 ? 'text-[#9cf2e8]' : 'text-[#ffb59e]'}>
+                            <span className={stats.monthlyChange >= 0 ? 'text-[#00695f] font-semibold' : 'text-[#b42318] font-semibold'}>
                                 {' '}· {stats.monthlyChange > 0 ? '+' : ''}{stats.monthlyChange}%
                             </span>
                         )}
@@ -573,9 +554,8 @@ const MobileNav: React.FC = () => {
 
     return (
         <>
-            <div className="shrink-0 flex flex-col items-center justify-center gap-2 pt-5 pb-4 border-b border-white/[0.09]">
+            <div className="h-14 shrink-0 flex items-center justify-center border-b border-[#eef5f3]">
                 <Brand size="sm" />
-                <ExitLink />
             </div>
             <nav aria-label="Eğitmen paneli" className="flex-1 overflow-y-auto py-3 px-2">
                 {sections.map(s => {
@@ -583,7 +563,7 @@ const MobileNav: React.FC = () => {
                     const isOpen = expanded === s.id;
                     const Icon = s.icon;
                     const icon = Icon
-                        ? <Icon className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#00201d]' : 'text-[#a7d8cf]')} />
+                        ? <Icon className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#00201d]' : 'text-[#4f8079]')} />
                         : <span aria-hidden className="w-[19px] shrink-0" />;
                     const link = (
                         <Link
@@ -591,7 +571,7 @@ const MobileNav: React.FC = () => {
                             aria-current={active ? 'page' : undefined}
                             className={cn(
                                 'flex items-center gap-3 flex-1 min-w-0 h-[50px] px-4 rounded-xl text-[17px] tracking-[-0.01em]',
-                                active ? 'bg-[#9cf2e8] text-[#00201d] font-bold' : 'text-[#d7efea] font-semibold'
+                                active ? 'bg-[#9cf2e8] text-[#00201d] font-bold' : 'text-[#1d3a37] font-semibold'
                             )}
                         >
                             {icon}
@@ -601,7 +581,7 @@ const MobileNav: React.FC = () => {
                     );
                     if (!s.subs) return <div key={s.id} className="flex">{link}</div>;
                     return (
-                        <div key={s.id} className={cn('rounded-xl transition-colors', isOpen && 'bg-white/[0.07]')}>
+                        <div key={s.id} className={cn('rounded-xl transition-colors', isOpen && 'bg-[#f2fbf9]')}>
                             <div className="flex items-center gap-1">
                                 {link}
                                 <button
@@ -609,7 +589,7 @@ const MobileNav: React.FC = () => {
                                     aria-expanded={isOpen}
                                     aria-label={`${s.label} sayfalarını ${isOpen ? 'gizle' : 'göster'}`}
                                     onClick={() => setExpanded(isOpen ? null : s.id)}
-                                    className="w-11 h-[50px] shrink-0 rounded-xl flex items-center justify-center text-[#b9ddd6] hover:bg-white/10"
+                                    className="w-11 h-[50px] shrink-0 rounded-xl flex items-center justify-center text-[#4a6360] hover:bg-[#ecfbf8]"
                                 >
                                     <ChevronDown className={cn('w-4 h-4 transition-transform duration-200', isOpen && 'rotate-180')} />
                                 </button>
@@ -622,7 +602,7 @@ const MobileNav: React.FC = () => {
                                                 to={sub.to}
                                                 className={({ isActive }) => cn(
                                                     'flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-[15px]',
-                                                    isActive ? 'bg-[#9cf2e8] text-[#00201d] font-bold' : 'text-[#cfe7e3] font-medium'
+                                                    isActive ? 'bg-[#9cf2e8] text-[#00201d] font-bold' : 'text-[#1d3a37] font-medium'
                                                 )}
                                             >
                                                 {sub.label}
@@ -634,7 +614,7 @@ const MobileNav: React.FC = () => {
                                         <li>
                                             <Link
                                                 to={s.action.to}
-                                                className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2.5 text-[15px] font-bold text-[#9cf2e8]"
+                                                className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2.5 text-[15px] font-bold text-[#005c55]"
                                             >
                                                 <Plus className="w-4 h-4" /> {s.action.label}
                                             </Link>
@@ -660,7 +640,7 @@ const UserFooter: React.FC = () => {
     return (
         <Link
             to="/instructor/settings/profile"
-            className="shrink-0 border-t border-white/[0.09] px-4 py-3 flex items-center gap-2.5 hover:bg-white/[0.05] transition-colors"
+            className="shrink-0 border-t border-[#eef5f3] px-4 py-3 flex items-center gap-2.5 hover:bg-[#f2fbf9] transition-colors"
         >
             {user?.profile_image ? (
                 <img src={user.profile_image} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-[#9cf2e8]/40" />
@@ -669,7 +649,7 @@ const UserFooter: React.FC = () => {
                     {initials}
                 </span>
             )}
-            <span className="min-w-0 flex-1 text-[13px] font-semibold text-white truncate">{name || 'Eğitmen'}</span>
+            <span className="min-w-0 flex-1 text-[13px] font-bold text-[#00201d] truncate">{name || 'Eğitmen'}</span>
         </Link>
     );
 };
