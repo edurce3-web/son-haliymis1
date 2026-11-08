@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { API_BASE_URL } from '@/lib/api';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
-import InstructorShell from '@/components/instructor/shell/InstructorShell';
-import { btn, field, hint, label } from '@/components/instructor/shell/kit';
+import { EditorFrame, NextSteps, Chip } from '@/components/instructor/shell/EditorFrame';
+import { btn, field, hint } from '@/components/instructor/shell/kit';
 
 /**
  * Kurs taslağı oluşturma — kurs oluşturucunun ilk adımı.
  *
- * Panelin içinde açılıyor; menü yerinde kalıyor. Solda üç alan, sağda
- * yazdıkça dolan küçük bir kurs kartı önizlemesi: eğitmen başlığın
- * katalogda nasıl duracağını yazarken görüyor.
+ * Panelden ayrı, kendi sayfası. Solda iki soru (ad ve konu), sağda yazdıkça
+ * dolan katalog kartı ve sonra gelecek adımlar. Kategoriler açılır liste
+ * yerine çip: hepsi bir bakışta görünüyor, tek tıkla seçiliyor.
  *
  * Alt kategori zorunlu. Boş bırakılan kurslar kategori sayfalarının alt
  * dallarında hiç görünmüyor.
@@ -26,15 +26,15 @@ export const CreateCourseInitial: React.FC = () => {
     const [loading, setLoading] = useState(false);
 
     // Kategoriler veritabanından geliyor; sabit liste gerçek id'lerle örtüşmüyordu.
-    const { data: navData } = useCategoryNav();
+    const { data: navData, isLoading: catsLoading } = useCategoryNav();
     const categories = (navData?.categories || []).filter(c => c.id != null);
     const selectedCategory = categories.find(c => String(c.id) === categoryId);
     const subcategories = (selectedCategory?.subcategories || []).filter(c => c.id != null);
     const selectedSub = subcategories.find(c => String(c.id) === subcategoryId);
 
-    // Seçili kategoride alt dal yoksa zorunluluk aranmaz
     const needsSubcategory = subcategories.length > 0;
     const canSubmit = Boolean(title.trim() && categoryId && (!needsSubcategory || subcategoryId));
+    const missing = !title.trim() ? 'Önce kursuna bir ad ver' : !categoryId ? 'Bir konu seç' : needsSubcategory && !subcategoryId ? 'Alt konuyu seç' : null;
 
     const handleCreate = async () => {
         if (!canSubmit || loading) return;
@@ -70,93 +70,83 @@ export const CreateCourseInitial: React.FC = () => {
     };
 
     return (
-        <InstructorShell>
-            <Link
-                to="/instructor/courses/list"
-                className="inline-flex items-center gap-1.5 -ml-1 px-1 h-7 rounded-md text-[13px] font-semibold text-[#4a6360] hover:text-[#00201d] transition-colors mb-2"
-            >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                Kurslarım
-            </Link>
-            <h1 className="text-[28px] sm:text-[32px] leading-[1.1] font-extrabold tracking-[-0.025em] text-[#00201d]">
-                Yeni kurs
-            </h1>
-            <p className="mt-2 text-[14.5px] text-[#4a6360] max-w-xl">
-                Önce başlık ve kategori. Bölümleri, dersleri ve fiyatı taslağı açtıktan sonra eklersin;
-                hepsi sonradan değişebilir.
-            </p>
+        <EditorFrame back={{ to: '/instructor/courses/list', label: 'Kurslarım' }} title="Yeni kurs">
+            <div className="grid lg:grid-cols-[minmax(0,1fr)_340px] gap-10 lg:gap-14 items-start">
+                <form onSubmit={e => { e.preventDefault(); handleCreate(); }} className="min-w-0 max-w-[680px]">
+                    <h1 className="text-[30px] sm:text-[38px] leading-[1.08] font-extrabold tracking-[-0.03em] text-[#00201d] text-balance">
+                        Yeni bir kurs başlatalım
+                    </h1>
+                    <p className="mt-3 text-[15px] text-[#4a6360] leading-relaxed max-w-[52ch]">
+                        Şimdilik iki şey yeter: kursun adı ve konusu. Bölümler, dersler ve fiyat taslağı açınca;
+                        hepsi sonradan değişebilir.
+                    </p>
 
-            <div className="mt-8 grid lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
-                <form
-                    onSubmit={e => { e.preventDefault(); handleCreate(); }}
-                    className="rounded-2xl bg-white ring-1 ring-[#dcebe8] shadow-[0_1px_2px_rgba(0,32,29,0.04)] p-5 sm:p-8 space-y-7"
-                >
-                    <div>
-                        <label htmlFor="course-title" className={label}>Kursun adı</label>
+                    <section className="mt-10">
+                        <label htmlFor="course-title" className="block text-[17px] font-extrabold tracking-tight text-[#00201d]">
+                            Kursunun adı ne?
+                        </label>
+                        <p className={cn(hint, 'mt-1')}>Öğrencinin arama kutusuna yazacağı kelimeleri kullan.</p>
                         <input
                             id="course-title"
                             autoFocus
                             placeholder="Örnek: Sıfırdan ileri seviye React"
-                            className={cn(field, 'h-12 text-[16px] font-semibold')}
+                            className={cn(field, 'mt-3 h-14 px-4 text-[18px] font-bold')}
                             value={title}
                             maxLength={120}
                             onChange={e => setTitle(e.target.value)}
                         />
-                        <p className={cn(hint, 'mt-1.5 flex justify-between gap-3')}>
-                            <span>Öğrencinin aradığı kelimeleri kullan.</span>
-                            <span className="tabular-nums shrink-0">{title.length}/120</span>
-                        </p>
-                    </div>
+                        <p className={cn(hint, 'mt-1.5 text-right tabular-nums')}>{title.length}/120</p>
+                    </section>
 
-                    <div className="grid sm:grid-cols-2 gap-5">
-                        <div>
-                            <label htmlFor="course-cat" className={label}>Kategori</label>
-                            <select
-                                id="course-cat"
-                                value={categoryId}
-                                onChange={e => { setCategoryId(e.target.value); setSubcategoryId(''); }}
-                                className={cn(field, 'h-12')}
-                            >
-                                <option value="">Kategori seç</option>
-                                {categories.map(cat => (
-                                    <option key={cat.id} value={String(cat.id)}>{cat.name}</option>
-                                ))}
-                            </select>
+                    <section className="mt-8">
+                        <h2 id="cat-label" className="text-[17px] font-extrabold tracking-tight text-[#00201d]">Hangi konuda?</h2>
+                        <p className={cn(hint, 'mt-1')}>Kursun katalogda bu başlığın altında listelenir.</p>
+                        <div role="radiogroup" aria-labelledby="cat-label" className="mt-3 flex flex-wrap gap-2">
+                            {catsLoading && Array.from({ length: 6 }).map((_, i) => (
+                                <span key={i} className="h-10 w-28 rounded-full bg-[#e3f1ee] animate-pulse" />
+                            ))}
+                            {categories.map(cat => (
+                                <Chip
+                                    key={cat.id}
+                                    on={String(cat.id) === categoryId}
+                                    onClick={() => { setCategoryId(String(cat.id)); setSubcategoryId(''); }}
+                                >
+                                    {cat.name}
+                                </Chip>
+                            ))}
                         </div>
-                        <div>
-                            <label htmlFor="course-sub" className={label}>Alt kategori</label>
-                            <select
-                                id="course-sub"
-                                value={subcategoryId}
-                                onChange={e => setSubcategoryId(e.target.value)}
-                                disabled={!categoryId || !needsSubcategory}
-                                className={cn(field, 'h-12')}
-                            >
-                                <option value="">
-                                    {!categoryId ? 'Önce kategori seç' : !needsSubcategory ? 'Bu kategoride alt dal yok' : 'Alt kategori seç'}
-                                </option>
+                    </section>
+
+                    {needsSubcategory && (
+                        <section className="mt-7 animate-in fade-in slide-in-from-top-1 duration-200">
+                            <h2 id="sub-label" className="text-[15px] font-extrabold tracking-tight text-[#00201d]">
+                                {selectedCategory?.name} içinde daha tam olarak?
+                            </h2>
+                            <div role="radiogroup" aria-labelledby="sub-label" className="mt-3 flex flex-wrap gap-2">
                                 {subcategories.map(sub => (
-                                    <option key={sub.id} value={String(sub.id)}>{sub.name}</option>
+                                    <Chip key={sub.id} on={String(sub.id) === subcategoryId} onClick={() => setSubcategoryId(String(sub.id))}>
+                                        {sub.name}
+                                    </Chip>
                                 ))}
-                            </select>
-                            <p className={cn(hint, 'mt-1.5')}>Kursun doğru listede çıkması için gerekli.</p>
-                        </div>
-                    </div>
+                            </div>
+                        </section>
+                    )}
 
-                    <div className="pt-6 border-t border-[#e8f2f0] flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3">
-                        <p className="text-[13px] text-[#4a6360]">Taslak yalnızca sana görünür.</p>
-                        <button type="submit" disabled={loading || !canSubmit} className={cn(btn.primary, btn.lg, 'min-w-[200px]')}>
-                            {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Taslak açılıyor</> : 'Taslağı oluştur'}
+                    <div className="mt-10 pt-6 border-t border-[#e3efec] flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+                        <button type="submit" disabled={loading || !canSubmit} className={cn(btn.primary, 'h-12 px-6 text-[15px] min-w-[240px]')}>
+                            {loading
+                                ? <><Loader2 className="w-4 h-4 animate-spin" /> Taslak açılıyor</>
+                                : <>Taslağı oluştur <ArrowRight className="w-4 h-4" /></>}
                         </button>
+                        <p className="text-[13px] text-[#4a6360]">{missing || 'Taslak yalnızca sana görünür.'}</p>
                     </div>
                 </form>
 
-                {/* Önizleme: katalogdaki kart */}
-                <aside aria-label="Kart önizlemesi" className="lg:sticky lg:top-8">
-                    <p className="text-[13px] font-bold text-[#4a6360] mb-2.5">Katalogda böyle görünecek</p>
-                    <div className="rounded-2xl bg-white ring-1 ring-[#dcebe8] overflow-hidden shadow-[0_14px_30px_-18px_rgba(0,32,29,0.35)]">
-                        <div className="aspect-video bg-[linear-gradient(135deg,#d9f3ee,#9cf2e8)] flex items-end p-4">
-                            <span className="text-[12px] font-bold text-[#00483f]">Kapak görselini sonraki adımda eklersin</span>
+                <aside aria-label="Önizleme" className="lg:sticky lg:top-24">
+                    <p className="text-[13px] font-bold text-[#00201d] mb-3">Katalogdaki kartın</p>
+                    <div className="rounded-2xl bg-white ring-1 ring-[#dcebe8] overflow-hidden shadow-[0_18px_36px_-22px_rgba(0,32,29,0.45)]">
+                        <div className="relative aspect-video bg-[linear-gradient(135deg,#e3f6f2_0%,#9cf2e8_100%)]">
+                            <span className="absolute left-4 bottom-3 text-[12px] font-semibold text-[#00483f]">Kapak görseli sonraki adımda</span>
                         </div>
                         <div className="p-4">
                             <p className={cn(
@@ -166,13 +156,19 @@ export const CreateCourseInitial: React.FC = () => {
                                 {title.trim() || 'Kursunun adı burada görünecek'}
                             </p>
                             <p className="mt-1.5 text-[12.5px] text-[#4a6360] truncate">
-                                {[selectedCategory?.name, selectedSub?.name].filter(Boolean).join(' · ') || 'Kategori'}
+                                {[selectedCategory?.name, selectedSub?.name].filter(Boolean).join(' · ') || 'Konu'}
                             </p>
                         </div>
                     </div>
+                    <NextSteps items={[
+                        'Bölümleri ve dersleri ekle, videolarını yükle',
+                        'Kapak görseli ve kısa tanıtım yaz',
+                        'Fiyatını belirle',
+                        'İncelemeye gönder; onaylanınca yayında',
+                    ]} />
                 </aside>
             </div>
-        </InstructorShell>
+        </EditorFrame>
     );
 };
 

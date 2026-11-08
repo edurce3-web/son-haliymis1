@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { EditorFrame } from '@/components/instructor/shell/EditorFrame';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -3148,56 +3149,53 @@ export default function AdvancedCourseCreator() {
 
   const stepIndex = Math.max(0, steps.findIndex(s => s.id === currentStep));
   const courseStatus = (courseData as any).status;
-  const statusView = courseStatus === 'published'
-    ? { label: 'Yayında', dot: 'bg-[#0f9f8f]', text: 'text-[#00695f]' }
-    : courseStatus === 'draft' || !courseStatus
-      ? { label: 'Taslak', dot: 'bg-[#d08a1c]', text: 'text-[#8a5a0b]' }
-      : { label: 'İncelemede', dot: 'bg-[#2f7fc1]', text: 'text-[#1f5f99]' };
+
+  const readyCount = publishChecklist.filter(i => i.ok).length;
+  const stepDone = (id: number) => {
+    const items = publishChecklist.filter(i => i.step === id);
+    return items.length > 0 && items.every(i => i.ok);
+  };
 
   return (
-    <div className="text-[#00201d]">
-
-      {/* Başlık: kursun adı, durumu ve kayıt bilgisi her adımda görünür */}
-      <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-7">
-        <div className="min-w-0">
-          <button
-            type="button"
-            onClick={() => navigate('/instructor/courses/list')}
-            className="inline-flex items-center gap-1.5 -ml-1 px-1 h-7 rounded-md text-[13px] font-semibold text-[#4a6360] hover:text-[#00201d] transition-colors mb-2"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Kurslarım
-          </button>
-          <div className="flex items-center gap-3 min-w-0">
-            <h1 className="text-[26px] sm:text-[30px] leading-[1.15] font-extrabold tracking-[-0.025em] text-[#00201d] truncate">
-              {courseData.title?.trim() || 'Yeni kurs'}
-            </h1>
-            <span className={`shrink-0 inline-flex items-center gap-1.5 text-[13px] font-bold ${statusView.text}`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${statusView.dot}`} />
-              {statusView.label}
-            </span>
-          </div>
-        </div>
-        <p className="text-[13px] text-[#4a6360] shrink-0 inline-flex items-center gap-2" aria-live="polite">
-          {savingStep && <span className="w-3.5 h-3.5 border-2 border-[#cfe3df] border-t-[#005c55] rounded-full animate-spin" />}
-          {savingStep
-            ? 'Kaydediliyor'
-            : lastSavedAt
-              ? `Son kayıt ${lastSavedAt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`
-              : 'Her adım ayrı kaydedilir'}
-        </p>
-      </header>
-
+    <EditorFrame
+      back={{ to: '/instructor/courses/list', label: 'Kurslarım' }}
+      title={courseData.title?.trim() || 'Yeni kurs'}
+      status={courseStatus === 'published'
+        ? { label: 'Yayında', tone: 'live' }
+        : courseStatus === 'draft' || !courseStatus
+          ? { label: 'Taslak', tone: 'draft' }
+          : { label: 'İncelemede', tone: 'review' }}
+      meta={<>
+        {savingStep && <span className="w-3.5 h-3.5 border-2 border-[#cfe3df] border-t-[#005c55] rounded-full animate-spin" />}
+        {savingStep
+          ? 'Kaydediliyor'
+          : lastSavedAt
+            ? `Son kayıt ${lastSavedAt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`
+            : 'Her adım ayrı kaydedilir'}
+      </>}
+      actions={
+        <button
+          type="button"
+          disabled={savingStep}
+          onClick={() => saveCurrentStep()}
+          className="inline-flex items-center gap-2 h-9 px-3.5 rounded-xl bg-white text-[13.5px] font-bold text-[#00201d] ring-1 ring-inset ring-[#cfe3df] hover:bg-[#ecfbf8] hover:ring-[#9cdcd3] disabled:opacity-50 transition-colors"
+        >
+          {savingStep ? <span className="w-4 h-4 border-2 border-[#cfe3df] border-t-[#005c55] rounded-full animate-spin" /> : <Save className="w-4 h-4" />}
+          <span className="hidden sm:inline">Kaydet</span>
+        </button>
+      }
+    >
       <div>
         <div className="grid grid-cols-1 lg:grid-cols-[230px_1fr] gap-6 lg:gap-8 items-start">
 
           {/* Adımlar: masaüstünde dikey yol, telefonda yatay kaydırmalı */}
-          <div className="lg:sticky lg:top-8 min-w-0">
+          <div className="lg:sticky lg:top-24 min-w-0">
             <nav aria-label="Kurs adımları" className="relative flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0">
               <span aria-hidden className="hidden lg:block absolute left-[23px] top-5 bottom-5 w-px bg-[#dcebe8]" />
               {steps.map((step, index) => {
                 const isActive = currentStep === step.id;
                 const passed = index < stepIndex;
+                const done = stepDone(step.id);
                 return (
                   <button
                     key={step.id}
@@ -3211,11 +3209,11 @@ export default function AdvancedCourseCreator() {
                   >
                     <span className={`relative z-[1] shrink-0 w-[26px] h-[26px] rounded-full flex items-center justify-center text-[12px] font-bold tabular-nums transition-colors ${isActive
                       ? 'bg-[#00201d] text-[#9cf2e8]'
-                      : passed
+                      : done || passed
                         ? 'bg-[#9cf2e8] text-[#00201d]'
                         : 'bg-[#f6fbfa] text-[#4a6360] ring-1 ring-[#cfe3df]'
                       }`}>
-                      {index + 1}
+                      {done && !isActive ? <Check className="w-3.5 h-3.5" strokeWidth={3} /> : index + 1}
                     </span>
                     <span className={`text-[14px] whitespace-nowrap ${isActive ? 'font-bold' : 'font-semibold'}`}>
                       {step.title}
@@ -3224,6 +3222,29 @@ export default function AdvancedCourseCreator() {
                 );
               })}
             </nav>
+
+            {courseStatus !== 'published' && (
+              <div className="hidden lg:block mt-6 rounded-2xl bg-white ring-1 ring-[#dcebe8] p-4">
+                <div className="flex items-baseline justify-between gap-3">
+                  <p className="text-[13.5px] font-extrabold text-[#00201d]">Yayına hazırlık</p>
+                  <p className="text-[13px] font-bold tabular-nums text-[#4a6360]">{readyCount}/{publishChecklist.length}</p>
+                </div>
+                <div className="mt-2.5 h-1.5 rounded-full bg-[#e3f6f2] overflow-hidden" aria-hidden>
+                  <div className="h-full rounded-full bg-[#005c55] transition-[width] duration-300" style={{ width: `${(readyCount / publishChecklist.length) * 100}%` }} />
+                </div>
+                {missingPublishItems.length > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => setPublishIssuesOpen(true)}
+                    className="mt-3 text-[13px] font-bold text-[#005c55] underline underline-offset-4 decoration-[#005c55]/30 hover:decoration-[#005c55]"
+                  >
+                    {missingPublishItems.length} eksik var, gör
+                  </button>
+                ) : (
+                  <p className="mt-3 text-[13px] font-semibold text-[#00695f]">Her şey tamam, yayınlayabilirsin.</p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* İçerik */}
@@ -3266,17 +3287,6 @@ export default function AdvancedCourseCreator() {
                 </button>
 
                 <div className="flex items-center gap-2.5">
-                  <button
-                    type="button"
-                    disabled={savingStep}
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 h-11 px-5 rounded-xl bg-white text-[14px] font-bold text-[#00201d] ring-1 ring-inset ring-[#cfe3df] hover:bg-[#ecfbf8] hover:ring-[#9cdcd3] disabled:opacity-50 transition-colors"
-                    onClick={() => saveCurrentStep()}
-                  >
-                    {savingStep
-                      ? <><span className="w-4 h-4 border-2 border-[#cfe3df] border-t-[#005c55] rounded-full animate-spin" /> Kaydediliyor</>
-                      : <><Save className="w-4 h-4" /> Kaydet</>}
-                  </button>
-
                   {stepIndex === steps.length - 1 ? (
                     courseStatus !== 'published' && (
                       <button
@@ -3643,6 +3653,6 @@ export default function AdvancedCourseCreator() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </EditorFrame>
   );
 }

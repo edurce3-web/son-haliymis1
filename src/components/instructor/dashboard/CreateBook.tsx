@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { API_BASE_URL } from '@/lib/api';
-import InstructorShell from '../shell/InstructorShell';
+import { EditorFrame, NextSteps } from '../shell/EditorFrame';
 import { btn, field, hint, label } from '../shell/kit';
 
 /**
  * E-kitap taslağı oluşturma.
  *
- * Kurs oluşturma ekranıyla aynı düzen: panelin içinde, solda iki alan,
- * sağda yazdıkça dolan bir kapak önizlemesi.
+ * Kurs oluşturma ekranıyla aynı düzen: panelden ayrı kendi sayfası, solda
+ * iki soru, sağda yazdıkça dolan bir kapak önizlemesi.
  */
 export function CreateBook() {
     const qc = useQueryClient();
@@ -55,85 +55,87 @@ export function CreateBook() {
     const canSubmit = Boolean(title.trim() && authorName.trim());
 
     return (
-        <InstructorShell>
-            <Link
-                to="/instructor/books/manage"
-                className="inline-flex items-center gap-1.5 -ml-1 px-1 h-7 rounded-md text-[13px] font-semibold text-[#4a6360] hover:text-[#00201d] transition-colors mb-2"
-            >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                Kitaplarım
-            </Link>
-            <h1 className="text-[28px] sm:text-[32px] leading-[1.1] font-extrabold tracking-[-0.025em] text-[#00201d]">
-                Yeni e-kitap
-            </h1>
-            <p className="mt-2 text-[14.5px] text-[#4a6360] max-w-xl">
-                Önce başlık ve yazar adı. Kapak, açıklama, fiyat ve dosyayı taslağı açtıktan sonra eklersin.
-            </p>
-
-            <div className="mt-8 grid lg:grid-cols-[minmax(0,1fr)_260px] gap-6 items-start">
+        <EditorFrame back={{ to: '/instructor/books/manage', label: 'Kitaplarım' }} title="Yeni e-kitap">
+            <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-10 lg:gap-14 items-start">
                 <form
                     onSubmit={e => { e.preventDefault(); if (canSubmit) createDbMutation.mutate(); }}
-                    className="rounded-2xl bg-white ring-1 ring-[#dcebe8] shadow-[0_1px_2px_rgba(0,32,29,0.04)] p-5 sm:p-8 space-y-7"
+                    className="min-w-0 max-w-[680px]"
                 >
-                    <div>
-                        <label htmlFor="book-title" className={label}>Kitabın adı</label>
+                    <h1 className="text-[30px] sm:text-[38px] leading-[1.08] font-extrabold tracking-[-0.03em] text-[#00201d] text-balance">
+                        Yeni bir e-kitap başlatalım
+                    </h1>
+                    <p className="mt-3 text-[15px] text-[#4a6360] leading-relaxed max-w-[52ch]">
+                        Şimdilik kitabın adı ve yazarı yeter. Kapak, tanıtım, fiyat ve dosyayı taslağı açınca eklersin.
+                    </p>
+
+                    <section className="mt-10">
+                        <label htmlFor="book-title" className="block text-[17px] font-extrabold tracking-tight text-[#00201d]">Kitabın adı ne?</label>
+                        <p className={cn(hint, 'mt-1')}>Kapakta ve mağazada bu ad görünür; sonradan değişebilir.</p>
                         <input
                             id="book-title"
                             autoFocus
                             placeholder="Örnek: Modern JavaScript rehberi"
-                            className={cn(field, 'h-12 text-[16px] font-semibold')}
+                            className={cn(field, 'mt-3 h-14 px-4 text-[18px] font-bold')}
                             value={title}
                             maxLength={120}
                             onChange={e => setTitle(e.target.value)}
                         />
-                        <p className={cn(hint, 'mt-1.5 flex justify-between gap-3')}>
-                            <span>Sonradan değiştirebilirsin.</span>
-                            <span className="tabular-nums shrink-0">{title.length}/120</span>
-                        </p>
-                    </div>
+                        <p className={cn(hint, 'mt-1.5 text-right tabular-nums')}>{title.length}/120</p>
+                    </section>
 
-                    <div>
-                        <label htmlFor="book-author" className={label}>Yazar adı</label>
+                    <section className="mt-8">
+                        <label htmlFor="book-author" className="block text-[17px] font-extrabold tracking-tight text-[#00201d]">Yazarı kim?</label>
+                        <p className={cn(hint, 'mt-1')}>Kendi adın ya da kullandığın takma ad.</p>
                         <input
                             id="book-author"
-                            placeholder="Kendi adın ya da kullandığın takma ad"
-                            className={cn(field, 'h-12')}
+                            placeholder="Ad Soyad"
+                            className={cn(field, 'mt-3 h-12 px-4 text-[16px] font-semibold')}
                             value={authorName}
                             maxLength={80}
                             onChange={e => setAuthorName(e.target.value)}
                         />
-                        <p className={cn(hint, 'mt-1.5')}>Kitap sayfasında bu isim görünür.</p>
-                    </div>
+                    </section>
 
-                    <div className="pt-6 border-t border-[#e8f2f0] flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3">
-                        <p className="text-[13px] text-[#4a6360]">Taslak yalnızca sana görünür.</p>
-                        <button type="submit" disabled={createDbMutation.isPending || !canSubmit} className={cn(btn.primary, btn.lg, 'min-w-[200px]')}>
-                            {createDbMutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Taslak açılıyor</> : 'Taslağı oluştur'}
+                    <div className="mt-10 pt-6 border-t border-[#e3efec] flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+                        <button type="submit" disabled={createDbMutation.isPending || !canSubmit} className={cn(btn.primary, 'h-12 px-6 text-[15px] min-w-[240px]')}>
+                            {createDbMutation.isPending
+                                ? <><Loader2 className="w-4 h-4 animate-spin" /> Taslak açılıyor</>
+                                : <>Taslağı oluştur <ArrowRight className="w-4 h-4" /></>}
                         </button>
+                        <p className="text-[13px] text-[#4a6360]">
+                            {!title.trim() ? 'Önce kitabına bir ad ver' : !authorName.trim() ? 'Yazar adını yaz' : 'Taslak yalnızca sana görünür.'}
+                        </p>
                     </div>
                 </form>
 
                 {/* Önizleme: kapağın sade hali, kitap sırtıyla */}
-                <aside aria-label="Kapak önizlemesi" className="lg:sticky lg:top-8 max-w-[260px]">
-                    <p className="text-[13px] font-bold text-[#4a6360] mb-2.5">Kapak taslağı</p>
-                    <div className="relative aspect-[3/4] rounded-r-xl rounded-l-[4px] overflow-hidden bg-[linear-gradient(160deg,#9cf2e8,#5fb8ac)] shadow-[0_18px_34px_-18px_rgba(0,32,29,0.55)]">
-                        <span aria-hidden className="absolute inset-y-0 left-0 w-3 bg-[#00201d]/15" />
-                        <div className="absolute inset-0 pl-7 pr-5 py-6 flex flex-col">
+                <aside aria-label="Kapak önizlemesi" className="lg:sticky lg:top-24">
+                    <p className="text-[13px] font-bold text-[#00201d] mb-3">Kapak taslağı</p>
+                    <div className="relative w-full max-w-[240px] aspect-[3/4] rounded-r-xl rounded-l-[4px] overflow-hidden bg-[linear-gradient(160deg,#c9f6f0_0%,#9cf2e8_55%,#7fdccf_100%)] shadow-[0_22px_40px_-22px_rgba(0,32,29,0.6)]">
+                        <span aria-hidden className="absolute inset-y-0 left-0 w-3 bg-[#00201d]/12" />
+                        <span aria-hidden className="absolute inset-y-0 left-3 w-px bg-white/40" />
+                        <div className="absolute inset-0 pl-8 pr-5 py-7 flex flex-col">
                             <p className={cn(
-                                'text-[20px] leading-[1.15] font-extrabold tracking-[-0.015em] line-clamp-5 text-balance',
-                                title.trim() ? 'text-[#00201d]' : 'text-[#00201d]/40'
+                                'text-[21px] leading-[1.12] font-extrabold tracking-[-0.015em] line-clamp-5 text-balance',
+                                title.trim() ? 'text-[#00201d]' : 'text-[#00201d]/35'
                             )}>
                                 {title.trim() || 'Kitabının adı'}
                             </p>
-                            <p className={cn('mt-auto text-[13px] font-bold', authorName.trim() ? 'text-[#00483f]' : 'text-[#00483f]/45')}>
+                            <span aria-hidden className="mt-4 h-[3px] w-10 rounded-full bg-[#00201d]/70" />
+                            <p className={cn('mt-auto text-[13px] font-bold', authorName.trim() ? 'text-[#00483f]' : 'text-[#00483f]/40')}>
                                 {authorName.trim() || 'Yazar adı'}
                             </p>
                         </div>
                     </div>
-                    <p className="mt-2.5 text-[12.5px] text-[#5f7774]">Gerçek kapağı sonraki adımlarda yüklersin.</p>
+                    <NextSteps items={[
+                        'Tanıtım yazısı ve anahtar kelimeler',
+                        'Kategori, dil ve fiyat',
+                        'Gerçek kapağı ve EPUB/PDF dosyasını yükle',
+                        'Yayınla; mağazada satışa açılsın',
+                    ]} />
                 </aside>
             </div>
-        </InstructorShell>
+        </EditorFrame>
     );
 }
 

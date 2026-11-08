@@ -6,7 +6,6 @@ import InstructorFinanceReport from './dashboard/InstructorFinanceReport';
 import { InstructorProfileSettings } from './dashboard/InstructorProfileSettings';
 import { InstructorAccountSettings } from './dashboard/InstructorAccountSettings';
 import { PlaceholderSection } from './dashboard/PlaceholderSection';
-import AdvancedCourseCreator from '@/components/course/AdvancedCourseCreator';
 import { InstructorQA } from './dashboard/InstructorQA';
 import { InstructorAnnouncements } from './dashboard/InstructorAnnouncements';
 import { InstructorReviews } from './dashboard/InstructorReviews';
@@ -24,7 +23,6 @@ export default function ProfessionalInstructorDashboard() {
                 <Route index element={<Navigate to="dashboard" replace />} />
                 <Route path="dashboard" element={<DashboardOverview />} />
                 <Route path="courses/list" element={<CourseList />} />
-                <Route path="courses/edit/:id" element={<AdvancedCourseCreator />} />
                 <Route path="courses/announcements" element={<InstructorAnnouncements />} />
                 <Route path="students/list" element={<StudentList />} />
                 <Route path="students/qa" element={<InstructorQA onBack={() => navigate('/instructor/dashboard')} />} />

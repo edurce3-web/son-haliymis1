@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Check, FileText, Image as ImageIcon, Loader2, Plus, Upload, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
 import { API_BASE_URL } from '@/lib/api';
-import InstructorShell from '../shell/InstructorShell';
-import { btn, field, hint, label, Loading, Tag } from '../shell/kit';
+import { EditorFrame } from '../shell/EditorFrame';
+import { btn, field, hint, label, Loading } from '../shell/kit';
 
 export function EditBook() {
     const { id } = useParams<{ id: string }>();
@@ -237,35 +237,23 @@ export function EditBook() {
 
     if (bookLoading) {
         return (
-            <InstructorShell>
+            <EditorFrame back={{ to: '/instructor/books/manage', label: 'Kitaplarım' }} title="E-kitap">
                 <Loading label="Kitabın yükleniyor" />
-            </InstructorShell>
+            </EditorFrame>
         );
     }
 
     return (
-        <InstructorShell>
-            <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-7">
-                <div className="min-w-0">
-                    <Link
-                        to="/instructor/books/manage"
-                        className="inline-flex items-center gap-1.5 -ml-1 px-1 h-7 rounded-md text-[13px] font-semibold text-[#4a6360] hover:text-[#00201d] transition-colors mb-2"
-                    >
-                        <ArrowLeft className="w-3.5 h-3.5" />
-                        Kitaplarım
-                    </Link>
-                    <div className="flex items-center gap-3 min-w-0">
-                        <h1 className="text-[26px] sm:text-[30px] leading-[1.15] font-extrabold tracking-[-0.025em] text-[#00201d] truncate">
-                            {formData.title.trim() || 'Yeni e-kitap'}
-                        </h1>
-                        <Tag tone={published ? 'live' : 'draft'} className="shrink-0">{published ? 'Yayında' : 'Taslak'}</Tag>
-                    </div>
-                </div>
-            </header>
+        <EditorFrame
+            back={{ to: '/instructor/books/manage', label: 'Kitaplarım' }}
+            title={formData.title.trim() || 'Yeni e-kitap'}
+            status={published ? { label: 'Yayında', tone: 'live' } : { label: 'Taslak', tone: 'draft' }}
+            meta={updateDbMutation.isPending ? 'Kaydediliyor' : 'Her adım kaydedilerek ilerler'}
+        >
 
             <div className="grid grid-cols-1 lg:grid-cols-[230px_1fr] gap-6 lg:gap-8 items-start">
                 {/* Adımlar */}
-                <div className="lg:sticky lg:top-8 min-w-0">
+                <div className="lg:sticky lg:top-24 min-w-0">
                     <nav aria-label="Kitap adımları" className="relative flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0">
                         <span aria-hidden className="hidden lg:block absolute left-[23px] top-5 bottom-5 w-px bg-[#dcebe8]" />
                         {STEPS.map((s, idx) => {
@@ -546,6 +534,6 @@ export function EditBook() {
                     </div>
                 </section>
             </div>
-        </InstructorShell>
+        </EditorFrame>
     );
 }
