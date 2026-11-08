@@ -1,15 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { API_BASE_URL } from '@/lib/api';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Camera, Globe, Youtube, Twitter, Facebook, Loader2 } from 'lucide-react';
+import { Camera, Facebook, Globe, Loader2, Plus, Twitter, X, Youtube } from 'lucide-react';
 import { toast } from 'sonner';
-import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import ImageCropDialog from '@/components/ui/image-crop-dialog';
+import { btn, field, hint, label, Empty, Loading, PageHead, Panel, PanelHead } from '../shell/kit';
 
 export const InstructorProfileSettings: React.FC = () => {
     const [profile, setProfile] = useState<any>(null);
@@ -44,7 +39,7 @@ export const InstructorProfileSettings: React.FC = () => {
         if (!file) return;
 
         if (!/^image\/(jpeg|jpg|png|webp)$/.test(file.type)) {
-            return toast.error('Sadece JPEG, PNG veya WebP yükleyebilirsiniz');
+            return toast.error('Yalnızca JPEG, PNG ya da WebP yükleyebilirsin');
         }
         if (file.size > 10 * 1024 * 1024) {
             return toast.error('Fotoğraf en fazla 10 MB olabilir');
@@ -159,7 +154,7 @@ export const InstructorProfileSettings: React.FC = () => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const addExpertise = (e?: React.MouseEvent | React.FormEvent) => {
+    const addExpertise = (e?: React.SyntheticEvent) => {
         if (e) e.preventDefault();
         const trimmed = expertiseInput.trim();
         if (trimmed && !formData.expertise.includes(trimmed)) {
@@ -190,223 +185,179 @@ export const InstructorProfileSettings: React.FC = () => {
 
             const result = await res.json();
             if (res.ok) {
-                toast.success('Değişiklikler başarıyla kaydedildi!');
+                toast.success('Profilin kaydedildi');
             } else {
                 toast.error(result.error || 'Profil kaydedilemedi.');
             }
         } catch (error) {
             console.error('Kaydetme hatası:', error);
-            toast.error('Bağlantı hatası.');
+            toast.error('Kaydedilemedi. Bağlantını kontrol edip tekrar dene.');
         } finally {
             setSaving(false);
         }
     };
 
-    if (loading) {
+
+    if (loading) return <Loading label="Profilin yükleniyor" />;
+
+    if (!profile) {
         return (
-            <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-12 h-12 text-zinc-900 animate-spin" />
-            </div>
+            <>
+                <PageHead title="Eğitmen profili" />
+                <Empty title="Profil yüklenemedi" text="Sayfayı yenile; düzelmezse Yardım sayfasından bize yaz." action={{ label: 'Sayfayı yenile', onClick: () => window.location.reload() }} />
+            </>
         );
     }
 
-    if (!profile) {
-        return <div className="text-zinc-500">Profil verisi yüklenemedi. Yardım için lütfen destek ile iletişime geçin.</div>;
-    }
+    const photo = (photoUrl ?? profile.profile_image) as string | null;
+    const fullName = `${formData.first_name} ${formData.last_name}`.trim();
 
     return (
-        <div className='max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500'>
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-zinc-100">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">Profil Ayarları</h1>
-                    <p className="text-zinc-500 text-sm">Platformdaki genel görünümünüzü ve kişisel bilgilerinizi yönetin.</p>
-                </div>
-            </div>
+        <>
+            <PageHead title="Eğitmen profili" sub="Öğrencilerin kurs sayfasında seni böyle görüyor" />
 
-            <div className='flex flex-col md:flex-row gap-8 items-start'>
-                <div className='flex flex-col items-center space-y-3 shrink-0'>
-                    <div className='relative'>
-                        <Avatar className='h-32 w-32 rounded-2xl border border-zinc-200 shadow-sm'>
-                            {(photoUrl ?? profile.profile_image) && (
-                                <AvatarImage src={(photoUrl ?? profile.profile_image) as string} className="object-cover" />
-                            )}
-                            <AvatarFallback className='text-3xl font-bold bg-zinc-100 text-zinc-600 rounded-2xl'>
-                                {formData.first_name?.[0]}{formData.last_name?.[0]}
-                            </AvatarFallback>
-                        </Avatar>
-
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="image/jpeg,image/jpg,image/png,image/webp"
-                            onChange={handlePhotoSelect}
-                            className="hidden"
-                        />
-
+            <form
+                onSubmit={e => { e.preventDefault(); handleSave(); }}
+                className="grid lg:grid-cols-[300px_1fr] gap-6 items-start"
+            >
+                {/* Önizleme: öğrencinin gördüğü kart */}
+                <aside className="lg:sticky lg:top-8 rounded-2xl bg-[#9cf2e8] p-6 text-center">
+                    <div className="relative w-28 h-28 mx-auto">
+                        {photo ? (
+                            <img src={photo} alt="" className="w-28 h-28 rounded-full object-cover ring-4 ring-white/70" />
+                        ) : (
+                            <span className="w-28 h-28 rounded-full bg-[#00201d] text-[#9cf2e8] text-[36px] font-extrabold flex items-center justify-center">
+                                {(formData.first_name[0] || '') + (formData.last_name[0] || '') || '?'}
+                            </span>
+                        )}
                         <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
                             disabled={photoBusy}
-                            title="Fotoğraf yükle"
-                            className='absolute -bottom-3 -right-3 w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center border border-zinc-200 hover:bg-zinc-50 transition-colors disabled:opacity-60'
+                            aria-label="Fotoğraf yükle"
+                            className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-[#00201d] text-[#9cf2e8] flex items-center justify-center ring-4 ring-[#9cf2e8] hover:bg-[#03302b] transition-colors disabled:opacity-60"
                         >
-                            {photoBusy
-                                ? <Loader2 className='w-4 h-4 text-zinc-700 animate-spin' />
-                                : <Camera className='w-4 h-4 text-zinc-700' />}
+                            {photoBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
                         </button>
                     </div>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/jpeg,image/jpg,image/png,image/webp"
+                        onChange={handlePhotoSelect}
+                        className="hidden"
+                    />
 
-                    <div className="flex flex-col items-center gap-1">
-                        <button
-                            type="button"
-                            onClick={() => fileInputRef.current?.click()}
-                            disabled={photoBusy}
-                            className="text-xs font-medium text-zinc-700 hover:text-zinc-900 disabled:opacity-60"
-                        >
-                            {(photoUrl ?? profile.profile_image) ? 'Fotoğrafı değiştir' : 'Fotoğraf yükle'}
+                    <p className="mt-4 text-[19px] font-extrabold tracking-tight text-[#00201d] text-balance">{fullName || 'Adın'}</p>
+                    <p className="mt-0.5 text-[13.5px] font-semibold text-[#1d4a45] text-balance">{formData.title || 'Unvanın'}</p>
+                    {formData.expertise.length > 0 && (
+                        <div className="mt-3 flex flex-wrap justify-center gap-1.5">
+                            {formData.expertise.slice(0, 6).map(x => (
+                                <span key={x} className="px-2.5 py-1 rounded-full bg-white/60 text-[12px] font-bold text-[#00201d]">{x}</span>
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="mt-5 pt-4 border-t border-[#00201d]/10 flex flex-col items-center gap-1">
+                        <button type="button" onClick={() => fileInputRef.current?.click()} disabled={photoBusy} className={cn(btn.ghost, btn.sm, 'hover:bg-white/50')}>
+                            {photo ? 'Fotoğrafı değiştir' : 'Fotoğraf yükle'}
                         </button>
-                        {(photoUrl ?? profile.profile_image) && (
-                            <button
-                                type="button"
-                                onClick={handlePhotoRemove}
-                                disabled={photoBusy}
-                                className="text-xs text-zinc-400 hover:text-red-500 disabled:opacity-60"
-                            >
-                                Kaldır
+                        {photo && (
+                            <button type="button" onClick={handlePhotoRemove} disabled={photoBusy} className={cn(btn.ghost, btn.sm, 'hover:bg-white/50 hover:text-[#b42318]')}>
+                                Fotoğrafı kaldır
                             </button>
                         )}
-                        <p className="text-[11px] text-zinc-400 text-center mt-1 max-w-[140px]">
-                            JPEG, PNG veya WebP · en fazla 10 MB
-                        </p>
+                        <p className="text-[12px] text-[#1d4a45] mt-1">JPEG, PNG ya da WebP · en fazla 10 MB</p>
                     </div>
-                </div>
+                </aside>
 
-                <div className='flex-1 w-full space-y-6'>
-                    <Card className='border border-zinc-200 shadow-sm rounded-xl bg-white overflow-hidden'>
-                        <div className="p-6 border-b border-zinc-100 bg-zinc-50/50">
-                            <h3 className="text-lg font-semibold text-zinc-900">Temel Bilgiler</h3>
-                        </div>
-                        <CardContent className="p-6 space-y-6">
-                            <div className='grid md:grid-cols-2 gap-6'>
-                                <div className='space-y-2'>
-                                    <Label className='text-xs font-semibold text-zinc-700'>Ad</Label>
-                                    <Input
-                                        name="first_name"
-                                        value={formData.first_name}
-                                        onChange={handleChange}
-                                        className='bg-zinc-50 border-zinc-200 focus-visible:ring-zinc-900'
-                                    />
+                <div className="space-y-6 min-w-0">
+                    <Panel as="section">
+                        <PanelHead title="Hakkında" />
+                        <div className="p-5 sm:p-6 space-y-5">
+                            <div className="grid sm:grid-cols-2 gap-5">
+                                <div>
+                                    <label htmlFor="pf-first" className={label}>Ad</label>
+                                    <input id="pf-first" name="first_name" value={formData.first_name} onChange={handleChange} className={cn(field, 'h-11')} autoComplete="given-name" />
                                 </div>
-                                <div className='space-y-2'>
-                                    <Label className='text-xs font-semibold text-zinc-700'>Soyad</Label>
-                                    <Input
-                                        name="last_name"
-                                        value={formData.last_name}
-                                        onChange={handleChange}
-                                        className='bg-zinc-50 border-zinc-200 focus-visible:ring-zinc-900'
-                                    />
+                                <div>
+                                    <label htmlFor="pf-last" className={label}>Soyad</label>
+                                    <input id="pf-last" name="last_name" value={formData.last_name} onChange={handleChange} className={cn(field, 'h-11')} autoComplete="family-name" />
                                 </div>
                             </div>
-
-                            <div className='space-y-2'>
-                                <Label className='text-xs font-semibold text-zinc-700'>Unvan / Uzmanlık (Başvurudan)</Label>
-                                <Input
-                                    name="title"
-                                    value={formData.title}
-                                    onChange={handleChange}
-                                    className='bg-zinc-50 border-zinc-200 focus-visible:ring-zinc-900'
-                                />
+                            <div>
+                                <label htmlFor="pf-title" className={label}>Unvan</label>
+                                <input id="pf-title" name="title" value={formData.title} onChange={handleChange} placeholder="Örnek: Yazılım geliştirici, 10 yıllık matematik öğretmeni" className={cn(field, 'h-11')} />
                             </div>
-
-                            <div className='space-y-2'>
-                                <Label className='text-xs font-semibold text-zinc-700'>Biyografi</Label>
-                                <Textarea
-                                    name="bio"
-                                    value={formData.bio}
-                                    onChange={handleChange}
-                                    className='min-h-[120px] bg-zinc-50 border-zinc-200 focus-visible:ring-zinc-900 resize-none'
-                                />
+                            <div>
+                                <label htmlFor="pf-bio" className={label}>Biyografi</label>
+                                <textarea id="pf-bio" name="bio" value={formData.bio} onChange={handleChange} rows={6}
+                                    placeholder="Kim olduğunu, ne öğrettiğini ve neden seninle öğrenmeleri gerektiğini birkaç cümleyle anlat."
+                                    className={cn(field, 'py-3 resize-y leading-relaxed')} />
+                                <p className={cn(hint, 'mt-1.5 text-right tabular-nums')}>{formData.bio.length} karakter</p>
                             </div>
-
-                            <div className='space-y-2'>
-                                <Label className='text-xs font-semibold text-zinc-700'>Uzmanlık Alanları (İsteğe bağlı)</Label>
-                                <div className="flex gap-2 mb-2">
-                                    <Input
+                            <div>
+                                <label htmlFor="pf-exp" className={label}>Uzmanlık alanların</label>
+                                <div className="flex gap-2">
+                                    <input
+                                        id="pf-exp"
                                         value={expertiseInput}
-                                        onChange={(e) => setExpertiseInput(e.target.value)}
-                                        placeholder="ör. JavaScript, Marketing, Tasarım (isteğe bağlı)"
-                                        onKeyPress={(e) => e.key === 'Enter' && addExpertise(e)}
-                                        className='bg-zinc-50 border-zinc-200 focus-visible:ring-zinc-900'
+                                        onChange={e => setExpertiseInput(e.target.value)}
+                                        placeholder="Örnek: JavaScript, pazarlama, tasarım"
+                                        onKeyDown={e => { if (e.key === 'Enter') addExpertise(e); }}
+                                        className={cn(field, 'h-11')}
                                     />
-                                    <Button
-                                        type="button"
-                                        onClick={addExpertise}
-                                        variant="outline"
-                                        className='border-zinc-200 hover:bg-zinc-50 text-zinc-700'
-                                    >
-                                        Ekle
-                                    </Button>
+                                    <button type="button" onClick={addExpertise} className={cn(btn.outline, 'h-11 px-4 text-[13.5px] shrink-0')}>
+                                        <Plus className="w-4 h-4" /> Ekle
+                                    </button>
                                 </div>
                                 {formData.expertise.length > 0 && (
-                                    <div className="flex flex-wrap gap-2 mt-3 p-1">
-                                        {formData.expertise.map((exp, index) => (
-                                            <Badge
-                                                key={index}
-                                                variant="secondary"
-                                                className="cursor-pointer bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border-none px-3 py-1 font-medium select-none"
-                                                onClick={() => removeExpertise(exp)}
-                                            >
-                                                {exp} <span className="text-zinc-400 hover:text-red-500 ml-2 transition-colors">×</span>
-                                            </Badge>
+                                    <ul className="flex flex-wrap gap-2 mt-3">
+                                        {formData.expertise.map(exp => (
+                                            <li key={exp}>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeExpertise(exp)}
+                                                    aria-label={`${exp} alanını kaldır`}
+                                                    className="inline-flex items-center gap-1.5 h-8 pl-3 pr-2 rounded-full bg-[#e3f6f2] hover:bg-[#fff3f1] text-[13px] font-bold text-[#00201d] hover:text-[#b42318] transition-colors"
+                                                >
+                                                    {exp} <X className="w-3.5 h-3.5" />
+                                                </button>
+                                            </li>
                                         ))}
-                                    </div>
+                                    </ul>
                                 )}
                             </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card className='border border-zinc-200 shadow-sm rounded-xl bg-white overflow-hidden'>
-                        <div className="p-6 border-b border-zinc-100 bg-zinc-50/50">
-                            <h3 className="text-lg font-semibold text-zinc-900">Sosyal Medya & Linkler</h3>
                         </div>
-                        <CardContent className="p-6 space-y-4">
+                    </Panel>
+
+                    <Panel as="section">
+                        <PanelHead title="Bağlantılar" sub="İstersen doldur; kurs sayfanda simge olarak görünür." />
+                        <div className="p-5 sm:p-6 grid sm:grid-cols-2 gap-5">
                             {[
-                                { icon: Globe, label: 'Kişisel Web Sitesi', name: 'website', val: formData.website },
-                                { icon: Youtube, label: 'YouTube Profil Linki', name: 'youtube', val: formData.youtube },
-                                { icon: Twitter, label: 'Twitter (X) Profil Linki', name: 'twitter', val: formData.twitter },
-                                { icon: Facebook, label: 'Facebook Profil Linki', name: 'facebook', val: formData.facebook }
-                            ].map((link, i) => (
-                                <div key={i} className='flex gap-3'>
-                                    <div className='w-10 h-10 shrink-0 rounded-lg bg-zinc-50 border border-zinc-200 flex items-center justify-center'>
-                                        <link.icon className='w-4 h-4 text-zinc-500' />
-                                    </div>
-                                    <div className='flex-1 space-y-1'>
-                                        <Label className='text-xs text-zinc-500'>{link.label}</Label>
-                                        <Input
-                                            name={link.name}
-                                            value={link.val}
-                                            onChange={handleChange}
-                                            className='h-9 text-sm bg-white border-zinc-200 focus-visible:ring-zinc-900'
-                                            placeholder={`${link.label} linkini yapıştırın`}
-                                        />
+                                { icon: Globe, label: 'Web siten', name: 'website', val: formData.website, ph: 'https://' },
+                                { icon: Youtube, label: 'YouTube', name: 'youtube', val: formData.youtube, ph: 'https://youtube.com/@...' },
+                                { icon: Twitter, label: 'X (Twitter)', name: 'twitter', val: formData.twitter, ph: 'https://x.com/...' },
+                                { icon: Facebook, label: 'Facebook', name: 'facebook', val: formData.facebook, ph: 'https://facebook.com/...' },
+                            ].map(l => (
+                                <div key={l.name}>
+                                    <label htmlFor={`pf-${l.name}`} className={label}>{l.label}</label>
+                                    <div className="relative">
+                                        <l.icon aria-hidden className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5f7774]" />
+                                        <input id={`pf-${l.name}`} type="text" inputMode="url" name={l.name} value={l.val} onChange={handleChange} placeholder={l.ph} className={cn(field, 'h-11 pl-10')} />
                                     </div>
                                 </div>
                             ))}
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </Panel>
 
-                    <div className='flex justify-end pt-2'>
-                        <Button
-                            onClick={handleSave}
-                            disabled={saving}
-                            className='bg-zinc-900 text-white hover:bg-zinc-800 rounded-lg px-8'
-                        >
-                            {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                            {saving ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
-                        </Button>
+                    <div className="sticky bottom-4 z-10 flex justify-end">
+                        <button type="submit" disabled={saving} className={cn(btn.primary, btn.lg, 'min-w-[180px] shadow-[0_10px_24px_-10px_rgba(0,64,58,0.45)]')}>
+                            {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Kaydediliyor</> : 'Profili kaydet'}
+                        </button>
                     </div>
                 </div>
-            </div>
+            </form>
 
             <ImageCropDialog
                 file={pendingFile}
@@ -414,7 +365,6 @@ export const InstructorProfileSettings: React.FC = () => {
                 onCropped={uploadCropped}
                 title="Profil fotoğrafını kırp"
             />
-        </div>
+        </>
     );
 };
-

@@ -1,18 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { API_BASE_URL } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { formatPrice } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
-import {
-    Loader2,
-    TrendingUp,
-    Receipt,
-    Wallet,
-    ShoppingBag,
-    Download,
-    Search,
-} from 'lucide-react';
+import { Download } from 'lucide-react';
 import RevenueChart, { type ChartPayload } from './RevenueChart';
+import { btn, Empty, Initials, Loading, PageHead, Panel, PanelHead, SearchBox } from '../shell/kit';
 
 interface MonthBucket {
     month: string;
@@ -62,10 +55,6 @@ interface ReportData {
     sales: SaleRow[];
 }
 
-/** Baş harfler — fotoğrafı olmayan öğrenciler için */
-const initials = (name: string) =>
-    (name || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase() || '').join('') || '?';
-
 const InstructorFinanceReport: React.FC = () => {
     const [data, setData] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -91,12 +80,12 @@ const InstructorFinanceReport: React.FC = () => {
 
     const filteredSales = useMemo(() => {
         if (!data) return [];
-        const q = query.trim().toLowerCase();
+        const q = query.trim().toLocaleLowerCase('tr-TR');
         if (!q) return data.sales;
         return data.sales.filter(s =>
-            s.course_title?.toLowerCase().includes(q) ||
-            s.student_name?.toLowerCase().includes(q) ||
-            s.reference?.toLowerCase().includes(q)
+            s.course_title?.toLocaleLowerCase('tr-TR').includes(q) ||
+            s.student_name?.toLocaleLowerCase('tr-TR').includes(q) ||
+            s.reference?.toLocaleLowerCase('tr-TR').includes(q)
         );
     }, [data, query]);
 
@@ -119,160 +108,122 @@ const InstructorFinanceReport: React.FC = () => {
         URL.revokeObjectURL(url);
     };
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center py-32">
-                <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
-            </div>
-        );
-    }
+    if (loading) return <Loading label="Raporun hazırlanıyor" />;
 
     if (!data) {
-        return <div className="py-32 text-center text-slate-400">Rapor verisi alınamadı.</div>;
+        return (
+            <>
+                <PageHead title="Gelir raporu" />
+                <Empty title="Rapor yüklenemedi" text="Bağlantıda bir sorun oldu." action={{ label: 'Sayfayı yenile', onClick: () => window.location.reload() }} />
+            </>
+        );
     }
 
     const { summary, rates } = data;
     const taxPct = Math.round(rates.taxRate * 100);
     const instrPct = Math.round(rates.instructorRate * 100);
 
-    const cards = [
-        { label: 'Toplam satış', value: formatPrice(summary.gross), sub: `${summary.count} işlem`, icon: ShoppingBag, tone: 'text-slate-900' },
-        { label: `Vergi (%${taxPct})`, value: formatPrice(summary.tax), sub: 'brütten kesilen', icon: Receipt, tone: 'text-slate-500' },
-        { label: 'Net kazancın', value: formatPrice(summary.instructor), sub: `vergi sonrası %${instrPct}`, icon: TrendingUp, tone: 'text-emerald-600' },
-        { label: 'Ödenecek bakiye', value: formatPrice(summary.balance), sub: `${formatPrice(summary.paidOut)} ödendi`, icon: Wallet, tone: 'text-indigo-600' },
-    ];
-
     return (
-        <div className="space-y-6">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Satış / Gelir Raporu</h1>
-                    <p className="text-sm text-slate-500 mt-1">
-                        Brüt satıştan %{taxPct} vergi düşülür, kalanın %{instrPct}'i sana aittir.
-                    </p>
-                </div>
-                {data.sales.length > 0 && (
-                    <Button variant="outline" onClick={exportCsv} className="h-10 rounded-xl gap-2">
-                        <Download className="w-4 h-4" /> CSV indir
-                    </Button>
+        <>
+            <PageHead
+                title="Gelir raporu"
+                sub={`Brüt satıştan %${taxPct} vergi düşülür, kalanın %${instrPct}'i senin.`}
+                actions={data.sales.length > 0 && (
+                    <button type="button" onClick={exportCsv} className={cn(btn.outline, btn.md)}>
+                        <Download className="w-4 h-4" /> Excel için indir (CSV)
+                    </button>
                 )}
-            </div>
+            />
 
-            {/* Özet kartları */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-                {cards.map(card => (
-                    <div key={card.label} className="bg-white border border-slate-200 rounded-2xl p-5">
-                        <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-medium text-slate-500">{card.label}</span>
-                            <card.icon className="w-4 h-4 text-slate-300" />
-                        </div>
-                        <p className={`text-2xl font-bold ${card.tone}`}>{card.value}</p>
-                        <p className="text-xs text-slate-400 mt-1">{card.sub}</p>
-                    </div>
-                ))}
-            </div>
-
-            {/* Net kazanç — Ocak'tan Aralık'a, yıl seçilebilir; yıllık görünüme de geçer */}
-            <section className="bg-white border border-slate-200 rounded-2xl p-6">
-                <div className="mb-4">
-                    <h2 className="text-sm font-semibold text-slate-900">Net kazanç</h2>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                        Vergi ve platform payı düşüldükten sonra sana kalan tutar.
-                    </p>
+            {/* Paranın yolu: brüt → vergi → senin payın → ödenecek */}
+            <section className="rounded-2xl bg-[#00201d] text-white overflow-hidden mb-6">
+                <div className="grid grid-cols-2 lg:grid-cols-4">
+                    <Flow label="Toplam satış" value={formatPrice(summary.gross)} note={`${summary.count.toLocaleString('tr-TR')} satış`} />
+                    <Flow label={`Vergi (%${taxPct})`} value={`−${formatPrice(summary.tax)}`} note="Brütten düşülen" dim />
+                    <Flow label="Net kazancın" value={formatPrice(summary.instructor)} note={`Vergi sonrası payın %${instrPct}`} strong />
+                    <Flow
+                        label="Ödenecek bakiye"
+                        value={formatPrice(summary.balance)}
+                        note={`${formatPrice(summary.paidOut)} ödendi`}
+                        action={<Link to="/instructor/finance/payout" className="text-[12.5px] font-bold text-[#9cf2e8] underline underline-offset-4 decoration-[#9cf2e8]/40 hover:decoration-[#9cf2e8]">Ödeme bilgilerin</Link>}
+                    />
                 </div>
-                <RevenueChart chart={data.chart} variant="bars" height={280} />
             </section>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Kurs bazlı */}
-                <section className="lg:col-span-1 bg-white border border-slate-200 rounded-2xl p-6">
-                    <h2 className="text-sm font-semibold text-slate-900 mb-4">Kurs bazlı</h2>
+            <Panel as="section" className="mb-6">
+                <PanelHead title="Net kazancın" sub="Vergi ve platform payı düştükten sonra sana kalan, aylara göre" />
+                <div className="p-5 sm:p-6">
+                    <RevenueChart chart={data.chart} variant="bars" height={280} />
+                </div>
+            </Panel>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                <Panel as="section">
+                    <PanelHead title="Kurslara göre" />
                     {data.byCourse.length === 0 ? (
-                        <p className="text-sm text-slate-400 py-6 text-center">Veri yok</p>
+                        <p className="text-[14px] text-[#4a6360] px-6 py-10 text-center">Henüz satış yok.</p>
                     ) : (
-                        <div className="space-y-3">
+                        <ul className="divide-y divide-[#eef5f3]">
                             {data.byCourse.slice(0, 8).map(c => (
-                                <div key={c.course_id} className="flex items-center gap-3">
+                                <li key={c.course_id} className="flex items-center gap-3 px-5 py-3">
                                     <img
                                         src={c.image}
-                                        alt={c.title}
+                                        alt=""
                                         loading="lazy"
-                                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = 'hidden'; }}
-                                        className="w-12 h-8 rounded-md object-cover bg-slate-100 shrink-0"
+                                        onError={e => { (e.currentTarget as HTMLImageElement).style.visibility = 'hidden'; }}
+                                        className="w-14 h-9 rounded-lg object-cover bg-[#e3f6f2] shrink-0"
                                     />
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-medium text-slate-800 truncate">{c.title}</p>
-                                        <p className="text-xs text-slate-400">{c.sales} satış</p>
+                                        <p className="text-[13.5px] font-bold text-[#00201d] truncate">{c.title}</p>
+                                        <p className="text-[12.5px] text-[#5f7774]">{c.sales} satış</p>
                                     </div>
-                                    <span className="text-sm font-semibold text-emerald-600 whitespace-nowrap">
-                                        {formatPrice(c.instructor)}
-                                    </span>
-                                </div>
+                                    <span className="text-[14px] font-bold tabular-nums text-[#005c55] whitespace-nowrap">{formatPrice(c.instructor)}</span>
+                                </li>
                             ))}
-                        </div>
+                        </ul>
                     )}
-                </section>
+                </Panel>
 
-                {/* Satış listesi */}
-                <section className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl overflow-hidden">
-                    <div className="p-6 pb-4 flex items-center justify-between gap-4">
-                        <h2 className="text-sm font-semibold text-slate-900">Satışlar</h2>
-                        <div className="relative max-w-[220px] w-full">
-                            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                            <input
-                                value={query}
-                                onChange={e => setQuery(e.target.value)}
-                                placeholder="Kurs veya öğrenci"
-                                className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                            />
-                        </div>
-                    </div>
-
+                <Panel as="section" className="lg:col-span-2 overflow-hidden">
+                    <PanelHead
+                        title="Satışlar"
+                        actions={data.sales.length > 0 && (
+                            <SearchBox value={query} onChange={setQuery} placeholder="Kurs veya öğrenci" className="w-48 sm:w-60" />
+                        )}
+                    />
                     {filteredSales.length === 0 ? (
-                        <p className="text-sm text-slate-400 py-12 text-center">
-                            {data.sales.length === 0 ? 'Henüz satış yok.' : 'Eşleşen kayıt yok.'}
+                        <p className="text-[14px] text-[#4a6360] px-6 py-12 text-center">
+                            {data.sales.length === 0 ? 'Henüz satış yok. İlk satışın burada görünecek.' : 'Bu aramayla eşleşen satış yok.'}
                         </p>
                     ) : (
                         <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
+                            <table className="w-full min-w-[600px]">
                                 <thead>
-                                    <tr className="text-left text-xs text-slate-400 border-y border-slate-100">
-                                        <th className="font-medium px-6 py-2">Tarih</th>
-                                        <th className="font-medium px-3 py-2">Kurs</th>
-                                        <th className="font-medium px-3 py-2">Öğrenci</th>
-                                        <th className="font-medium px-3 py-2 text-right">Brüt</th>
-                                        <th className="font-medium px-6 py-2 text-right">Kazancın</th>
+                                    <tr className="text-left text-[12.5px] text-[#4a6360] border-b border-[#e8f2f0]">
+                                        <th scope="col" className="font-bold px-5 sm:px-6 py-3">Tarih</th>
+                                        <th scope="col" className="font-bold px-3 py-3">Kurs</th>
+                                        <th scope="col" className="font-bold px-3 py-3">Öğrenci</th>
+                                        <th scope="col" className="font-bold px-3 py-3 text-right">Brüt</th>
+                                        <th scope="col" className="font-bold px-5 sm:px-6 py-3 text-right">Kazancın</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-50">
+                                <tbody className="divide-y divide-[#eef5f3] text-[13.5px]">
                                     {filteredSales.slice(0, 100).map(s => (
-                                        <tr key={s.id} className="hover:bg-slate-50/60">
-                                            <td className="px-6 py-3 text-slate-500 whitespace-nowrap">
+                                        <tr key={s.id} className="hover:bg-[#f4fcfa]">
+                                            <td className="px-5 sm:px-6 py-3 text-[#4a6360] whitespace-nowrap tabular-nums">
                                                 {new Date(s.date).toLocaleDateString('tr-TR')}
                                             </td>
-                                            <td className="px-3 py-3 max-w-[200px]">
-                                                <span className="block truncate text-slate-800">{s.course_title}</span>
+                                            <td className="px-3 py-3 max-w-[220px]">
+                                                <span className="block truncate font-semibold text-[#00201d]">{s.course_title}</span>
                                             </td>
                                             <td className="px-3 py-3">
-                                                <div className="flex items-center gap-2">
-                                                    {s.student_image ? (
-                                                        <img
-                                                            src={s.student_image}
-                                                            alt={s.student_name}
-                                                            loading="lazy"
-                                                            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-                                                            className="w-6 h-6 rounded-full object-cover bg-slate-100"
-                                                        />
-                                                    ) : (
-                                                        <span className="w-6 h-6 rounded-full bg-slate-200 text-slate-600 text-[10px] font-semibold flex items-center justify-center">
-                                                            {initials(s.student_name)}
-                                                        </span>
-                                                    )}
-                                                    <span className="text-slate-600 truncate max-w-[120px]">{s.student_name}</span>
-                                                </div>
+                                                <span className="flex items-center gap-2">
+                                                    <Initials name={s.student_name} src={s.student_image} size={26} />
+                                                    <span className="text-[#1d3a37] truncate max-w-[140px]">{s.student_name}</span>
+                                                </span>
                                             </td>
-                                            <td className="px-3 py-3 text-right text-slate-500 whitespace-nowrap">{formatPrice(s.gross)}</td>
-                                            <td className="px-6 py-3 text-right font-semibold text-emerald-600 whitespace-nowrap">
+                                            <td className="px-3 py-3 text-right text-[#4a6360] whitespace-nowrap tabular-nums">{formatPrice(s.gross)}</td>
+                                            <td className="px-5 sm:px-6 py-3 text-right font-bold text-[#005c55] whitespace-nowrap tabular-nums">
                                                 {formatPrice(s.instructor)}
                                             </td>
                                         </tr>
@@ -280,16 +231,32 @@ const InstructorFinanceReport: React.FC = () => {
                                 </tbody>
                             </table>
                             {filteredSales.length > 100 && (
-                                <p className="text-xs text-slate-400 text-center py-3">
-                                    İlk 100 kayıt gösteriliyor · tamamı için CSV indir
+                                <p className="text-[12.5px] text-[#5f7774] text-center py-3 border-t border-[#eef5f3]">
+                                    Son 100 satış gösteriliyor. Tamamı indirilen dosyada.
                                 </p>
                             )}
                         </div>
                     )}
-                </section>
+                </Panel>
             </div>
-        </div>
+        </>
     );
 };
+
+const Flow: React.FC<{
+    label: string; value: string; note: string; dim?: boolean; strong?: boolean; action?: React.ReactNode;
+}> = ({ label, value, note, dim, strong, action }) => (
+    <div className="px-5 sm:px-6 py-5 border-white/[0.08] [&:not(:last-child)]:border-r max-lg:[&:nth-child(2)]:border-r-0 max-lg:[&:nth-child(-n+2)]:border-b">
+        <p className="text-[12.5px] text-[#a9cfc9]">{label}</p>
+        <p className={cn(
+            'mt-1.5 text-[24px] sm:text-[26px] leading-none font-extrabold tracking-[-0.02em] tabular-nums',
+            strong ? 'text-[#9cf2e8]' : dim ? 'text-[#a9cfc9]' : 'text-white'
+        )}>
+            {value}
+        </p>
+        <p className="mt-2 text-[12.5px] text-[#a9cfc9]">{note}</p>
+        {action && <div className="mt-2">{action}</div>}
+    </div>
+);
 
 export default InstructorFinanceReport;

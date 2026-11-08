@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { API_BASE_URL } from '@/lib/api';
-import {
-  Megaphone, Plus, Pencil, Trash2, BookOpen, Loader2,
-    Calendar, ChevronDown, ChevronUp, X, Check
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
+import { ChevronDown, Loader2, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { btn, field, label, Empty, Loading, PageHead, Panel, PanelHead } from '../shell/kit';
 
 export function InstructorAnnouncements() {
     const qc = useQueryClient();
@@ -55,7 +49,7 @@ export function InstructorAnnouncements() {
             qc.invalidateQueries({ queryKey: ['instructor-announcements'] });
             setForm({ course_id: '', title: '', content: '' });
             setShowForm(false);
-            toast.success('Duyuru oluşturuldu!');
+            toast.success('Duyurun yayınlandı');
         },
         onError: () => toast.error('Duyuru oluşturulamadı.')
     });
@@ -76,7 +70,7 @@ export function InstructorAnnouncements() {
             setEditingId(null);
             setShowForm(false);
             setForm({ course_id: '', title: '', content: '' });
-            toast.success('Duyuru güncellendi!');
+            toast.success('Duyuru güncellendi');
         },
         onError: () => toast.error('Güncelleme başarısız.')
     });
@@ -109,11 +103,11 @@ export function InstructorAnnouncements() {
 
     const handleSubmit = () => {
         if (!form.title.trim() || !form.content.trim()) {
-            toast.error('Başlık ve içerik zorunludur.');
+            toast.error('Başlık ve duyuru metni boş olamaz.');
             return;
         }
         if (!editingId && !form.course_id) {
-            toast.error('Kurs seçmelisiniz.');
+            toast.error('Önce duyurunun hangi kurs için olduğunu seç.');
             return;
         }
         editingId ? updateMutation.mutate() : createMutation.mutate();
@@ -121,153 +115,147 @@ export function InstructorAnnouncements() {
 
     const isPending = createMutation.isPending || updateMutation.isPending;
 
+    const closeForm = () => { setShowForm(false); setEditingId(null); setForm({ course_id: '', title: '', content: '' }); };
+
+    if (isLoading) return <Loading label="Duyurular yükleniyor" />;
+
     return (
-        <div className="space-y-8">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight">Duyuru Merkezi</h1>
-                    <p className="text-sm text-slate-400 mt-1">Öğrencilerinize kurs duyuruları gönderin</p>
-                </div>
-                {!showForm && (
-                    <Button
+        <>
+            <PageHead
+                title="Duyurular"
+                sub="Bir kursun bütün öğrencilerine aynı anda haber ver"
+                actions={!showForm && (
+                    <button
+                        type="button"
                         onClick={() => { setShowForm(true); setEditingId(null); setForm({ course_id: '', title: '', content: '' }); }}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-6 font-bold shadow-md shadow-indigo-200"
+                        className={cn(btn.primary, btn.md)}
                     >
-                        <Plus className="w-4 h-4 mr-2" /> Yeni Duyuru
-                    </Button>
+                        <Plus className="w-4 h-4" /> Yeni duyuru
+                    </button>
                 )}
-            </div>
+            />
 
-            {/* Form */}
             {showForm && (
-                <div className="bg-white rounded-2xl border border-indigo-100 shadow-lg p-6 space-y-4">
-                    <div className="flex items-center justify-between mb-2">
-                        <h2 className="text-base font-black text-slate-800">
-                            {editingId ? 'Duyuruyu Düzenle' : 'Yeni Duyuru Oluştur'}
-                        </h2>
-                        <button onClick={() => { setShowForm(false); setEditingId(null); }} className="text-slate-400 hover:text-slate-600">
-                            <X className="w-5 h-5" />
-                        </button>
-                    </div>
-
-                    {!editingId && (
+                <Panel as="section" className="mb-6 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <PanelHead
+                        title={editingId ? 'Duyuruyu düzenle' : 'Yeni duyuru'}
+                        sub={editingId ? undefined : 'Seçtiğin kursun öğrencileri duyuruyu kurs sayfasında görür.'}
+                        actions={
+                            <button type="button" onClick={closeForm} className={cn(btn.ghost, 'w-9 h-9 p-0')} aria-label="Kapat">
+                                <X className="w-4 h-4" />
+                            </button>
+                        }
+                    />
+                    <form
+                        className="p-5 sm:p-6 space-y-5"
+                        onSubmit={e => { e.preventDefault(); handleSubmit(); }}
+                    >
+                        {!editingId && (
+                            <div>
+                                <label htmlFor="ann-course" className={label}>Hangi kurs?</label>
+                                <select
+                                    id="ann-course"
+                                    value={form.course_id}
+                                    onChange={e => setForm(f => ({ ...f, course_id: e.target.value }))}
+                                    className={cn(field, 'h-11')}
+                                >
+                                    <option value="">Kurs seç</option>
+                                    {courses.map((c: any) => (
+                                        <option key={c.course_id || c.id} value={c.course_id || c.id}>{c.title}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
                         <div>
-                            <label className="text-xs font-black text-slate-500 uppercase tracking-wider mb-1.5 block">Kurs Seç</label>
-                            <select
-                                value={form.course_id}
-                                onChange={(e) => setForm(f => ({ ...f, course_id: e.target.value }))}
-                                className="w-full h-11 rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            >
-                                <option value="">Kurs seçin...</option>
-                                {courses.map((c: any) => (
-                                    <option key={c.course_id || c.id} value={c.course_id || c.id}>{c.title}</option>
-                                ))}
-                            </select>
+                            <label htmlFor="ann-title" className={label}>Başlık</label>
+                            <input
+                                id="ann-title"
+                                placeholder="Örnek: 5. bölüme iki yeni ders eklendi"
+                                value={form.title}
+                                onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
+                                className={cn(field, 'h-11')}
+                            />
                         </div>
-                    )}
-
-                    <div>
-                        <label className="text-xs font-black text-slate-500 uppercase tracking-wider mb-1.5 block">Duyuru Başlığı</label>
-                        <Input
-                            placeholder="Örn: Yeni ders eklendi!"
-                            value={form.title}
-                            onChange={(e) => setForm(f => ({ ...f, title: e.target.value }))}
-                            className="h-11 rounded-xl border-slate-200 text-sm font-medium"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="text-xs font-black text-slate-500 uppercase tracking-wider mb-1.5 block">İçerik</label>
-                        <Textarea
-                            placeholder="Duyuru içeriğini yazın..."
-                            value={form.content}
-                            onChange={(e) => setForm(f => ({ ...f, content: e.target.value }))}
-                            className="min-h-[140px] rounded-xl border-slate-200 text-sm resize-none"
-                        />
-                    </div>
-
-                    <div className="flex justify-end gap-3 pt-2">
-                        <Button variant="ghost" onClick={() => { setShowForm(false); setEditingId(null); }} className="rounded-xl text-sm font-bold text-slate-400">
-                            İptal
-                        </Button>
-                        <Button
-                            onClick={handleSubmit}
-                            disabled={isPending}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-8 font-bold"
-                        >
-                            {isPending ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Kaydediliyor</> : <><Check className="w-4 h-4 mr-2" />{editingId ? 'Güncelle' : 'Yayınla'}</>}
-                        </Button>
-                    </div>
-                </div>
+                        <div>
+                            <label htmlFor="ann-content" className={label}>Duyuru metni</label>
+                            <textarea
+                                id="ann-content"
+                                placeholder="Öğrencilerine ne söylemek istiyorsun?"
+                                value={form.content}
+                                onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
+                                rows={6}
+                                className={cn(field, 'py-3 resize-y leading-relaxed')}
+                            />
+                        </div>
+                        <div className="flex justify-end gap-2 pt-1">
+                            <button type="button" onClick={closeForm} className={cn(btn.ghost, btn.md)}>Vazgeç</button>
+                            <button type="submit" disabled={isPending} className={cn(btn.primary, btn.md, 'min-w-[140px]')}>
+                                {isPending
+                                    ? <><Loader2 className="w-4 h-4 animate-spin" /> Kaydediliyor</>
+                                    : editingId ? 'Değişiklikleri kaydet' : 'Duyuruyu yayınla'}
+                            </button>
+                        </div>
+                    </form>
+                </Panel>
             )}
 
-            {/* Announcements List */}
-            {isLoading ? (
-                <div className="flex items-center justify-center py-20 bg-white rounded-2xl border border-slate-100">
-                    <div className="flex flex-col items-center gap-3">
-                        <Loader2 className="w-7 h-7 text-indigo-500 animate-spin" />
-                        <span className="text-sm text-slate-400 font-medium">Duyurular yükleniyor...</span>
-                    </div>
-                </div>
-            ) : announcements.length === 0 ? (
-                <div className="text-center py-20 bg-white rounded-2xl border border-slate-100">
-                    <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                        <Megaphone className="w-8 h-8 text-indigo-300" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-700 mb-2">Henüz duyuru yok</h3>
-                    <p className="text-sm text-slate-400">İlk duyurunuzu oluşturmak için "Yeni Duyuru" butonuna tıklayın.</p>
-                </div>
+            {announcements.length === 0 ? (
+                !showForm && (
+                    <Empty
+                        title="Henüz duyuru yapmadın"
+                        text="Yeni ders eklediğinde ya da canlı bir etkinlik planladığında öğrencilerine buradan haber ver."
+                        action={{ label: 'İlk duyuruyu yaz', onClick: () => setShowForm(true) }}
+                    />
+                )
             ) : (
-                <div className="space-y-4">
+                <Panel as="section" className="divide-y divide-[#e8f2f0]">
                     {announcements.map((ann: any) => {
                         const isExp = expandedId === ann.announcement_id;
                         return (
-                            <div key={ann.announcement_id} className={cn("bg-white rounded-2xl border transition-all duration-300 overflow-hidden", isExp ? "border-indigo-100 shadow-lg" : "border-slate-100")}>
-                                <button
-                                    onClick={() => setExpandedId(isExp ? null : ann.announcement_id)}
-                                    className="w-full text-left p-5 hover:bg-slate-50/50 transition-colors"
-                                >
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
-                                            <Megaphone className="w-5 h-5 text-indigo-500" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 flex-wrap mb-1">
-                                                <Badge variant="outline" className="text-[10px] bg-indigo-50 text-indigo-600 border-indigo-100 font-bold">
-                                                    <BookOpen className="w-3 h-3 mr-1" />{ann.course_title}
-                                                </Badge>
-                                                <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                                                    <Calendar className="w-3 h-3" />
-                                                    {new Date(ann.created_at).toLocaleDateString('tr-TR')}
-                                                </span>
-                                            </div>
-                                            <h3 className="text-base font-bold text-slate-900">{ann.title}</h3>
-                                        </div>
-                                        <div className="flex items-center gap-2 shrink-0">
-                                            <button onClick={(e) => { e.stopPropagation(); startEdit(ann); }} className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 flex items-center justify-center text-slate-400 transition-colors">
-                                                <Pencil className="w-3.5 h-3.5" />
-                                            </button>
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); if (confirm('Bu duyuruyu silmek istediğinizden emin misiniz?')) deleteMutation.mutate(ann.announcement_id); }}
-                                                className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-red-50 hover:text-red-500 flex items-center justify-center text-slate-400 transition-colors"
-                                            >
-                                                <Trash2 className="w-3.5 h-3.5" />
-                                            </button>
-                                            {isExp ? <ChevronUp className="w-4 h-4 text-slate-300" /> : <ChevronDown className="w-4 h-4 text-slate-300" />}
-                                        </div>
+                            <article key={ann.announcement_id} className="group">
+                                <div className="flex items-start gap-3 px-5 sm:px-6 py-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setExpandedId(isExp ? null : ann.announcement_id)}
+                                        aria-expanded={isExp}
+                                        className="flex-1 min-w-0 text-left rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45"
+                                    >
+                                        <span className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12.5px]">
+                                            <span className="font-bold text-[#005c55]">{ann.course_title}</span>
+                                            <span className="text-[#5f7774]">{new Date(ann.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                                        </span>
+                                        <span className="mt-1 flex items-center gap-2">
+                                            <span className="text-[15.5px] font-bold text-[#00201d]">{ann.title}</span>
+                                            <ChevronDown className={cn('w-4 h-4 text-[#5f7774] shrink-0 transition-transform duration-200', isExp && 'rotate-180')} />
+                                        </span>
+                                        {!isExp && (
+                                            <span className="block mt-1 text-[13.5px] text-[#4a6360] line-clamp-1">{ann.content}</span>
+                                        )}
+                                    </button>
+                                    <div className="flex items-center gap-1 shrink-0">
+                                        <button type="button" onClick={() => startEdit(ann)} className={cn(btn.ghost, btn.sm)}>
+                                            <Pencil className="w-3.5 h-3.5" /> Düzenle
+                                        </button>
+                                        <button
+                                            type="button"
+                                            aria-label="Duyuruyu sil"
+                                            onClick={() => { if (confirm('Bu duyuru silinsin mi? Öğrencilerin artık göremeyecek.')) deleteMutation.mutate(ann.announcement_id); }}
+                                            className={cn(btn.ghost, 'w-8 h-8 p-0 rounded-lg hover:bg-[#fff3f1] hover:text-[#b42318]')}
+                                        >
+                                            <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
                                     </div>
-                                </button>
+                                </div>
                                 {isExp && (
-                                    <div className="px-5 pb-5 border-t border-slate-50">
-                                        <p className="text-sm text-slate-600 leading-relaxed mt-4 whitespace-pre-wrap">{ann.content}</p>
-                                    </div>
+                                    <p className="px-5 sm:px-6 pb-5 -mt-1 text-[14.5px] text-[#1d3a37] leading-relaxed whitespace-pre-wrap max-w-[72ch]">
+                                        {ann.content}
+                                    </p>
                                 )}
-                            </div>
+                            </article>
                         );
                     })}
-                </div>
+                </Panel>
             )}
-        </div>
+        </>
     );
 }

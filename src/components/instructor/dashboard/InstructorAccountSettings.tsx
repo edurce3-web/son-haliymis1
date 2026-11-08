@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import {
-    Key, Mail, Loader2, Eye, EyeOff, ShieldCheck, ArrowLeft,
-    CheckCircle2, Circle, CalendarDays,
-} from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Circle, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { btn, field, label, Loading, PageHead, Panel, PanelHead } from '../shell/kit';
 
 type Step = 'form' | 'code';
 
@@ -66,9 +62,9 @@ export const InstructorAccountSettings: React.FC = () => {
 
     const requestCode = async (isResend = false) => {
         if (!isResend) {
-            if (!form.current_password) return toast.error('Mevcut şifrenizi girin');
-            if (!isPasswordValid) return toast.error('Yeni şifre güvenlik kriterlerini karşılamıyor');
-            if (!passwordsMatch) return toast.error('Yeni şifreler eşleşmiyor');
+            if (!form.current_password) return toast.error('Şu anki şifreni yaz');
+            if (!isPasswordValid) return toast.error('Yeni şifre kuralları karşılamıyor');
+            if (!passwordsMatch) return toast.error('İki yeni şifre aynı değil');
         }
 
         setBusy(true);
@@ -85,7 +81,7 @@ export const InstructorAccountSettings: React.FC = () => {
             setMaskedEmail(data.email || '');
             setStep('code');
             setResendIn(60);
-            toast.success('Doğrulama kodu gönderildi', { description: `${data.email} adresini kontrol edin.` });
+            toast.success('Doğrulama kodu gönderildi', { description: `${data.email} adresini kontrol et.` });
         } catch (e: any) {
             toast.error('Kod gönderilemedi', { description: e.message });
         } finally {
@@ -109,7 +105,7 @@ export const InstructorAccountSettings: React.FC = () => {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Şifre değiştirilemedi');
 
-            toast.success('Şifreniz güncellendi');
+            toast.success('Şifren değişti');
             setStep('form');
             setForm({ current_password: '', new_password: '', new_password_confirm: '', code: '' });
         } catch (e: any) {
@@ -119,202 +115,137 @@ export const InstructorAccountSettings: React.FC = () => {
         }
     };
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center py-32">
-                <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
-            </div>
-        );
-    }
+
+    if (loading) return <Loading label="Hesap bilgilerin yükleniyor" />;
 
     const eyeBtn = (key: keyof typeof show) => (
         <button
             type="button"
             onClick={() => setShow(s => ({ ...s, [key]: !s[key] }))}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            aria-label={show[key] ? 'Şifreyi gizle' : 'Şifreyi göster'}
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center text-[#5f7774] hover:text-[#00201d] hover:bg-[#e8faf6]"
         >
             {show[key] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>
     );
 
-    return (
-        <div className="space-y-6 max-w-3xl">
-            <div>
-                <h1 className="text-2xl font-bold text-slate-900">Hesap Ayarları</h1>
-                <p className="text-sm text-slate-500 mt-1">Giriş bilgilerin ve hesap güvenliğin.</p>
-            </div>
+    const Rule: React.FC<{ ok: boolean; children: React.ReactNode }> = ({ ok, children }) => (
+        <li className={cn('flex items-center gap-2 text-[13px]', ok ? 'text-[#005c55] font-semibold' : 'text-[#4a6360]')}>
+            {ok ? <CheckCircle2 className="w-4 h-4" /> : <Circle className="w-4 h-4 text-[#b9cfcb]" />}
+            {children}
+        </li>
+    );
 
-            {/* Hesap bilgileri */}
-            <section className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-                <header className="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-slate-400" />
-                    <h2 className="text-sm font-semibold text-slate-900">Hesap bilgileri</h2>
-                </header>
-                <div className="p-6 space-y-4">
-                    <div className="flex items-center justify-between py-2">
-                        <div>
-                            <p className="text-sm font-medium text-slate-700">E-posta</p>
-                            <p className="text-sm text-slate-500 mt-0.5">{account?.email || '—'}</p>
+    return (
+        <div className="max-w-3xl">
+            <PageHead title="Hesap ayarları" sub="Giriş bilgilerin ve hesabının güvenliği" />
+
+            <Panel as="section" className="mb-6">
+                <PanelHead title="Hesabın" />
+                <dl className="divide-y divide-[#eef5f3]">
+                    <div className="flex items-center justify-between gap-4 px-5 sm:px-6 py-4">
+                        <div className="min-w-0">
+                            <dt className="text-[13px] font-bold text-[#00201d]">E-posta</dt>
+                            <dd className="text-[14px] text-[#1d3a37] mt-0.5 truncate">{account?.email || '—'}</dd>
                         </div>
-                        <span className="text-xs text-slate-400">değiştirilemez</span>
+                        <span className="text-[12.5px] text-[#5f7774] shrink-0">Değiştirilemez</span>
                     </div>
                     {account?.created_at && (
-                        <div className="flex items-center justify-between py-2 border-t border-slate-50">
-                            <div className="flex items-center gap-2">
-                                <CalendarDays className="w-4 h-4 text-slate-300" />
-                                <p className="text-sm text-slate-600">Üyelik tarihi</p>
-                            </div>
-                            <span className="text-sm text-slate-500">
-                                {new Date(account.created_at).toLocaleDateString('tr-TR')}
-                            </span>
+                        <div className="flex items-center justify-between gap-4 px-5 sm:px-6 py-4">
+                            <dt className="text-[13px] font-bold text-[#00201d]">Üyelik tarihi</dt>
+                            <dd className="text-[14px] text-[#1d3a37] tabular-nums">
+                                {new Date(account.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                            </dd>
                         </div>
                     )}
-                </div>
-            </section>
+                </dl>
+            </Panel>
 
-            {/* Şifre değiştirme */}
-            <section className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-                <header className="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
-                    <Key className="w-4 h-4 text-slate-400" />
-                    <h2 className="text-sm font-semibold text-slate-900">Şifre değiştir</h2>
-                </header>
+            <Panel as="section">
+                <PanelHead
+                    title="Şifre değiştir"
+                    sub={step === 'form' ? 'Güvenlik için e-postana 6 haneli bir kod göndereceğiz; şifre kodu girince değişir.' : undefined}
+                />
 
                 {step === 'form' ? (
-                    <div className="p-6 space-y-5">
-                        <div className="space-y-1.5">
-                            <Label className="text-sm text-slate-700">Mevcut şifren</Label>
+                    <form
+                        className="p-5 sm:p-6 space-y-5"
+                        onSubmit={e => { e.preventDefault(); requestCode(false); }}
+                    >
+                        <div>
+                            <label htmlFor="ac-cur" className={label}>Şu anki şifren</label>
                             <div className="relative">
-                                <Input
-                                    type={show.current ? 'text' : 'password'}
-                                    value={form.current_password}
-                                    onChange={e => set('current_password', e.target.value)}
-                                    autoComplete="current-password"
-                                    className="h-11 rounded-xl border-slate-200 pr-10"
-                                />
+                                <input id="ac-cur" type={show.current ? 'text' : 'password'} value={form.current_password}
+                                    onChange={e => set('current_password', e.target.value)} autoComplete="current-password" className={cn(field, 'h-11 pr-11')} />
                                 {eyeBtn('current')}
                             </div>
                         </div>
-
-                        <div className="space-y-1.5">
-                            <Label className="text-sm text-slate-700">Yeni şifre</Label>
+                        <div>
+                            <label htmlFor="ac-new" className={label}>Yeni şifre</label>
                             <div className="relative">
-                                <Input
-                                    type={show.next ? 'text' : 'password'}
-                                    value={form.new_password}
-                                    onChange={e => set('new_password', e.target.value)}
-                                    autoComplete="new-password"
-                                    className="h-11 rounded-xl border-slate-200 pr-10"
-                                />
+                                <input id="ac-new" type={show.next ? 'text' : 'password'} value={form.new_password}
+                                    onChange={e => set('new_password', e.target.value)} autoComplete="new-password" className={cn(field, 'h-11 pr-11')} />
                                 {eyeBtn('next')}
                             </div>
-
-                            {pw.length > 0 && (
-                                <div className="bg-slate-50 rounded-xl p-3 mt-2 space-y-1.5">
-                                    <div className="flex items-center gap-2 text-xs">
-                                        {hasMinLength
-                                            ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                                            : <Circle className="w-3.5 h-3.5 text-slate-300" />}
-                                        <span className={hasMinLength ? 'text-emerald-600' : 'text-slate-500'}>
-                                            En az 8 karakter
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-xs">
-                                        {met >= 3
-                                            ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                                            : <Circle className="w-3.5 h-3.5 text-slate-300" />}
-                                        <span className={met >= 3 ? 'text-emerald-600' : 'text-slate-500'}>
-                                            Küçük harf, büyük harf, rakam, özel karakter — en az 3'ü ({met}/4)
-                                        </span>
-                                    </div>
-                                </div>
-                            )}
+                            <ul className="mt-2.5 space-y-1.5">
+                                <Rule ok={hasMinLength}>En az 8 karakter</Rule>
+                                <Rule ok={met >= 3}>Küçük harf, büyük harf, rakam, özel karakterden en az 3'ü ({met}/4)</Rule>
+                            </ul>
                         </div>
-
-                        <div className="space-y-1.5">
-                            <Label className="text-sm text-slate-700">Yeni şifre (tekrar)</Label>
+                        <div>
+                            <label htmlFor="ac-rep" className={label}>Yeni şifre, tekrar</label>
                             <div className="relative">
-                                <Input
-                                    type={show.confirm ? 'text' : 'password'}
-                                    value={form.new_password_confirm}
-                                    onChange={e => set('new_password_confirm', e.target.value)}
-                                    autoComplete="new-password"
-                                    className="h-11 rounded-xl border-slate-200 pr-10"
-                                />
+                                <input id="ac-rep" type={show.confirm ? 'text' : 'password'} value={form.new_password_confirm}
+                                    onChange={e => set('new_password_confirm', e.target.value)} autoComplete="new-password"
+                                    aria-invalid={form.new_password_confirm.length > 0 && !passwordsMatch}
+                                    className={cn(field, 'h-11 pr-11')} />
                                 {eyeBtn('confirm')}
                             </div>
                             {form.new_password_confirm.length > 0 && !passwordsMatch && (
-                                <p className="text-xs text-red-500">Şifreler eşleşmiyor.</p>
+                                <p className="mt-1.5 text-[12.5px] font-semibold text-[#b42318]">İki şifre aynı değil.</p>
                             )}
                         </div>
-
-                        <div className="flex items-start gap-2 bg-blue-50 rounded-xl p-3">
-                            <ShieldCheck className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-                            <p className="text-xs text-blue-700 leading-relaxed">
-                                Güvenlik için e-posta adresine 6 haneli bir doğrulama kodu göndereceğiz.
-                                Şifre ancak kodu girdikten sonra değişir.
-                            </p>
-                        </div>
-
-                        <Button
-                            onClick={() => requestCode(false)}
+                        <button
+                            type="submit"
                             disabled={busy || !form.current_password || !isPasswordValid || !passwordsMatch}
-                            className="h-11 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-700"
+                            className={cn(btn.primary, btn.lg)}
                         >
-                            {busy ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Gönderiliyor</> : 'Doğrulama kodu gönder'}
-                        </Button>
-                    </div>
+                            {busy ? <><Loader2 className="w-4 h-4 animate-spin" /> Gönderiliyor</> : 'Doğrulama kodu gönder'}
+                        </button>
+                    </form>
                 ) : (
-                    <div className="p-6 space-y-5">
-                        <div className="flex items-center justify-center py-2">
-                            <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center">
-                                <Mail className="w-6 h-6 text-indigo-600" />
-                            </div>
-                        </div>
-
-                        <p className="text-sm text-slate-600 text-center">
-                            <span className="font-medium">{maskedEmail}</span> adresine 6 haneli bir kod gönderdik.
+                    <form
+                        className="p-5 sm:p-6"
+                        onSubmit={e => { e.preventDefault(); if (form.code.length === 6) confirmChange(); }}
+                    >
+                        <p className="text-[14.5px] text-[#1d3a37]">
+                            <b className="font-bold text-[#00201d]">{maskedEmail}</b> adresine 6 haneli bir kod gönderdik. Kod 10 dakika geçerli.
                         </p>
-
-                        <div className="space-y-1.5 max-w-xs mx-auto">
-                            <Input
-                                value={form.code}
-                                onChange={e => set('code', e.target.value.replace(/\D/g, '').slice(0, 6))}
-                                inputMode="numeric"
-                                autoComplete="one-time-code"
-                                placeholder="000000"
-                                className="h-14 rounded-xl border-slate-200 text-center text-2xl font-semibold tracking-[0.5em] indent-[0.5em]"
-                            />
-                            <p className="text-xs text-slate-400 text-center">Kod 10 dakika geçerlidir.</p>
+                        <label htmlFor="ac-code" className="sr-only">Doğrulama kodu</label>
+                        <input
+                            id="ac-code"
+                            value={form.code}
+                            onChange={e => set('code', e.target.value.replace(/\D/g, '').slice(0, 6))}
+                            inputMode="numeric"
+                            autoComplete="one-time-code"
+                            autoFocus
+                            placeholder="000000"
+                            className={cn(field, 'mt-4 h-14 max-w-[260px] text-center text-[26px] font-extrabold tabular-nums tracking-[0.45em] indent-[0.45em]')}
+                        />
+                        <div className="mt-5 flex flex-wrap items-center gap-2">
+                            <button type="submit" disabled={busy || form.code.length !== 6} className={cn(btn.primary, btn.lg)}>
+                                {busy ? <><Loader2 className="w-4 h-4 animate-spin" /> Değiştiriliyor</> : 'Şifreyi değiştir'}
+                            </button>
+                            <button type="button" onClick={() => requestCode(true)} disabled={resendIn > 0 || busy} className={cn(btn.ghost, btn.lg)}>
+                                {resendIn > 0 ? `Tekrar gönder (${resendIn} sn)` : 'Kodu tekrar gönder'}
+                            </button>
+                            <button type="button" onClick={() => setStep('form')} className={cn(btn.ghost, btn.lg)}>
+                                <ArrowLeft className="w-4 h-4" /> Geri
+                            </button>
                         </div>
-
-                        <div className="flex flex-col items-center gap-3">
-                            <Button
-                                onClick={confirmChange}
-                                disabled={busy || form.code.length !== 6}
-                                className="h-11 px-8 rounded-xl bg-indigo-600 hover:bg-indigo-700"
-                            >
-                                {busy ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Değiştiriliyor</> : 'Şifreyi değiştir'}
-                            </Button>
-
-                            <div className="flex items-center gap-4">
-                                <button
-                                    onClick={() => setStep('form')}
-                                    className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-700"
-                                >
-                                    <ArrowLeft className="w-3.5 h-3.5" /> Geri
-                                </button>
-                                <button
-                                    onClick={() => requestCode(true)}
-                                    disabled={resendIn > 0 || busy}
-                                    className="text-xs font-medium text-indigo-600 hover:underline disabled:text-slate-400 disabled:no-underline"
-                                >
-                                    {resendIn > 0 ? `Tekrar gönder (${resendIn}s)` : 'Kodu tekrar gönder'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    </form>
                 )}
-            </section>
+            </Panel>
         </div>
     );
 };

@@ -48,21 +48,21 @@ const ChartTooltip = ({ active, payload }: any) => {
     if (!active || !payload?.length) return null;
     const d = payload[0].payload as Bucket;
     return (
-        <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg text-[13px] min-w-[190px]">
-            <p className="font-semibold text-slate-900 mb-2">{d.fullLabel}</p>
+        <div className="rounded-lg border border-[#dcebe8] bg-white p-3 shadow-lg text-[13px] min-w-[190px]">
+            <p className="font-semibold text-[#00201d] mb-2">{d.fullLabel}</p>
             <div className="flex justify-between gap-6">
-                <span className="text-slate-500">Brüt satış</span>
-                <span className="text-slate-800 font-medium">{money(d.gross)}</span>
+                <span className="text-[#4a6360]">Brüt satış</span>
+                <span className="text-[#00201d] font-medium">{money(d.gross)}</span>
             </div>
             <div className="flex justify-between gap-6">
-                <span className="text-slate-500">Vergi (%20)</span>
-                <span className="text-slate-800">−{money(d.tax)}</span>
+                <span className="text-[#4a6360]">Vergi (%20)</span>
+                <span className="text-[#00201d]">−{money(d.tax)}</span>
             </div>
-            <div className="flex justify-between gap-6 mt-1.5 pt-1.5 border-t border-slate-100">
-                <span className="text-slate-600 font-medium">Net kazancın</span>
-                <span className="text-emerald-600 font-semibold">{money(d.instructor)}</span>
+            <div className="flex justify-between gap-6 mt-1.5 pt-1.5 border-t border-[#e8f2f0]">
+                <span className="text-[#1d3a37] font-medium">Net kazancın</span>
+                <span className="text-[#005c55] font-semibold">{money(d.instructor)}</span>
             </div>
-            <p className="text-slate-400 text-xs mt-1.5">{d.count} satış</p>
+            <p className="text-[#5f7774] text-xs mt-1.5">{d.count} satış</p>
         </div>
     );
 };
@@ -120,16 +120,16 @@ export const RevenueChart: React.FC<Props> = ({
         <div className={className}>
             {/* Görünüm kontrolleri */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                <div className="inline-flex bg-slate-100 rounded-lg p-0.5">
+                <div className="inline-flex bg-[#e3f6f2] rounded-xl p-1">
                     {([['month', 'Aylık'], ['year', 'Yıllık']] as const).map(([key, label]) => (
                         <button
                             key={key}
                             onClick={() => setMode(key)}
                             className={cn(
-                                'px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
+                                'px-3.5 py-1.5 rounded-lg text-[13px] font-bold transition-colors',
                                 mode === key
-                                    ? 'bg-white text-slate-900 shadow-sm'
-                                    : 'text-slate-500 hover:text-slate-700'
+                                    ? 'bg-[#00201d] text-[#9cf2e8]'
+                                    : 'text-[#4a6360] hover:text-[#00201d]'
                             )}
                         >
                             {label}
@@ -142,18 +142,18 @@ export const RevenueChart: React.FC<Props> = ({
                         <button
                             onClick={() => canPrev && setYear(years[yearIndex - 1])}
                             disabled={!canPrev}
-                            className="p-1.5 rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30 disabled:hover:bg-transparent"
+                            className="p-1.5 rounded-md text-[#5f7774] hover:bg-[#e8faf6] hover:text-[#00201d] disabled:opacity-30 disabled:hover:bg-transparent"
                             aria-label="Önceki yıl"
                         >
                             <ChevronLeft className="w-4 h-4" />
                         </button>
-                        <span className="text-sm font-semibold text-slate-800 tabular-nums w-12 text-center">
+                        <span className="text-sm font-semibold text-[#00201d] tabular-nums w-12 text-center">
                             {year}
                         </span>
                         <button
                             onClick={() => canNext && setYear(years[yearIndex + 1])}
                             disabled={!canNext}
-                            className="p-1.5 rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30 disabled:hover:bg-transparent"
+                            className="p-1.5 rounded-md text-[#5f7774] hover:bg-[#e8faf6] hover:text-[#00201d] disabled:opacity-30 disabled:hover:bg-transparent"
                             aria-label="Sonraki yıl"
                         >
                             <ChevronRight className="w-4 h-4" />
@@ -165,12 +165,12 @@ export const RevenueChart: React.FC<Props> = ({
             {/* Seçili aralığın özeti */}
             <div className="flex flex-wrap gap-x-8 gap-y-2 mb-4">
                 {[
-                    { label: 'Brüt satış', value: money(totals.gross), tone: 'text-slate-900' },
-                    { label: 'Net kazanç', value: money(totals.net), tone: 'text-emerald-600' },
-                    { label: 'Satış', value: String(totals.count), tone: 'text-slate-900' },
+                    { label: 'Brüt satış', value: money(totals.gross), tone: 'text-[#00201d]' },
+                    { label: 'Net kazanç', value: money(totals.net), tone: 'text-[#005c55]' },
+                    { label: 'Satış', value: String(totals.count), tone: 'text-[#00201d]' },
                 ].map(s => (
                     <div key={s.label}>
-                        <p className="text-[11px] text-slate-400">{s.label}</p>
+                        <p className="text-[11px] text-[#5f7774]">{s.label}</p>
                         <p className={cn('text-sm font-semibold', s.tone)}>{s.value}</p>
                     </div>
                 ))}
@@ -178,11 +178,11 @@ export const RevenueChart: React.FC<Props> = ({
 
             {!hasData ? (
                 <div style={{ height }} className="flex flex-col items-center justify-center text-center">
-                    <BarChart3 className="w-9 h-9 text-slate-200 mb-3" />
-                    <p className="text-sm font-medium text-slate-600">
+                    <BarChart3 className="w-9 h-9 text-[#cfe3df] mb-3" />
+                    <p className="text-sm font-medium text-[#1d3a37]">
                         {mode === 'month' ? `${year} yılında satış yok` : 'Henüz satış yok'}
                     </p>
-                    <p className="text-xs text-slate-400 mt-1 max-w-xs">
+                    <p className="text-xs text-[#5f7774] mt-1 max-w-xs">
                         {years.length > 1 && mode === 'month'
                             ? 'Diğer yıllara bakmak için oklarla gezinebilirsin.'
                             : 'İlk satışından sonra kazancın burada grafiğe dönüşecek.'}
@@ -193,75 +193,75 @@ export const RevenueChart: React.FC<Props> = ({
                     <ResponsiveContainer width="100%" height="100%">
                         {variant === 'composed' ? (
                             <ComposedChart data={data} margin={{ top: 10, right: 8, left: 0, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e8f2f0" />
                                 <XAxis
                                     dataKey="label"
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: '#64748b', fontSize: 11 }}
+                                    tick={{ fill: '#4a6360', fontSize: 11 }}
                                     interval={0}
                                     dy={8}
                                 />
                                 <YAxis
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: '#94a3b8', fontSize: 11 }}
+                                    tick={{ fill: '#6b827f', fontSize: 11 }}
                                     tickFormatter={compactMoney}
                                     width={58}
                                 />
-                                <Tooltip cursor={{ fill: '#f8fafc' }} content={<ChartTooltip />} />
+                                <Tooltip cursor={{ fill: '#f2fbf9' }} content={<ChartTooltip />} />
                                 <Legend
                                     verticalAlign="top"
                                     height={30}
                                     iconType="circle"
                                     iconSize={8}
-                                    wrapperStyle={{ fontSize: 12, color: '#64748b' }}
+                                    wrapperStyle={{ fontSize: 12, color: '#4a6360' }}
                                 />
                                 {/* Çubuk brüt satış, çizgi net kazanç: aradaki fark vergi + platform payı */}
                                 <Bar dataKey="gross" name="Brüt satış" radius={[4, 4, 0, 0]} maxBarSize={38}>
                                     {data.map((_, i) => (
-                                        <Cell key={i} fill={i === highlightIndex ? '#c7d2fe' : '#e2e8f0'} />
+                                        <Cell key={i} fill={i === highlightIndex ? '#9cf2e8' : '#d9f3ee'} />
                                     ))}
                                 </Bar>
                                 <Line
                                     type="monotone"
                                     dataKey="instructor"
                                     name="Net kazancın"
-                                    stroke="#059669"
+                                    stroke="#00201d"
                                     strokeWidth={2.5}
-                                    dot={{ r: 3, fill: '#059669', strokeWidth: 0 }}
+                                    dot={{ r: 3, fill: '#00201d', strokeWidth: 0 }}
                                     activeDot={{ r: 5 }}
                                 />
                             </ComposedChart>
                         ) : (
                             <BarChart data={data} margin={{ top: 24, right: 8, left: 0, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e8f2f0" />
                                 <XAxis
                                     dataKey="label"
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: '#64748b', fontSize: 11 }}
+                                    tick={{ fill: '#4a6360', fontSize: 11 }}
                                     interval={0}
                                     dy={8}
                                 />
                                 <YAxis
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: '#94a3b8', fontSize: 11 }}
+                                    tick={{ fill: '#6b827f', fontSize: 11 }}
                                     tickFormatter={compactMoney}
                                     width={58}
                                 />
-                                <Tooltip cursor={{ fill: '#f8fafc' }} content={<ChartTooltip />} />
+                                <Tooltip cursor={{ fill: '#f2fbf9' }} content={<ChartTooltip />} />
                                 <Bar dataKey="instructor" radius={[6, 6, 0, 0]} maxBarSize={46}>
                                     {/* Tutar çubuğun üstünde sabit dursun — üzerine gelmeden de okunsun */}
                                     <LabelList
                                         dataKey="instructor"
                                         position="top"
                                         formatter={(v: number) => (v > 0 ? compactMoney(v) : '')}
-                                        style={{ fill: '#475569', fontSize: 10, fontWeight: 600 }}
+                                        style={{ fill: '#1d3a37', fontSize: 10, fontWeight: 600 }}
                                     />
                                     {data.map((_, i) => (
-                                        <Cell key={i} fill={i === highlightIndex ? '#4f46e5' : '#a5b4fc'} />
+                                        <Cell key={i} fill={i === highlightIndex ? '#00201d' : '#9cf2e8'} />
                                     ))}
                                 </Bar>
                             </BarChart>
