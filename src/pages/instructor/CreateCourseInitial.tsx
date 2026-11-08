@@ -1,24 +1,22 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-
+import { cn } from '@/lib/utils';
+import { API_BASE_URL } from '@/lib/api';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
+import InstructorShell from '@/components/instructor/shell/InstructorShell';
+import { btn, field, hint, label } from '@/components/instructor/shell/kit';
 
 /**
  * Kurs taslağı oluşturma — kurs oluşturucunun ilk adımı.
  *
- * Sayfa bilinçle küçük tutuldu: üç alan ve bir düğme. Alan etiketlerindeki
- * simgeler kaldırıldı; her satıra bir simge koymak formu kalabalıklaştırıyor,
- * hiçbir bilgi eklemiyordu.
+ * Panelin içinde açılıyor; menü yerinde kalıyor. Solda üç alan, sağda
+ * yazdıkça dolan küçük bir kurs kartı önizlemesi: eğitmen başlığın
+ * katalogda nasıl duracağını yazarken görüyor.
  *
- * Alt kategori artık zorunlu. Boş bırakılan kurslar kategori sayfalarının
- * alt dallarında hiç görünmüyor, eğitmen de kursunu neden bulamadığını
- * anlamıyordu.
+ * Alt kategori zorunlu. Boş bırakılan kurslar kategori sayfalarının alt
+ * dallarında hiç görünmüyor.
  */
 export const CreateCourseInitial: React.FC = () => {
     const navigate = useNavigate();
@@ -27,175 +25,154 @@ export const CreateCourseInitial: React.FC = () => {
     const [subcategoryId, setSubcategoryId] = useState<string>('');
     const [loading, setLoading] = useState(false);
 
-    const apiBase = (window as any)?.__API_BASE__ || (import.meta as any)?.env?.VITE_API_URL || 'https://api.edurce.com';
-
-    // Kategoriler veritabanından gelmeli: sabit listedeki id'ler gerçek
-    // category_id değerleriyle örtüşmüyordu, kurslar yanlış kategoriye yazılıyordu.
+    // Kategoriler veritabanından geliyor; sabit liste gerçek id'lerle örtüşmüyordu.
     const { data: navData } = useCategoryNav();
-    const categories = navData?.categories || [];
-    const selectedCategoryObj = categories.find(c => String(c.id) === categoryId);
-    const subcategories = selectedCategoryObj ? selectedCategoryObj.subcategories : [];
+    const categories = (navData?.categories || []).filter(c => c.id != null);
+    const selectedCategory = categories.find(c => String(c.id) === categoryId);
+    const subcategories = (selectedCategory?.subcategories || []).filter(c => c.id != null);
+    const selectedSub = subcategories.find(c => String(c.id) === subcategoryId);
 
     // Seçili kategoride alt dal yoksa zorunluluk aranmaz
     const needsSubcategory = subcategories.length > 0;
     const canSubmit = Boolean(title.trim() && categoryId && (!needsSubcategory || subcategoryId));
 
-    const fieldClass =
-        'h-12 rounded-xl border border-slate-200 bg-white text-[15px] px-4 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-colors';
-
     const handleCreate = async () => {
-        if (!canSubmit) return;
-
+        if (!canSubmit || loading) return;
         setLoading(true);
         try {
             const token = localStorage.getItem('token') || localStorage.getItem('authToken');
-            const res = await fetch(`${apiBase}/api/instructor/courses`, {
+            const res = await fetch(`${API_BASE_URL}/instructor/courses`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    ...(token ? { Authorization: `Bearer ${token}` } : {})
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
                 },
                 body: JSON.stringify({
-                    title,
+                    title: title.trim(),
                     category_id: categoryId,
                     subcategory_id: subcategoryId || null,
-                    status: 'draft'
+                    status: 'draft',
                 }),
-                credentials: 'include'
+                credentials: 'include',
             });
-
             const data = await res.json();
             if (res.ok && data.success) {
-                toast.success('Kurs taslağı oluşturuldu');
+                toast.success('Taslağın hazır. Şimdi ayrıntıları ekleyelim.');
                 navigate(`/instructor/courses/edit/${data.id}`);
             } else {
-                toast.error(data.error || 'Kurs oluşturulamadı');
+                toast.error(data.error || 'Kurs oluşturulamadı. Tekrar dene.');
             }
-        } catch (err) {
-            console.error('Create error:', err);
-            toast.error('Sunucuya bağlanılamadı');
+        } catch {
+            toast.error('Sunucuya bağlanılamadı. İnternet bağlantını kontrol et.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-white">
-            {/* Üst bant — platformun diğer sayfalarındaki açık yeşil zemin */}
-            <div className="relative border-b border-brand-100 bg-gradient-to-br from-brand-50 via-brand-100/60 to-white">
-                <div
-                    aria-hidden
-                    className="absolute inset-0 opacity-40"
-                    style={{
-                        backgroundImage:
-                            'linear-gradient(to right, rgba(23,93,93,0.06) 1px, transparent 1px),'
-                            + 'linear-gradient(to bottom, rgba(23,93,93,0.06) 1px, transparent 1px)',
-                        backgroundSize: '34px 34px',
-                    }}
-                />
-                <div className="container relative mx-auto px-5 sm:px-8 max-w-3xl py-8 lg:py-10">
-                    <button
-                        onClick={() => navigate('/instructor')}
-                        className="inline-flex items-center gap-2 text-[13.5px] font-semibold text-slate-500 hover:text-brand-800 transition-colors mb-5"
-                    >
-                        <ArrowLeft className="w-4 h-4" />
-                        Eğitmen paneline dön
-                    </button>
+        <InstructorShell>
+            <Link
+                to="/instructor/courses/list"
+                className="inline-flex items-center gap-1.5 -ml-1 px-1 h-7 rounded-md text-[13px] font-semibold text-[#4a6360] hover:text-[#00201d] transition-colors mb-2"
+            >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Kurslarım
+            </Link>
+            <h1 className="text-[28px] sm:text-[32px] leading-[1.1] font-extrabold tracking-[-0.025em] text-[#00201d]">
+                Yeni kurs
+            </h1>
+            <p className="mt-2 text-[14.5px] text-[#4a6360] max-w-xl">
+                Önce başlık ve kategori. Bölümleri, dersleri ve fiyatı taslağı açtıktan sonra eklersin;
+                hepsi sonradan değişebilir.
+            </p>
 
-                    <h1 className="font-montserrat text-[28px] sm:text-[34px] font-extrabold text-slate-900 tracking-[-0.025em] leading-tight">
-                        Yeni kurs oluştur
-                    </h1>
-                    <p className="text-[15px] text-slate-600 mt-2.5 max-w-xl leading-relaxed">
-                        Başlık ve kategoriyi seç, taslağın hazır olsun. Bölümleri, dersleri
-                        ve fiyatı bir sonraki adımda ekleyeceksin.
-                    </p>
-                </div>
-            </div>
-
-            <div className="container mx-auto px-5 sm:px-8 max-w-3xl py-10">
-                <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 space-y-7">
-
-                    <div className="space-y-2">
-                        <Label htmlFor="course-title" className="text-[14px] font-semibold text-slate-800">
-                            Kurs başlığı
-                        </Label>
-                        <Input
+            <div className="mt-8 grid lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
+                <form
+                    onSubmit={e => { e.preventDefault(); handleCreate(); }}
+                    className="rounded-2xl bg-white ring-1 ring-[#dcebe8] shadow-[0_1px_2px_rgba(0,32,29,0.04)] p-5 sm:p-8 space-y-7"
+                >
+                    <div>
+                        <label htmlFor="course-title" className={label}>Kursun adı</label>
+                        <input
                             id="course-title"
-                            placeholder="Örn: Sıfırdan İleri Seviye React"
-                            className={fieldClass}
+                            autoFocus
+                            placeholder="Örnek: Sıfırdan ileri seviye React"
+                            className={cn(field, 'h-12 text-[16px] font-semibold')}
                             value={title}
                             maxLength={120}
-                            onChange={(e) => setTitle(e.target.value)}
+                            onChange={e => setTitle(e.target.value)}
                         />
-                        <p className="text-[12.5px] text-slate-500">
-                            Başlığı sonradan değiştirebilirsin.
+                        <p className={cn(hint, 'mt-1.5 flex justify-between gap-3')}>
+                            <span>Öğrencinin aradığı kelimeleri kullan.</span>
+                            <span className="tabular-nums shrink-0">{title.length}/120</span>
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <div className="space-y-2">
-                            <Label className="text-[14px] font-semibold text-slate-800">Kategori</Label>
-                            <Select
-                                onValueChange={(v) => { setCategoryId(v); setSubcategoryId(''); }}
+                    <div className="grid sm:grid-cols-2 gap-5">
+                        <div>
+                            <label htmlFor="course-cat" className={label}>Kategori</label>
+                            <select
+                                id="course-cat"
                                 value={categoryId}
+                                onChange={e => { setCategoryId(e.target.value); setSubcategoryId(''); }}
+                                className={cn(field, 'h-12')}
                             >
-                                <SelectTrigger className={fieldClass}>
-                                    <SelectValue placeholder="Kategori seç" />
-                                </SelectTrigger>
-                                <SelectContent className="rounded-xl">
-                                    {categories.filter(c => c.id != null).map((cat) => (
-                                        <SelectItem key={cat.id} value={cat.id.toString()} className="py-2.5 cursor-pointer">
-                                            {cat.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                <option value="">Kategori seç</option>
+                                {categories.map(cat => (
+                                    <option key={cat.id} value={String(cat.id)}>{cat.name}</option>
+                                ))}
+                            </select>
                         </div>
-
-                        <div className="space-y-2">
-                            <Label className="text-[14px] font-semibold text-slate-800">Alt kategori</Label>
-                            <Select
-                                onValueChange={setSubcategoryId}
+                        <div>
+                            <label htmlFor="course-sub" className={label}>Alt kategori</label>
+                            <select
+                                id="course-sub"
                                 value={subcategoryId}
+                                onChange={e => setSubcategoryId(e.target.value)}
                                 disabled={!categoryId || !needsSubcategory}
+                                className={cn(field, 'h-12')}
                             >
-                                <SelectTrigger className={fieldClass}>
-                                    <SelectValue
-                                        placeholder={
-                                            !categoryId ? 'Önce kategori seç'
-                                                : !needsSubcategory ? 'Bu kategoride alt dal yok'
-                                                    : 'Alt kategori seç'
-                                        }
-                                    />
-                                </SelectTrigger>
-                                <SelectContent className="rounded-xl">
-                                    {subcategories.filter(c => c.id != null).map((sub) => (
-                                        <SelectItem key={sub.id} value={sub.id.toString()} className="py-2.5 cursor-pointer">
-                                            {sub.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <p className="text-[12.5px] text-slate-500">
-                                Kursun doğru listede çıkması için gerekli.
+                                <option value="">
+                                    {!categoryId ? 'Önce kategori seç' : !needsSubcategory ? 'Bu kategoride alt dal yok' : 'Alt kategori seç'}
+                                </option>
+                                {subcategories.map(sub => (
+                                    <option key={sub.id} value={String(sub.id)}>{sub.name}</option>
+                                ))}
+                            </select>
+                            <p className={cn(hint, 'mt-1.5')}>Kursun doğru listede çıkması için gerekli.</p>
+                        </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-[#e8f2f0] flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3">
+                        <p className="text-[13px] text-[#4a6360]">Taslak yalnızca sana görünür.</p>
+                        <button type="submit" disabled={loading || !canSubmit} className={cn(btn.primary, btn.lg, 'min-w-[200px]')}>
+                            {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Taslak açılıyor</> : 'Taslağı oluştur'}
+                        </button>
+                    </div>
+                </form>
+
+                {/* Önizleme: katalogdaki kart */}
+                <aside aria-label="Kart önizlemesi" className="lg:sticky lg:top-8">
+                    <p className="text-[13px] font-bold text-[#4a6360] mb-2.5">Katalogda böyle görünecek</p>
+                    <div className="rounded-2xl bg-white ring-1 ring-[#dcebe8] overflow-hidden shadow-[0_14px_30px_-18px_rgba(0,32,29,0.35)]">
+                        <div className="aspect-video bg-[linear-gradient(135deg,#d9f3ee,#9cf2e8)] flex items-end p-4">
+                            <span className="text-[12px] font-bold text-[#00483f]">Kapak görselini sonraki adımda eklersin</span>
+                        </div>
+                        <div className="p-4">
+                            <p className={cn(
+                                'text-[15.5px] font-extrabold leading-snug line-clamp-2 min-h-[2.6em]',
+                                title.trim() ? 'text-[#00201d]' : 'text-[#9bb0ad]'
+                            )}>
+                                {title.trim() || 'Kursunun adı burada görünecek'}
+                            </p>
+                            <p className="mt-1.5 text-[12.5px] text-[#4a6360] truncate">
+                                {[selectedCategory?.name, selectedSub?.name].filter(Boolean).join(' · ') || 'Kategori'}
                             </p>
                         </div>
                     </div>
-
-                    <div className="pt-1">
-                        <Button
-                            onClick={handleCreate}
-                            disabled={loading || !canSubmit}
-                            className="w-full sm:w-auto h-12 px-8 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-semibold text-[15px] disabled:opacity-50"
-                        >
-                            {loading
-                                ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Oluşturuluyor</>
-                                : 'Taslağı oluştur'}
-                        </Button>
-                    </div>
-                </div>
+                </aside>
             </div>
-        </div>
+        </InstructorShell>
     );
 };
 

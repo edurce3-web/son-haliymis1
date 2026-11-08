@@ -33,6 +33,7 @@ import Help from "./pages/Help";
 import Terms from "./pages/Terms";
 import Instructor from "./pages/Instructor";
 import ProfessionalInstructorDashboard from './components/instructor/ProfessionalInstructorDashboard';
+import InstructorShell from './components/instructor/shell/InstructorShell';
 
 import NotFound from "./pages/NotFound";
 import AllCourses from "./pages/AllCourses";
@@ -150,7 +151,9 @@ const App = () => (
                 } />
                 <Route path="/instructor/courses/edit/:id" element={
                   <ProtectedRoute requiresAuth={true} requiresInstructor={true}>
-                    <AdvancedCourseCreator />
+                    <InstructorShell>
+                      <AdvancedCourseCreator />
+                    </InstructorShell>
                   </ProtectedRoute>
                 } />
                 <Route path="/course-preview/:id" element={

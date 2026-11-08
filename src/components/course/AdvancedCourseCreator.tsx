@@ -1986,19 +1986,19 @@ export default function AdvancedCourseCreator() {
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-10 animate-in fade-in slide-in-from-bottom-5 duration-700">
+          <div className="space-y-8 animate-in fade-in duration-300">
             {/* Main Info & Media Grid */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
               {/* Left Side: Core Details */}
               <div className="space-y-8">
                 <div className="relative group">
                   <div className="flex items-center justify-between mb-3">
-                    <Label htmlFor="title" className="text-base font-bold text-slate-700 dark:text-slate-300">Kurs Başlığı</Label>
+                    <Label htmlFor="title" className="text-base font-bold text-[#1d3a37] dark:text-slate-300">Kurs Başlığı</Label>
                   </div>
                   <Input
                     id="title"
                     placeholder="Örn: Modern Web Geliştirme Masterclass"
-                    className={`h-14 px-5 rounded-2xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-lg font-medium ${validationErrors.title ? 'border-red-500 bg-red-50/30' : ''}`}
+                    className={`h-14 px-5 rounded-2xl border-[#dcebe8] dark:border-slate-800 bg-white dark:bg-slate-900 focus:ring-4 focus:ring-[#005c55]/10 focus:border-[#005c55] transition-all text-lg font-medium ${validationErrors.title ? 'border-red-500 bg-red-50/30' : ''}`}
                     value={courseData.title}
                     onChange={(e) => {
                       setCourseData(prev => ({ ...prev, title: e.target.value }));
@@ -2011,11 +2011,11 @@ export default function AdvancedCourseCreator() {
                 </div>
 
                 <div className="space-y-3">
-                  <Label htmlFor="subtitle" className="text-base font-bold text-slate-700 dark:text-slate-300">Kurs Alt Başlığı</Label>
+                  <Label htmlFor="subtitle" className="text-base font-bold text-[#1d3a37] dark:text-slate-300">Kurs Alt Başlığı</Label>
                   <Input
                     id="subtitle"
                     placeholder="Sıfırdan başlayarak profesyonel seviyeye ulaşın"
-                    className={`h-12 px-5 rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all ${validationErrors.subtitle ? 'border-red-500 bg-red-50/30' : ''}`}
+                    className={`h-12 px-5 rounded-xl border-[#dcebe8] dark:border-slate-800 bg-white dark:bg-slate-900 focus:ring-4 focus:ring-[#005c55]/10 focus:border-[#005c55] transition-all ${validationErrors.subtitle ? 'border-red-500 bg-red-50/30' : ''}`}
                     value={courseData.subtitle}
                     onChange={(e) => {
                       setCourseData(prev => ({ ...prev, subtitle: e.target.value }));
@@ -2027,13 +2027,13 @@ export default function AdvancedCourseCreator() {
 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="description" className="text-base font-bold text-slate-700 dark:text-slate-300">Kurs Açıklaması</Label>
+                    <Label htmlFor="description" className="text-base font-bold text-[#1d3a37] dark:text-slate-300">Kurs Açıklaması</Label>
                   </div>
                   <Textarea
                     id="description"
                     placeholder="Öğrencileriniz bu kursta ne öğrenecek? Onları heyecanlandırın!"
                     rows={8}
-                    className={`px-5 py-4 rounded-2xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all leading-relaxed resize-none ${validationErrors.description ? 'border-red-500 bg-red-50/30' : ''}`}
+                    className={`px-5 py-4 rounded-2xl border-[#dcebe8] dark:border-slate-800 bg-white dark:bg-slate-900 focus:ring-4 focus:ring-[#005c55]/10 focus:border-[#005c55] transition-all leading-relaxed resize-none ${validationErrors.description ? 'border-red-500 bg-red-50/30' : ''}`}
                     value={courseData.description}
                     onChange={(e) => {
                       setCourseData(prev => ({ ...prev, description: e.target.value }));
@@ -2048,9 +2048,9 @@ export default function AdvancedCourseCreator() {
               <div className="space-y-8">
                 {/* Thumbnail Upload */}
                 <div className="space-y-4">
-                  <Label className="text-base font-bold text-slate-700 dark:text-slate-300">İlgi Çekici Bir Kapak Görseli</Label>
+                  <Label className="text-base font-bold text-[#1d3a37] dark:text-slate-300">İlgi Çekici Bir Kapak Görseli</Label>
                   <div
-                    className="group relative h-64 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-[32px] overflow-hidden bg-slate-50 dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-900 hover:border-indigo-400 dark:hover:border-indigo-500 transition-all duration-500 cursor-pointer"
+                    className="group relative h-64 border-2 border-dashed border-[#dcebe8] dark:border-slate-800 rounded-2xl overflow-hidden bg-[#f4faf8] dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-900 hover:border-[#5fb8ac] dark:hover:border-indigo-500 transition-all duration-500 cursor-pointer"
                     onClick={() => imageInputRef.current?.click()}
                   >
                     <input ref={imageInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
@@ -2059,19 +2059,19 @@ export default function AdvancedCourseCreator() {
                       <div className="w-full h-full relative">
                         <img src={coverPreviewUrl} alt="Thumbnail preview" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                         <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
-                          <Button variant="secondary" className="rounded-full shadow-lg bg-white/90 text-slate-900 hover:bg-white">
+                          <Button variant="secondary" className="rounded-full shadow-lg bg-white/90 text-[#00201d] hover:bg-white">
                             <ImageIcon className="w-4 h-4 mr-2" /> Görseli Değiştir
                           </Button>
                         </div>
                       </div>
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center p-8 space-y-4">
-                        <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-slate-400 group-hover:text-indigo-600 group-hover:scale-110 transition-all duration-300">
+                        <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-[#6b827f] group-hover:text-[#005c55] group-hover:scale-110 transition-all duration-300">
                           <Upload className="w-6 h-6" />
                         </div>
                         <div className="text-center">
-                          <p className="font-bold text-slate-700 dark:text-slate-300">Görsel Yüklemek İçin Tıklayın</p>
-                          <p className="text-sm text-slate-400">1280x720 (16:9) önerilir • JPG, PNG</p>
+                          <p className="font-bold text-[#1d3a37] dark:text-slate-300">Görsel Yüklemek İçin Tıklayın</p>
+                          <p className="text-sm text-[#6b827f]">1280x720 (16:9) önerilir • JPG, PNG</p>
                         </div>
                       </div>
                     )}
@@ -2079,20 +2079,20 @@ export default function AdvancedCourseCreator() {
                     {/* Yükleniyor overlay */}
                     {mediaProgress.cover > 0 && mediaProgress.cover < 1 && (
                       <div className="absolute inset-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm flex flex-col items-center justify-center gap-4 z-10">
-                        <div className="w-14 h-14 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-                          <svg className="w-7 h-7 animate-spin text-indigo-600" viewBox="0 0 24 24" fill="none">
+                        <div className="w-14 h-14 rounded-full bg-[#d9f3ee] dark:bg-indigo-900/30 flex items-center justify-center">
+                          <svg className="w-7 h-7 animate-spin text-[#005c55]" viewBox="0 0 24 24" fill="none">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                           </svg>
                         </div>
                         <div className="text-center">
-                          <p className="text-sm font-bold text-indigo-700 dark:text-indigo-300 animate-pulse">Görsel Yükleniyor...</p>
-                          <p className="text-xs text-slate-400 mt-1">{Math.round(mediaProgress.cover * 100)}% tamamlandı</p>
+                          <p className="text-sm font-bold text-[#00483f] dark:text-indigo-300 animate-pulse">Görsel Yükleniyor...</p>
+                          <p className="text-xs text-[#6b827f] mt-1">{Math.round(mediaProgress.cover * 100)}% tamamlandı</p>
                         </div>
                         <div className="w-48">
-                          <div className="h-1.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-full overflow-hidden">
+                          <div className="h-1.5 bg-[#d9f3ee] dark:bg-indigo-900/30 rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-indigo-600 rounded-full transition-all duration-300"
+                              className="h-full bg-[#005c55] rounded-full transition-all duration-300"
                               style={{ width: `${Math.round(mediaProgress.cover * 100)}%` }}
                             />
                           </div>
@@ -2104,9 +2104,9 @@ export default function AdvancedCourseCreator() {
 
                 {/* Promo Video Upload */}
                 <div className="space-y-4">
-                  <Label className="text-base font-bold text-slate-700 dark:text-slate-300">Tanıtım Videosu</Label>
+                  <Label className="text-base font-bold text-[#1d3a37] dark:text-slate-300">Tanıtım Videosu</Label>
                   <div
-                    className="group relative h-48 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-[32px] bg-slate-50 dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-900 hover:border-purple-400 dark:hover:border-purple-500 transition-all duration-500 cursor-pointer overflow-hidden"
+                    className="group relative h-48 border-2 border-dashed border-[#dcebe8] dark:border-slate-800 rounded-2xl bg-[#f4faf8] dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-900 hover:border-[#5fb8ac] dark:hover:border-purple-500 transition-all duration-500 cursor-pointer overflow-hidden"
                     onClick={() => videoInputRef.current?.click()}
                   >
                     <input ref={videoInputRef} type="file" accept="video/*" onChange={handleVideoUpload} className="hidden" />
@@ -2114,20 +2114,20 @@ export default function AdvancedCourseCreator() {
                     {/* Yükleniyor durumu */}
                     {mediaProgress.promo > 0 && mediaProgress.promo < 1 && (
                       <div className="absolute inset-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm flex flex-col items-center justify-center gap-4 z-10">
-                        <div className="w-14 h-14 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                          <svg className="w-7 h-7 animate-spin text-purple-600" viewBox="0 0 24 24" fill="none">
+                        <div className="w-14 h-14 rounded-full bg-[#d9f3ee] dark:bg-purple-900/30 flex items-center justify-center">
+                          <svg className="w-7 h-7 animate-spin text-[#005c55]" viewBox="0 0 24 24" fill="none">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                           </svg>
                         </div>
                         <div className="text-center">
-                          <p className="text-sm font-bold text-purple-700 dark:text-purple-300 animate-pulse">Video Yükleniyor...</p>
-                          <p className="text-xs text-slate-400 mt-1">{Math.round(mediaProgress.promo * 100)}% tamamlandı</p>
+                          <p className="text-sm font-bold text-[#00483f] dark:text-purple-300 animate-pulse">Video Yükleniyor...</p>
+                          <p className="text-xs text-[#6b827f] mt-1">{Math.round(mediaProgress.promo * 100)}% tamamlandı</p>
                         </div>
                         <div className="w-48">
-                          <div className="h-1.5 bg-purple-100 dark:bg-purple-900/30 rounded-full overflow-hidden">
+                          <div className="h-1.5 bg-[#d9f3ee] dark:bg-purple-900/30 rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-purple-600 rounded-full transition-all duration-300"
+                              className="h-full bg-[#005c55] rounded-full transition-all duration-300"
                               style={{ width: `${Math.round(mediaProgress.promo * 100)}%` }}
                             />
                           </div>
@@ -2136,13 +2136,13 @@ export default function AdvancedCourseCreator() {
                     )}
 
                     {promoVideo && mediaProgress.promo === 0 ? (
-                      <div className="w-full h-full flex items-center justify-center bg-purple-50 dark:bg-purple-900/20">
+                      <div className="w-full h-full flex items-center justify-center bg-[#ecfbf8] dark:bg-purple-900/20">
                         <div className="text-center space-y-3">
-                          <div className="w-12 h-12 rounded-full bg-purple-600 text-white flex items-center justify-center mx-auto shadow-lg">
+                          <div className="w-12 h-12 rounded-full bg-[#005c55] text-white flex items-center justify-center mx-auto shadow-lg">
                             <Play className="w-5 h-5 fill-current" />
                           </div>
-                          <p className="text-sm font-bold text-purple-700 dark:text-purple-400 truncate max-w-[200px]">{(promoVideo as any).name || 'Tanıtım Videosu'}</p>
-                          <Button variant="ghost" size="sm" className="text-xs text-purple-600 hover:bg-purple-100 rounded-lg">Farklı Video Seç</Button>
+                          <p className="text-sm font-bold text-[#00483f] dark:text-purple-400 truncate max-w-[200px]">{(promoVideo as any).name || 'Tanıtım Videosu'}</p>
+                          <Button variant="ghost" size="sm" className="text-xs text-[#005c55] hover:bg-[#d9f3ee] rounded-lg">Farklı Video Seç</Button>
                         </div>
                       </div>
                     ) : courseData.previewVideo?.cdnPath && mediaProgress.promo === 0 ? (
@@ -2157,12 +2157,12 @@ export default function AdvancedCourseCreator() {
                       </div>
                     ) : mediaProgress.promo === 0 ? (
                       <div className="w-full h-full flex items-center gap-6 p-8">
-                        <div className="w-16 h-16 rounded-[22px] bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-slate-400 group-hover:text-purple-600 group-hover:rotate-6 transition-all duration-300">
+                        <div className="w-16 h-16 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-[#6b827f] group-hover:text-[#005c55] group-hover:rotate-6 transition-all duration-300">
                           <Video className="w-6 h-6" />
                         </div>
                         <div className="flex-1 text-left">
-                          <p className="font-bold text-slate-700 dark:text-slate-300">Önizleme Videosu Ekleyin</p>
-                          <p className="text-sm text-slate-400">Öğrencilerin kursun kalitesini görmesini sağlayın.</p>
+                          <p className="font-bold text-[#1d3a37] dark:text-slate-300">Önizleme Videosu Ekleyin</p>
+                          <p className="text-sm text-[#6b827f]">Öğrencilerin kursun kalitesini görmesini sağlayın.</p>
                         </div>
                       </div>
                     ) : null}
@@ -2172,19 +2172,19 @@ export default function AdvancedCourseCreator() {
             </div>
 
             {/* Metadata Section */}
-            <div className="p-8 rounded-[32px] bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800">
+            <div className="p-8 rounded-2xl bg-[#f4faf8] dark:bg-slate-900/50 border border-[#e8f2f0] dark:border-slate-800">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div className="space-y-3">
-                  <Label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Kategori</Label>
+                  <Label className="text-sm font-bold text-[#4a6360] uppercase tracking-wider">Kategori</Label>
                   <Select value={courseData.category} onValueChange={(val) => {
                     setSelectedCategory(val);
                     setCourseData(prev => ({ ...prev, category: val, subcategory: '' }));
                     if (validationErrors.category) setValidationErrors(prev => ({ ...prev, category: '' }));
                   }}>
-                    <SelectTrigger className="h-12 rounded-xl bg-white dark:bg-slate-900 border-none shadow-sm ring-1 ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-indigo-500">
+                    <SelectTrigger className="h-12 rounded-xl bg-white dark:bg-slate-900 border-none shadow-sm ring-1 ring-[#dcebe8] dark:ring-slate-800 focus:ring-2 focus:ring-[#005c55]">
                       <SelectValue placeholder="Seçim yapın" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl shadow-2xl border-none ring-1 ring-slate-100 dark:ring-slate-800">
+                    <SelectContent className="rounded-xl shadow-2xl border-none ring-1 ring-[#e8f2f0] dark:ring-slate-800">
                       {COURSE_CATEGORIES.filter(cat => cat.id != null).map((cat) => (
                         <SelectItem key={cat.slug} value={String(cat.id)} className="rounded-lg">{cat.name}</SelectItem>
                       ))}
@@ -2193,12 +2193,12 @@ export default function AdvancedCourseCreator() {
                 </div>
 
                 <div className="space-y-3">
-                  <Label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Alt Kategori</Label>
+                  <Label className="text-sm font-bold text-[#4a6360] uppercase tracking-wider">Alt Kategori</Label>
                   <Select value={courseData.subcategory} onValueChange={(val) => setCourseData(prev => ({ ...prev, subcategory: val }))}>
-                    <SelectTrigger className="h-12 rounded-xl bg-white dark:bg-slate-900 border-none shadow-sm ring-1 ring-slate-200 dark:ring-slate-800 disabled:opacity-50" disabled={!courseData.category}>
+                    <SelectTrigger className="h-12 rounded-xl bg-white dark:bg-slate-900 border-none shadow-sm ring-1 ring-[#dcebe8] dark:ring-slate-800 disabled:opacity-50" disabled={!courseData.category}>
                       <SelectValue placeholder="Seçim yapın" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-none shadow-2xl ring-1 ring-slate-100 dark:ring-slate-800">
+                    <SelectContent className="rounded-xl border-none shadow-2xl ring-1 ring-[#e8f2f0] dark:ring-slate-800">
                       {courseData.category && COURSE_CATEGORIES.find(cat => String(cat.id) === String(courseData.category))?.subcategories.filter(sub => sub.id != null).map(sub => (
                         <SelectItem key={sub.slug} value={String(sub.id)} className="rounded-lg">{sub.name}</SelectItem>
                       ))}
@@ -2207,12 +2207,12 @@ export default function AdvancedCourseCreator() {
                 </div>
 
                 <div className="space-y-3">
-                  <Label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Eğitim Dili</Label>
+                  <Label className="text-sm font-bold text-[#4a6360] uppercase tracking-wider">Eğitim Dili</Label>
                   <Select value={courseData.language || ''} onValueChange={(val) => setCourseData(prev => ({ ...prev, language: val }))}>
-                    <SelectTrigger className="h-12 rounded-xl bg-white dark:bg-slate-900 border-none shadow-sm ring-1 ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-indigo-500">
+                    <SelectTrigger className="h-12 rounded-xl bg-white dark:bg-slate-900 border-none shadow-sm ring-1 ring-[#dcebe8] dark:ring-slate-800 focus:ring-2 focus:ring-[#005c55]">
                       <SelectValue placeholder="Dil Ekleyiniz" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-none shadow-2xl ring-1 ring-slate-100 dark:ring-slate-800">
+                    <SelectContent className="rounded-xl border-none shadow-2xl ring-1 ring-[#e8f2f0] dark:ring-slate-800">
                       {languages.map((lang) => (
                         <SelectItem key={lang.value} value={lang.value} className="rounded-lg">{lang.label}</SelectItem>
                       ))}
@@ -2221,12 +2221,12 @@ export default function AdvancedCourseCreator() {
                 </div>
 
                 <div className="space-y-3">
-                  <Label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Zorluk Seviyesi</Label>
+                  <Label className="text-sm font-bold text-[#4a6360] uppercase tracking-wider">Zorluk Seviyesi</Label>
                   <Select value={courseData.level || ''} onValueChange={(val) => setCourseData(prev => ({ ...prev, level: val as any }))}>
-                    <SelectTrigger className="h-12 rounded-xl bg-white dark:bg-slate-900 border-none shadow-sm ring-1 ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-indigo-500">
+                    <SelectTrigger className="h-12 rounded-xl bg-white dark:bg-slate-900 border-none shadow-sm ring-1 ring-[#dcebe8] dark:ring-slate-800 focus:ring-2 focus:ring-[#005c55]">
                       <SelectValue placeholder="Seviye Seçiniz" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border border-slate-200 shadow-2xl">
+                    <SelectContent className="rounded-xl border border-[#dcebe8] shadow-2xl">
                       <SelectItem value="beginner" className="rounded-lg">Başlangıç</SelectItem>
                       <SelectItem value="intermediate" className="rounded-lg">Orta Seviye</SelectItem>
                       <SelectItem value="advanced" className="rounded-lg">İleri Seviye</SelectItem>
@@ -2241,30 +2241,12 @@ export default function AdvancedCourseCreator() {
 
       case 2:
         return (
-          <div className="space-y-10 animate-in fade-in slide-in-from-bottom-5 duration-700">
-            {/* Header Area */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 bg-gradient-to-r from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm">
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-2xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-                    <Video className="w-5 h-5" />
-                  </div>
-                  <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Kurs Müfredatı</h3>
-                </div>
-                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Öğrencilerinizin takip edeceği planı oluşturun, derslerinizi organize edin ve içeriklerinizi yükleyin.</p>
-              </div>
-              <div className="flex items-center gap-4 text-sm px-4 py-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
-                <div className="flex flex-col items-center">
-                  <span className="font-black text-indigo-600 text-lg">{courseData.sections.length}</span>
-                  <span className="text-[10px] uppercase font-bold text-slate-400">Bölüm</span>
-                </div>
-                <div className="w-px h-8 bg-slate-100 dark:bg-slate-700"></div>
-                <div className="flex flex-col items-center">
-                  <span className="font-black text-emerald-600 text-lg">{courseData.sections.reduce((total, section) => total + section.lessons.length, 0)}</span>
-                  <span className="text-[10px] uppercase font-bold text-slate-400">Ders</span>
-                </div>
-              </div>
-            </div>
+          <div className="space-y-8 animate-in fade-in duration-300">
+            {/* Müfredat özeti */}
+            <p className="text-[14px] text-[#4a6360]">
+              <b className="font-bold tabular-nums text-[#00201d]">{courseData.sections.length}</b> bölüm ·{' '}
+              <b className="font-bold tabular-nums text-[#00201d]">{courseData.sections.reduce((total, section) => total + section.lessons.length, 0)}</b> ders
+            </p>
 
             {/* Drag Drop Area */}
             <DragDropContext onDragEnd={handleDragEnd}>
@@ -2278,20 +2260,20 @@ export default function AdvancedCourseCreator() {
                             <Card className={cn(
                               "border-none shadow-sm rounded-3xl overflow-hidden transition-all duration-300",
                               section.isExpanded 
-                                ? 'bg-white dark:bg-slate-900 ring-4 ring-indigo-50/50 dark:ring-indigo-900/20' 
-                                : 'bg-slate-50 dark:bg-slate-900/50 hover:bg-white border border-slate-100 dark:border-slate-800'
+                                ? 'bg-white dark:bg-slate-900 ring-4 ring-[#ecfbf8]/50 dark:ring-indigo-900/20' 
+                                : 'bg-[#f4faf8] dark:bg-slate-900/50 hover:bg-white border border-[#e8f2f0] dark:border-slate-800'
                             )}>
                               {/* Section Header */}
                               <div className={cn(
                                 "p-5 flex items-center gap-4 transition-colors",
-                                section.isExpanded ? "border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900" : ""
+                                section.isExpanded ? "border-b border-[#e8f2f0] dark:border-slate-800 bg-[#f4faf8]/50 dark:bg-slate-900" : ""
                               )}>
-                                <div {...provided.dragHandleProps} className="w-10 h-10 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-300 hover:text-indigo-600 hover:border-indigo-200 transition-all cursor-grab active:cursor-grabbing shadow-sm">
+                                <div {...provided.dragHandleProps} className="w-10 h-10 rounded-2xl bg-white dark:bg-slate-800 border border-[#e8f2f0] dark:border-slate-700 flex items-center justify-center text-[#9bb0ad] hover:text-[#005c55] hover:border-[#9cdcd3] transition-all cursor-grab active:cursor-grabbing shadow-sm">
                                   <GripVertical className="w-5 h-5" />
                                 </div>
                                 <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-3">
                                   <div className="flex flex-col flex-1">
-                                    <span className="text-[11px] font-black uppercase tracking-widest text-indigo-500 mb-1 ml-1">Bölüm {sectionIndex + 1}</span>
+                                    <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#005c55] mb-1 ml-1">Bölüm {sectionIndex + 1}</span>
                                     <Input
                                       placeholder="Bu bölümün başlığını girin (Örn: Giriş ve Kurulum)"
                                       value={section.title}
@@ -2299,14 +2281,14 @@ export default function AdvancedCourseCreator() {
                                         ...prev,
                                         sections: prev.sections.map(s => s.id === section.id ? { ...s, title: e.target.value, titleSaved: false } : s)
                                       }))}
-                                      className="h-12 w-full bg-transparent border-none focus-visible:ring-0 text-xl font-bold px-1 rounded-none shadow-none text-slate-800 dark:text-slate-100 placeholder:text-slate-300"
+                                      className="h-12 w-full bg-transparent border-none focus-visible:ring-0 text-xl font-bold px-1 rounded-none shadow-none text-[#00201d] dark:text-slate-100 placeholder:text-[#9bb0ad]"
                                     />
                                   </div>
                                   
                                   <div className="flex items-center gap-3">
                                     {!section.titleSaved && section.title.trim() && (
                                       <Button
-                                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all"
+                                        className="bg-[#005c55] hover:bg-[#00483f] text-white rounded-xl shadow-md hover:shadow-lg transition-all"
                                         onClick={async () => {
                                           const token = localStorage.getItem('token');
                                           if (!token) return toast.error('Oturum açmanız gerekiyor');
@@ -2337,7 +2319,7 @@ export default function AdvancedCourseCreator() {
                                     <Button
                                       variant="ghost"
                                       size="icon"
-                                      className="rounded-xl w-10 h-10 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700"
+                                      className="rounded-xl w-10 h-10 text-[#6b827f] hover:text-[#1d3a37] bg-[#f4faf8] hover:bg-[#e8f2f0] dark:bg-slate-800 dark:hover:bg-slate-700"
                                       onClick={() => setCourseData(prev => ({
                                         ...prev,
                                         sections: prev.sections.map(s => s.id === section.id ? { ...s, isExpanded: !s.isExpanded } : s)
@@ -2359,7 +2341,7 @@ export default function AdvancedCourseCreator() {
 
                               {/* Lessons Area */}
                               {section.isExpanded && section.titleSaved && (
-                                <div className="p-6 bg-white dark:bg-slate-900 border-t border-slate-50 dark:border-slate-800">
+                                <div className="p-6 bg-white dark:bg-slate-900 border-t border-[#eef5f3] dark:border-slate-800">
                                   <Droppable droppableId={section.id} type="lesson">
                                     {(provided) => (
                                       <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
@@ -2368,19 +2350,19 @@ export default function AdvancedCourseCreator() {
                                             {(provided) => (
                                               <div ref={provided.innerRef} {...provided.draggableProps} className="group/lesson relative pl-6">
                                                 {/* Connecting Line */}
-                                                <div className="absolute left-2.5 top-0 bottom-[-16px] w-[2px] bg-slate-100 dark:bg-slate-800 group-last/lesson:bottom-0"></div>
-                                                <div className="absolute left-[3px] top-6 w-[7px] h-[7px] rounded-full bg-slate-300 dark:bg-slate-700 ring-4 ring-white dark:ring-slate-900 transition-colors group-hover/lesson:bg-indigo-400"></div>
+                                                <div className="absolute left-2.5 top-0 bottom-[-16px] w-[2px] bg-[#e8f2f0] dark:bg-slate-800 group-last/lesson:bottom-0"></div>
+                                                <div className="absolute left-[3px] top-6 w-[7px] h-[7px] rounded-full bg-[#b9cfcb] dark:bg-slate-700 ring-4 ring-white dark:ring-slate-900 transition-colors group-hover/lesson:bg-[#5fb8ac]"></div>
 
-                                                <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-800 transition-all duration-300 overflow-hidden">
+                                                <div className="bg-white dark:bg-slate-800 rounded-2xl border border-[#dcebe8] dark:border-slate-700 shadow-sm hover:shadow-md hover:border-[#9cdcd3] dark:hover:border-indigo-800 transition-all duration-300 overflow-hidden">
                                                   
                                                   {/* Lesson Header */}
-                                                  <div className="p-3 pl-4 flex items-center gap-3 bg-slate-50/50 dark:bg-slate-800/50">
-                                                    <div {...provided.dragHandleProps} className="text-slate-300 hover:text-indigo-500 transition-colors cursor-grab active:cursor-grabbing p-1">
+                                                  <div className="p-3 pl-4 flex items-center gap-3 bg-[#f4faf8]/50 dark:bg-slate-800/50">
+                                                    <div {...provided.dragHandleProps} className="text-[#9bb0ad] hover:text-[#005c55] transition-colors cursor-grab active:cursor-grabbing p-1">
                                                       <GripVertical className="w-4 h-4" />
                                                     </div>
                                                     
-                                                    <div className="flex-1 flex items-center bg-white dark:bg-slate-900 rounded-xl px-3 py-1 ring-1 ring-slate-100 dark:ring-slate-800 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 transition-all">
-                                                      <span className="text-[11px] font-black text-slate-400 mr-2 border-r border-slate-100 pr-2">Ders {lessonIndex + 1}</span>
+                                                    <div className="flex-1 flex items-center bg-white dark:bg-slate-900 rounded-xl px-3 py-1 ring-1 ring-[#e8f2f0] dark:ring-slate-800 shadow-sm focus-within:ring-2 focus-within:ring-[#005c55] transition-all">
+                                                      <span className="text-[11px] font-extrabold text-[#6b827f] mr-2 border-r border-[#e8f2f0] pr-2">Ders {lessonIndex + 1}</span>
                                                       <Input
                                                         value={lesson.title}
                                                         placeholder="Ders başlığını girin..."
@@ -2411,7 +2393,7 @@ export default function AdvancedCourseCreator() {
                                                           'h-9 px-3 rounded-xl text-xs font-bold transition-colors disabled:opacity-40',
                                                           lesson.isFree
                                                             ? 'bg-teal-50 text-teal-700 hover:bg-teal-100 ring-1 ring-teal-200'
-                                                            : 'text-slate-400 hover:text-teal-700 hover:bg-teal-50'
+                                                            : 'text-[#6b827f] hover:text-teal-700 hover:bg-teal-50'
                                                         )}
                                                       >
                                                         {lesson.isFree ? 'Önizlemede' : 'Önizleme yap'}
@@ -2452,19 +2434,19 @@ export default function AdvancedCourseCreator() {
                                                           Kaydet
                                                         </Button>
                                                       )}
-                                                      <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl" onClick={() => removeLesson(section.id, lesson.id, lesson.dbLessonId)}>
+                                                      <Button variant="ghost" size="icon" className="h-9 w-9 text-[#6b827f] hover:text-red-500 hover:bg-red-50 rounded-xl" onClick={() => removeLesson(section.id, lesson.id, lesson.dbLessonId)}>
                                                         <Trash2 className="w-4 h-4" />
                                                       </Button>
                                                     </div>
                                                   </div>
 
                                                   {/* Lesson Body (Video & Resources) */}
-                                                  <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+                                                  <div className="p-4 bg-white dark:bg-slate-900 border-t border-[#e8f2f0] dark:border-slate-800">
                                                     {!lesson.fileName ? (
                                                       <div className="flex flex-col items-start gap-2">
                                                         <Button 
                                                           variant="outline" 
-                                                          className="h-10 hover:bg-indigo-50 border-indigo-100 hover:border-indigo-300 text-indigo-600 rounded-xl px-4 text-sm font-semibold gap-2 disabled:opacity-50 transition-all shadow-sm" 
+                                                          className="h-10 hover:bg-[#ecfbf8] border-[#cfe9e3] hover:border-[#9cdcd3] text-[#005c55] rounded-xl px-4 text-sm font-semibold gap-2 disabled:opacity-50 transition-all shadow-sm" 
                                                           onClick={() => handleFileUpload(section.id, lesson.id, 'video', lesson.dbLessonId)} 
                                                           disabled={!lesson.titleSaved}
                                                         >
@@ -2475,18 +2457,18 @@ export default function AdvancedCourseCreator() {
                                                         )}
                                                       </div>
                                                     ) : (
-                                                      <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 p-4 space-y-4">
+                                                      <div className="bg-[#f4faf8] dark:bg-slate-900/50 rounded-2xl border border-[#e8f2f0] dark:border-slate-800 p-4 space-y-4">
                                                         {/* Video Status Row */}
                                                         <div className="flex items-center justify-between">
                                                           <div className="flex items-center gap-3">
-                                                            <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600">
+                                                            <div className="w-10 h-10 rounded-xl bg-[#d9f3ee] dark:bg-indigo-900/50 flex items-center justify-center text-[#005c55]">
                                                               <PlayCircle className="w-5 h-5" />
                                                             </div>
                                                             <div>
-                                                              <h4 title={lesson.fileName} className="text-sm font-bold text-slate-800 dark:text-slate-200 max-w-[340px] truncate">{lesson.fileName}</h4>
+                                                              <h4 title={lesson.fileName} className="text-sm font-bold text-[#00201d] dark:text-slate-200 max-w-[340px] truncate">{lesson.fileName}</h4>
                                                               <div className="flex items-center gap-3 mt-1">
                                                                 {lesson.durationSeconds != null && lesson.durationSeconds > 0 && (
-                                                                  <div className="flex items-center text-[11px] font-bold text-slate-500">
+                                                                  <div className="flex items-center text-[11px] font-bold text-[#4a6360]">
                                                                     <Clock className="w-3 h-3 mr-1" />
                                                                     {Math.floor(lesson.durationSeconds / 60) > 0 ? `${Math.floor(lesson.durationSeconds / 60)} dk ` : ''}{lesson.durationSeconds % 60} sn
                                                                   </div>
@@ -2495,8 +2477,8 @@ export default function AdvancedCourseCreator() {
                                                                 {(lesson.processingStatus === 'processing'
                                                                   || lesson.processingStatus === 'pending'
                                                                   || lesson.processingStatus === 'uploading') && (
-                                                                  <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-500/10 rounded-full flex items-center gap-1.5 px-2 py-0.5">
-                                                                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+                                                                  <span className="text-[10px] font-bold text-[#005c55] bg-[#ecfbf8] dark:bg-blue-500/10 rounded-full flex items-center gap-1.5 px-2 py-0.5">
+                                                                    <span className="w-1.5 h-1.5 bg-[#005c55] rounded-full animate-pulse" />
                                                                     {lesson.processingStatus === 'uploading'
                                                                       ? 'Sunucuya aktarılıyor'
                                                                       : lesson.processingStatus === 'pending'
@@ -2520,14 +2502,14 @@ export default function AdvancedCourseCreator() {
                                                               {lesson.uploadProgress != null && lesson.uploadProgress < 1 && (
                                                                 <div className="mt-2 max-w-[260px]">
                                                                   <div className="flex items-center justify-between mb-1">
-                                                                    <span className="text-[10px] font-semibold text-violet-600">Yükleniyor</span>
-                                                                    <span className="text-[10px] font-semibold text-violet-600">
+                                                                    <span className="text-[10px] font-semibold text-[#005c55]">Yükleniyor</span>
+                                                                    <span className="text-[10px] font-semibold text-[#005c55]">
                                                                       %{Math.round(lesson.uploadProgress * 100)}
                                                                     </span>
                                                                   </div>
-                                                                  <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                                                  <div className="h-1.5 w-full bg-[#d6e8e4] dark:bg-slate-700 rounded-full overflow-hidden">
                                                                     <div
-                                                                      className="h-full bg-violet-500 rounded-full transition-all duration-200"
+                                                                      className="h-full bg-[#005c55] rounded-full transition-all duration-200"
                                                                       style={{ width: `${Math.max(2, lesson.uploadProgress * 100)}%` }}
                                                                     />
                                                                   </div>
@@ -2537,13 +2519,13 @@ export default function AdvancedCourseCreator() {
                                                               {/* İşleme sürerken: aşama bilgisi + sayfadan çıkılabileceği bilgisi */}
                                                               {(lesson.processingStatus === 'processing' || lesson.processingStatus === 'pending') && (
                                                                 <div className="mt-2 max-w-[260px]">
-                                                                  <div className="h-1 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                                                  <div className="h-1 w-full bg-[#d6e8e4] dark:bg-slate-700 rounded-full overflow-hidden">
                                                                     <div
-                                                                      className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                                                                      className="h-full bg-[#005c55] rounded-full transition-all duration-500"
                                                                       style={{ width: `${lesson.processingProgress || 5}%` }}
                                                                     />
                                                                   </div>
-                                                                  <p className="text-[10px] text-slate-500 mt-1 leading-snug">
+                                                                  <p className="text-[10px] text-[#4a6360] mt-1 leading-snug">
                                                                     {lesson.processingStage || 'Kuyrukta bekliyor'} · Sayfadan çıkabilirsiniz, bitince e-posta gelecek.
                                                                   </p>
                                                                 </div>
@@ -2556,7 +2538,7 @@ export default function AdvancedCourseCreator() {
                                                             </div>
                                                           </div>
                                                           <div className="flex items-center gap-2">
-                                                            <Button variant="ghost" size="sm" className="h-8 text-xs font-bold text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50" onClick={() => {
+                                                            <Button variant="ghost" size="sm" className="h-8 text-xs font-bold text-[#6b827f] hover:text-red-600 rounded-lg hover:bg-red-50" onClick={() => {
                                                               setDeleteConfirmation({
                                                                 isOpen: true,
                                                                 type: 'video',
@@ -2572,10 +2554,10 @@ export default function AdvancedCourseCreator() {
 
                                                         {/* Resources Section */}
                                                         {lesson.titleSaved && lesson.dbLessonId && (
-                                                          <div className="pt-3 border-t border-slate-200 dark:border-slate-700">
+                                                          <div className="pt-3 border-t border-[#dcebe8] dark:border-slate-700">
                                                             <div className="flex items-center justify-between mb-2">
-                                                              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Ek Kaynaklar</span>
-                                                              <label className="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 cursor-pointer flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1 rounded-lg transition-colors">
+                                                              <span className="text-[11px] font-bold text-[#4a6360] uppercase tracking-wider">Ek Kaynaklar</span>
+                                                              <label className="text-[11px] font-bold text-[#005c55] hover:text-[#00483f] cursor-pointer flex items-center gap-1 bg-[#ecfbf8] hover:bg-[#d9f3ee] px-2.5 py-1 rounded-lg transition-colors">
                                                                 <Plus className="w-3 h-3" /> Kaynak Ekle
                                                                 <input
                                                                   type="file"
@@ -2632,18 +2614,18 @@ export default function AdvancedCourseCreator() {
                                                             {lesson.resources && lesson.resources.length > 0 ? (
                                                               <ul className="space-y-2">
                                                                 {lesson.resources.map((resource, idx) => (
-                                                                  <li key={idx} className="flex items-center gap-3 p-2.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl">
+                                                                  <li key={idx} className="flex items-center gap-3 p-2.5 bg-white dark:bg-slate-800 border border-[#e8f2f0] dark:border-slate-700 rounded-xl">
                                                                     <div className={cn(
                                                                       "w-8 h-8 rounded-lg flex items-center justify-center",
-                                                                      resource.type === 'pdf' ? "bg-red-50 text-red-500" : "bg-blue-50 text-blue-500"
+                                                                      resource.type === 'pdf' ? "bg-red-50 text-red-500" : "bg-[#ecfbf8] text-[#005c55]"
                                                                     )}>
                                                                       <FileText className="w-4 h-4" />
                                                                     </div>
                                                                     <div className="flex-1 min-w-0">
-                                                                      <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">{resource.name}</p>
-                                                                      <p className="text-[10px] text-slate-400">{(resource.size && resource.size > 0) ? (resource.size / 1024 / 1024).toFixed(2) + ' MB' : 'Döküman'}</p>
+                                                                      <p className="text-xs font-semibold text-[#1d3a37] dark:text-slate-300 truncate">{resource.name}</p>
+                                                                      <p className="text-[10px] text-[#6b827f]">{(resource.size && resource.size > 0) ? (resource.size / 1024 / 1024).toFixed(2) + ' MB' : 'Döküman'}</p>
                                                                     </div>
-                                                                    <Button variant="ghost" size="icon" className="w-7 h-7 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg" onClick={() => {
+                                                                    <Button variant="ghost" size="icon" className="w-7 h-7 text-[#6b827f] hover:text-red-500 hover:bg-red-50 rounded-lg" onClick={() => {
                                                                       setDeleteConfirmation({
                                                                         isOpen: true,
                                                                         type: 'resource',
@@ -2659,7 +2641,7 @@ export default function AdvancedCourseCreator() {
                                                                 ))}
                                                               </ul>
                                                             ) : (
-                                                              <div className="text-center py-4 bg-white/50 rounded-xl border border-dashed border-slate-200 text-slate-400 text-xs">
+                                                              <div className="text-center py-4 bg-white/50 rounded-xl border border-dashed border-[#dcebe8] text-[#6b827f] text-xs">
                                                                 Henüz kaynak eklenmemiş. Öğrenciler için faydalı olabilecek dökümanlar yükleyin.
                                                               </div>
                                                             )}
@@ -2678,7 +2660,7 @@ export default function AdvancedCourseCreator() {
                                         <div className="pl-6 pt-2">
                                           <Button
                                             variant="outline"
-                                            className="w-full h-12 border-2 border-dashed border-indigo-100 dark:border-indigo-900/50 hover:border-indigo-400 hover:bg-indigo-50/50 text-indigo-500 font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2"
+                                            className="w-full h-12 border-2 border-dashed border-[#cfe9e3] dark:border-indigo-900/50 hover:border-[#5fb8ac] hover:bg-[#ecfbf8]/50 text-[#005c55] font-bold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2"
                                             onClick={() => addLesson(section.id)}
                                           >
                                             <Plus className="w-5 h-5" /> Bu Bölüme Yeni Ders Ekle
@@ -2705,32 +2687,27 @@ export default function AdvancedCourseCreator() {
             <Button
               onClick={addSection}
               variant="ghost"
-              className="w-full h-12 border border-dashed border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:bg-indigo-50/50 rounded-xl text-slate-400 hover:text-indigo-600 font-medium transition-all"
+              className="w-full h-12 border border-dashed border-[#dcebe8] dark:border-slate-700 hover:border-[#5fb8ac] hover:bg-[#ecfbf8]/50 rounded-xl text-[#6b827f] hover:text-[#005c55] font-medium transition-all"
             >
               <Plus className="w-4 h-4 mr-2" />
               Yeni Bölüm Ekle
             </Button>
 
-            <div className="flex items-center gap-6 px-2 text-sm text-slate-500">
-              <span><span className="font-bold text-slate-700 dark:text-white">{courseData.sections.length}</span> Bölüm</span>
-              <span><span className="font-bold text-slate-700 dark:text-white">{courseData.sections.reduce((total, section) => total + section.lessons.length, 0)}</span> Ders</span>
+            <div className="flex items-center gap-6 px-2 text-sm text-[#4a6360]">
+              <span><span className="font-bold text-[#1d3a37] dark:text-white">{courseData.sections.length}</span> Bölüm</span>
+              <span><span className="font-bold text-[#1d3a37] dark:text-white">{courseData.sections.reduce((total, section) => total + section.lessons.length, 0)}</span> Ders</span>
             </div>
           </div >
         );
 
       case 3:
         return (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
-            <div className="text-center max-w-2xl mx-auto space-y-3 mb-6">
-              <h2 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">Kurs Fiyatlandırma</h2>
-              <p className="text-slate-500">Kursunuzun satış fiyatını ve para birimini belirleyin.</p>
-            </div>
-
-            <Card className="max-w-3xl mx-auto border-none ring-1 ring-slate-200 dark:ring-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none rounded-[32px] overflow-hidden bg-white dark:bg-slate-900">
+          <div className="space-y-8 animate-in fade-in duration-300">
+            <Card className="max-w-3xl mx-auto border-none ring-1 ring-[#dcebe8] dark:ring-slate-800 shadow-xl shadow-[#005c55]/10 dark:shadow-none rounded-2xl overflow-hidden bg-white dark:bg-slate-900">
               <CardContent className="p-8 space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-3">
-                    <Label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Para Birimi</Label>
+                    <Label className="text-sm font-bold text-[#4a6360] uppercase tracking-wider">Para Birimi</Label>
                     <Select
                       value={courseData.currency || ''}
                       onValueChange={(value) => {
@@ -2742,10 +2719,10 @@ export default function AdvancedCourseCreator() {
                         }));
                       }}
                     >
-                      <SelectTrigger className="h-14 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-none ring-1 ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-blue-500 transition-all font-bold">
+                      <SelectTrigger className="h-14 rounded-xl bg-[#f4faf8] dark:bg-slate-800/50 border-none ring-1 ring-[#dcebe8] dark:ring-slate-800 focus:ring-2 focus:ring-[#005c55] transition-all font-bold">
                         <SelectValue placeholder="Para birimi seçin" />
                       </SelectTrigger>
-                      <SelectContent className="rounded-xl border border-slate-200 shadow-2xl">
+                      <SelectContent className="rounded-xl border border-[#dcebe8] shadow-2xl">
                         {CURRENCY_PRICING.map((curr) => (
                           <SelectItem key={curr.currency} value={curr.currency} className="rounded-lg font-medium">
                             {curr.name} ({curr.symbol})
@@ -2756,7 +2733,7 @@ export default function AdvancedCourseCreator() {
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-sm font-bold text-slate-500 uppercase tracking-wider">Satış Fiyatı</Label>
+                    <Label className="text-sm font-bold text-[#4a6360] uppercase tracking-wider">Satış Fiyatı</Label>
                       <Select
                         value={courseData.price?.toString() || ''}
                         onValueChange={(value) => {
@@ -2770,10 +2747,10 @@ export default function AdvancedCourseCreator() {
                         }}
                         disabled={!courseData.currency}
                       >
-                      <SelectTrigger className="h-14 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-none ring-1 ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-emerald-500 transition-all font-bold">
+                      <SelectTrigger className="h-14 rounded-xl bg-[#f4faf8] dark:bg-slate-800/50 border-none ring-1 ring-[#dcebe8] dark:ring-slate-800 focus:ring-2 focus:ring-emerald-500 transition-all font-bold">
                         <SelectValue placeholder={!courseData.currency ? "Önce para birimi seçin" : "Fiyat seçin"} />
                       </SelectTrigger>
-                      <SelectContent className="rounded-xl border border-slate-200 shadow-2xl max-h-[300px]">
+                      <SelectContent className="rounded-xl border border-[#dcebe8] shadow-2xl max-h-[300px]">
                         {courseData.currency && getPriceOptionsForCurrency(courseData.currency).map((option) => (
                           <SelectItem key={option.value} value={option.value.toString()} className="rounded-lg font-medium text-emerald-600">
                             {option.displayPrice}
@@ -2795,7 +2772,7 @@ export default function AdvancedCourseCreator() {
                       toast.success('Fiyat başarıyla kaydedildi');
                     }}
                     disabled={!courseData.price || !courseData.currency}
-                    className="h-12 px-8 rounded-xl bg-slate-900 text-white font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
+                    className="h-12 px-8 rounded-xl bg-[#00201d] text-white font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
                   >
                     <Save className="w-4 h-4 mr-2" />
                     Kaydet
@@ -2808,22 +2785,17 @@ export default function AdvancedCourseCreator() {
 
       case 4:
         return (
-          <div className="space-y-10 animate-in fade-in slide-in-from-bottom-5 duration-700">
-            <div className="text-center max-w-2xl mx-auto space-y-3 mb-6">
-              <h2 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">Hedef Kitle ve Kazanımlar</h2>
-              <p className="text-slate-500">Öğrencilerinize ne öğreteceğinizi ve kimler için uygun olduğunu tanımlayın.</p>
-            </div>
-
+          <div className="space-y-8 animate-in fade-in duration-300">
             <div className="space-y-8">
               {/* Öğrenme Hedefleri Kartı */}
-              <Card className="border border-slate-200 dark:border-slate-800 shadow-sm rounded-2xl overflow-hidden bg-white dark:bg-slate-900">
-                <CardHeader className="px-6 pt-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+              <Card className="border border-[#dcebe8] dark:border-slate-800 shadow-sm rounded-2xl overflow-hidden bg-white dark:bg-slate-900">
+                <CardHeader className="px-6 pt-6 pb-4 border-b border-[#e8f2f0] dark:border-slate-800">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <CardTitle className="text-base font-semibold text-slate-900 dark:text-white">
+                      <CardTitle className="text-base font-semibold text-[#00201d] dark:text-white">
                         Öğrenme Hedefleri
                       </CardTitle>
-                      <p className="text-sm text-slate-500 mt-1">
+                      <p className="text-sm text-[#4a6360] mt-1">
                         Öğrencilerin kurs sonunda kazanacağı beceriler. En az {MIN_LEARNING_OBJECTIVES} tanesi zorunlu.
                       </p>
                     </div>
@@ -2843,7 +2815,7 @@ export default function AdvancedCourseCreator() {
                       <div key={index} className="flex items-center gap-3">
                         <span className={`shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-semibold ${required && empty
                           ? 'bg-amber-50 text-amber-600 dark:bg-amber-500/10'
-                          : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
+                          : 'bg-[#e8f2f0] text-[#4a6360] dark:bg-slate-800 dark:text-slate-400'
                           }`}>
                           {index + 1}
                         </span>
@@ -2856,18 +2828,18 @@ export default function AdvancedCourseCreator() {
                             onChange={(e) => updateLearningObjective(index, e.target.value)}
                             className={`h-11 pl-4 pr-16 rounded-xl bg-white dark:bg-slate-800/50 transition-all ${required && empty
                               ? 'border-amber-200 dark:border-amber-500/30 focus-visible:ring-amber-500/20'
-                              : 'border-slate-200 dark:border-slate-700 focus-visible:ring-indigo-500/20'
+                              : 'border-[#dcebe8] dark:border-slate-700 focus-visible:ring-[#005c55]/20'
                               }`}
                             maxLength={160}
                           />
-                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium text-slate-300 dark:text-slate-600">
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium text-[#9bb0ad] dark:text-slate-600">
                             {objective.length}/160
                           </span>
                         </div>
                         {!required && (
                           <Button
                             variant="ghost" size="icon"
-                            className="shrink-0 text-slate-300 hover:text-red-500 rounded-lg"
+                            className="shrink-0 text-[#9bb0ad] hover:text-red-500 rounded-lg"
                             onClick={() => removeLearningObjective(index)}
                           >
                             <X className="w-4 h-4" />
@@ -2880,7 +2852,7 @@ export default function AdvancedCourseCreator() {
                   <Button
                     onClick={addLearningObjective}
                     variant="ghost"
-                    className="w-full h-11 border border-dashed border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-500/5 rounded-xl text-slate-500 hover:text-indigo-600 font-medium transition-all"
+                    className="w-full h-11 border border-dashed border-[#dcebe8] dark:border-slate-700 hover:border-[#5fb8ac] hover:bg-[#ecfbf8]/50 dark:hover:bg-indigo-500/5 rounded-xl text-[#4a6360] hover:text-[#005c55] font-medium transition-all"
                   >
                     <Plus className="w-4 h-4 mr-2" /> Hedef ekle
                   </Button>
@@ -2894,7 +2866,7 @@ export default function AdvancedCourseCreator() {
                   saveCourseToServer(false);
                   toast.success('Ayarlar başarıyla kaydedildi');
                 }}
-                className="h-14 px-10 rounded-2xl bg-slate-900 dark:bg-white dark:text-slate-900 text-white font-bold text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-slate-200 dark:shadow-none"
+                className="h-14 px-10 rounded-2xl bg-[#00201d] dark:bg-white dark:text-slate-900 text-white font-bold text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-[#005c55]/10 dark:shadow-none"
               >
                 <Save className="w-5 h-5 mr-3" />
                 Bilgileri Kaydet
@@ -2905,11 +2877,11 @@ export default function AdvancedCourseCreator() {
 
       case 5:
         return (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
+          <div className="space-y-8 animate-in fade-in duration-300">
             {(!courseData.price || !(courseData as any).price_level) ? (
               <div className="max-w-lg">
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Kupon</h2>
-                <p className="text-[15px] text-slate-500 mt-2 leading-relaxed">
+                <h2 className="text-lg font-bold text-[#00201d] dark:text-white">Kupon</h2>
+                <p className="text-[15px] text-[#4a6360] mt-2 leading-relaxed">
                   Kupon oluşturmak için önce Fiyatlandırma sekmesinden kursun fiyatını
                   belirlemeniz gerekiyor.
                 </p>
@@ -2917,17 +2889,17 @@ export default function AdvancedCourseCreator() {
             ) : (
               <div className="max-w-2xl space-y-6">
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">Kupon</h2>
-                  <p className="text-[15px] text-slate-500 mt-1.5">
+                  <h2 className="text-lg font-bold text-[#00201d] dark:text-white">Kupon</h2>
+                  <p className="text-[15px] text-[#4a6360] mt-1.5">
                     Kursunuz için indirimli fiyatlı bir kod tanımlayın.
                   </p>
                 </div>
 
-                <div className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900">
+                <div className="border border-[#dcebe8] dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900">
                   <div className="p-6 space-y-5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <Label className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Kupon kodu</Label>
+                        <Label className="text-[13px] font-semibold text-[#1d3a37] dark:text-slate-300">Kupon kodu</Label>
                         <Input
                           placeholder="INDIRIM20"
                           value={couponData.code}
@@ -2936,7 +2908,7 @@ export default function AdvancedCourseCreator() {
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">İndirimli fiyat</Label>
+                        <Label className="text-[13px] font-semibold text-[#1d3a37] dark:text-slate-300">İndirimli fiyat</Label>
                         <Select
                           value={couponData.priceLevel?.toString() || ''}
                           onValueChange={(value) => {
@@ -2959,7 +2931,7 @@ export default function AdvancedCourseCreator() {
                                     </SelectItem>
                                   ))
                               ) : (
-                                <div className="p-2 text-sm text-slate-500 font-medium text-center">Daha düşük bir fiyat seviyesi yok</div>
+                                <div className="p-2 text-sm text-[#4a6360] font-medium text-center">Daha düşük bir fiyat seviyesi yok</div>
                               )
                             }
                           </SelectContent>
@@ -2969,7 +2941,7 @@ export default function AdvancedCourseCreator() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <Label className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Kullanım limiti</Label>
+                        <Label className="text-[13px] font-semibold text-[#1d3a37] dark:text-slate-300">Kullanım limiti</Label>
                         <Input
                           type="number"
                           placeholder="100"
@@ -2979,7 +2951,7 @@ export default function AdvancedCourseCreator() {
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Son geçerlilik</Label>
+                        <Label className="text-[13px] font-semibold text-[#1d3a37] dark:text-slate-300">Son geçerlilik</Label>
                         <Input
                           type="date"
                           value={couponData.validUntil}
@@ -2989,10 +2961,10 @@ export default function AdvancedCourseCreator() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-5">
+                    <div className="flex items-center justify-between border-t border-[#e8f2f0] dark:border-slate-800 pt-5">
                       <div>
-                        <p className="text-[14px] font-semibold text-slate-800 dark:text-slate-200">Kupon aktif</p>
-                        <p className="text-[13px] text-slate-500 mt-0.5">
+                        <p className="text-[14px] font-semibold text-[#00201d] dark:text-slate-200">Kupon aktif</p>
+                        <p className="text-[13px] text-[#4a6360] mt-0.5">
                           Kapalıyken kod çalışmaz, kayıt silinmez.
                         </p>
                       </div>
@@ -3003,10 +2975,10 @@ export default function AdvancedCourseCreator() {
                     </div>
 
                     {couponData.code && couponData.priceLevel > 0 && (
-                      <p className="text-[13px] text-slate-500 border-t border-slate-100 dark:border-slate-800 pt-5">
-                        <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">{couponData.code}</span>
+                      <p className="text-[13px] text-[#4a6360] border-t border-[#e8f2f0] dark:border-slate-800 pt-5">
+                        <span className="font-mono font-semibold text-[#00201d] dark:text-slate-200">{couponData.code}</span>
                         {' '}kodunu kullananlar kursu{' '}
-                        <span className="font-semibold text-slate-800 dark:text-slate-200">
+                        <span className="font-semibold text-[#00201d] dark:text-slate-200">
                           {couponData.discountPrice} {courseData.currency}
                         </span>
                         {' '}öder.
@@ -3094,15 +3066,15 @@ export default function AdvancedCourseCreator() {
         return (
           <div className="max-w-2xl space-y-8 animate-in fade-in duration-500">
             <div>
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Yayın öncesi kontrol</h2>
-              <p className="text-[15px] text-slate-500 mt-1.5">
+              <h2 className="text-lg font-bold text-[#00201d] dark:text-white">Yayın öncesi kontrol</h2>
+              <p className="text-[15px] text-[#4a6360] mt-1.5">
                 {missing.length === 0
                   ? 'Kurs yayına hazır görünüyor.'
                   : `Yayınlamadan önce ${missing.length} eksik var.`}
               </p>
             </div>
 
-            <div className="border border-slate-200 dark:border-slate-800 rounded-xl divide-y divide-slate-100 dark:divide-slate-800">
+            <div className="border border-[#dcebe8] dark:border-slate-800 rounded-xl divide-y divide-[#e8f2f0] dark:divide-slate-800">
               {checks.map(check => (
                 <div key={check.label} className="flex items-center justify-between gap-4 px-5 py-3.5">
                   <div className="flex items-center gap-3 min-w-0">
@@ -3111,43 +3083,43 @@ export default function AdvancedCourseCreator() {
                       check.ok
                         ? 'bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200'
                         : check.optional
-                          ? 'bg-slate-100 text-slate-400'
+                          ? 'bg-[#e8f2f0] text-[#6b827f]'
                           : 'bg-amber-50 text-amber-600 ring-1 ring-amber-200'
                     )}>
                       {check.ok ? '✓' : '!'}
                     </span>
-                    <span className="text-[15px] text-slate-800 dark:text-slate-200 truncate">
+                    <span className="text-[15px] text-[#00201d] dark:text-slate-200 truncate">
                       {check.label}
                       {check.optional && !check.ok && (
-                        <span className="text-slate-400 text-[13px]"> · isteğe bağlı</span>
+                        <span className="text-[#6b827f] text-[13px]"> · isteğe bağlı</span>
                       )}
                     </span>
                   </div>
                   {!check.ok && (
-                    <span className="text-[13px] text-slate-400 shrink-0">{check.hint}</span>
+                    <span className="text-[13px] text-[#6b827f] shrink-0">{check.hint}</span>
                   )}
                 </div>
               ))}
             </div>
 
-            <div className="grid grid-cols-3 gap-px bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+            <div className="grid grid-cols-3 gap-px bg-[#d6e8e4] dark:bg-slate-800 border border-[#dcebe8] dark:border-slate-800 rounded-xl overflow-hidden">
               {[
                 { value: courseData.sections.length, label: 'Bölüm' },
                 { value: lessonCount, label: 'Ders' },
                 { value: `${videoCount}/${lessonCount}`, label: 'Hazır video' },
               ].map(item => (
                 <div key={item.label} className="bg-white dark:bg-slate-900 px-5 py-4">
-                  <div className="text-[22px] font-bold text-slate-900 dark:text-white tabular-nums leading-none">
+                  <div className="text-[22px] font-bold text-[#00201d] dark:text-white tabular-nums leading-none">
                     {item.value}
                   </div>
-                  <div className="text-[13px] text-slate-500 mt-1.5">{item.label}</div>
+                  <div className="text-[13px] text-[#4a6360] mt-1.5">{item.label}</div>
                 </div>
               ))}
             </div>
 
-            <div className="border-t border-slate-200 dark:border-slate-800 pt-6">
-              <h3 className="text-[15px] font-semibold text-slate-900 dark:text-white">Önizleme</h3>
-              <p className="text-[15px] text-slate-500 mt-1.5 leading-relaxed">
+            <div className="border-t border-[#dcebe8] dark:border-slate-800 pt-6">
+              <h3 className="text-[15px] font-semibold text-[#00201d] dark:text-white">Önizleme</h3>
+              <p className="text-[15px] text-[#4a6360] mt-1.5 leading-relaxed">
                 Kursu öğrencilerin göreceği gerçek sayfada açar. Taslak kurslar yalnızca
                 size görünür.
               </p>
@@ -3159,7 +3131,7 @@ export default function AdvancedCourseCreator() {
                 Önizlemeyi aç
               </Button>
               {!canPreview && (
-                <p className="text-[13px] text-slate-400 mt-2.5">
+                <p className="text-[13px] text-[#6b827f] mt-2.5">
                   Önizleme için kursu önce taslak olarak kaydedin.
                 </p>
               )}
@@ -3174,200 +3146,188 @@ export default function AdvancedCourseCreator() {
     }
   };
 
+  const stepIndex = Math.max(0, steps.findIndex(s => s.id === currentStep));
+  const courseStatus = (courseData as any).status;
+  const statusView = courseStatus === 'published'
+    ? { label: 'Yayında', dot: 'bg-[#0f9f8f]', text: 'text-[#00695f]' }
+    : courseStatus === 'draft' || !courseStatus
+      ? { label: 'Taslak', dot: 'bg-[#d08a1c]', text: 'text-[#8a5a0b]' }
+      : { label: 'İncelemede', dot: 'bg-[#2f7fc1]', text: 'text-[#1f5f99]' };
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="text-[#00201d]">
 
-      {/* Üst bar — kurs adı, durum ve kayıt bilgisi her adımda görünür kalır */}
-      <div className="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800">
-        <div className="container mx-auto px-4">
-          <div className="h-16 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 min-w-0">
-              {/* Eğitmen paneline dönüş */}
-              <button
-                onClick={() => navigate('/instructor')}
-                title="Eğitmen paneline dön"
-                className="shrink-0 w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </button>
-
-              <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <h1 className="text-base font-semibold text-slate-900 dark:text-white truncate">
-                  {courseData.title?.trim() || 'Yeni kurs'}
-                </h1>
-                <span className={`shrink-0 text-[11px] font-medium px-2 py-0.5 rounded-full ${(courseData as any).status === 'published'
-                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
-                  : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
-                  }`}>
-                  {(courseData as any).status === 'published' ? 'Yayında' : 'Taslak'}
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 truncate">
-                {savingStep
-                  ? 'Kaydediliyor...'
-                  : lastSavedAt
-                    ? `Son kayıt ${lastSavedAt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`
-                    : 'Her adım ayrı kaydedilir'}
-              </p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => navigate('/instructor')}
-              className="hidden sm:inline-flex shrink-0 items-center gap-2 h-9 px-3 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            >
-              Eğitmen paneli
-            </button>
+      {/* Başlık: kursun adı, durumu ve kayıt bilgisi her adımda görünür */}
+      <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-7">
+        <div className="min-w-0">
+          <button
+            type="button"
+            onClick={() => navigate('/instructor/courses/list')}
+            className="inline-flex items-center gap-1.5 -ml-1 px-1 h-7 rounded-md text-[13px] font-semibold text-[#4a6360] hover:text-[#00201d] transition-colors mb-2"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Kurslarım
+          </button>
+          <div className="flex items-center gap-3 min-w-0">
+            <h1 className="text-[26px] sm:text-[30px] leading-[1.15] font-extrabold tracking-[-0.025em] text-[#00201d] truncate">
+              {courseData.title?.trim() || 'Yeni kurs'}
+            </h1>
+            <span className={`shrink-0 inline-flex items-center gap-1.5 text-[13px] font-bold ${statusView.text}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${statusView.dot}`} />
+              {statusView.label}
+            </span>
           </div>
         </div>
-      </div>
+        <p className="text-[13px] text-[#4a6360] shrink-0 inline-flex items-center gap-2" aria-live="polite">
+          {savingStep && <span className="w-3.5 h-3.5 border-2 border-[#cfe3df] border-t-[#005c55] rounded-full animate-spin" />}
+          {savingStep
+            ? 'Kaydediliyor'
+            : lastSavedAt
+              ? `Son kayıt ${lastSavedAt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`
+              : 'Her adım ayrı kaydedilir'}
+        </p>
+      </header>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div>
+        <div className="grid grid-cols-1 lg:grid-cols-[230px_1fr] gap-6 lg:gap-8 items-start">
 
-          {/* Adım listesi */}
-          <div className="lg:col-span-1">
-            <div className="lg:sticky lg:top-24">
-              {/* Mobilde yatay kaydırmalı, masaüstünde dikey liste */}
-              <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
-                {steps.map((step, index) => {
-                  const isActive = currentStep === step.id;
-
-                  return (
-                    <button
-                      key={step.id}
-                      onClick={() => setCurrentStep(step.id)}
-                      className={`shrink-0 lg:w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${isActive
-                        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-200 dark:ring-slate-800'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-white/60 dark:hover:bg-slate-900/60'
-                        }`}
-                    >
-                      <span className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-semibold ${isActive
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-slate-200 text-slate-500 dark:bg-slate-800 dark:text-slate-500'
-                        }`}>
-                        {index + 1}
-                      </span>
-                      <span className={`text-sm whitespace-nowrap ${isActive ? 'font-semibold' : 'font-medium'}`}>
-                        {step.title}
-                      </span>
-                    </button>
-                  );
-                })}
-              </nav>
-            </div>
+          {/* Adımlar: masaüstünde dikey yol, telefonda yatay kaydırmalı */}
+          <div className="lg:sticky lg:top-8 min-w-0">
+            <nav aria-label="Kurs adımları" className="relative flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0">
+              <span aria-hidden className="hidden lg:block absolute left-[23px] top-5 bottom-5 w-px bg-[#dcebe8]" />
+              {steps.map((step, index) => {
+                const isActive = currentStep === step.id;
+                const passed = index < stepIndex;
+                return (
+                  <button
+                    key={step.id}
+                    type="button"
+                    onClick={() => setCurrentStep(step.id)}
+                    aria-current={isActive ? 'step' : undefined}
+                    className={`relative shrink-0 lg:w-full flex items-center gap-3 pl-2.5 pr-3 h-11 rounded-xl text-left transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40 ${isActive
+                      ? 'bg-[#9cf2e8]/45 text-[#00201d]'
+                      : 'text-[#3d5754] hover:bg-white hover:text-[#00201d]'
+                      }`}
+                  >
+                    <span className={`relative z-[1] shrink-0 w-[26px] h-[26px] rounded-full flex items-center justify-center text-[12px] font-bold tabular-nums transition-colors ${isActive
+                      ? 'bg-[#00201d] text-[#9cf2e8]'
+                      : passed
+                        ? 'bg-[#9cf2e8] text-[#00201d]'
+                        : 'bg-[#f6fbfa] text-[#4a6360] ring-1 ring-[#cfe3df]'
+                      }`}>
+                      {index + 1}
+                    </span>
+                    <span className={`text-[14px] whitespace-nowrap ${isActive ? 'font-bold' : 'font-semibold'}`}>
+                      {step.title}
+                    </span>
+                  </button>
+                );
+              })}
+            </nav>
           </div>
 
           {/* İçerik */}
-          <div className="lg:col-span-3 space-y-6">
-            <Card className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm rounded-2xl overflow-hidden flex flex-col">
-              <CardHeader className="px-6 sm:px-8 pt-6 pb-5 border-b border-slate-100 dark:border-slate-800">
-                <CardTitle className="text-xl font-semibold text-slate-900 dark:text-white">
-                  {steps.find(s => s.id === currentStep)?.title}
-                </CardTitle>
-                <p className="text-sm text-slate-500 mt-1">
-                  {STEP_DESCRIPTIONS[currentStep] || 'Bu adımdaki bilgileri doldurun.'}
-                </p>
-              </CardHeader>
+          <section className="min-w-0 rounded-2xl bg-white ring-1 ring-[#dcebe8] shadow-[0_1px_2px_rgba(0,32,29,0.04)] overflow-hidden">
+            <div className="px-5 sm:px-8 pt-6 pb-5 border-b border-[#e8f2f0]">
+              <div className="flex items-baseline justify-between gap-4">
+                <h2 className="text-[21px] font-extrabold tracking-[-0.015em] text-[#00201d]">
+                  {steps[stepIndex]?.title}
+                </h2>
+                <span className="shrink-0 text-[13px] font-bold tabular-nums text-[#4a6360]">
+                  {stepIndex + 1} / {steps.length}
+                </span>
+              </div>
+              <p className="text-[14px] text-[#4a6360] mt-1">
+                {STEP_DESCRIPTIONS[currentStep] || 'Bu adımdaki bilgileri doldur.'}
+              </p>
+              <div className="mt-4 h-1.5 rounded-full bg-[#e3f6f2] overflow-hidden" aria-hidden>
+                <div
+                  className="h-full rounded-full bg-[#00201d] transition-[width] duration-300 ease-out"
+                  style={{ width: `${((stepIndex + 1) / steps.length) * 100}%` }}
+                />
+              </div>
+            </div>
 
-              <CardContent className="px-6 sm:px-8 pb-6 pt-6">
-                <div className="min-h-[380px]">
-                  {renderStepContent()}
-                </div>
+            <div className="px-5 sm:px-8 pb-6 pt-6">
+              <div className="min-h-[380px]">
+                {renderStepContent()}
+              </div>
 
-                {/* Navigation Footer */}
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-6 mt-10 pt-8 border-t border-slate-100 dark:border-slate-800">
-                  <Button
-                    variant="ghost"
-                    className="rounded-xl px-8 h-12 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 font-semibold transition-all"
-                    onClick={() => {
-                      const idx = steps.findIndex(s => s.id === currentStep);
-                      if (idx > 0) {
-                        setCurrentStep(steps[idx - 1].id);
-                      }
-                    }}
-                    disabled={steps.findIndex(s => s.id === currentStep) === 0}
+              {/* Alt düğmeler. "Sonraki adım" geçmeden önce bulunduğun adımı sessizce kaydeder. */}
+              <div className="flex flex-col-reverse sm:flex-row justify-between items-stretch sm:items-center gap-3 mt-10 pt-6 border-t border-[#e8f2f0]">
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl text-[14px] font-bold text-[#1d4a45] hover:bg-[#e8faf6] disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                  onClick={() => { if (stepIndex > 0) setCurrentStep(steps[stepIndex - 1].id); }}
+                  disabled={stepIndex === 0}
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Önceki adım
+                </button>
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    type="button"
+                    disabled={savingStep}
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 h-11 px-5 rounded-xl bg-white text-[14px] font-bold text-[#00201d] ring-1 ring-inset ring-[#cfe3df] hover:bg-[#ecfbf8] hover:ring-[#9cdcd3] disabled:opacity-50 transition-colors"
+                    onClick={() => saveCurrentStep()}
                   >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Önceki Adım
-                  </Button>
+                    {savingStep
+                      ? <><span className="w-4 h-4 border-2 border-[#cfe3df] border-t-[#005c55] rounded-full animate-spin" /> Kaydediliyor</>
+                      : <><Save className="w-4 h-4" /> Kaydet</>}
+                  </button>
 
-                  {/* Tek kaydet butonu: yalnızca bulunduğun adımın verisini kaydeder.
-                      "Sonraki Adım" gezinme butonudur; veri kaybolmasın diye geçmeden
-                      önce aynı adımı sessizce kaydeder. */}
-                  <div className="flex items-center gap-4 w-full sm:w-auto">
-                    <Button
-                      variant="outline"
-                      disabled={savingStep}
-                      className="flex-1 sm:flex-none rounded-xl px-8 h-12 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium transition-all"
-                      onClick={() => saveCurrentStep()}
-                    >
-                      {savingStep ? (
-                        <>
-                          <span className="w-4 h-4 mr-2 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin" />
-                          Kaydediliyor...
-                        </>
-                      ) : (
-                        <>
-                          <Save className="w-4 h-4 mr-2" />
-                          Kaydet
-                        </>
-                      )}
-                    </Button>
-
-                    {steps.findIndex(s => s.id === currentStep) === steps.length - 1 ? (
-                      (courseData as any).status !== 'published' && (
-                        <Button
-                          className="flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-10 h-12 font-semibold transition-colors"
-                          onClick={handlePublishClick}
-                        >
-                          Kursu Yayınla
-                          <ArrowRight className="w-4 h-4 ml-2" />
-                        </Button>
-                      )
-                    ) : (
-                      <Button
-                        disabled={savingStep}
-                        className="flex-1 sm:flex-none bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-200 dark:shadow-none rounded-xl px-10 h-12 font-bold transition-all hover:scale-[1.02] active:scale-95"
-                        onClick={async () => {
-                          const idx = steps.findIndex(s => s.id === currentStep);
-                          const ok = await saveCurrentStep({ silent: true });
-                          if (ok) setCurrentStep(steps[idx + 1].id);
-                        }}
+                  {stepIndex === steps.length - 1 ? (
+                    courseStatus !== 'published' && (
+                      <button
+                        type="button"
+                        className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl bg-[#00201d] text-[#9cf2e8] text-[14px] font-bold hover:bg-[#03302b] active:scale-[0.98] transition-[background-color,transform]"
+                        onClick={handlePublishClick}
                       >
-                        Sonraki Adım
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
-                    )}
-                  </div>
+                        Kursu yayınla
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    )
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={savingStep}
+                      className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl bg-[#9cf2e8] text-[#00201d] text-[14px] font-bold hover:bg-[#86e9dd] active:scale-[0.98] shadow-[0_1px_2px_rgba(0,64,58,0.18)] disabled:opacity-50 transition-[background-color,transform]"
+                      onClick={async () => {
+                        const ok = await saveCurrentStep({ silent: true });
+                        if (ok) setCurrentStep(steps[stepIndex + 1].id);
+                      }}
+                    >
+                      Sonraki adım
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-
-          </div>
+              </div>
+            </div>
+          </section>
         </div>
 
         {/* YAYINLAMA KONTROL LİSTESİ — eksikler tamamlanmadan yayınlanamaz */}
         {publishIssuesOpen && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#00201d]/60 backdrop-blur-sm p-4"
             onClick={() => setPublishIssuesOpen(false)}
           >
             <div
               className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-md overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="px-6 pt-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+              <div className="px-6 pt-6 pb-4 border-b border-[#e8f2f0] dark:border-slate-800">
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-full bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center shrink-0">
                     <AlertCircle className="w-5 h-5 text-amber-600" />
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">
+                    <h3 className="text-base font-semibold text-[#00201d] dark:text-white">
                       Kurs yayınlanamaz
                     </h3>
-                    <p className="text-sm text-slate-500 mt-0.5">
+                    <p className="text-sm text-[#4a6360] mt-0.5">
                       {missingPublishItems.length} madde eksik. Tamamladıktan sonra tekrar deneyin.
                     </p>
                   </div>
@@ -3386,7 +3346,7 @@ export default function AdvancedCourseCreator() {
                     disabled={item.ok}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${item.ok
                       ? 'cursor-default'
-                      : 'hover:bg-slate-50 dark:hover:bg-slate-800'
+                      : 'hover:bg-[#f4faf8] dark:hover:bg-slate-800'
                       }`}
                   >
                     <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${item.ok
@@ -3397,24 +3357,24 @@ export default function AdvancedCourseCreator() {
                     </span>
                     <span className="flex-1 min-w-0">
                       <span className={`block text-sm ${item.ok
-                        ? 'text-slate-400 line-through'
-                        : 'text-slate-800 dark:text-slate-200 font-medium'
+                        ? 'text-[#6b827f] line-through'
+                        : 'text-[#00201d] dark:text-slate-200 font-medium'
                         }`}>
                         {item.label}
                       </span>
                       {!item.ok && (
-                        <span className="block text-xs text-slate-400">{item.hint}</span>
+                        <span className="block text-xs text-[#6b827f]">{item.hint}</span>
                       )}
                     </span>
-                    {!item.ok && <ArrowRight className="w-4 h-4 text-slate-300 shrink-0" />}
+                    {!item.ok && <ArrowRight className="w-4 h-4 text-[#9bb0ad] shrink-0" />}
                   </button>
                 ))}
               </div>
 
-              <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="px-6 py-4 border-t border-[#e8f2f0] dark:border-slate-800">
                 <Button
                   onClick={() => setPublishIssuesOpen(false)}
-                  className="w-full h-11 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-medium"
+                  className="w-full h-11 rounded-xl bg-[#9cf2e8] hover:bg-[#86e9dd] text-[#00201d] font-bold"
                 >
                   Tamam
                 </Button>
@@ -3434,29 +3394,29 @@ export default function AdvancedCourseCreator() {
             }}
           >
             <div
-              className="relative bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
+              className="relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className={`px-8 pt-8 pb-6 ${uploadType === 'video' ? 'bg-gradient-to-br from-violet-50 to-indigo-50 dark:from-violet-900/20 dark:to-indigo-900/20' :
-                uploadType === 'presentation' ? 'bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20' :
-                  'bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20'
+              <div className={`px-8 pt-8 pb-6 ${uploadType === 'video' ? 'bg-gradient-to-br from-[#ecfbf8] to-[#ecfbf8] dark:from-violet-900/20 dark:to-indigo-900/20' :
+                uploadType === 'presentation' ? 'bg-gradient-to-br from-[#ecfbf8] to-[#ecfbf8] dark:from-blue-900/20 dark:to-sky-900/20' :
+                  'bg-gradient-to-br from-[#ecfbf8] to-[#ecfbf8] dark:from-emerald-900/20 dark:to-teal-900/20'
                 }`}>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-4">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${uploadType === 'video' ? 'bg-violet-600' :
-                      uploadType === 'presentation' ? 'bg-blue-600' : 'bg-emerald-600'
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${uploadType === 'video' ? 'bg-[#005c55]' :
+                      uploadType === 'presentation' ? 'bg-[#005c55]' : 'bg-[#005c55]'
                       }`}>
                       {uploadType === 'video' && <Video className="w-7 h-7 text-white" />}
                       {uploadType === 'presentation' && <Presentation className="w-7 h-7 text-white" />}
                       {uploadType === 'document' && <FileText className="w-7 h-7 text-white" />}
                     </div>
                     <div>
-                      <h3 className="text-xl font-black text-slate-800 dark:text-white">
+                      <h3 className="text-xl font-extrabold text-[#00201d] dark:text-white">
                         {uploadType === 'video' ? 'Video Yükle' :
                           uploadType === 'presentation' ? 'Slayt Yükle' : 'Belge Yükle'}
                       </h3>
-                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                      <p className="text-sm text-[#4a6360] dark:text-slate-400 mt-0.5">
                         {uploadType === 'video' ? 'MP4, AVI, MOV, MKV • Maks. 500MB' :
                           uploadType === 'presentation' ? 'PPT, PPTX, PDF • Maks. 100MB' :
                             'PDF, DOC, DOCX, TXT • Maks. 50MB'}
@@ -3465,7 +3425,7 @@ export default function AdvancedCourseCreator() {
                   </div>
                   <button
                     onClick={() => { setShowFileUpload(false); document.body.style.overflow = 'auto'; }}
-                    className="w-9 h-9 rounded-xl bg-white/70 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-all"
+                    className="w-9 h-9 rounded-xl bg-white/70 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 flex items-center justify-center text-[#6b827f] hover:text-[#3d5754] transition-all"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -3476,12 +3436,12 @@ export default function AdvancedCourseCreator() {
               <div className="px-8 py-6">
                 <div
                   className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-200 cursor-pointer ${isDragOver
-                    ? 'border-violet-500 bg-violet-50 dark:bg-violet-900/20 scale-[1.01]'
+                    ? 'border-[#005c55] bg-[#ecfbf8] dark:bg-violet-900/20 scale-[1.01]'
                     : uploadType === 'video'
-                      ? 'border-slate-200 dark:border-slate-700 hover:border-violet-400 hover:bg-violet-50/50 dark:hover:bg-violet-900/10'
+                      ? 'border-[#dcebe8] dark:border-slate-700 hover:border-[#5fb8ac] hover:bg-[#ecfbf8]/50 dark:hover:bg-violet-900/10'
                       : uploadType === 'presentation'
-                        ? 'border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/10'
-                        : 'border-slate-200 dark:border-slate-700 hover:border-emerald-400 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10'
+                        ? 'border-[#dcebe8] dark:border-slate-700 hover:border-[#5fb8ac] hover:bg-[#ecfbf8]/50 dark:hover:bg-blue-900/10'
+                        : 'border-[#dcebe8] dark:border-slate-700 hover:border-[#5fb8ac] hover:bg-[#ecfbf8]/50 dark:hover:bg-emerald-900/10'
                     }`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
@@ -3501,10 +3461,10 @@ export default function AdvancedCourseCreator() {
                   />
 
                   <div className="flex flex-col items-center gap-4">
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${isDragOver ? 'bg-violet-600 scale-110' :
-                      uploadType === 'video' ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-600' :
-                        uploadType === 'presentation' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' :
-                          'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600'
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${isDragOver ? 'bg-[#005c55] scale-110' :
+                      uploadType === 'video' ? 'bg-[#d9f3ee] dark:bg-violet-900/30 text-[#005c55]' :
+                        uploadType === 'presentation' ? 'bg-[#d9f3ee] dark:bg-blue-900/30 text-[#005c55]' :
+                          'bg-[#d9f3ee] dark:bg-emerald-900/30 text-[#005c55]'
                       } transition-all duration-200`}>
                       {isDragOver
                         ? <Upload className="w-7 h-7 text-white" />
@@ -3516,10 +3476,10 @@ export default function AdvancedCourseCreator() {
                     </div>
 
                     <div>
-                      <p className="font-bold text-slate-700 dark:text-slate-200 mb-1">
+                      <p className="font-bold text-[#1d3a37] dark:text-slate-200 mb-1">
                         {isDragOver ? 'Bırakın!' : 'Sürükleyin veya tıklayın'}
                       </p>
-                      <p className="text-sm text-slate-400">
+                      <p className="text-sm text-[#6b827f]">
                         {uploadType === 'video' && 'Ders videosunu buraya yükleyin'}
                         {uploadType === 'presentation' && 'Slayt dosyanızı buraya yükleyin'}
                         {uploadType === 'document' && 'Belge dosyanızı buraya yükleyin'}
@@ -3542,15 +3502,15 @@ export default function AdvancedCourseCreator() {
                   <Button
                     variant="outline"
                     onClick={() => { setShowFileUpload(false); document.body.style.overflow = 'auto'; }}
-                    className="flex-1 h-11 rounded-xl border-slate-200 dark:border-slate-700 font-medium"
+                    className="flex-1 h-11 rounded-xl border-[#dcebe8] dark:border-slate-700 font-medium"
                   >
                     İptal
                   </Button>
                   <Button
                     onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-                    className={`flex-1 h-11 rounded-xl font-bold text-white shadow-sm ${uploadType === 'video' ? 'bg-violet-600 hover:bg-violet-700' :
-                      uploadType === 'presentation' ? 'bg-blue-600 hover:bg-blue-700' :
-                        'bg-emerald-600 hover:bg-emerald-700'
+                    className={`flex-1 h-11 rounded-xl font-bold text-white shadow-sm ${uploadType === 'video' ? 'bg-[#005c55] hover:bg-[#00483f]' :
+                      uploadType === 'presentation' ? 'bg-[#005c55] hover:bg-[#00483f]' :
+                        'bg-[#005c55] hover:bg-[#00483f]'
                       }`}
                   >
                     <Upload className="w-4 h-4 mr-2" />
@@ -3575,10 +3535,10 @@ export default function AdvancedCourseCreator() {
                     value={articleContent}
                     onChange={(e) => setArticleContent(e.target.value)}
                     placeholder="Makale içeriğinizi buraya yazın..."
-                    className="w-full h-96 p-4 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full h-96 p-4 border border-[#cfe3df] rounded-lg resize-none focus:ring-2 focus:ring-[#005c55] focus:border-transparent"
                     required
                   />
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-[#4a6360] mt-1">
                     {articleContent.length} karakter
                   </p>
                 </div>
@@ -3596,7 +3556,7 @@ export default function AdvancedCourseCreator() {
                 </Button>
                 <Button
                   onClick={saveArticle}
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                  className="flex-1 bg-[#9cf2e8] hover:bg-[#86e9dd] text-[#00201d] font-bold"
                   disabled={!articleContent.trim()}
                 >
                   Makaleyi Kaydet
@@ -3620,7 +3580,7 @@ export default function AdvancedCourseCreator() {
             <DialogHeader>
               <DialogTitle>Kurs Kapak Görselini Kırp</DialogTitle>
             </DialogHeader>
-            <div className="relative w-full h-[400px] bg-gray-900 rounded-lg overflow-hidden">
+            <div className="relative w-full h-[400px] bg-[#00201d] rounded-lg overflow-hidden">
               {cropImage && (
                 <Cropper
                   image={cropImage}
@@ -3657,7 +3617,7 @@ export default function AdvancedCourseCreator() {
               }}>
                 İptal
               </Button>
-              <Button onClick={handleCropConfirm} className="bg-purple-600 hover:bg-purple-700">
+              <Button onClick={handleCropConfirm} className="bg-[#9cf2e8] hover:bg-[#86e9dd] text-[#00201d] font-bold">
                 Kırp ve Yükle
               </Button>
             </DialogFooter>

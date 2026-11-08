@@ -4,7 +4,7 @@ import { ArrowRight, Plus, Star, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { API_BASE_URL } from '@/lib/api';
-import { btn, field, Empty, Loading, PageHead, Panel, SearchBox, Segments, Tag, lira } from '../shell/kit';
+import { btn, field, Empty, Loading, PageHead, Panel, SearchBox, Tag, lira } from '../shell/kit';
 import { relativeTime } from '../shell/useInstructorWorkspace';
 
 type Status = 'active' | 'draft' | 'pending';
@@ -28,14 +28,11 @@ const STATUS: Record<Status, { label: string; tone: 'live' | 'draft' | 'review' 
     pending: { label: 'İncelemede', tone: 'review' },
 };
 
-type View = 'all' | 'work' | 'live';
-
 export const CourseList: React.FC = () => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
     const [query, setQuery] = useState('');
     const [sortBy, setSortBy] = useState('newest');
-    const [view, setView] = useState<View>('all');
 
     useEffect(() => {
         (async () => {
@@ -75,7 +72,6 @@ export const CourseList: React.FC = () => {
     const list = useMemo(() => {
         const q = query.trim().toLocaleLowerCase('tr-TR');
         return courses
-            .filter(c => (view === 'all' ? true : view === 'live' ? c.status === 'active' : c.status !== 'active'))
             .filter(c => !q || c.title.toLocaleLowerCase('tr-TR').includes(q))
             .sort((a, b) => {
                 if (sortBy === 'students') return b.students - a.students;
@@ -83,7 +79,11 @@ export const CourseList: React.FC = () => {
                 const d = new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
                 return sortBy === 'oldest' ? -d : d;
             });
-    }, [courses, query, sortBy, view]);
+    }, [courses, query, sortBy]);
+
+    // Yayındakiler üstte; taslak ve incelemedekiler ayrı bir grupta altta.
+    const liveList = list.filter(c => c.status === 'active');
+    const workList = list.filter(c => c.status !== 'active');
 
     if (loading) return <Loading label="Kursların yükleniyor" />;
 
@@ -114,18 +114,9 @@ export const CourseList: React.FC = () => {
                 actions={create}
             />
 
-            <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-4">
-                <Segments
-                    value={view}
-                    onChange={v => setView(v as View)}
-                    items={[
-                        { value: 'all', label: 'Tümü', count: courses.length },
-                        { value: 'work', label: 'Hazırlanan', count: work },
-                        { value: 'live', label: 'Yayında', count: live },
-                    ]}
-                />
-                <div className="flex gap-2 lg:ml-auto">
-                    <SearchBox value={query} onChange={setQuery} placeholder="Kurs ara" className="flex-1 lg:w-64" />
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+                <div className="flex gap-2 sm:ml-auto w-full sm:w-auto">
+                    <SearchBox value={query} onChange={setQuery} placeholder="Kurs ara" className="flex-1 sm:w-64" />
                     <label className="shrink-0">
                         <span className="sr-only">Sırala</span>
                         <select value={sortBy} onChange={e => setSortBy(e.target.value)} className={cn(field, 'h-10 w-auto pr-8 font-semibold')}>
@@ -139,15 +130,43 @@ export const CourseList: React.FC = () => {
             </div>
 
             {list.length === 0 ? (
-                <Empty title="Bu aramayla eşleşen kurs yok" text="Arama kelimesini kısaltmayı ya da başka bir sekmeyi dene." />
+                <Empty title="Bu aramayla eşleşen kurs yok" text="Arama kelimesini kısaltmayı dene." />
             ) : (
-                <Panel as="section" className="divide-y divide-[#e8f2f0] overflow-hidden">
-                    {list.map(c => <Row key={c.id} course={c} />)}
-                </Panel>
+                <div className="space-y-9">
+                    <Group
+                        title="Yayında"
+                        note="Onaylanmış, öğrencilerin satın alabildiği kurslar"
+                        items={liveList}
+                        empty="Henüz yayında kursun yok. İncelemeye gönderdiğin kurs onaylanınca burada görünür."
+                    />
+                    <Group
+                        title="Hazırlanan"
+                        note="Taslaklar ve incelemeyi bekleyenler"
+                        items={workList}
+                        empty="Hazırlanan kursun yok."
+                    />
+                </div>
             )}
         </>
     );
 };
+
+const Group: React.FC<{ title: string; note: string; items: Course[]; empty: string }> = ({ title, note, items, empty }) => (
+    <section>
+        <header className="flex items-baseline gap-3 mb-3">
+            <h2 className="text-[19px] font-extrabold tracking-tight text-[#00201d]">{title}</h2>
+            <span className="text-[14px] font-bold tabular-nums text-[#5f7774]">{items.length}</span>
+            <span className="hidden sm:inline text-[13px] text-[#5f7774]">· {note}</span>
+        </header>
+        {items.length === 0 ? (
+            <p className="rounded-2xl bg-[#ecfbf8] px-5 py-6 text-[14px] text-[#4a6360]">{empty}</p>
+        ) : (
+            <Panel className="divide-y divide-[#e8f2f0] overflow-hidden">
+                {items.map(c => <Row key={c.id} course={c} />)}
+            </Panel>
+        )}
+    </section>
+);
 
 const Row: React.FC<{ course: Course }> = ({ course: c }) => {
     const st = STATUS[c.status];

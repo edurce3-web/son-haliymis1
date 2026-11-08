@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { API_BASE_URL } from '@/lib/api';
+import InstructorShell from '../shell/InstructorShell';
+import { btn, field, hint, label } from '../shell/kit';
 
 /**
  * E-kitap taslağı oluşturma.
  *
- * Kurs oluşturma ekranıyla aynı düzen: açık yeşil üst bant, tek kart, iki
- * alan. İkisi de aynı işi yapıyor; farklı görünmeleri için bir sebep yok.
+ * Kurs oluşturma ekranıyla aynı düzen: panelin içinde, solda iki alan,
+ * sağda yazdıkça dolan bir kapak önizlemesi.
  */
 export function CreateBook() {
     const qc = useQueryClient();
@@ -21,27 +21,22 @@ export function CreateBook() {
     const [title, setTitle] = useState('');
     const [authorName, setAuthorName] = useState('');
 
-    const token = () => localStorage.getItem('token');
-
-    const fieldClass =
-        'h-12 rounded-xl border border-slate-200 bg-white text-[15px] px-4 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-colors';
-
     const createDbMutation = useMutation({
         mutationFn: async () => {
             const r = await fetch(`${API_BASE_URL}/instructor/books`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token()}`
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify({
-                    title,
-                    author_name: authorName,
+                    title: title.trim(),
+                    author_name: authorName.trim(),
                     subtitle: '',
                     description: '',
                     price: 0,
-                    has_copyright: false
-                })
+                    has_copyright: false,
+                }),
             });
             if (!r.ok) {
                 const errData = await r.json().catch(() => null);
@@ -49,101 +44,96 @@ export function CreateBook() {
             }
             return r.json();
         },
-        onSuccess: (data) => {
-            toast.success('Kitap taslağı oluşturuldu');
+        onSuccess: data => {
+            toast.success('Taslağın hazır. Şimdi ayrıntıları ekleyelim.');
             qc.invalidateQueries({ queryKey: ['instructor-books'] });
             navigate(`/instructor/books/edit/${data.book_id}`);
         },
-        onError: (err) => {
-            toast.error(err.message || 'Bir hata oluştu');
-        }
+        onError: (err: any) => toast.error(err.message || 'Taslak açılamadı. Tekrar dene.'),
     });
 
     const canSubmit = Boolean(title.trim() && authorName.trim());
 
     return (
-        <div className="min-h-screen bg-white">
-            <div className="relative border-b border-brand-100 bg-gradient-to-br from-brand-50 via-brand-100/60 to-white">
-                <div
-                    aria-hidden
-                    className="absolute inset-0 opacity-40"
-                    style={{
-                        backgroundImage:
-                            'linear-gradient(to right, rgba(23,93,93,0.06) 1px, transparent 1px),'
-                            + 'linear-gradient(to bottom, rgba(23,93,93,0.06) 1px, transparent 1px)',
-                        backgroundSize: '34px 34px',
-                    }}
-                />
-                <div className="container relative mx-auto px-5 sm:px-8 max-w-3xl py-8 lg:py-10">
-                    <button
-                        onClick={() => navigate('/instructor')}
-                        className="inline-flex items-center gap-2 text-[13.5px] font-semibold text-slate-500 hover:text-brand-800 transition-colors mb-5"
-                    >
-                        <ArrowLeft className="w-4 h-4" />
-                        Eğitmen paneline dön
-                    </button>
+        <InstructorShell>
+            <Link
+                to="/instructor/books/manage"
+                className="inline-flex items-center gap-1.5 -ml-1 px-1 h-7 rounded-md text-[13px] font-semibold text-[#4a6360] hover:text-[#00201d] transition-colors mb-2"
+            >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Kitaplarım
+            </Link>
+            <h1 className="text-[28px] sm:text-[32px] leading-[1.1] font-extrabold tracking-[-0.025em] text-[#00201d]">
+                Yeni e-kitap
+            </h1>
+            <p className="mt-2 text-[14.5px] text-[#4a6360] max-w-xl">
+                Önce başlık ve yazar adı. Kapak, açıklama, fiyat ve dosyayı taslağı açtıktan sonra eklersin.
+            </p>
 
-                    <h1 className="font-montserrat text-[28px] sm:text-[34px] font-extrabold text-slate-900 tracking-[-0.025em] leading-tight">
-                        Yeni e-kitap oluştur
-                    </h1>
-                    <p className="text-[15px] text-slate-600 mt-2.5 max-w-xl leading-relaxed">
-                        Başlık ve yazar adını gir, taslağın hazır olsun. Kapak, açıklama,
-                        fiyat ve dosya yüklemesi bir sonraki adımda.
-                    </p>
-                </div>
-            </div>
-
-            <div className="container mx-auto px-5 sm:px-8 max-w-3xl py-10">
-                <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 space-y-7">
-
-                    <div className="space-y-2">
-                        <Label htmlFor="book-title" className="text-[14px] font-semibold text-slate-800">
-                            Kitap başlığı
-                        </Label>
-                        <Input
+            <div className="mt-8 grid lg:grid-cols-[minmax(0,1fr)_260px] gap-6 items-start">
+                <form
+                    onSubmit={e => { e.preventDefault(); if (canSubmit) createDbMutation.mutate(); }}
+                    className="rounded-2xl bg-white ring-1 ring-[#dcebe8] shadow-[0_1px_2px_rgba(0,32,29,0.04)] p-5 sm:p-8 space-y-7"
+                >
+                    <div>
+                        <label htmlFor="book-title" className={label}>Kitabın adı</label>
+                        <input
                             id="book-title"
-                            placeholder="Örn: Modern JavaScript Geliştirme"
-                            className={fieldClass}
+                            autoFocus
+                            placeholder="Örnek: Modern JavaScript rehberi"
+                            className={cn(field, 'h-12 text-[16px] font-semibold')}
                             value={title}
                             maxLength={120}
-                            onChange={(e) => setTitle(e.target.value)}
+                            onChange={e => setTitle(e.target.value)}
                         />
-                        <p className="text-[12.5px] text-slate-500">
-                            Başlığı sonradan değiştirebilirsin.
+                        <p className={cn(hint, 'mt-1.5 flex justify-between gap-3')}>
+                            <span>Sonradan değiştirebilirsin.</span>
+                            <span className="tabular-nums shrink-0">{title.length}/120</span>
                         </p>
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="book-author" className="text-[14px] font-semibold text-slate-800">
-                            Yazar adı
-                        </Label>
-                        <Input
+                    <div>
+                        <label htmlFor="book-author" className={label}>Yazar adı</label>
+                        <input
                             id="book-author"
-                            placeholder="Kendi adın veya kullandığın takma ad"
-                            className={fieldClass}
+                            placeholder="Kendi adın ya da kullandığın takma ad"
+                            className={cn(field, 'h-12')}
                             value={authorName}
                             maxLength={80}
-                            onChange={(e) => setAuthorName(e.target.value)}
+                            onChange={e => setAuthorName(e.target.value)}
                         />
-                        <p className="text-[12.5px] text-slate-500">
-                            Kitap sayfasında bu isim görünür.
-                        </p>
+                        <p className={cn(hint, 'mt-1.5')}>Kitap sayfasında bu isim görünür.</p>
                     </div>
 
-                    <div className="pt-1">
-                        <Button
-                            onClick={() => canSubmit && createDbMutation.mutate()}
-                            disabled={createDbMutation.isPending || !canSubmit}
-                            className="w-full sm:w-auto h-12 px-8 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-semibold text-[15px] disabled:opacity-50"
-                        >
-                            {createDbMutation.isPending
-                                ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Oluşturuluyor</>
-                                : 'Taslağı oluştur'}
-                        </Button>
+                    <div className="pt-6 border-t border-[#e8f2f0] flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3">
+                        <p className="text-[13px] text-[#4a6360]">Taslak yalnızca sana görünür.</p>
+                        <button type="submit" disabled={createDbMutation.isPending || !canSubmit} className={cn(btn.primary, btn.lg, 'min-w-[200px]')}>
+                            {createDbMutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Taslak açılıyor</> : 'Taslağı oluştur'}
+                        </button>
                     </div>
-                </div>
+                </form>
+
+                {/* Önizleme: kapağın sade hali, kitap sırtıyla */}
+                <aside aria-label="Kapak önizlemesi" className="lg:sticky lg:top-8 max-w-[260px]">
+                    <p className="text-[13px] font-bold text-[#4a6360] mb-2.5">Kapak taslağı</p>
+                    <div className="relative aspect-[3/4] rounded-r-xl rounded-l-[4px] overflow-hidden bg-[linear-gradient(160deg,#9cf2e8,#5fb8ac)] shadow-[0_18px_34px_-18px_rgba(0,32,29,0.55)]">
+                        <span aria-hidden className="absolute inset-y-0 left-0 w-3 bg-[#00201d]/15" />
+                        <div className="absolute inset-0 pl-7 pr-5 py-6 flex flex-col">
+                            <p className={cn(
+                                'text-[20px] leading-[1.15] font-extrabold tracking-[-0.015em] line-clamp-5 text-balance',
+                                title.trim() ? 'text-[#00201d]' : 'text-[#00201d]/40'
+                            )}>
+                                {title.trim() || 'Kitabının adı'}
+                            </p>
+                            <p className={cn('mt-auto text-[13px] font-bold', authorName.trim() ? 'text-[#00483f]' : 'text-[#00483f]/45')}>
+                                {authorName.trim() || 'Yazar adı'}
+                            </p>
+                        </div>
+                    </div>
+                    <p className="mt-2.5 text-[12.5px] text-[#5f7774]">Gerçek kapağı sonraki adımlarda yüklersin.</p>
+                </aside>
             </div>
-        </div>
+        </InstructorShell>
     );
 }
 

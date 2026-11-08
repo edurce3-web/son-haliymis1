@@ -56,7 +56,7 @@ export const DashboardOverview: React.FC = () => {
             <section aria-labelledby="desk-heading">
                 <div className="flex items-end justify-between gap-4 mb-3">
                     <h2 id="desk-heading" className="text-[17px] font-extrabold tracking-tight">Hazırlanan kursların</h2>
-                    {inProgress.length > 4 && (
+                    {inProgress.length > 2 && (
                         <Link to="/instructor/courses/list" className="text-[13px] font-semibold text-[#005c55] hover:underline underline-offset-4">
                             Hepsi ({inProgress.length})
                         </Link>
@@ -91,7 +91,7 @@ export const DashboardOverview: React.FC = () => {
                     </div>
                 ) : (
                     <ul className="rounded-2xl bg-white ring-1 ring-[#dcebe8] shadow-[0_1px_2px_rgba(0,32,29,0.04)] divide-y divide-[#e3f1ee] overflow-hidden">
-                        {inProgress.slice(0, 4).map(c => <DeskRow key={c.id} course={c} />)}
+                        {inProgress.slice(0, 2).map(c => <DeskRow key={c.id} course={c} />)}
                     </ul>
                 )}
             </section>
