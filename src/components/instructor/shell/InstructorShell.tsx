@@ -13,22 +13,21 @@ import {
 /*
  * Eğitmen paneli iskeleti.
  *
- * Menü nane yeşili bir şerit ve bir kitabın dizini gibi: yalnızca büyük
- * başlıklar. Alt sayfalar başlığın üzerine gelince yandan açılan bir
- * çekmecede. Çekmece menünün içinde aşağı açılmıyor; açılsaydı alttaki
- * başlıklar kayar ve imleç hedeflediği başlığı kaçırırdı.
+ * Menü logonun koyu teal renginde bir şerit; logo da bu kez nane renginde.
+ * Bir kitabın dizini gibi yalnızca büyük başlıklar var. Başlığa tıklamak o
+ * bölümün ilk sayfasını açıyor; üzerine gelince diğer sayfalar yandan
+ * açılan bir çekmecede beliriyor.
  *
- * Üzerine gelinen başlık beyaz bir sekmeye dönüşüp çekmeceyle birleşiyor;
- * nane zeminde ikisi tek parça, başlık çekmeceyi dışarı çekmiş gibi.
+ * Üzerine gelinen başlık beyaz bir sekmeye dönüşüp çekmeceyle birleşiyor.
  * Çekmecenin tepesi o bölümün o anki durumunu söylüyor (kaç taslak, kaç
- * bekleyen soru, bakiye): menü yalnızca yol göstermiyor, haber de veriyor.
+ * bekleyen soru, bakiye).
  *
- * Telefonda üzerine gelmek yok: orada başlığa dokununca alt sayfalar
- * başlığın altında açılıyor.
+ * Telefonda üzerine gelmek yok: başlığa dokununca ilk sayfa açılıyor, yanındaki
+ * ok diğer sayfaları başlığın altında gösteriyor.
  */
 
 export const NAV_WIDTH = 256;
-const FLYOUT_WIDTH = 324;
+const FLYOUT_WIDTH = 300;
 const OPEN_DELAY = 70;
 const CLOSE_DELAY = 180;
 const EASE_OUT = 'cubic-bezier(0.23,1,0.32,1)';
@@ -36,7 +35,7 @@ const EASE_OUT = 'cubic-bezier(0.23,1,0.32,1)';
 const lira = (n: number) =>
     `₺${(Number(n) || 0).toLocaleString('tr-TR', { minimumFractionDigits: Number(n) % 1 ? 2 : 0, maximumFractionDigits: 2 })}`;
 
-type Sub = { to: string; label: string; hint: string; badge?: number };
+type Sub = { to: string; label: string; badge?: number };
 type Section = {
     id: string;
     label: string;
@@ -57,47 +56,50 @@ function useSections(): Section[] {
         {
             id: 'courses', label: 'Kurslar', icon: BookOpen, match: /^\/instructor\/courses/,
             subs: [
-                { to: '/instructor/courses/list', label: 'Kurslarım', hint: 'Taslaklar, incelemedekiler, yayındakiler' },
-                { to: '/instructor/courses/announcements', label: 'Duyurular', hint: 'Öğrencilerine toplu haber ver' },
+                { to: '/instructor/courses/list', label: 'Kurslarım' },
+                { to: '/instructor/courses/announcements', label: 'Duyurular' },
             ],
             action: { to: '/instructor/courses/create', label: 'Yeni kurs oluştur' },
         },
         {
             id: 'students', label: 'Öğrenciler', icon: Users, match: /^\/instructor\/students/, badge: unanswered + unread,
             subs: [
-                { to: '/instructor/students/qa', label: 'Soru-Cevap', hint: 'Derslerin altındaki sorular', badge: unanswered },
-                { to: '/instructor/students/messages', label: 'Mesajlar', hint: 'Öğrencilerle birebir yazışma', badge: unread },
-                { to: '/instructor/students/reviews', label: 'Yorumlar', hint: 'Puanlar ve değerlendirmeler' },
-                { to: '/instructor/students/list', label: 'Öğrenci listesi', hint: 'Kim hangi kursta, ne kadar ilerledi' },
+                { to: '/instructor/students/qa', label: 'Soru-Cevap', badge: unanswered },
+                { to: '/instructor/students/messages', label: 'Mesajlar', badge: unread },
+                { to: '/instructor/students/reviews', label: 'Yorumlar' },
+                { to: '/instructor/students/list', label: 'Öğrenci listesi' },
             ],
         },
         {
             id: 'books', label: 'E-kitaplar', icon: Library, match: /^\/instructor\/books/,
             subs: [
-                { to: '/instructor/books/manage', label: 'Kitaplarım', hint: 'Yayındaki ve taslak e-kitaplar' },
+                { to: '/instructor/books/manage', label: 'Kitaplarım' },
             ],
             action: { to: '/instructor/books/create', label: 'Yeni e-kitap yükle' },
         },
         {
             id: 'money', label: 'Kazanç', icon: Wallet, match: /^\/instructor\/finance/,
             subs: [
-                { to: '/instructor/finance/report', label: 'Gelir raporu', hint: 'Satışlar, kesintiler, net kazanç' },
-                { to: '/instructor/finance/payout', label: 'Ödeme bilgileri', hint: 'IBAN ve fatura bilgilerin' },
+                { to: '/instructor/finance/report', label: 'Gelir raporu' },
+                { to: '/instructor/finance/payout', label: 'Ödeme bilgileri' },
             ],
         },
         {
             id: 'account', label: 'Hesap', icon: UserRound, match: /^\/instructor\/settings/,
             subs: [
-                { to: '/instructor/settings/profile', label: 'Eğitmen profili', hint: 'Öğrencilerin gördüğü tanıtım' },
-                { to: '/instructor/settings/account', label: 'Hesap ayarları', hint: 'E-posta, şifre, bildirimler' },
-                { to: '/instructor/settings/help', label: 'Yardım', hint: 'Sık sorulanlar ve destek' },
+                { to: '/instructor/settings/profile', label: 'Eğitmen profili' },
+                { to: '/instructor/settings/account', label: 'Hesap ayarları' },
+                { to: '/instructor/settings/help', label: 'Yardım' },
             ],
         },
     ];
 }
 
-/* Panelin rengi: nane (#9cf2e8) üstünde koyu mürekkep (#00201d). */
-const RAIL_BG = 'bg-[linear-gradient(180deg,#a5f5ec_0%,#90eade_100%)]';
+/** Bir başlığa tıklayınca gidilecek yer: kendi sayfası ya da ilk alt sayfası. */
+const firstPage = (s: Section) => s.to || s.subs![0].to;
+
+/* Panelin rengi: logonun koyu teali; vurgu nane (#9cf2e8). */
+const RAIL_BG = 'bg-[linear-gradient(180deg,#285955_0%,#1f4b48_100%)]';
 
 export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [drawer, setDrawer] = useState(false);
@@ -122,24 +124,25 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
             <DesktopNav />
 
             {/* Telefon: üst şerit + çekmece */}
-            <header className={cn('lg:hidden sticky top-0 z-40 h-14 grid grid-cols-[40px_1fr_40px] items-center px-3', RAIL_BG)}>
+            <header className={cn('lg:hidden sticky top-0 z-40 h-14 grid grid-cols-[64px_1fr_64px] items-center px-2', RAIL_BG)}>
                 <button
                     type="button"
                     onClick={() => setDrawer(true)}
                     aria-label="Menüyü aç"
                     aria-expanded={drawer}
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-[#00201d] hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/50"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center text-[#e3f6f2] hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60"
                 >
                     <Menu className="w-5 h-5" />
                 </button>
                 <Brand size="sm" className="justify-self-center" />
+                <ExitLink compact className="justify-self-end" />
             </header>
 
             <div
                 aria-hidden={!drawer}
                 onClick={() => setDrawer(false)}
                 className={cn(
-                    'lg:hidden fixed inset-0 z-50 bg-[#00201d]/40 transition-opacity duration-200 motion-reduce:transition-none',
+                    'lg:hidden fixed inset-0 z-50 bg-[#00201d]/45 transition-opacity duration-200 motion-reduce:transition-none',
                     drawer ? 'opacity-100' : 'opacity-0 pointer-events-none'
                 )}
             />
@@ -150,14 +153,14 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
                 className={cn(
                     'lg:hidden fixed inset-y-0 left-0 z-50 flex flex-col w-[min(310px,86vw)]', RAIL_BG,
                     'transition-[transform,visibility,box-shadow] duration-[240ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none',
-                    drawer ? 'translate-x-0 shadow-[12px_0_40px_-12px_rgba(0,32,29,0.45)]' : '-translate-x-full invisible'
+                    drawer ? 'translate-x-0 shadow-[12px_0_40px_-12px_rgba(0,32,29,0.55)]' : '-translate-x-full invisible'
                 )}
             >
                 <button
                     type="button"
                     onClick={() => setDrawer(false)}
                     aria-label="Menüyü kapat"
-                    className="absolute top-3 right-3 w-9 h-9 rounded-lg flex items-center justify-center text-[#1d4a45] hover:bg-white/40"
+                    className="absolute top-3 right-3 w-9 h-9 rounded-lg flex items-center justify-center text-[#b9ddd6] hover:bg-white/10"
                 >
                     <X className="w-4 h-4" />
                 </button>
@@ -173,16 +176,53 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
     );
 };
 
-/** Logo kendi koyu teal renginde; nane zeminde olduğu gibi okunuyor. */
-const Brand: React.FC<{ className?: string; size?: 'lg' | 'sm' }> = ({ className, size = 'lg' }) => (
-    <Link to="/instructor/dashboard" className={cn('inline-flex items-center gap-2.5', className)}>
-        <img src="/logo-wordmark.png" alt="Edurce" className={cn('w-auto', size === 'lg' ? 'h-9' : 'h-7')} />
-        <span className={cn(
-            'font-extrabold tracking-[-0.01em] text-[#005c55] translate-y-[3px]',
-            size === 'lg' ? 'text-[19px]' : 'text-[16px]'
-        )}>
-            eğitmen
-        </span>
+/**
+ * Logo nane renginde. Ayrı bir logo dosyası yok; mevcut PNG maske olarak
+ * kullanılıp nane renkle dolduruluyor.
+ */
+const LOGO_RATIO = 579 / 160;
+const Brand: React.FC<{ className?: string; size?: 'lg' | 'sm' }> = ({ className, size = 'lg' }) => {
+    const h = size === 'lg' ? 28 : 22;
+    return (
+        <Link to="/instructor/dashboard" aria-label="Edurce eğitmen paneli" className={cn('inline-flex items-center gap-2', className)}>
+            <span
+                aria-hidden
+                className="block bg-[#9cf2e8]"
+                style={{
+                    width: Math.round(h * LOGO_RATIO),
+                    height: h,
+                    WebkitMaskImage: 'url(/logo-wordmark.png)',
+                    maskImage: 'url(/logo-wordmark.png)',
+                    WebkitMaskSize: 'contain',
+                    maskSize: 'contain',
+                    WebkitMaskRepeat: 'no-repeat',
+                    maskRepeat: 'no-repeat',
+                }}
+            />
+            <span className={cn(
+                'font-bold text-[#cfeee8] translate-y-[2px]',
+                size === 'lg' ? 'text-[15px]' : 'text-[13px]'
+            )}>
+                eğitmen
+            </span>
+        </Link>
+    );
+};
+
+/** Panelden çıkıp siteye dönüş. */
+const ExitLink: React.FC<{ compact?: boolean; className?: string }> = ({ compact, className }) => (
+    <Link
+        to="/"
+        className={cn(
+            'inline-flex items-center gap-1.5 rounded-full font-semibold transition-colors duration-150',
+            'text-[#b9ddd6] hover:text-white hover:bg-white/10',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60',
+            compact ? 'h-9 px-2.5 text-[12.5px]' : 'h-8 px-3 text-[12.5px] ring-1 ring-inset ring-white/15',
+            className
+        )}
+    >
+        <ArrowLeft className="w-3.5 h-3.5" />
+        {compact ? 'Site' : 'Panelden çık, siteye dön'}
     </Link>
 );
 
@@ -230,7 +270,7 @@ const DesktopNav: React.FC = () => {
             if (e.key === 'Escape') {
                 const id = openId;
                 setOpenId(null);
-                (rows.current[id]?.querySelector('button,a') as HTMLElement | null)?.focus();
+                (rows.current[id]?.querySelector('a') as HTMLElement | null)?.focus();
             }
         };
         window.addEventListener('keydown', onKey);
@@ -249,8 +289,9 @@ const DesktopNav: React.FC = () => {
             style={{ width: NAV_WIDTH }}
             onMouseLeave={hide}
         >
-            <div className="h-[96px] shrink-0 flex items-center justify-center border-b border-[#00201d]/[0.08]">
+            <div className="shrink-0 flex flex-col items-center justify-center gap-2.5 pt-6 pb-5 border-b border-white/[0.09]">
                 <Brand />
+                <ExitLink />
             </div>
 
             <nav aria-label="Eğitmen paneli" className="relative flex-1 pt-5">
@@ -262,38 +303,13 @@ const DesktopNav: React.FC = () => {
                         const row = cn(
                             'relative flex items-center gap-3 w-full h-[52px] pl-4 pr-5 text-left rounded-l-2xl',
                             'text-[17px] tracking-[-0.01em] transition-[background-color,color] duration-150',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#005c55]/50',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#9cf2e8]/60',
                             isOpen
                                 ? 'bg-white text-[#00201d]'
                                 : active
-                                    ? 'bg-[#00201d] text-[#9cf2e8]'
-                                    : 'text-[#16403b] hover:text-[#00201d] hover:bg-white/40',
+                                    ? 'bg-[#9cf2e8] text-[#00201d]'
+                                    : 'text-[#d7efea] hover:text-white hover:bg-white/[0.07]',
                             active ? 'font-bold' : 'font-semibold'
-                        );
-                        const inner = (
-                            <>
-                                {Icon ? (
-                                    <Icon
-                                        aria-hidden
-                                        className={cn(
-                                            'w-[19px] h-[19px] shrink-0 transition-colors duration-150',
-                                            isOpen ? 'text-[#005c55]' : active ? 'text-[#9cf2e8]' : 'text-[#2b6b63]'
-                                        )}
-                                        strokeWidth={active || isOpen ? 2.2 : 1.9}
-                                    />
-                                ) : <span aria-hidden className="w-[19px] shrink-0" />}
-                                <span className="flex-1 truncate">{s.label}</span>
-                                {s.badge ? <Count n={s.badge} /> : null}
-                                {s.subs && (
-                                    <ChevronRight
-                                        aria-hidden
-                                        className={cn(
-                                            'w-4 h-4 shrink-0 transition-[opacity,transform,color] duration-150',
-                                            isOpen ? 'opacity-100 translate-x-0.5 text-[#005c55]' : 'opacity-50'
-                                        )}
-                                    />
-                                )}
-                            </>
                         );
 
                         return (
@@ -303,31 +319,46 @@ const DesktopNav: React.FC = () => {
                                 className="pl-3"
                                 onMouseEnter={() => (s.subs ? show(s.id) : hide())}
                             >
-                                {s.subs ? (
-                                    <button
-                                        type="button"
-                                        className={row}
-                                        aria-haspopup="true"
-                                        aria-expanded={isOpen}
-                                        aria-controls="instructor-flyout"
-                                        onClick={() => (isOpen ? setOpenId(null) : show(s.id, true))}
-                                        onKeyDown={e => {
-                                            if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') {
-                                                e.preventDefault();
-                                                show(s.id, true);
-                                                requestAnimationFrame(() =>
-                                                    (document.querySelector('#instructor-flyout a') as HTMLElement | null)?.focus()
-                                                );
-                                            }
-                                        }}
-                                    >
-                                        {inner}
-                                    </button>
-                                ) : (
-                                    <Link to={s.to!} className={row} onFocus={() => setOpenId(null)}>
-                                        {inner}
-                                    </Link>
-                                )}
+                                <Link
+                                    to={firstPage(s)}
+                                    className={row}
+                                    aria-haspopup={s.subs ? 'true' : undefined}
+                                    aria-expanded={s.subs ? isOpen : undefined}
+                                    aria-controls={s.subs ? 'instructor-flyout' : undefined}
+                                    aria-current={active ? 'page' : undefined}
+                                    onFocus={() => { if (!s.subs) setOpenId(null); }}
+                                    onKeyDown={e => {
+                                        if (s.subs && e.key === 'ArrowRight') {
+                                            e.preventDefault();
+                                            show(s.id, true);
+                                            requestAnimationFrame(() =>
+                                                (document.querySelector('#instructor-flyout a') as HTMLElement | null)?.focus()
+                                            );
+                                        }
+                                    }}
+                                >
+                                    {Icon ? (
+                                        <Icon
+                                            aria-hidden
+                                            className={cn(
+                                                'w-[19px] h-[19px] shrink-0 transition-colors duration-150',
+                                                isOpen ? 'text-[#005c55]' : active ? 'text-[#00201d]' : 'text-[#a7d8cf]'
+                                            )}
+                                            strokeWidth={active || isOpen ? 2.2 : 1.9}
+                                        />
+                                    ) : <span aria-hidden className="w-[19px] shrink-0" />}
+                                    <span className="flex-1 truncate">{s.label}</span>
+                                    {s.badge ? <Count n={s.badge} /> : null}
+                                    {s.subs && (
+                                        <ChevronRight
+                                            aria-hidden
+                                            className={cn(
+                                                'w-4 h-4 shrink-0 transition-[opacity,transform,color] duration-150',
+                                                isOpen ? 'opacity-100 translate-x-0.5 text-[#005c55]' : 'opacity-50'
+                                            )}
+                                        />
+                                    )}
+                                </Link>
                             </li>
                         );
                     })}
@@ -342,7 +373,7 @@ const DesktopNav: React.FC = () => {
                     onMouseLeave={hide}
                     className={cn(
                         'absolute left-full z-50 rounded-r-2xl rounded-bl-2xl bg-white overflow-hidden',
-                        'shadow-[24px_28px_60px_-28px_rgba(0,48,43,0.45),0_2px_6px_rgba(0,32,29,0.06)]',
+                        'shadow-[24px_28px_60px_-28px_rgba(0,48,43,0.5),0_2px_6px_rgba(0,32,29,0.06)]',
                         'transition-[opacity,transform,top] motion-reduce:transition-none',
                         settled ? 'duration-150' : 'duration-200',
                         open ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2 pointer-events-none'
@@ -361,7 +392,6 @@ const DesktopNav: React.FC = () => {
 
 /** Çekmecenin içi: bölümün durumu, alt sayfalar, varsa ana eylem. */
 const Flyout: React.FC<{ section: Section; animate: boolean }> = ({ section, animate }) => {
-    const list = useRef<HTMLUListElement>(null);
     const [hl, setHl] = useState<{ top: number; height: number } | null>(null);
 
     // Fare hangi satırdaysa açık zemin onu takip ediyor; satırdan satıra
@@ -375,7 +405,7 @@ const Flyout: React.FC<{ section: Section; animate: boolean }> = ({ section, ani
         <>
             <FlyoutHeader section={section} />
 
-            <ul ref={list} className="relative p-2" onMouseLeave={() => setHl(null)}>
+            <ul className="relative p-2" onMouseLeave={() => setHl(null)}>
                 <span
                     aria-hidden
                     className={cn(
@@ -384,46 +414,30 @@ const Flyout: React.FC<{ section: Section; animate: boolean }> = ({ section, ani
                     )}
                     style={{ top: hl?.top ?? 0, height: hl?.height ?? 0, transitionTimingFunction: EASE_OUT }}
                 />
-                {section.subs!.map((sub, i) => {
-                    return (
-                        <li
-                            key={sub.to}
-                            onMouseEnter={follow}
-                            className={cn(
-                                'relative',
-                                animate && 'animate-in fade-in slide-in-from-left-1 duration-200 fill-mode-both'
+                {section.subs!.map((sub, i) => (
+                    <li
+                        key={sub.to}
+                        onMouseEnter={follow}
+                        className={cn(
+                            'relative',
+                            animate && 'animate-in fade-in slide-in-from-left-1 duration-200 fill-mode-both'
+                        )}
+                        style={animate ? { animationDelay: `${40 + i * 30}ms` } : undefined}
+                    >
+                        <NavLink
+                            to={sub.to}
+                            role="menuitem"
+                            className={({ isActive }) => cn(
+                                'flex items-center gap-3 h-11 rounded-xl px-3.5 text-[15px]',
+                                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/35',
+                                isActive ? 'bg-[#9cf2e8]/45 text-[#005c55] font-bold' : 'text-[#00201d] font-semibold'
                             )}
-                            style={animate ? { animationDelay: `${40 + i * 30}ms` } : undefined}
                         >
-                            <NavLink
-                                to={sub.to}
-                                role="menuitem"
-                                className={({ isActive }) => cn(
-                                    'flex items-start gap-3 rounded-xl px-3.5 py-2.5',
-                                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/35',
-                                    isActive && 'bg-[#9cf2e8]/45'
-                                )}
-                            >
-                                {({ isActive }) => (
-                                    <>
-                                        <span className="min-w-0 flex-1">
-                                            <span className={cn(
-                                                'block text-[14.5px] font-semibold leading-tight',
-                                                isActive ? 'text-[#005c55]' : 'text-[#00201d]'
-                                            )}>
-                                                {sub.label}
-                                            </span>
-                                            <span className="block text-[12.5px] text-[#6e7977] mt-0.5 leading-snug">
-                                                {sub.hint}
-                                            </span>
-                                        </span>
-                                        {sub.badge ? <Count n={sub.badge} className="mt-px" /> : null}
-                                    </>
-                                )}
-                            </NavLink>
-                        </li>
-                    );
-                })}
+                            <span className="flex-1 truncate">{sub.label}</span>
+                            {sub.badge ? <Count n={sub.badge} /> : null}
+                        </NavLink>
+                    </li>
+                ))}
             </ul>
 
             {section.action && (
@@ -519,9 +533,9 @@ const MonthCard: React.FC = () => {
     return (
         <Link
             to="/instructor/finance/report"
-            className="group mx-3 mb-3 rounded-2xl bg-[#00201d] hover:bg-[#03302b] px-4 py-3.5 shadow-[0_10px_24px_-14px_rgba(0,32,29,0.7)] transition-colors duration-150"
+            className="group mx-3 mb-3 rounded-2xl bg-[#00201d]/30 hover:bg-[#00201d]/40 ring-1 ring-inset ring-white/[0.08] px-4 py-3.5 transition-colors duration-150"
         >
-            <span className="flex items-center justify-between text-[12px] font-medium text-[#9cf2e8]/80">
+            <span className="flex items-center justify-between text-[12px] font-medium text-[#9cf2e8]/85">
                 Bu ayki kazancın
                 <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-[opacity,transform] duration-150" />
             </span>
@@ -535,7 +549,7 @@ const MonthCard: React.FC = () => {
                     <span className="block mt-1 text-[22px] leading-tight font-bold tabular-nums tracking-tight text-white">
                         {lira(stats.monthlyRevenue)}
                     </span>
-                    <span className="block mt-0.5 text-[12px] text-[#a9cfc9]">
+                    <span className="block mt-0.5 text-[12px] text-[#b9ddd6]">
                         {stats.monthlySales || 0} satış
                         {stats.monthlyChange != null && (
                             <span className={stats.monthlyChange >= 0 ? 'text-[#9cf2e8]' : 'text-[#ffb59e]'}>
@@ -549,7 +563,7 @@ const MonthCard: React.FC = () => {
     );
 };
 
-/* ── Telefon: dokununca altında açılan başlıklar ───────────────────── */
+/* ── Telefon: başlık ilk sayfayı açar, ok diğer sayfaları gösterir ─── */
 
 const MobileNav: React.FC = () => {
     const sections = useSections();
@@ -559,35 +573,47 @@ const MobileNav: React.FC = () => {
 
     return (
         <>
-            <div className="h-16 shrink-0 flex items-center justify-center border-b border-[#00201d]/[0.08]">
+            <div className="shrink-0 flex flex-col items-center justify-center gap-2 pt-5 pb-4 border-b border-white/[0.09]">
                 <Brand size="sm" />
+                <ExitLink />
             </div>
             <nav aria-label="Eğitmen paneli" className="flex-1 overflow-y-auto py-3 px-2">
                 {sections.map(s => {
                     const active = s.id === current;
                     const isOpen = expanded === s.id;
                     const Icon = s.icon;
-                    const row = cn(
-                        'flex items-center gap-3 w-full h-[50px] px-4 rounded-xl text-left text-[17px] tracking-[-0.01em]',
-                        active ? 'bg-[#00201d] text-[#9cf2e8] font-bold' : 'text-[#16403b] font-semibold'
-                    );
                     const icon = Icon
-                        ? <Icon className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#9cf2e8]' : 'text-[#2b6b63]')} />
+                        ? <Icon className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#00201d]' : 'text-[#a7d8cf]')} />
                         : <span aria-hidden className="w-[19px] shrink-0" />;
-                    if (!s.subs) return <Link key={s.id} to={s.to!} className={row}>{icon}{s.label}</Link>;
+                    const link = (
+                        <Link
+                            to={firstPage(s)}
+                            aria-current={active ? 'page' : undefined}
+                            className={cn(
+                                'flex items-center gap-3 flex-1 min-w-0 h-[50px] px-4 rounded-xl text-[17px] tracking-[-0.01em]',
+                                active ? 'bg-[#9cf2e8] text-[#00201d] font-bold' : 'text-[#d7efea] font-semibold'
+                            )}
+                        >
+                            {icon}
+                            <span className="flex-1 truncate">{s.label}</span>
+                            {s.badge ? <Count n={s.badge} /> : null}
+                        </Link>
+                    );
+                    if (!s.subs) return <div key={s.id} className="flex">{link}</div>;
                     return (
-                        <div key={s.id} className={cn('rounded-xl transition-colors', isOpen && 'bg-white/45')}>
-                            <button
-                                type="button"
-                                className={row}
-                                aria-expanded={isOpen}
-                                onClick={() => setExpanded(isOpen ? null : s.id)}
-                            >
-                                {icon}
-                                <span className="flex-1">{s.label}</span>
-                                {s.badge ? <Count n={s.badge} /> : null}
-                                <ChevronDown className={cn('w-4 h-4 opacity-60 transition-transform duration-200', isOpen && 'rotate-180')} />
-                            </button>
+                        <div key={s.id} className={cn('rounded-xl transition-colors', isOpen && 'bg-white/[0.07]')}>
+                            <div className="flex items-center gap-1">
+                                {link}
+                                <button
+                                    type="button"
+                                    aria-expanded={isOpen}
+                                    aria-label={`${s.label} sayfalarını ${isOpen ? 'gizle' : 'göster'}`}
+                                    onClick={() => setExpanded(isOpen ? null : s.id)}
+                                    className="w-11 h-[50px] shrink-0 rounded-xl flex items-center justify-center text-[#b9ddd6] hover:bg-white/10"
+                                >
+                                    <ChevronDown className={cn('w-4 h-4 transition-transform duration-200', isOpen && 'rotate-180')} />
+                                </button>
+                            </div>
                             {isOpen && (
                                 <ul className="pb-2 pl-11 pr-2">
                                     {s.subs.map(sub => (
@@ -596,7 +622,7 @@ const MobileNav: React.FC = () => {
                                                 to={sub.to}
                                                 className={({ isActive }) => cn(
                                                     'flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-[15px]',
-                                                    isActive ? 'bg-[#9cf2e8] text-[#00201d] font-bold' : 'text-[#1d4a45] font-medium'
+                                                    isActive ? 'bg-[#9cf2e8] text-[#00201d] font-bold' : 'text-[#cfe7e3] font-medium'
                                                 )}
                                             >
                                                 {sub.label}
@@ -608,7 +634,7 @@ const MobileNav: React.FC = () => {
                                         <li>
                                             <Link
                                                 to={s.action.to}
-                                                className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2.5 text-[15px] font-bold text-[#005c55]"
+                                                className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2.5 text-[15px] font-bold text-[#9cf2e8]"
                                             >
                                                 <Plus className="w-4 h-4" /> {s.action.label}
                                             </Link>
@@ -632,24 +658,19 @@ const UserFooter: React.FC = () => {
     const initials = `${user?.first_name?.[0] || ''}${user?.last_name?.[0] || ''}`.toUpperCase() || 'E';
 
     return (
-        <div className="shrink-0 border-t border-[#00201d]/[0.08] px-4 py-3 flex items-center gap-2.5">
+        <Link
+            to="/instructor/settings/profile"
+            className="shrink-0 border-t border-white/[0.09] px-4 py-3 flex items-center gap-2.5 hover:bg-white/[0.05] transition-colors"
+        >
             {user?.profile_image ? (
-                <img src={user.profile_image} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-white/60" />
+                <img src={user.profile_image} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-[#9cf2e8]/40" />
             ) : (
-                <span className="w-8 h-8 rounded-full bg-[#00201d] text-[#9cf2e8] text-[12px] font-bold flex items-center justify-center">
+                <span className="w-8 h-8 rounded-full bg-[#9cf2e8] text-[#00201d] text-[12px] font-bold flex items-center justify-center">
                     {initials}
                 </span>
             )}
-            <span className="min-w-0 flex-1 text-[13px] font-bold text-[#00201d] truncate">{name || 'Eğitmen'}</span>
-            <Link
-                to="/"
-                title="Siteye dön"
-                className="inline-flex items-center gap-1 h-8 px-2 rounded-lg text-[12px] font-semibold text-[#1d4a45] hover:text-[#00201d] hover:bg-white/45 transition-colors"
-            >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                Site
-            </Link>
-        </div>
+            <span className="min-w-0 flex-1 text-[13px] font-semibold text-white truncate">{name || 'Eğitmen'}</span>
+        </Link>
     );
 };
 
