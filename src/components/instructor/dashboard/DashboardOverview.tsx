@@ -1,168 +1,328 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowRight, Clapperboard, ListChecks, Send } from 'lucide-react';
 import { API_BASE_URL } from '@/lib/api';
-import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
-import {
-    Activity,
-    BookOpen,
-    DollarSign,
-    Users,
-    TrendingUp,
-    Star,
-    Plus,
-    BarChart3,
-    ArrowRight,
-    Loader2
-} from 'lucide-react';
 import RevenueChart from './RevenueChart';
+import { StatusDot } from '../shell/InstructorShell';
+import {
+    relativeTime, statusOf, useInstructorCourses, useUnansweredCount, useUnreadMessages, WorkspaceCourse,
+} from '../shell/useInstructorWorkspace';
 
-export const DashboardOverview = () => {
+const lira = (n: number) =>
+    `₺${(Number(n) || 0).toLocaleString('tr-TR', { minimumFractionDigits: Number(n) % 1 ? 2 : 0, maximumFractionDigits: 2 })}`;
+
+/*
+ * Eğitmen paneli açılış sayfası.
+ *
+ * Sıra eğitmenin panele neden girdiğine göre: önce yarım kalan kurslar
+ * (devam et), sonra kısa bir hesap özeti, en altta grafik ve öğrencilerden
+ * bekleyenler. Rakamlar dört ayrı kart değil, tek bir defter satırı; kart
+ * kart dizilen sayılar sayfanın asıl işi olan kursları aşağı itiyordu.
+ */
+export const DashboardOverview: React.FC = () => {
     const navigate = useNavigate();
-    const [data, setData] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
+    const courses = useInstructorCourses();
+    const questions = useUnansweredCount();
+    const messages = useUnreadMessages();
 
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    navigate('/login');
-                    return;
-                }
-                const res = await fetch(`${API_BASE_URL}/instructor/dashboard`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+    const dashboard = useQuery({
+        queryKey: ['instructor-dashboard'],
+        queryFn: async () => {
+            const token = localStorage.getItem('token');
+            if (!token) { navigate('/login'); return null; }
+            const res = await fetch(`${API_BASE_URL}/instructor/dashboard`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error('Panel verisi alınamadı');
+            const data = await res.json();
+            if (!data.success) throw new Error('Panel verisi alınamadı');
+            return data;
+        },
+    });
 
-                if (res.ok) {
-                    const result = await res.json();
-                    if (result.success) {
-                        setData(result);
-                    }
-                }
-            } catch (error) {
-                console.error("Dashboard veri çekme hatası:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchDashboardData();
-    }, [navigate]);
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-12 h-12 text-zinc-900 animate-spin" />
-            </div>
-        );
-    }
-
-    if (!data) {
-        return <div className="text-zinc-500">Veri yüklenemedi. Yardım için lütfen destek ile iletişime geçin.</div>;
-    }
-
-    const { stats } = data;
+    const list = courses.data || [];
+    const inProgress = list.filter(c => c.status !== 'published');
+    const live = list.length - inProgress.length;
+    const stats = dashboard.data?.stats;
 
     return (
-        <div className='space-y-10 animate-in fade-in duration-500'>
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-zinc-100">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">Genel Bakış</h1>
-                    <p className="text-zinc-500 text-sm">Platform performansınız ve öğrenci metrikleriniz.</p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Button variant="outline" className="border-zinc-200 text-zinc-700 font-medium h-10 px-4 hover:bg-zinc-50 transition-colors rounded-md" onClick={() => window.location.reload()}>
-                        Verileri Yenile
-                    </Button>
-                    <Button className="bg-zinc-900 text-white font-medium h-10 px-5 hover:bg-zinc-800 transition-colors rounded-md shadow-sm" onClick={() => navigate('/instructor/courses/create')}>
-                        <Plus className="w-4 h-4 mr-2" />
-                        Yeni Kurs
-                    </Button>
-                </div>
-            </div>
+        <div className="space-y-10">
+            <header>
+                <h1 className="text-[26px] sm:text-[30px] font-bold tracking-[-0.02em] leading-tight">
+                    Merhaba{user?.first_name ? `, ${user.first_name}` : ''}
+                </h1>
+                {!courses.isLoading && (
+                    <p className="text-[14px] text-[#3e4947] mt-1.5">
+                        {list.length === 0
+                            ? 'Panelin hazır. İlk kursunla başlayalım.'
+                            : [
+                                inProgress.length ? `${inProgress.length} kurs hazırlanıyor` : null,
+                                live ? `${live} kurs yayında` : null,
+                            ].filter(Boolean).join(' · ')}
+                    </p>
+                )}
+            </header>
 
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
-                {[
-                    { title: 'Toplam Öğrenci', value: stats.totalStudents, icon: Users, desc: `Bu ay ${stats.newStudents} yeni kayıt` },
-                    {
-                        title: 'Aylık Kazanç',
-                        value: `₺${Number(stats.monthlyRevenue || 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}`,
-                        icon: DollarSign,
-                        // Vergi sonrası eğitmen payı; parantez içinde bu ayki satış adedi ve değişim
-                        desc: [
-                            `${stats.monthlySales || 0} satış`,
-                            stats.monthlyChange != null ? `${stats.monthlyChange > 0 ? '+' : ''}${stats.monthlyChange}% önceki aya göre` : null,
-                            `Toplam: ₺${Number(stats.totalRevenue || 0).toLocaleString('tr-TR')}`,
-                        ].filter(Boolean).join(' · '),
-                    },
-                    { title: 'Öğrenci Puanı', value: `${stats.avgRating} / 5.0`, icon: Star, desc: `${stats.totalReviews} değerlendirme` },
-                    { title: 'Aktif Kurslar', value: stats.activeCourses, icon: BookOpen, desc: `Toplam ${stats.totalCourses} kurs` }
-                ].map((item, i) => (
-                    <Card key={i} className='border border-zinc-200 shadow-sm rounded-xl bg-white'>
-                        <CardContent className='p-6 flex flex-col justify-center h-full'>
-                            <div className='flex items-center justify-between space-y-0 pb-2 mb-2'>
-                                <p className='text-sm font-medium tracking-tight text-zinc-600'>{item.title}</p>
-                                <div className="p-2 bg-zinc-50 rounded-md">
-                                    <item.icon className='w-4 h-4 text-zinc-700' />
+            {/* ── Hazırlanan kurslar ─────────────────────────────────── */}
+            <section aria-labelledby="desk-heading">
+                <div className="flex items-end justify-between gap-4 mb-3">
+                    <h2 id="desk-heading" className="text-[17px] font-bold tracking-tight">Hazırlanan kursların</h2>
+                    {inProgress.length > 4 && (
+                        <Link to="/instructor/courses/list" className="text-[13px] font-semibold text-[#005c55] hover:underline underline-offset-4">
+                            Hepsi ({inProgress.length})
+                        </Link>
+                    )}
+                </div>
+
+                {courses.isLoading ? (
+                    <div className="rounded-xl bg-white border border-[#e3e9e7] divide-y divide-[#eef2f1]" aria-hidden>
+                        {[0, 1].map(i => (
+                            <div key={i} className="flex items-center gap-4 p-4">
+                                <div className="w-24 h-[54px] rounded-md bg-[#eef2f1] animate-pulse" />
+                                <div className="flex-1 space-y-2">
+                                    <div className="h-3 rounded bg-[#eef2f1] animate-pulse w-1/2" />
+                                    <div className="h-2.5 rounded bg-[#eef2f1] animate-pulse w-1/4" />
                                 </div>
                             </div>
-                            <div>
-                                <h3 className='text-2xl font-bold text-zinc-900'>{item.value}</h3>
-                                <p className='text-xs text-zinc-500 font-medium mt-1'>{item.desc}</p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
+                        ))}
+                    </div>
+                ) : list.length === 0 ? (
+                    <FirstCourse onStart={() => navigate('/instructor/courses/create')} />
+                ) : inProgress.length === 0 ? (
+                    <div className="rounded-xl bg-white border border-[#e3e9e7] px-5 py-4 flex flex-wrap items-center justify-between gap-3">
+                        <p className="text-[14px] text-[#3e4947]">
+                            Bütün kursların yayında; yarım kalan iş yok.
+                        </p>
+                        <Link
+                            to="/instructor/courses/create"
+                            className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-[#005c55] hover:underline underline-offset-4"
+                        >
+                            Yeni bir kursa başla <ArrowRight className="w-4 h-4" />
+                        </Link>
+                    </div>
+                ) : (
+                    <ul className="rounded-xl bg-white border border-[#e3e9e7] divide-y divide-[#eef2f1] overflow-hidden">
+                        {inProgress.slice(0, 4).map(c => <DeskRow key={c.id} course={c} />)}
+                    </ul>
+                )}
+            </section>
 
-            <div className='grid lg:grid-cols-3 gap-6'>
-                <Card className='lg:col-span-2 border border-zinc-200 shadow-sm rounded-xl overflow-hidden bg-white'>
-                    <CardHeader className="border-b border-zinc-100 pb-4">
-                        <div className="flex items-start justify-between gap-4">
-                            <div className="space-y-1">
-                                <CardTitle className="text-lg font-semibold text-zinc-900 tracking-tight">Gelir Trendi</CardTitle>
-                                <CardDescription className="text-zinc-500">Satış ve kazanç dağılımın</CardDescription>
-                            </div>
-                            <div className="p-2 bg-zinc-50 rounded-md">
-                                <TrendingUp className="w-4 h-4 text-zinc-700" />
-                            </div>
+            {/* ── Hesap özeti: tek defter satırı ─────────────────────── */}
+            <section aria-label="Hesap özeti">
+                {dashboard.isLoading ? (
+                    <div className="h-[92px] rounded-xl bg-white border border-[#e3e9e7] animate-pulse" />
+                ) : dashboard.isError || !stats ? (
+                    <div className="rounded-xl bg-white border border-[#e3e9e7] px-5 py-4 flex items-center justify-between gap-3">
+                        <p className="text-[14px] text-[#3e4947]">Kazanç ve öğrenci özetini şu an yükleyemedik.</p>
+                        <button
+                            type="button"
+                            onClick={() => dashboard.refetch()}
+                            className="text-[13.5px] font-semibold text-[#005c55] hover:underline underline-offset-4"
+                        >
+                            Tekrar dene
+                        </button>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 lg:grid-cols-4 rounded-xl bg-white border border-[#e3e9e7] overflow-hidden">
+                        <Figure
+                            label="Bu ayki kazancın"
+                            value={lira(stats.monthlyRevenue)}
+                            note={[
+                                `${stats.monthlySales || 0} satış`,
+                                stats.monthlyChange != null
+                                    ? `${stats.monthlyChange > 0 ? '+' : ''}${stats.monthlyChange}% geçen aya göre`
+                                    : null,
+                            ].filter(Boolean).join(' · ')}
+                            to="/instructor/finance/report"
+                        />
+                        <Figure
+                            label="Ödenecek bakiye"
+                            value={lira(stats.balance)}
+                            note={`Toplam kazanç ${lira(stats.totalRevenue)}`}
+                            to="/instructor/finance/payout"
+                        />
+                        <Figure
+                            label="Öğrencilerin"
+                            value={Number(stats.totalStudents || 0).toLocaleString('tr-TR')}
+                            note={stats.newStudents ? `Bu ay ${stats.newStudents} yeni` : 'Bu ay yeni kayıt yok'}
+                            to="/instructor/students/list"
+                        />
+                        <Figure
+                            label="Puan ortalaman"
+                            value={Number(stats.avgRating) > 0 ? Number(stats.avgRating).toFixed(1).replace('.', ',') : '—'}
+                            note={`${stats.totalReviews || 0} değerlendirme`}
+                            to="/instructor/students/reviews"
+                        />
+                    </div>
+                )}
+            </section>
+
+            {/* ── Grafik ve bekleyenler ──────────────────────────────── */}
+            <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
+                <section aria-labelledby="revenue-heading" className="rounded-xl bg-white border border-[#e3e9e7] p-5 sm:p-6 min-w-0">
+                    <h2 id="revenue-heading" className="text-[17px] font-bold tracking-tight">Satışların</h2>
+                    <p className="text-[13px] text-[#6e7977] mt-0.5 mb-5">Vergi sonrası eline geçen tutar, aylara göre</p>
+                    {dashboard.data?.chart ? (
+                        <RevenueChart chart={dashboard.data.chart} variant="composed" height={280} />
+                    ) : (
+                        <div className="h-[280px] rounded-lg bg-[#f8faf9]" />
+                    )}
+                </section>
+
+                <section aria-labelledby="waiting-heading" className="rounded-xl bg-white border border-[#e3e9e7] overflow-hidden">
+                    <div className="px-5 pt-5 pb-3">
+                        <h2 id="waiting-heading" className="text-[17px] font-bold tracking-tight">Seni bekleyenler</h2>
+                    </div>
+
+                    {questions.isLoading ? (
+                        <div className="px-5 pb-5 space-y-3" aria-hidden>
+                            {[0, 1].map(i => <div key={i} className="h-12 rounded bg-[#eef2f1] animate-pulse" />)}
                         </div>
-                    </CardHeader>
-
-                    <CardContent className="pt-6">
-                        {/* Aylık/yıllık geçişi ve yıl seçimi bileşenin içinde */}
-                        <RevenueChart chart={data.chart} variant="composed" height={300} />
-                    </CardContent>
-                </Card>
-
-                <Card className='border border-zinc-200 shadow-sm rounded-xl bg-white'>
-                    <CardHeader className="border-b border-zinc-100 pb-4">
-                        <CardTitle className="text-lg font-semibold text-zinc-900 tracking-tight">Hızlı İşlemler</CardTitle>
-                        <CardDescription className="text-zinc-500">Sık kullandığınız araçlar</CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-0">
-                        <div className="flex flex-col">
-                            {[
-                                { label: 'Kursları Yönet', desc: 'İçeriklerini düzenle ve yayınla', path: '/instructor/courses/list' },
-                                { label: 'Öğrenci Soruları', desc: 'Soru ve cevaplara yanıt ver', path: '/instructor/students/qa' },
-                                { label: 'Kupon Oluştur', desc: 'İndirim kampanyaları düzenle', path: '/instructor/finance/report' },
-                                { label: 'Finansal Rapor', desc: 'Gelirlerini detaylı incele', path: '/instructor/finance/report' }
-                            ].map((action, i) => (
-                                <button key={i} onClick={() => navigate(action.path)} className='flex items-center justify-between p-4 hover:bg-zinc-50 border-b border-zinc-100 last:border-0 transition-colors text-left group'>
-                                    <div>
-                                        <p className='text-sm font-semibold text-zinc-900'>{action.label}</p>
-                                        <p className='text-xs text-zinc-500 mt-0.5'>{action.desc}</p>
-                                    </div>
-                                    <ArrowRight className='w-4 h-4 text-zinc-300 group-hover:text-zinc-700 transition-colors' />
-                                </button>
+                    ) : questions.count === 0 ? (
+                        <p className="px-5 pb-4 text-[13.5px] text-[#3e4947]">
+                            Cevap bekleyen soru yok.
+                        </p>
+                    ) : (
+                        <ul className="divide-y divide-[#eef2f1] border-y border-[#eef2f1]">
+                            {questions.questions.filter(q => !q.is_answered).slice(0, 3).map(q => (
+                                <li key={q.question_id}>
+                                    <Link
+                                        to="/instructor/students/qa"
+                                        className="block px-5 py-3 hover:bg-[#f8faf9] transition-colors"
+                                    >
+                                        <span className="block text-[13.5px] font-medium leading-snug line-clamp-2">
+                                            {q.title || q.content}
+                                        </span>
+                                        <span className="block text-[12px] text-[#6e7977] mt-1 truncate">
+                                            {[q.first_name, q.course_title, relativeTime(q.created_at)].filter(Boolean).join(' · ')}
+                                        </span>
+                                    </Link>
+                                </li>
                             ))}
-                        </div>
-                    </CardContent>
-                </Card>
+                        </ul>
+                    )}
+
+                    <div className="px-5 py-3 space-y-1">
+                        {questions.count > 0 && (
+                            <WaitingLink to="/instructor/students/qa" label="Cevap bekleyen sorular" count={questions.count} />
+                        )}
+                        <WaitingLink
+                            to="/instructor/students/messages"
+                            label={messages.count ? 'Okunmamış mesajlar' : 'Mesaj kutun'}
+                            count={messages.count}
+                        />
+                    </div>
+                </section>
             </div>
         </div>
     );
 };
 
+const DeskRow: React.FC<{ course: WorkspaceCourse }> = ({ course }) => {
+    const st = statusOf(course.status);
+    return (
+        <li>
+            <Link
+                to={`/instructor/courses/edit/${course.id}`}
+                className="group flex items-center gap-4 p-3 sm:p-4 hover:bg-[#f8faf9] transition-colors focus-visible:outline-none focus-visible:bg-[#f2f6f5]"
+            >
+                <img
+                    src={course.thumbnail || '/placeholder.svg'}
+                    alt=""
+                    onError={e => { (e.target as HTMLImageElement).src = '/placeholder.svg'; }}
+                    className="w-20 sm:w-24 aspect-video rounded-md object-cover shrink-0 bg-[#eef2f1]"
+                />
+                <span className="min-w-0 flex-1">
+                    <span className="block text-[14.5px] font-semibold leading-snug truncate">{course.title}</span>
+                    <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-[12.5px] text-[#6e7977]">
+                        <span className="inline-flex items-center gap-1.5 font-medium text-[#3e4947]">
+                            <StatusDot tone={st.tone} />
+                            {st.label}
+                        </span>
+                        {course.updated_at && <span>Son düzenleme {relativeTime(course.updated_at)}</span>}
+                    </span>
+                </span>
+                <span
+                    className={cn(
+                        'hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg text-[13px] font-semibold shrink-0 transition-colors',
+                        st.tone === 'draft'
+                            ? 'bg-[#005c55] text-white group-hover:bg-[#00483f]'
+                            : 'bg-[#eef2f1] text-[#131b2e] group-hover:bg-[#e3e9e7]'
+                    )}
+                >
+                    {st.tone === 'draft' ? 'Devam et' : 'Aç'}
+                    <ArrowRight className="w-4 h-4 transition-transform duration-150 group-hover:translate-x-0.5" />
+                </span>
+            </Link>
+        </li>
+    );
+};
+
+const Figure: React.FC<{ label: string; value: string; note: string; to: string }> = ({ label, value, note, to }) => (
+    <Link
+        to={to}
+        className="group px-5 py-4 border-[#eef2f1] [&:nth-child(odd)]:border-r lg:border-r lg:last:border-r-0 [&:nth-child(-n+2)]:border-b lg:[&:nth-child(-n+2)]:border-b-0 hover:bg-[#f8faf9] transition-colors"
+    >
+        <p className="text-[12.5px] font-medium text-[#6e7977]">{label}</p>
+        <p className="text-[22px] font-bold tracking-tight tabular-nums mt-1 leading-none">{value}</p>
+        <p className="text-[12px] text-[#6e7977] mt-2 truncate">{note}</p>
+    </Link>
+);
+
+const WaitingLink: React.FC<{ to: string; label: string; count: number }> = ({ to, label, count }) => (
+    <Link
+        to={to}
+        className="flex items-center justify-between h-9 -mx-2 px-2 rounded-lg text-[13.5px] font-medium text-[#131b2e] hover:bg-[#f8faf9] transition-colors"
+    >
+        {label}
+        <span className="flex items-center gap-2">
+            {count > 0 && (
+                <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#fea619] text-[#3d2600] text-[11px] font-bold tabular-nums flex items-center justify-center">
+                    {count}
+                </span>
+            )}
+            <ArrowRight className="w-4 h-4 text-[#6e7977]" />
+        </span>
+    </Link>
+);
+
+/*
+ * Hiç kursu olmayan eğitmen: boş bir liste yerine işin nasıl yürüdüğü.
+ * Adımlar gerçek akış — kurs oluşturma ekranı da bu sırayla ilerliyor.
+ */
+const FirstCourse: React.FC<{ onStart: () => void }> = ({ onStart }) => (
+    <div className="rounded-xl bg-[#00413c] text-white p-6 sm:p-8">
+        <h3 className="text-[20px] font-bold tracking-tight">İlk kursunu hazırla</h3>
+        <p className="text-[14px] text-[#b8e6df] mt-1.5 max-w-[52ch]">
+            Kursun taslak olarak kaydedilir; istediğin zaman ara verip buradan devam edebilirsin.
+        </p>
+        <ol className="grid sm:grid-cols-3 gap-4 mt-6">
+            {[
+                { icon: ListChecks, t: 'Başlık ve kategori', d: 'Kursun ne anlattığını ve kimin için olduğunu yaz.' },
+                { icon: Clapperboard, t: 'Bölümler ve videolar', d: 'Dersleri bölümlere ayır, videolarını yükle.' },
+                { icon: Send, t: 'İncelemeye gönder', d: 'Ekibimiz kontrol eder, onaylanınca yayına çıkar.' },
+            ].map((s, i) => (
+                <li key={s.t} className="rounded-lg bg-white/[0.07] p-4">
+                    <span className="flex items-center gap-2 text-[12px] font-semibold text-[#9cf2e8]">
+                        <s.icon className="w-4 h-4" /> {i + 1}. adım
+                    </span>
+                    <span className="block text-[14.5px] font-semibold mt-2">{s.t}</span>
+                    <span className="block text-[13px] text-[#b8e6df] mt-1 leading-relaxed">{s.d}</span>
+                </li>
+            ))}
+        </ol>
+        <button
+            type="button"
+            onClick={onStart}
+            className="mt-6 inline-flex items-center gap-2 h-11 px-5 rounded-lg bg-[#9cf2e8] text-[#00201d] text-[14px] font-bold hover:bg-white active:scale-[0.98] transition-[background-color,transform] duration-150"
+        >
+            Kursu oluşturmaya başla <ArrowRight className="w-4 h-4" />
+        </button>
+    </div>
+);
+
+export default DashboardOverview;
