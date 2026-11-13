@@ -48,7 +48,7 @@ const ChartTooltip = ({ active, payload }: any) => {
     if (!active || !payload?.length) return null;
     const d = payload[0].payload as Bucket;
     return (
-        <div className="rounded-lg border border-[#dcebe8] bg-white p-3 shadow-lg text-[13px] min-w-[190px]">
+        <div className="rounded-lg border border-[#e3e6e5] bg-white p-3 shadow-lg text-[13px] min-w-[190px]">
             <p className="font-semibold text-[#00201d] mb-2">{d.fullLabel}</p>
             <div className="flex justify-between gap-6">
                 <span className="text-[#4a6360]">Brüt satış</span>
@@ -58,7 +58,7 @@ const ChartTooltip = ({ active, payload }: any) => {
                 <span className="text-[#4a6360]">Vergi (%20)</span>
                 <span className="text-[#00201d]">−{money(d.tax)}</span>
             </div>
-            <div className="flex justify-between gap-6 mt-1.5 pt-1.5 border-t border-[#e8f2f0]">
+            <div className="flex justify-between gap-6 mt-1.5 pt-1.5 border-t border-[#eceeed]">
                 <span className="text-[#1d3a37] font-medium">Net kazancın</span>
                 <span className="text-[#005c55] font-semibold">{money(d.instructor)}</span>
             </div>
@@ -178,7 +178,7 @@ export const RevenueChart: React.FC<Props> = ({
 
             {!hasData ? (
                 <div style={{ height }} className="flex flex-col items-center justify-center text-center">
-                    <BarChart3 className="w-9 h-9 text-[#cfe3df] mb-3" />
+                    <BarChart3 className="w-9 h-9 text-[#d3d9d7] mb-3" />
                     <p className="text-sm font-medium text-[#1d3a37]">
                         {mode === 'month' ? `${year} yılında satış yok` : 'Henüz satış yok'}
                     </p>
@@ -193,7 +193,7 @@ export const RevenueChart: React.FC<Props> = ({
                     <ResponsiveContainer width="100%" height="100%">
                         {variant === 'composed' ? (
                             <ComposedChart data={data} margin={{ top: 10, right: 8, left: 0, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e8f2f0" />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eceeed" />
                                 <XAxis
                                     dataKey="label"
                                     axisLine={false}
@@ -209,7 +209,7 @@ export const RevenueChart: React.FC<Props> = ({
                                     tickFormatter={compactMoney}
                                     width={58}
                                 />
-                                <Tooltip cursor={{ fill: '#f2fbf9' }} content={<ChartTooltip />} />
+                                <Tooltip cursor={{ fill: '#f5f6f6' }} content={<ChartTooltip />} />
                                 <Legend
                                     verticalAlign="top"
                                     height={30}
@@ -235,7 +235,7 @@ export const RevenueChart: React.FC<Props> = ({
                             </ComposedChart>
                         ) : (
                             <BarChart data={data} margin={{ top: 24, right: 8, left: 0, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e8f2f0" />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eceeed" />
                                 <XAxis
                                     dataKey="label"
                                     axisLine={false}
@@ -251,7 +251,7 @@ export const RevenueChart: React.FC<Props> = ({
                                     tickFormatter={compactMoney}
                                     width={58}
                                 />
-                                <Tooltip cursor={{ fill: '#f2fbf9' }} content={<ChartTooltip />} />
+                                <Tooltip cursor={{ fill: '#f5f6f6' }} content={<ChartTooltip />} />
                                 <Bar dataKey="instructor" radius={[6, 6, 0, 0]} maxBarSize={46}>
                                     {/* Tutar çubuğun üstünde sabit dursun — üzerine gelmeden de okunsun */}
                                     <LabelList

@@ -167,7 +167,7 @@ export function InstructorMessages() {
                                     key={s.user_id}
                                     type="button"
                                     onClick={() => { setSelectedUserId(s.user_id); setShowNewMessage(false); }}
-                                    className="inline-flex items-center gap-2 h-10 pl-1.5 pr-3.5 rounded-full bg-[#f2fbf9] ring-1 ring-inset ring-[#d6e8e4] hover:bg-[#9cf2e8]/50 hover:ring-[#9cdcd3] text-[13.5px] font-semibold text-[#00201d] transition-colors"
+                                    className="inline-flex items-center gap-2 h-10 pl-1.5 pr-3.5 rounded-full bg-[#f5f6f6] ring-1 ring-inset ring-[#dadfdd] hover:bg-[#9cf2e8]/50 hover:ring-[#9cdcd3] text-[13.5px] font-semibold text-[#00201d] transition-colors"
                                 >
                                     <Initials name={`${s.first_name || ''} ${s.last_name || ''}`} size={28} />
                                     {s.first_name} {s.last_name}
@@ -180,8 +180,8 @@ export function InstructorMessages() {
 
             <Panel className="grid lg:grid-cols-[320px_1fr] overflow-hidden h-[calc(100dvh-230px)] min-h-[520px]">
                 {/* Konuşmalar */}
-                <div className={cn('flex flex-col min-h-0 lg:border-r border-[#e8f2f0]', selectedUserId && 'hidden lg:flex')}>
-                    <div className="p-3 border-b border-[#e8f2f0]">
+                <div className={cn('flex flex-col min-h-0 lg:border-r border-[#eceeed]', selectedUserId && 'hidden lg:flex')}>
+                    <div className="p-3 border-b border-[#eceeed]">
                         <SearchBox value={search} onChange={setSearch} placeholder="Kişi ara" />
                     </div>
                     <div className="flex-1 overflow-y-auto p-2">
@@ -205,7 +205,7 @@ export function InstructorMessages() {
                                                 className={cn(
                                                     'w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-colors duration-150',
                                                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45',
-                                                    on ? 'bg-[#9cf2e8]/45' : 'hover:bg-[#f2fbf9]'
+                                                    on ? 'bg-[#9cf2e8]/45' : 'hover:bg-[#f5f6f6]'
                                                 )}
                                             >
                                                 <Initials name={`${c.first_name || ''} ${c.last_name || ''}`} src={c.profile_image || c.profile_image_path} size={40} />
@@ -239,13 +239,13 @@ export function InstructorMessages() {
                 {/* Yazışma */}
                 <div className={cn('flex flex-col min-h-0', !selectedUserId && 'hidden lg:flex')}>
                     {!selectedUserId ? (
-                        <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-[#f6fbfa]">
+                        <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-[#f3f4f4]">
                             <p className="text-[17px] font-extrabold text-[#00201d]">Bir yazışma seç</p>
                             <p className="text-[14px] text-[#4a6360] mt-1.5 max-w-xs">Soldan bir kişi seç ya da yeni mesaj başlat.</p>
                         </div>
                     ) : (
                         <>
-                            <div className="h-16 shrink-0 px-3 sm:px-5 border-b border-[#e8f2f0] flex items-center gap-3">
+                            <div className="h-16 shrink-0 px-3 sm:px-5 border-b border-[#eceeed] flex items-center gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setSelectedUserId(null)}
@@ -261,7 +261,7 @@ export function InstructorMessages() {
                                 </div>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5 space-y-2.5 bg-[#f6fbfa]">
+                            <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5 space-y-2.5 bg-[#f3f4f4]">
                                 {msgLoading ? (
                                     <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 text-[#005c55] animate-spin" /></div>
                                 ) : messages.length === 0 ? (
@@ -276,7 +276,7 @@ export function InstructorMessages() {
                                                         'rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed whitespace-pre-wrap break-words',
                                                         isMe
                                                             ? 'bg-[#9cf2e8] text-[#00201d] rounded-br-md'
-                                                            : 'bg-white text-[#00201d] ring-1 ring-[#dcebe8] rounded-bl-md'
+                                                            : 'bg-white text-[#00201d] ring-1 ring-[#e3e6e5] rounded-bl-md'
                                                     )}>
                                                         {m.message_content}
                                                     </div>
@@ -298,7 +298,7 @@ export function InstructorMessages() {
                             </div>
 
                             <form
-                                className="shrink-0 p-3 sm:p-4 border-t border-[#e8f2f0] flex gap-2.5 items-end"
+                                className="shrink-0 p-3 sm:p-4 border-t border-[#eceeed] flex gap-2.5 items-end"
                                 onSubmit={e => { e.preventDefault(); handleSend(); }}
                             >
                                 <label htmlFor="msg-input" className="sr-only">Mesajın</label>

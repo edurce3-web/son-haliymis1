@@ -197,7 +197,7 @@ const InstructorPayoutSettings: React.FC = () => {
                         </select>
                         <p className={cn(hint, 'mt-1.5')}>Bakiyen bu gün hesabına aktarılır.</p>
                     </div>
-                    <div className="md:col-span-2 flex justify-end pt-2 border-t border-[#e8f2f0] -mx-5 sm:-mx-6 px-5 sm:px-6 mt-1">
+                    <div className="md:col-span-2 flex justify-end pt-2 border-t border-[#eceeed] -mx-5 sm:-mx-6 px-5 sm:px-6 mt-1">
                         <button type="submit" disabled={saving} className={cn(btn.primary, btn.lg, 'mt-4 min-w-[160px]')}>
                             {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Kaydediliyor</> : 'Bilgileri kaydet'}
                         </button>
@@ -215,18 +215,18 @@ const InstructorPayoutSettings: React.FC = () => {
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-[560px] text-[13.5px]">
                             <thead>
-                                <tr className="text-left text-[12.5px] text-[#4a6360] border-b border-[#e8f2f0]">
+                                <tr className="text-left text-[12.5px] text-[#4a6360] border-b border-[#eceeed]">
                                     <th scope="col" className="font-bold px-5 sm:px-6 py-3">Tarih</th>
                                     <th scope="col" className="font-bold px-3 py-3">Dönem</th>
                                     <th scope="col" className="font-bold px-3 py-3">Durum</th>
                                     <th scope="col" className="font-bold px-5 sm:px-6 py-3 text-right">Tutar</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-[#eef5f3]">
+                            <tbody className="divide-y divide-[#f0f1f1]">
                                 {payouts.map(p => {
                                     const m = statusMeta[p.status] || statusMeta.pending;
                                     return (
-                                        <tr key={p.id} className="hover:bg-[#f4fcfa]">
+                                        <tr key={p.id} className="hover:bg-[#f7f8f8]">
                                             <td className="px-5 sm:px-6 py-3 text-[#1d3a37] whitespace-nowrap tabular-nums">
                                                 {new Date(p.paid_at || p.created_at).toLocaleDateString('tr-TR')}
                                             </td>

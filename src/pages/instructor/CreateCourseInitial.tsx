@@ -103,7 +103,7 @@ export const CreateCourseInitial: React.FC = () => {
                         <p className={cn(hint, 'mt-1')}>Kursun katalogda bu başlığın altında listelenir.</p>
                         <div role="radiogroup" aria-labelledby="cat-label" className="mt-3 flex flex-wrap gap-2">
                             {catsLoading && Array.from({ length: 6 }).map((_, i) => (
-                                <span key={i} className="h-10 w-28 rounded-full bg-[#e3f1ee] animate-pulse" />
+                                <span key={i} className="h-10 w-28 rounded-full bg-[#eceeed] animate-pulse" />
                             ))}
                             {categories.map(cat => (
                                 <Chip
@@ -132,7 +132,7 @@ export const CreateCourseInitial: React.FC = () => {
                         </section>
                     )}
 
-                    <div className="mt-10 pt-6 border-t border-[#e3efec] flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+                    <div className="mt-10 pt-6 border-t border-[#e6e8e8] flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
                         <button type="submit" disabled={loading || !canSubmit} className={cn(btn.primary, 'h-12 px-6 text-[15px] min-w-[240px]')}>
                             {loading
                                 ? <><Loader2 className="w-4 h-4 animate-spin" /> Taslak açılıyor</>
@@ -144,7 +144,7 @@ export const CreateCourseInitial: React.FC = () => {
 
                 <aside aria-label="Önizleme" className="lg:sticky lg:top-24">
                     <p className="text-[13px] font-bold text-[#00201d] mb-3">Katalogdaki kartın</p>
-                    <div className="rounded-2xl bg-white ring-1 ring-[#dcebe8] overflow-hidden shadow-[0_18px_36px_-22px_rgba(0,32,29,0.45)]">
+                    <div className="rounded-2xl bg-white ring-1 ring-[#e3e6e5] overflow-hidden shadow-[0_18px_36px_-22px_rgba(0,32,29,0.45)]">
                         <div className="relative aspect-video bg-[linear-gradient(135deg,#e3f6f2_0%,#9cf2e8_100%)]">
                             <span className="absolute left-4 bottom-3 text-[12px] font-semibold text-[#00483f]">Kapak görseli sonraki adımda</span>
                         </div>

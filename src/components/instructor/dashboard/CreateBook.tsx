@@ -96,7 +96,7 @@ export function CreateBook() {
                         />
                     </section>
 
-                    <div className="mt-10 pt-6 border-t border-[#e3efec] flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+                    <div className="mt-10 pt-6 border-t border-[#e6e8e8] flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
                         <button type="submit" disabled={createDbMutation.isPending || !canSubmit} className={cn(btn.primary, 'h-12 px-6 text-[15px] min-w-[240px]')}>
                             {createDbMutation.isPending
                                 ? <><Loader2 className="w-4 h-4 animate-spin" /> Taslak açılıyor</>

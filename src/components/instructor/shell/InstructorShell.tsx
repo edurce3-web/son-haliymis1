@@ -119,11 +119,11 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
     }, [drawer]);
 
     return (
-        <div className="min-h-screen bg-[#f6fbfa] text-[#00201d] selection:bg-[#9cf2e8] selection:text-[#00201d]">
+        <div className="min-h-screen bg-[#f3f4f4] text-[#00201d] selection:bg-[#9cf2e8] selection:text-[#00201d]">
             <DesktopNav />
 
             {/* Telefon: üst şerit + çekmece */}
-            <header className={cn('lg:hidden sticky top-0 z-40 h-14 grid grid-cols-[88px_1fr_88px] items-center px-2 border-b border-[#e3efec]', RAIL_BG)}>
+            <header className={cn('lg:hidden sticky top-0 z-40 h-14 grid grid-cols-[88px_1fr_88px] items-center px-2 border-b border-[#e6e8e8]', RAIL_BG)}>
                 <button
                     type="button"
                     onClick={() => setDrawer(true)}
@@ -199,7 +199,7 @@ const StudentLink: React.FC<{ compact?: boolean; className?: string }> = ({ comp
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40',
             compact
                 ? 'h-9 px-2.5 text-[13px] hover:bg-[#ecfbf8]'
-                : 'h-9 px-3.5 text-[13.5px] bg-white ring-1 ring-inset ring-[#d6e8e4] hover:bg-[#ecfbf8] hover:ring-[#9cdcd3]',
+                : 'h-9 px-3.5 text-[13.5px] bg-white ring-1 ring-inset ring-[#dadfdd] hover:bg-[#ecfbf8] hover:ring-[#9cdcd3]',
             className
         )}
     >
@@ -267,15 +267,15 @@ const DesktopNav: React.FC = () => {
 
     return (
         <aside
-            className={cn('hidden lg:flex fixed inset-y-0 left-0 z-40 flex-col border-r border-[#e3efec]', RAIL_BG)}
+            className={cn('hidden lg:flex fixed inset-y-0 left-0 z-40 flex-col', RAIL_BG)}
             style={{ width: NAV_WIDTH }}
             onMouseLeave={hide}
         >
-            <div className="h-[76px] shrink-0 flex items-center justify-center border-b border-[#eef5f3]">
+            <div className="h-[84px] shrink-0 flex items-center justify-center">
                 <Brand />
             </div>
 
-            <nav aria-label="Eğitmen paneli" className="relative flex-1 pt-5">
+            <nav aria-label="Eğitmen paneli" className="relative flex-1 pt-2">
                 <ul>
                     {sections.map(s => {
                         const active = s.match.test(location.pathname);
@@ -289,7 +289,7 @@ const DesktopNav: React.FC = () => {
                                 ? 'bg-[#9cf2e8] text-[#00201d]'
                                 : isOpen
                                     ? 'bg-[#ecfbf8] text-[#00201d]'
-                                    : 'text-[#1d3a37] hover:text-[#00201d] hover:bg-[#f2fbf9]',
+                                    : 'text-[#1d3a37] hover:text-[#00201d] hover:bg-[#f5f6f6]',
                             active ? 'font-bold' : 'font-semibold'
                         );
 
@@ -353,7 +353,7 @@ const DesktopNav: React.FC = () => {
                     onMouseEnter={keep}
                     onMouseLeave={hide}
                     className={cn(
-                        'absolute left-[calc(100%+6px)] z-50 rounded-2xl bg-white overflow-hidden ring-1 ring-[#e3efec]',
+                        'absolute left-[calc(100%+6px)] z-50 rounded-2xl bg-white overflow-hidden ring-1 ring-[#e6e8e8]',
                         'shadow-[24px_28px_60px_-28px_rgba(0,48,43,0.5),0_2px_6px_rgba(0,32,29,0.06)]',
                         'transition-[opacity,transform,top] motion-reduce:transition-none',
                         settled ? 'duration-150' : 'duration-200',
@@ -498,7 +498,7 @@ const FlyoutHeader: React.FC<{ section: Section }> = ({ section }) => {
     }
 
     return (
-        <div className="px-5 pt-4 pb-3 border-b border-[#e3f1ee] bg-[linear-gradient(180deg,#ecfbf8,#ffffff)]">
+        <div className="px-5 pt-4 pb-3 border-b border-[#eceeed] bg-[linear-gradient(180deg,#ecfbf8,#ffffff)]">
             <p className="text-[15.5px] font-bold tracking-tight text-[#00201d]">{section.label}</p>
             {meta && <div className="mt-1.5">{meta}</div>}
         </div>
@@ -554,7 +554,7 @@ const MobileNav: React.FC = () => {
 
     return (
         <>
-            <div className="h-14 shrink-0 flex items-center justify-center border-b border-[#eef5f3]">
+            <div className="h-16 shrink-0 flex items-center justify-center">
                 <Brand size="sm" />
             </div>
             <nav aria-label="Eğitmen paneli" className="flex-1 overflow-y-auto py-3 px-2">
@@ -581,7 +581,7 @@ const MobileNav: React.FC = () => {
                     );
                     if (!s.subs) return <div key={s.id} className="flex">{link}</div>;
                     return (
-                        <div key={s.id} className={cn('rounded-xl transition-colors', isOpen && 'bg-[#f2fbf9]')}>
+                        <div key={s.id} className={cn('rounded-xl transition-colors', isOpen && 'bg-[#f5f6f6]')}>
                             <div className="flex items-center gap-1">
                                 {link}
                                 <button
@@ -640,7 +640,7 @@ const UserFooter: React.FC = () => {
     return (
         <Link
             to="/instructor/settings/profile"
-            className="shrink-0 border-t border-[#eef5f3] px-4 py-3 flex items-center gap-2.5 hover:bg-[#f2fbf9] transition-colors"
+            className="shrink-0 mx-3 mb-3 rounded-xl px-3 py-2.5 flex items-center gap-2.5 hover:bg-[#f4f6f5] transition-colors"
         >
             {user?.profile_image ? (
                 <img src={user.profile_image} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-[#9cf2e8]/40" />

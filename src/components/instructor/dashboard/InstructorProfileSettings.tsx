@@ -221,10 +221,10 @@ export const InstructorProfileSettings: React.FC = () => {
                 className="grid lg:grid-cols-[300px_1fr] gap-6 items-start"
             >
                 {/* Önizleme: öğrencinin gördüğü kart */}
-                <aside className="lg:sticky lg:top-8 rounded-2xl bg-white ring-1 ring-[#dcebe8] shadow-[0_1px_2px_rgba(0,32,29,0.04)] p-6 text-center">
+                <aside className="lg:sticky lg:top-8 rounded-2xl bg-white ring-1 ring-[#e3e6e5] shadow-[0_1px_2px_rgba(0,32,29,0.04)] p-6 text-center">
                     <div className="relative w-28 h-28 mx-auto">
                         {photo ? (
-                            <img src={photo} alt="" className="w-28 h-28 rounded-full object-cover ring-1 ring-[#dcebe8]" />
+                            <img src={photo} alt="" className="w-28 h-28 rounded-full object-cover ring-1 ring-[#e3e6e5]" />
                         ) : (
                             <span className="w-28 h-28 rounded-full bg-[#9cf2e8] text-[#00201d] text-[36px] font-extrabold flex items-center justify-center">
                                 {(formData.first_name[0] || '') + (formData.last_name[0] || '') || '?'}
@@ -251,7 +251,7 @@ export const InstructorProfileSettings: React.FC = () => {
                     <p className="mt-4 text-[19px] font-extrabold tracking-tight text-[#00201d] text-balance">{fullName || 'Adın'}</p>
                     <p className="mt-0.5 text-[13.5px] font-semibold text-[#4a6360] text-balance">{formData.title || 'Unvanın'}</p>
 
-                    <div className="mt-5 pt-4 border-t border-[#e8f2f0] flex flex-col items-center gap-1">
+                    <div className="mt-5 pt-4 border-t border-[#eceeed] flex flex-col items-center gap-1">
                         <button type="button" onClick={() => fileInputRef.current?.click()} disabled={photoBusy} className={cn(btn.ghost, btn.sm)}>
                             {photo ? 'Fotoğrafı değiştir' : 'Fotoğraf yükle'}
                         </button>

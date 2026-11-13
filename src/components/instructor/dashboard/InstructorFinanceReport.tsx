@@ -163,7 +163,7 @@ const InstructorFinanceReport: React.FC = () => {
                     {data.byCourse.length === 0 ? (
                         <p className="text-[14px] text-[#4a6360] px-6 py-10 text-center">Henüz satış yok.</p>
                     ) : (
-                        <ul className="divide-y divide-[#eef5f3]">
+                        <ul className="divide-y divide-[#f0f1f1]">
                             {data.byCourse.slice(0, 8).map(c => (
                                 <li key={c.course_id} className="flex items-center gap-3 px-5 py-3">
                                     <img
@@ -199,7 +199,7 @@ const InstructorFinanceReport: React.FC = () => {
                         <div className="overflow-x-auto">
                             <table className="w-full min-w-[600px]">
                                 <thead>
-                                    <tr className="text-left text-[12.5px] text-[#4a6360] border-b border-[#e8f2f0]">
+                                    <tr className="text-left text-[12.5px] text-[#4a6360] border-b border-[#eceeed]">
                                         <th scope="col" className="font-bold px-5 sm:px-6 py-3">Tarih</th>
                                         <th scope="col" className="font-bold px-3 py-3">Kurs</th>
                                         <th scope="col" className="font-bold px-3 py-3">Öğrenci</th>
@@ -207,9 +207,9 @@ const InstructorFinanceReport: React.FC = () => {
                                         <th scope="col" className="font-bold px-5 sm:px-6 py-3 text-right">Kazancın</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-[#eef5f3] text-[13.5px]">
+                                <tbody className="divide-y divide-[#f0f1f1] text-[13.5px]">
                                     {filteredSales.slice(0, 100).map(s => (
-                                        <tr key={s.id} className="hover:bg-[#f4fcfa]">
+                                        <tr key={s.id} className="hover:bg-[#f7f8f8]">
                                             <td className="px-5 sm:px-6 py-3 text-[#4a6360] whitespace-nowrap tabular-nums">
                                                 {new Date(s.date).toLocaleDateString('tr-TR')}
                                             </td>
@@ -231,7 +231,7 @@ const InstructorFinanceReport: React.FC = () => {
                                 </tbody>
                             </table>
                             {filteredSales.length > 100 && (
-                                <p className="text-[12.5px] text-[#5f7774] text-center py-3 border-t border-[#eef5f3]">
+                                <p className="text-[12.5px] text-[#5f7774] text-center py-3 border-t border-[#f0f1f1]">
                                     Son 100 satış gösteriliyor. Tamamı indirilen dosyada.
                                 </p>
                             )}

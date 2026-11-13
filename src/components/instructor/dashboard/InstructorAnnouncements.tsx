@@ -208,7 +208,7 @@ export function InstructorAnnouncements() {
                     />
                 )
             ) : (
-                <Panel as="section" className="divide-y divide-[#e8f2f0]">
+                <Panel as="section" className="divide-y divide-[#eceeed]">
                     {announcements.map((ann: any) => {
                         const isExp = expandedId === ann.announcement_id;
                         return (

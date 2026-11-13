@@ -53,7 +53,7 @@ export function BookManager() {
                         return (
                             <li key={b.book_id}>
                                 <Link to={`/instructor/books/edit/${b.book_id}`} className="group block focus-visible:outline-none">
-                                    <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#e3f6f2] shadow-[0_10px_24px_-14px_rgba(0,32,29,0.45)] ring-1 ring-[#dcebe8] transition-[transform,box-shadow] duration-200 group-hover:-translate-y-1 group-hover:shadow-[0_18px_32px_-16px_rgba(0,32,29,0.5)] group-focus-visible:ring-2 group-focus-visible:ring-[#005c55]">
+                                    <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#e3f6f2] shadow-[0_10px_24px_-14px_rgba(0,32,29,0.45)] ring-1 ring-[#e3e6e5] transition-[transform,box-shadow] duration-200 group-hover:-translate-y-1 group-hover:shadow-[0_18px_32px_-16px_rgba(0,32,29,0.5)] group-focus-visible:ring-2 group-focus-visible:ring-[#005c55]">
                                         {b.cover_image_path ? (
                                             <img src={b.cover_image_path} alt="" className="w-full h-full object-cover" loading="lazy" />
                                         ) : (

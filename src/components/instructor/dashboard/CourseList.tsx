@@ -161,7 +161,7 @@ const Group: React.FC<{ title: string; note: string; items: Course[]; empty: str
         {items.length === 0 ? (
             <p className="rounded-2xl bg-[#ecfbf8] px-5 py-6 text-[14px] text-[#4a6360]">{empty}</p>
         ) : (
-            <Panel className="divide-y divide-[#e8f2f0] overflow-hidden">
+            <Panel className="divide-y divide-[#eceeed] overflow-hidden">
                 {items.map(c => <Row key={c.id} course={c} />)}
             </Panel>
         )}
@@ -172,7 +172,7 @@ const Row: React.FC<{ course: Course }> = ({ course: c }) => {
     const st = STATUS[c.status];
     const editing = c.status !== 'active';
     return (
-        <div className="group flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-4 sm:px-5 py-4 hover:bg-[#f4fcfa] transition-colors duration-150">
+        <div className="group flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-4 sm:px-5 py-4 hover:bg-[#f7f8f8] transition-colors duration-150">
             <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
             <Link to={`/instructor/courses/edit/${c.id}`} tabIndex={-1} aria-hidden className="w-[88px] h-[50px] sm:w-[112px] sm:h-[63px] rounded-xl overflow-hidden bg-[#e3f6f2] shrink-0">
                 {c.thumbnail ? (

@@ -9,7 +9,7 @@ import { relativeTime } from '../shell/useInstructorWorkspace';
 const Stars: React.FC<{ value: number; size?: string }> = ({ value, size = 'w-3.5 h-3.5' }) => (
     <span className="inline-flex gap-0.5" aria-label={`5 üzerinden ${value}`}>
         {Array.from({ length: 5 }).map((_, i) => (
-            <Star key={i} aria-hidden className={cn(size, i < value ? 'text-[#fea619] fill-[#fea619]' : 'text-[#d6e8e4] fill-[#d6e8e4]')} />
+            <Star key={i} aria-hidden className={cn(size, i < value ? 'text-[#fea619] fill-[#fea619]' : 'text-[#dadfdd] fill-[#dadfdd]')} />
         ))}
     </span>
 );
@@ -107,7 +107,7 @@ export function InstructorReviews() {
                     {reviews.length === 0 ? (
                         <Empty title="Bu filtreye uyan yorum yok" text="Başka bir puan seç ya da aramayı temizle." />
                     ) : (
-                        <Panel as="section" className="divide-y divide-[#e8f2f0]">
+                        <Panel as="section" className="divide-y divide-[#eceeed]">
                             {reviews.map(r => {
                                 const name = `${r.first_name || ''} ${r.last_name || ''}`.trim() || 'Öğrenci';
                                 return (

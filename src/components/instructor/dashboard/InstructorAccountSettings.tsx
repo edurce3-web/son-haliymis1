@@ -142,7 +142,7 @@ export const InstructorAccountSettings: React.FC = () => {
 
             <Panel as="section" className="mb-6">
                 <PanelHead title="Hesabın" />
-                <dl className="divide-y divide-[#eef5f3]">
+                <dl className="divide-y divide-[#f0f1f1]">
                     <div className="flex items-center justify-between gap-4 px-5 sm:px-6 py-4">
                         <div className="min-w-0">
                             <dt className="text-[13px] font-bold text-[#00201d]">E-posta</dt>

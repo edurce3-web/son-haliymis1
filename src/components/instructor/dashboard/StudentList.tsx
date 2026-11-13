@@ -55,18 +55,18 @@ export const StudentList: React.FC = () => {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left min-w-[640px]">
                             <thead>
-                                <tr className="border-b border-[#e8f2f0] text-[12.5px] font-bold text-[#4a6360]">
+                                <tr className="border-b border-[#eceeed] text-[12.5px] font-bold text-[#4a6360]">
                                     <th scope="col" className="px-5 sm:px-6 py-3.5 font-bold">Öğrenci</th>
                                     <th scope="col" className="px-4 py-3.5 font-bold text-right">Kurs</th>
                                     <th scope="col" className="px-4 py-3.5 font-bold w-[30%]">İlerleme</th>
                                     <th scope="col" className="px-5 sm:px-6 py-3.5 font-bold text-right">Son etkinlik</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-[#eef5f3]">
+                            <tbody className="divide-y divide-[#f0f1f1]">
                                 {students.map(s => {
                                     const p = Math.max(0, Math.min(100, Number(s.progress) || 0));
                                     return (
-                                        <tr key={s.id} className="hover:bg-[#f4fcfa] transition-colors">
+                                        <tr key={s.id} className="hover:bg-[#f7f8f8] transition-colors">
                                             <td className="px-5 sm:px-6 py-3.5">
                                                 <div className="flex items-center gap-3 min-w-0">
                                                     <Initials name={s.name} src={s.avatar} size={36} />

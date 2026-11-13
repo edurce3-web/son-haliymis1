@@ -44,7 +44,7 @@ export const PlaceholderSection: React.FC<PlaceholderSectionProps> = () => {
         <div className="max-w-3xl">
             <PageHead title="Yardım" sub="Panelde en çok sorulanlar" />
 
-            <Panel as="section" className="divide-y divide-[#e8f2f0] overflow-hidden">
+            <Panel as="section" className="divide-y divide-[#eceeed] overflow-hidden">
                 {FAQ.map((f, i) => {
                     const isOpen = open === i;
                     return (
@@ -55,7 +55,7 @@ export const PlaceholderSection: React.FC<PlaceholderSectionProps> = () => {
                                     aria-expanded={isOpen}
                                     aria-controls={`faq-${i}`}
                                     onClick={() => setOpen(isOpen ? null : i)}
-                                    className="w-full flex items-center justify-between gap-4 px-5 sm:px-6 py-4 text-left hover:bg-[#f4fcfa] focus-visible:outline-none focus-visible:bg-[#ecfbf8] transition-colors"
+                                    className="w-full flex items-center justify-between gap-4 px-5 sm:px-6 py-4 text-left hover:bg-[#f7f8f8] focus-visible:outline-none focus-visible:bg-[#ecfbf8] transition-colors"
                                 >
                                     <span className="text-[15.5px] font-bold text-[#00201d]">{f.q}</span>
                                     <ChevronDown className={cn('w-4 h-4 text-[#4a6360] shrink-0 transition-transform duration-200', isOpen && 'rotate-180')} />

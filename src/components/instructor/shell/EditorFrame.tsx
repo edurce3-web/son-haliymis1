@@ -31,13 +31,13 @@ export const EditorFrame: React.FC<{
 }> = ({ back, title, status, meta, actions, children, width = 'wide' }) => {
     const max = width === 'wide' ? 'max-w-[1240px]' : 'max-w-[1080px]';
     return (
-        <div className="min-h-screen bg-[#f6fbfa] text-[#00201d] selection:bg-[#9cf2e8] selection:text-[#00201d]">
-            <header className="sticky top-0 z-30 bg-white border-b border-[#e3efec]">
+        <div className="min-h-screen bg-[#f3f4f4] text-[#00201d] selection:bg-[#9cf2e8] selection:text-[#00201d]">
+            <header className="sticky top-0 z-30 bg-white border-b border-[#e6e8e8]">
                 <div className={cn(max, 'mx-auto h-16 px-4 sm:px-6 flex items-center gap-3 sm:gap-4')}>
                     <Link to="/instructor/dashboard" className="hidden sm:block shrink-0" aria-label="Eğitmen paneli">
                         <img src="/logo-wordmark.png" alt="Edurce" className="h-6 w-auto" />
                     </Link>
-                    <span aria-hidden className="hidden sm:block h-6 w-px bg-[#e3efec]" />
+                    <span aria-hidden className="hidden sm:block h-6 w-px bg-[#e6e8e8]" />
                     <Link
                         to={back.to}
                         className="shrink-0 inline-flex items-center gap-1.5 h-9 px-2.5 -ml-1 sm:ml-0 rounded-lg text-[13.5px] font-semibold text-[#3d5754] hover:text-[#00201d] hover:bg-[#ecfbf8] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40"
@@ -97,7 +97,7 @@ export const Chip: React.FC<{ on: boolean; onClick: () => void; children: React.
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45 focus-visible:ring-offset-2',
             on
                 ? 'bg-[#00201d] text-[#9cf2e8]'
-                : 'bg-white text-[#1d3a37] ring-1 ring-inset ring-[#d6e8e4] hover:ring-[#9cdcd3] hover:bg-[#f2fbf9]'
+                : 'bg-white text-[#1d3a37] ring-1 ring-inset ring-[#dadfdd] hover:ring-[#9cdcd3] hover:bg-[#f5f6f6]'
         )}
     >
         {children}

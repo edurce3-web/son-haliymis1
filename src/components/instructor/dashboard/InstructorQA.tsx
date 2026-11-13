@@ -135,7 +135,7 @@ export function InstructorQA(_props: InstructorQAProps) {
                         : 'Başka bir sekmeyi seç ya da aramayı temizle.'}
                 />
             ) : (
-                <Panel as="section" className="divide-y divide-[#e8f2f0]">
+                <Panel as="section" className="divide-y divide-[#eceeed]">
                     {filtered.map(q => {
                         const studentName = `${q.first_name || ''} ${q.last_name || ''}`.trim() || 'Öğrenci';
                         const answered = Boolean(q.is_answered);
