@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import {
-    Star, Stars, Flame, Quote, Compass, PlayCircle, Award, ArrowRight,
-} from 'lucide-react';
+import { Star, Stars, Flame, Quote } from 'lucide-react';
 import { API_BASE_URL } from '@/lib/api';
 import { useSeo } from '@/hooks/useSeo';
 import { cn } from '@/lib/utils';
@@ -13,6 +11,7 @@ import SpotlightCarousel from '@/components/home/SpotlightCarousel';
 import BundleDeck, { Bundle } from '@/components/home/BundleDeck';
 import CategoryExplorer from '@/components/home/CategoryExplorer';
 import ShelfSection from '@/components/home/ShelfSection';
+import InstructorCall from '@/components/home/InstructorCall';
 
 interface HomeData {
     featured_courses: any[];
@@ -27,33 +26,12 @@ interface HomeData {
     bundles?: Bundle[];
 }
 
-const STEPS = [
-    {
-        icon: Compass,
-        n: '01',
-        t: 'Kursunu seç',
-        d: 'Kategorilerden ya da aramadan ilgini çeken kursu bul. Tanıtım derslerini satın almadan izle, müfredatı baştan sona gör.',
-    },
-    {
-        icon: PlayCircle,
-        n: '02',
-        t: 'Kendi hızında izle',
-        d: 'İstediğin zaman başla, bırak, kaldığın yerden devam et. İlerlemen otomatik kaydedilir, notlarını ders ders tutabilirsin.',
-    },
-    {
-        icon: Award,
-        n: '03',
-        t: 'Sertifikanı al',
-        d: 'Kursu tamamladığında adına düzenlenmiş, doğrulanabilir sertifikanı indir ve özgeçmişinde paylaş.',
-    },
-];
-
 /**
  * Misafir ana sayfası.
  *
  * Amacı tek: ziyaretçiyi bir kurs sayfasına götürmek. Bu yüzden sayfa bir
  * panel değil vitrin — sırayla vaat, kanıt (sayılar), kurs ızgaraları, alan
- * keşfi, işleyiş, gerçek yorumlar ve eğitmen çağrısı.
+ * keşfi, gerçek yorumlar ve eğitmen çağrısı.
  *
  * Kurslar üstte dörtlü ızgaralarda duruyor, aşağıda yatay raflara dönüyor:
  * ilk bakışta kart tam görünsün, aşağı indikçe daha çok kurs sığsın. Üye
@@ -153,44 +131,6 @@ const GuestHome: React.FC = () => {
 
             <CategoryExplorer title="Tüm kategoriler" />
 
-            {/* ── Nasıl çalışır ──────────────────────────────────────────── */}
-            <section className="bg-slate-50 border-y border-slate-200 mt-12">
-                <div className="container px-4 py-16">
-                    <div className="text-center max-w-2xl mx-auto">
-                        <span className="inline-block text-[11px] font-extrabold uppercase tracking-[0.14em] text-brand-700 bg-brand-100/80 rounded-full px-3 py-1">
-                            Nasıl çalışır
-                        </span>
-                        <h2 className="font-montserrat text-[26px] sm:text-[30px] font-extrabold text-slate-900 tracking-tight mt-4">
-                            Üç adım, abonelik yok
-                        </h2>
-                        <p className="text-[15px] text-slate-600 mt-3 leading-relaxed">
-                            Takvime bağlı değilsin, aylık ödeme yok. Kursu bir kez alırsın,
-                            hesabında süresiz kalır.
-                        </p>
-                    </div>
-
-                    <ol className="grid sm:grid-cols-3 gap-5 mt-12 max-w-5xl mx-auto">
-                        {STEPS.map(step => (
-                            <li
-                                key={step.n}
-                                className="relative bg-white border border-slate-200 rounded-2xl p-6 hover:border-brand-300 hover:shadow-[0_20px_44px_-28px_rgba(15,23,42,0.28)] transition-all"
-                            >
-                                <span className="absolute top-5 right-5 font-montserrat text-[30px] font-extrabold text-brand-100 leading-none select-none">
-                                    {step.n}
-                                </span>
-
-                                <span className="inline-flex w-12 h-12 rounded-2xl bg-brand-700 items-center justify-center shadow-lg shadow-brand-700/20">
-                                    <step.icon className="w-6 h-6 text-white" />
-                                </span>
-
-                                <h3 className="text-[17px] font-bold text-slate-900 mt-5">{step.t}</h3>
-                                <p className="text-[14px] text-slate-600 leading-[1.75] mt-2.5">{step.d}</p>
-                            </li>
-                        ))}
-                    </ol>
-                </div>
-            </section>
-
             {/* ── Öğrenci yorumları ──────────────────────────────────────
                 Gerçek yorumlar; yoksa bölüm hiç çizilmiyor. Uydurma referans
                 metni koymaktansa bölümün olmaması yeğ. */}
@@ -258,39 +198,7 @@ const GuestHome: React.FC = () => {
             )}
 
             {/* ── Eğitmen çağrısı ────────────────────────────────────────── */}
-            <section className="relative bg-brand-900 overflow-hidden">
-                <div className="absolute inset-0 pointer-events-none" aria-hidden>
-                    <div className="absolute -top-36 right-0 w-[480px] h-[480px] bg-brand-500/25 rounded-full blur-[130px]" />
-                    <div className="absolute -bottom-40 left-0 w-[420px] h-[420px] bg-emerald-500/10 rounded-full blur-[130px]" />
-                </div>
-
-                <div className="container relative px-4 py-16 lg:py-20 text-center">
-                    <h2 className="font-montserrat text-[27px] sm:text-[33px] font-extrabold text-white tracking-tight leading-tight">
-                        Bildiğini anlat, kazancın büyük kısmı sende kalsın
-                    </h2>
-                    <p className="text-[16px] text-brand-100/80 mt-5 max-w-2xl mx-auto leading-relaxed">
-                        Kurs oluşturmak, video yüklemek ve yayınlamak ücretsiz. Platform
-                        yalnızca satış gerçekleştiğinde pay alır — yalnızca Edurce'de olan
-                        özgün kurslarda payın %70, kendi kuponunla gelen satışlarda %100.
-                    </p>
-
-                    <div className="flex flex-wrap justify-center gap-3 mt-9">
-                        <Link
-                            to="/become-instructor"
-                            className="inline-flex items-center gap-2 h-12 px-7 rounded-xl bg-white text-brand-900 text-[15px] font-bold hover:bg-brand-50 transition-colors"
-                        >
-                            Eğitmen ol
-                            <ArrowRight className="w-4 h-4" />
-                        </Link>
-                        <Link
-                            to="/pricing"
-                            className="inline-flex items-center h-12 px-7 rounded-xl border border-white/25 text-white text-[15px] font-semibold hover:border-white/60 hover:bg-white/5 transition-colors"
-                        >
-                            Kazanç modeli
-                        </Link>
-                    </div>
-                </div>
-            </section>
+            <InstructorCall />
         </div>
     );
 };

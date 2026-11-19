@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShieldCheck, ArrowRight, Infinity as InfinityIcon, Users } from 'lucide-react';
-
-const POPULAR_SEARCHES = ['Yapay Zeka', 'Python', 'React', 'Excel', 'İngilizce', 'Grafik Tasarım'];
+import { ArrowRight, Search } from 'lucide-react';
+import { CATEGORY_TREE } from '@/data/categoryTree';
+import { cn } from '@/lib/utils';
 
 export interface HeroStats {
     courses: number;
@@ -18,24 +18,48 @@ interface HeroInstructor {
     image: string;
 }
 
+/** Başlıktaki boşluğa sırayla gelen konular. Hepsi kategori ağacında var. */
+const ROTATING = [
+    'web geliştirme',
+    'otomasyon',
+    'yapay zekâ',
+    'grafik tasarım',
+    'elektronik',
+    'UI/UX tasarımı',
+    'siber güvenlik',
+    'PCB tasarımı',
+];
+
+const POPULAR = ['Python', 'Otomasyon', 'Excel', 'Grafik tasarım', 'Elektrik tesisatı'];
+
+type Subject = { name: string; to: string };
+
 /**
- * Misafir ana sayfasının kahraman bölümü.
+ * Misafir ana sayfasının üst bölümü.
  *
- * Üye sayfasındaki `HomeHero`'dan ayrı: oradaki iş kullanıcıyı bıraktığı derse
- * döndürmek, buradaki iş platformun ne olduğunu ve neden güvenilir olduğunu
- * tek ekranda göstermek. Bu yüzden solda arama, sağda sayılarla güven kartı
- * var ve zemin açık — koyu bir blok, altındaki beyaz kurs ızgarasından
- * kopuyordu.
+ * Koyu mürekkep zemin, büyük tek cümle ve arama. Cümlenin ortasındaki boşluğa
+ * platformdaki konular sırayla geliyor: ziyaretçi "burada ne öğrenebilirim?"
+ * sorusunun cevabını okumadan görüyor.
  *
- * Sağdaki karttaki her sayı veritabanından geliyor. Sıfır olan kalem hiç
- * çizilmiyor; "0 eğitmen" yazmak rakam vermemekten kötü.
+ * Sağda konu başlıkları üç sütun halinde yavaşça akıyor; her biri o konunun
+ * kurs sayfasına gidiyor. Bölüm sayılara ya da kapak görsellerine dayanmıyor:
+ * platform büyüdükçe değişen sayılar küçükken vitrini zayıflatıyordu.
+ *
+ * Hareketi azaltmayı seçen kullanıcıda konu değişmiyor, sütunlar akmıyor.
  */
 export const GuestHero: React.FC<{
     stats?: HeroStats;
     instructors?: HeroInstructor[];
-}> = ({ stats, instructors = [] }) => {
+}> = () => {
     const navigate = useNavigate();
     const [term, setTerm] = useState('');
+    const [i, setI] = useState(0);
+
+    useEffect(() => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const t = setInterval(() => setI(n => (n + 1) % ROTATING.length), 2600);
+        return () => clearInterval(t);
+    }, []);
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,91 +67,91 @@ export const GuestHero: React.FC<{
         if (q) navigate(`/search?q=${encodeURIComponent(q)}`);
     };
 
-    const tiles = [
-        { value: stats?.courses, label: 'yayında kurs' },
-        { value: stats?.instructors, label: 'uzman eğitmen' },
-        { value: stats?.hours, label: 'saat video içerik' },
-        { value: stats?.reviews, label: 'öğrenci yorumu' },
-    ].filter(t => (Number(t.value) || 0) > 0);
-
-    const faces = instructors.filter(i => i.image).slice(0, 4);
+    // Bütün alt konular, ana konuya göre karışık sırayla üç sütuna
+    const columns = useMemo(() => {
+        const all: Subject[] = CATEGORY_TREE.flatMap(p =>
+            p.children.map(c => ({ name: c.name, to: `/courses/${p.slug}/${c.slug}` }))
+        );
+        const cols: Subject[][] = [[], [], []];
+        all.forEach((s, n) => cols[n % 3].push(s));
+        return cols;
+    }, []);
 
     return (
-        <section className="relative overflow-hidden bg-gradient-to-b from-brand-50 via-white to-white border-b border-slate-200/80">
+        <section className="relative overflow-hidden bg-[#00201d] text-white">
+            <style>{`
+                @keyframes hero-up { from { transform: translateY(0) } to { transform: translateY(-50%) } }
+                @keyframes hero-down { from { transform: translateY(-50%) } to { transform: translateY(0) } }
+                @keyframes hero-left { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+                .hero-flow:hover .hero-track { animation-play-state: paused; }
+                @media (prefers-reduced-motion: reduce) { .hero-track { animation: none !important; } }
+            `}</style>
 
-            {/* Zemin dokusu: marka renginden iki yumuşak ışık ve ince ızgara.
-                Düz beyaz zemin, altındaki kart bölümlerinden ayrışmıyordu. */}
-            <div className="absolute inset-0 pointer-events-none" aria-hidden>
-                <div className="absolute -top-44 -left-32 w-[560px] h-[560px] bg-brand-300/30 rounded-full blur-[140px]" />
-                <div className="absolute -bottom-52 right-[-8rem] w-[620px] h-[620px] bg-brand-200/40 rounded-full blur-[150px]" />
+            {/* Zemin: tek nane ışığı ve ince nokta dokusu */}
+            <div aria-hidden className="absolute inset-0 pointer-events-none">
+                <div className="absolute -top-40 -left-24 w-[640px] h-[640px] rounded-full bg-[#9cf2e8]/[0.10] blur-[120px]" />
                 <div
-                    className="absolute inset-0 opacity-[0.55]"
+                    className="absolute inset-0 opacity-[0.35]"
                     style={{
-                        backgroundImage:
-                            'linear-gradient(rgba(23,93,93,.05) 1px, transparent 1px),'
-                            + 'linear-gradient(90deg, rgba(23,93,93,.05) 1px, transparent 1px)',
-                        backgroundSize: '58px 58px',
-                        maskImage: 'radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%)',
-                        WebkitMaskImage: 'radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%)',
+                        backgroundImage: 'radial-gradient(rgba(156,242,232,0.18) 1px, transparent 1px)',
+                        backgroundSize: '22px 22px',
+                        maskImage: 'linear-gradient(90deg, #000 0%, transparent 60%)',
+                        WebkitMaskImage: 'linear-gradient(90deg, #000 0%, transparent 60%)',
                     }}
                 />
             </div>
 
-            <div className="container relative px-4 py-14 lg:py-20">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+            <div className="container relative px-4">
+                <div className="grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-10 lg:gap-14 items-center py-14 sm:py-16 lg:py-0 lg:min-h-[560px]">
 
-                    {/* ── Sol: vaat ve arama ──────────────────────────────── */}
-                    <div className="lg:col-span-7">
-                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 border border-brand-200 text-brand-800 shadow-sm backdrop-blur-sm">
-                            <ShieldCheck className="w-4 h-4" />
-                            <span className="text-[11px] font-extrabold uppercase tracking-[0.12em]">
-                                Türkçe · Süresiz erişim · Abonelik yok
+                    {/* ── Sol: cümle ve arama ───────────────────────────── */}
+                    <div className="min-w-0 lg:py-20">
+                        <h1 className="font-jakarta font-extrabold tracking-[-0.035em] leading-[1.02] text-[42px] sm:text-[58px] lg:text-[68px]">
+                            <span className="block">Bugün</span>
+                            <span className="block relative h-[1.08em] overflow-hidden" aria-live="polite">
+                                <span
+                                    key={i}
+                                    className="absolute left-0 top-0 whitespace-nowrap text-[#9cf2e8] animate-in fade-in slide-in-from-bottom-6 duration-500 motion-reduce:animate-none"
+                                >
+                                    {ROTATING[i]}
+                                </span>
                             </span>
-                        </div>
-
-                        <h1 className="font-montserrat text-[34px] sm:text-[44px] lg:text-[50px] font-extrabold text-slate-900 tracking-tight leading-[1.08] mt-6">
-                            Öğrenmek istediğin şeyi{' '}
-                            <span className="bg-gradient-to-r from-brand-600 via-brand-500 to-brand-400 bg-clip-text text-transparent">
-                                kendi hızında
-                            </span>{' '}
-                            öğren
+                            <span className="block">öğrenmeye başla.</span>
                         </h1>
 
-                        <p className="text-[16px] lg:text-[17.5px] text-slate-600 leading-relaxed mt-5 max-w-2xl">
-                            Yazılımdan tasarıma, mühendislikten müziğe. Alanında çalışan
-                            eğitmenlerin anlattığı Türkçe kurslar; bir kez alırsın, ömür boyu
-                            senin kalır.
+                        <p className="mt-6 text-[16.5px] sm:text-[18px] leading-relaxed text-[#b6d6d0] max-w-[34rem]">
+                            Alanında çalışan eğitmenlerden Türkçe kurslar. Bir kez al, ömür boyu izle;
+                            abonelik yok, ders saati yok.
                         </p>
 
-                        <form onSubmit={submit} className="mt-8 max-w-xl">
-                            <div className="flex items-center gap-2 bg-white rounded-2xl p-2 border border-slate-200 shadow-[0_18px_40px_-20px_rgba(15,23,42,0.22)] focus-within:border-brand-400 focus-within:ring-4 focus-within:ring-brand-400/15 transition-all">
-                                <Search className="w-5 h-5 text-slate-400 ml-2.5 shrink-0" />
+                        <form onSubmit={submit} className="mt-9 max-w-[36rem]">
+                            <label htmlFor="hero-search" className="sr-only">Kurs ara</label>
+                            <div className="flex items-center gap-2 rounded-2xl bg-white p-2 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.6)] focus-within:ring-4 focus-within:ring-[#9cf2e8]/40 transition-shadow">
+                                <Search aria-hidden className="w-5 h-5 text-[#4a6360] ml-3 shrink-0" />
                                 <input
+                                    id="hero-search"
                                     value={term}
                                     onChange={e => setTerm(e.target.value)}
-                                    placeholder="Hangi alanda ilerlemek istiyorsun?"
-                                    aria-label="Kurs ara"
-                                    className="flex-1 min-w-0 px-2 py-2.5 bg-transparent text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                                    placeholder="Ne öğrenmek istiyorsun?"
+                                    className="flex-1 min-w-0 bg-transparent px-2 py-3 text-[16px] text-[#00201d] placeholder:text-[#7c918e] outline-none"
                                 />
                                 <button
                                     type="submit"
-                                    className="shrink-0 inline-flex items-center gap-1.5 h-11 px-5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-[14px] font-bold transition-colors"
+                                    className="shrink-0 inline-flex items-center gap-2 h-12 px-5 sm:px-6 rounded-xl bg-[#9cf2e8] hover:bg-[#86e9dd] active:scale-[0.98] text-[#00201d] text-[15px] font-extrabold transition-[background-color,transform]"
                                 >
-                                    Keşfet
+                                    <span className="hidden sm:inline">Kurs bul</span>
                                     <ArrowRight className="w-4 h-4" />
                                 </button>
                             </div>
                         </form>
 
-                        <div className="flex flex-wrap items-center gap-2 mt-4">
-                            <span className="text-[12px] font-semibold text-slate-500 mr-0.5">
-                                Popüler:
-                            </span>
-                            {POPULAR_SEARCHES.map(s => (
+                        <div className="mt-5 flex flex-wrap items-center gap-2">
+                            <span className="text-[13px] text-[#7fa8a1] mr-1">Çok arananlar</span>
+                            {POPULAR.map(s => (
                                 <Link
                                     key={s}
                                     to={`/search?q=${encodeURIComponent(s)}`}
-                                    className="px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-600 text-[12px] font-semibold hover:border-brand-400 hover:text-brand-800 hover:bg-brand-50 transition-colors"
+                                    className="h-8 px-3.5 inline-flex items-center rounded-full ring-1 ring-inset ring-white/15 text-[13px] font-semibold text-[#d7efea] hover:bg-white/10 hover:ring-white/30 transition-colors"
                                 >
                                     {s}
                                 </Link>
@@ -135,90 +159,77 @@ export const GuestHero: React.FC<{
                         </div>
                     </div>
 
-                    {/* ── Sağ: güven kartı ────────────────────────────────── */}
-                    <div className="lg:col-span-5">
-                        <div className="relative rounded-3xl bg-white border border-slate-200 p-6 shadow-[0_32px_70px_-32px_rgba(13,56,56,0.35)]">
-
-                            {(Number(stats?.students) || 0) > 0 && (
-                                <div className="flex items-center justify-between gap-3 pb-5 border-b border-slate-100">
-                                    <div className="flex items-center gap-3 min-w-0">
-                                        <span className="w-12 h-12 rounded-2xl bg-brand-700 flex items-center justify-center shrink-0 shadow-lg shadow-brand-700/25">
-                                            <Users className="w-6 h-6 text-white" />
-                                        </span>
-                                        <div className="min-w-0">
-                                            <p className="font-montserrat text-[22px] font-extrabold text-slate-900 tabular-nums leading-none">
-                                                {Number(stats?.students).toLocaleString('tr-TR')}
-                                            </p>
-                                            <p className="text-[12.5px] text-slate-500 mt-1">
-                                                öğrenci Edurce'de ders izliyor
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <span className="shrink-0 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10.5px] font-extrabold tracking-wide border border-emerald-100">
-                                        CANLI
-                                    </span>
-                                </div>
-                            )}
-
-                            {tiles.length > 0 && (
-                                <dl className="grid grid-cols-2 gap-3 mt-5">
-                                    {tiles.map(t => (
-                                        <div
-                                            key={t.label}
-                                            className="rounded-2xl bg-brand-50/70 border border-brand-100 px-4 py-3.5"
-                                        >
-                                            <dd className="font-montserrat text-[19px] font-extrabold text-brand-800 tabular-nums leading-none">
-                                                {Number(t.value).toLocaleString('tr-TR')}
-                                            </dd>
-                                            <dt className="text-[12px] text-slate-500 mt-1.5">{t.label}</dt>
-                                        </div>
+                    {/* ── Sağ: akan konular (masaüstü) ───────────────────── */}
+                    <div
+                        className="hero-flow hidden lg:grid grid-cols-3 gap-3 h-[560px] -my-px"
+                        style={{
+                            maskImage: 'linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%)',
+                            WebkitMaskImage: 'linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%)',
+                        }}
+                        aria-label="Konular"
+                    >
+                        {columns.map((col, c) => (
+                            <div key={c} className="overflow-hidden">
+                                <div
+                                    className="hero-track flex flex-col gap-3"
+                                    style={{ animation: `${c === 1 ? 'hero-down' : 'hero-up'} ${70 + c * 12}s linear infinite` }}
+                                >
+                                    {[...col, ...col].map((s, n) => (
+                                        <SubjectChip key={n} s={s} tone={(n + c) % 5 === 0 ? 'mint' : (n + c) % 3 === 0 ? 'soft' : 'line'} hidden={n >= col.length} />
                                     ))}
-                                </dl>
-                            )}
-
-                            <div className="flex items-center justify-between gap-3 mt-5 pt-5 border-t border-slate-100">
-                                {faces.length > 0 ? (
-                                    <div className="flex items-center gap-3 min-w-0">
-                                        <div className="flex -space-x-2.5 shrink-0">
-                                            {faces.map(i => (
-                                                <Link
-                                                    key={i.id}
-                                                    to={`/instructors/${i.id}`}
-                                                    title={i.name}
-                                                    className="block w-9 h-9 rounded-full ring-2 ring-white overflow-hidden bg-slate-100 hover:ring-brand-300 transition-all"
-                                                >
-                                                    <img
-                                                        src={i.image}
-                                                        alt={i.name}
-                                                        className="w-full h-full object-cover"
-                                                        onError={e => {
-                                                            (e.target as HTMLImageElement).style.visibility = 'hidden';
-                                                        }}
-                                                    />
-                                                </Link>
-                                            ))}
-                                        </div>
-                                        <p className="text-[12.5px] text-slate-500 leading-snug min-w-0">
-                                            Alanında çalışan<br />eğitmenlerden
-                                        </p>
-                                    </div>
-                                ) : (
-                                    <p className="text-[12.5px] text-slate-500 leading-snug">
-                                        Alanında çalışan eğitmenlerden
-                                    </p>
-                                )}
-
-                                <span className="flex items-center gap-1.5 shrink-0 text-[12px] font-bold text-brand-800 bg-brand-50 border border-brand-100 rounded-lg px-2.5 py-1.5">
-                                    <InfinityIcon className="w-4 h-4" />
-                                    Süresiz erişim
-                                </span>
+                                </div>
                             </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
+            </div>
+
+            {/* ── Akan konular (telefon ve tablet): iki yatay şerit ────── */}
+            <div
+                className="hero-flow lg:hidden relative pb-12 space-y-3 overflow-hidden"
+                style={{
+                    maskImage: 'linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)',
+                    WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)',
+                }}
+                aria-label="Konular"
+            >
+                {[columns[0], columns[1]].map((row, r) => (
+                    <div
+                        key={r}
+                        className="hero-track flex gap-3 w-max"
+                        style={{ animation: `hero-left ${80 + r * 15}s linear infinite`, animationDirection: r ? 'reverse' : 'normal' }}
+                    >
+                        {[...row, ...row].map((s, n) => (
+                            <SubjectChip key={n} s={s} tone={(n + r) % 4 === 0 ? 'mint' : 'line'} hidden={n >= row.length} inline />
+                        ))}
+                    </div>
+                ))}
             </div>
         </section>
     );
 };
+
+const SubjectChip: React.FC<{ s: Subject; tone: 'mint' | 'soft' | 'line'; hidden?: boolean; inline?: boolean }> = ({
+    s, tone, hidden, inline,
+}) => (
+    <Link
+        to={s.to}
+        tabIndex={hidden ? -1 : undefined}
+        aria-hidden={hidden || undefined}
+        className={cn(
+            'group/chip flex items-center justify-between gap-3 rounded-2xl font-bold transition-colors duration-200',
+            inline ? 'h-11 px-4 text-[13.5px] whitespace-nowrap' : 'min-h-[64px] px-4 py-3 text-[14px] leading-snug',
+            tone === 'mint' && 'bg-[#9cf2e8] text-[#00201d] hover:bg-white',
+            tone === 'soft' && 'bg-white/[0.07] text-white hover:bg-white/[0.14]',
+            tone === 'line' && 'ring-1 ring-inset ring-white/[0.12] text-[#d7efea] hover:bg-white/[0.08] hover:text-white'
+        )}
+    >
+        <span>{s.name}</span>
+        <ArrowRight
+            aria-hidden
+            className="w-4 h-4 shrink-0 opacity-0 -translate-x-1 group-hover/chip:opacity-100 group-hover/chip:translate-x-0 transition-[opacity,transform] duration-200"
+        />
+    </Link>
+);
 
 export default GuestHero;
