@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { LanguageSwitcher } from '@/i18n/LanguageSwitcher';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
 
@@ -166,7 +167,7 @@ const Footer = () => {
                         <Link to="/privacy" className="text-slate-500 hover:text-brand-700 transition-colors">
                             Gizlilik
                         </Link>
-                        <span className="text-slate-400">Türkçe (TR)</span>
+                        <LanguageSwitcher />
                     </div>
                 </div>
             </div>

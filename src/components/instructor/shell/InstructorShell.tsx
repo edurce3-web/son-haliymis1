@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import { LanguageSwitcher } from '@/i18n/LanguageSwitcher';
 import {
     useInstructorCourses, useInstructorDashboard, useUnansweredCount, useUnreadMessages,
 } from './useInstructorWorkspace';
@@ -164,12 +165,18 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
                     <X className="w-4 h-4" />
                 </button>
                 <MobileNav />
+                <div className="shrink-0 px-4 pb-4 flex justify-center">
+                    <LanguageSwitcher />
+                </div>
             </aside>
 
             <main className="lg:pl-[256px]">
                 {/* Masaüstü üst şerit: öğrenci tarafına geçiş sağ üstte */}
                 <div className="hidden lg:flex h-14 items-center justify-end px-10 max-w-[1280px] mx-auto">
-                    <StudentLink />
+                    <div className="flex items-center gap-3">
+                        <LanguageSwitcher withIcon={false} />
+                        <StudentLink />
+                    </div>
                 </div>
                 <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 py-6 lg:pt-2 lg:pb-9 pb-24">
                     {children}

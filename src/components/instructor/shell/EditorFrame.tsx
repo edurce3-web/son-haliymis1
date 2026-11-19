@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { LanguageSwitcher } from '@/i18n/LanguageSwitcher';
 
 /*
  * Kurs ve e-kitap hazırlama sayfalarının çerçevesi.
@@ -56,6 +57,7 @@ export const EditorFrame: React.FC<{
                         )}
                     </div>
 
+                    <LanguageSwitcher withIcon={false} className="hidden md:inline-flex shrink-0" />
                     {meta && <div className="hidden lg:flex shrink-0 items-center gap-2 text-[13px] text-[#4a6360]" aria-live="polite">{meta}</div>}
                     {actions && <div className="shrink-0 flex items-center gap-2">{actions}</div>}
                 </div>

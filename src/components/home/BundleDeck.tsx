@@ -206,7 +206,7 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                 </span>
                 {bundle.savings_percent > 0 && (
                     <span className="inline-flex items-center h-7 px-2.5 rounded-full bg-[#e2f6ee] text-[#086f57] text-[11.5px] font-extrabold whitespace-nowrap">
-                        %{bundle.savings_percent} tasarruf
+                        {`%${bundle.savings_percent} tasarruf`}
                     </span>
                 )}
             </div>
@@ -337,12 +337,12 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                 {bundle.total_hours > 0 && (
                     <span className="inline-flex items-center gap-1.5">
                         <MonitorPlay className="w-3.5 h-3.5 text-[#1b5fa8]" />
-                        {bundle.total_hours} saat video
+                        {`${bundle.total_hours} saat video`}
                     </span>
                 )}
                 <span className="inline-flex items-center gap-1.5">
                     <Award className="w-3.5 h-3.5 text-[#7429b8]" />
-                    {courses.length} ayrı sertifika
+                    {`${courses.length} ayrı sertifika`}
                 </span>
             </p>
 

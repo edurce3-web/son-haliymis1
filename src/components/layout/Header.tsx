@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { LanguageSwitcher } from '@/i18n/LanguageSwitcher';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -548,6 +549,9 @@ export const Header = () => {
               </button>
             </HoverPopover>
           )}
+
+          {/* Dil */}
+          <LanguageSwitcher withIcon={false} className="hidden sm:inline-flex mx-1" />
 
           {/* Divider */}
           <div className="w-px h-5 bg-slate-200 mx-1" />
