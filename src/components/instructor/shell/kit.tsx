@@ -24,7 +24,7 @@ const base =
 export const btn = {
     primary: cn(base, 'bg-[#9cf2e8] text-[#00201d] hover:bg-[#86e9dd] shadow-[0_1px_2px_rgba(0,64,58,0.18)]'),
     dark: cn(base, 'bg-[#00201d] text-[#9cf2e8] hover:bg-[#03302b]'),
-    outline: cn(base, 'bg-white text-[#00201d] ring-1 ring-inset ring-[#d3d9d7] hover:bg-[#ecfbf8] hover:ring-[#9cdcd3]'),
+    outline: cn(base, 'bg-white text-[#00201d] shadow-[0_1px_2px_rgba(0,32,29,0.1)] ring-1 ring-inset ring-[#00201d]/[0.06] hover:bg-[#ecfbf8]'),
     ghost: cn(base, 'text-[#1d4a45] hover:bg-[#e8faf6] hover:text-[#00201d]'),
     danger: cn(base, 'bg-white text-[#b42318] ring-1 ring-inset ring-[#f3c9c4] hover:bg-[#fff3f1]'),
     md: 'h-10 px-4 text-[13.5px]',
@@ -35,8 +35,8 @@ export const btn = {
 /** Form alanları için tek sınıf: input, textarea, select. */
 export const field =
     'w-full rounded-xl bg-white px-3.5 text-[14px] text-[#00201d] placeholder:text-[#7c918e] ' +
-    'ring-1 ring-inset ring-[#dadfdd] border-0 outline-none transition-shadow duration-150 ' +
-    'hover:ring-[#c3cbc8] focus:ring-2 focus:ring-[#005c55]/55 focus-visible:ring-2 focus-visible:ring-[#005c55]/55 ' +
+    'ring-1 ring-inset ring-[#00201d]/[0.09] border-0 outline-none transition-shadow duration-150 ' +
+    'hover:ring-[#00201d]/[0.16] focus:ring-2 focus:ring-[#005c55]/55 focus-visible:ring-2 focus-visible:ring-[#005c55]/55 ' +
     'disabled:bg-[#f3f7f6] disabled:text-[#6b827f]';
 
 export const label = 'block text-[13px] font-bold text-[#00201d] mb-1.5';
@@ -64,7 +64,7 @@ export const Panel: React.FC<React.HTMLAttributes<HTMLDivElement> & { as?: 'div'
     className, as: Tag = 'div', ...rest
 }) => (
     <Tag
-        className={cn('rounded-2xl bg-white ring-1 ring-[#e3e6e5] shadow-[0_1px_2px_rgba(0,32,29,0.04)]', className)}
+        className={cn('rounded-2xl bg-white shadow-[0_1px_2px_rgba(0,32,29,0.05),0_8px_24px_-16px_rgba(0,32,29,0.18)]', className)}
         {...rest}
     />
 );
@@ -72,7 +72,7 @@ export const Panel: React.FC<React.HTMLAttributes<HTMLDivElement> & { as?: 'div'
 export const PanelHead: React.FC<{ title: string; sub?: React.ReactNode; actions?: React.ReactNode }> = ({
     title, sub, actions,
 }) => (
-    <div className="flex items-start justify-between gap-4 px-5 sm:px-6 pt-5 pb-4 border-b border-[#eceeed]">
+    <div className="flex items-start justify-between gap-4 px-5 sm:px-6 pt-5 pb-3">
         <div className="min-w-0">
             <h2 className="text-[16.5px] font-extrabold tracking-[-0.01em] text-[#00201d]">{title}</h2>
             {sub && <p className="mt-0.5 text-[13px] text-[#5f7774]">{sub}</p>}

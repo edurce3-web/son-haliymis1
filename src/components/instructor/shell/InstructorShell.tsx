@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
-    ArrowRight, BookOpen, GraduationCap, ChevronDown, ChevronRight, Library, Menu,
+    ArrowRight, ArrowUpRight, BookOpen, GraduationCap, ChevronDown, ChevronRight, LayoutGrid, Library, Menu,
     Plus, UserRound, Users, Wallet, X,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -98,8 +98,12 @@ function useSections(): Section[] {
 /** Bir başlığa tıklayınca gidilecek yer: kendi sayfası ya da ilk alt sayfası. */
 const firstPage = (s: Section) => s.to || s.subs![0].to;
 
-/* Menü beyaz; vurgu nane (#9cf2e8) üstünde koyu mürekkep (#00201d). */
-const RAIL_BG = 'bg-white';
+/*
+ * Menü koyu mürekkep yeşili; logo ve seçili başlık nane (#9cf2e8).
+ * Çizgi yok: ayrımlar yalnızca zemin tonuyla.
+ */
+const RAIL_BG = 'bg-[#0d1b19]';
+const MINT = '#9cf2e8';
 
 export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [drawer, setDrawer] = useState(false);
@@ -124,13 +128,13 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
             <DesktopNav />
 
             {/* Telefon: üst şerit + çekmece */}
-            <header className={cn('lg:hidden sticky top-0 z-40 h-14 grid grid-cols-[88px_1fr_88px] items-center px-2 border-b border-[#e6e8e8]', RAIL_BG)}>
+            <header className={cn('lg:hidden sticky top-0 z-40 h-14 grid grid-cols-[88px_1fr_88px] items-center px-2', RAIL_BG)}>
                 <button
                     type="button"
                     onClick={() => setDrawer(true)}
                     aria-label="Menüyü aç"
                     aria-expanded={drawer}
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-[#00201d] hover:bg-[#ecfbf8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60"
                 >
                     <Menu className="w-5 h-5" />
                 </button>
@@ -160,13 +164,13 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
                     type="button"
                     onClick={() => setDrawer(false)}
                     aria-label="Menüyü kapat"
-                    className="absolute top-3 right-3 w-9 h-9 rounded-lg flex items-center justify-center text-[#4a6360] hover:bg-[#ecfbf8]"
+                    className="absolute top-3 right-3 w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10"
                 >
                     <X className="w-4 h-4" />
                 </button>
                 <MobileNav />
                 <div className="shrink-0 px-4 pb-4 flex justify-center">
-                    <LanguageSwitcher />
+                    <LanguageSwitcher tone="dark" />
                 </div>
             </aside>
 
@@ -186,15 +190,34 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
     );
 };
 
-/** Logo kendi koyu yeşil renginde. */
-const Brand: React.FC<{ className?: string; size?: 'lg' | 'sm' }> = ({ className, size = 'lg' }) => (
-    <Link to="/instructor/dashboard" className={cn('inline-flex items-center gap-2', className)}>
-        <img src="/logo-wordmark.png" alt="Edurce" className={cn('w-auto', size === 'lg' ? 'h-7' : 'h-[22px]')} />
-        <span className={cn('font-bold text-[#005c55] translate-y-[2px]', size === 'lg' ? 'text-[15px]' : 'text-[13px]')}>
-            eğitmen
-        </span>
-    </Link>
-);
+/*
+ * Logo nane renginde. Aynı PNG maske olarak kullanılıyor; ayrı bir renkli
+ * dosya tutmaya gerek yok. Oran 579×160.
+ */
+const LOGO_RATIO = 579 / 160;
+
+const Brand: React.FC<{ className?: string; size?: 'lg' | 'sm' }> = ({ className, size = 'lg' }) => {
+    const h = size === 'lg' ? 34 : 24;
+    const mask = 'url(/logo-wordmark.png) center / contain no-repeat';
+    return (
+        <Link
+            to="/instructor/dashboard"
+            aria-label="Edurce eğitmen paneli"
+            className={cn('inline-flex flex-col items-start rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60', className)}
+        >
+            <span
+                aria-hidden
+                className="block"
+                style={{ width: Math.round(h * LOGO_RATIO), height: h, background: MINT, WebkitMask: mask, mask }}
+            />
+            {size === 'lg' && (
+                <span className="mt-1 pl-[3px] text-[10.5px] font-bold uppercase tracking-[0.22em] text-white/45">
+                    Eğitmen paneli
+                </span>
+            )}
+        </Link>
+    );
+};
 
 /** Öğrenci tarafına geçiş: sitenin öğrenci görünümüne döner. */
 const StudentLink: React.FC<{ compact?: boolean; className?: string }> = ({ compact, className }) => (
@@ -202,15 +225,15 @@ const StudentLink: React.FC<{ compact?: boolean; className?: string }> = ({ comp
         to="/"
         title="Öğrenci görünümüne geç"
         className={cn(
-            'inline-flex items-center gap-2 rounded-xl font-bold text-[#00201d] transition-colors duration-150',
+            'inline-flex items-center gap-2 rounded-xl font-bold transition-colors duration-150',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40',
             compact
-                ? 'h-9 px-2.5 text-[13px] hover:bg-[#ecfbf8]'
-                : 'h-9 px-3.5 text-[13.5px] bg-white ring-1 ring-inset ring-[#dadfdd] hover:bg-[#ecfbf8] hover:ring-[#9cdcd3]',
+                ? 'h-9 px-2.5 text-[13px] text-white hover:bg-white/10'
+                : 'h-9 px-3.5 text-[13.5px] text-[#00201d] bg-white shadow-[0_1px_2px_rgba(0,32,29,0.08)] hover:bg-[#ecfbf8]',
             className
         )}
     >
-        <GraduationCap className="w-4 h-4 text-[#005c55]" />
+        <GraduationCap className={cn('w-4 h-4', compact ? 'text-[#9cf2e8]' : 'text-[#005c55]')} />
         Öğrenci
     </Link>
 );
@@ -278,26 +301,26 @@ const DesktopNav: React.FC = () => {
             style={{ width: NAV_WIDTH }}
             onMouseLeave={hide}
         >
-            <div className="h-[84px] shrink-0 flex items-center justify-center">
+            <div className="h-[104px] shrink-0 flex items-center px-7">
                 <Brand />
             </div>
 
-            <nav aria-label="Eğitmen paneli" className="relative flex-1 pt-2">
-                <ul>
+            <nav aria-label="Eğitmen paneli" className="relative flex-1 pt-3">
+                <p className="px-7 pb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/35">Yönetim</p>
+                <ul className="space-y-1">
                     {sections.map(s => {
                         const active = s.match.test(location.pathname);
                         const isOpen = openId === s.id;
                         const Icon = s.icon;
                         const row = cn(
-                            'relative flex items-center gap-3 w-full h-[52px] pl-4 pr-4 text-left rounded-xl',
-                            'text-[17px] tracking-[-0.01em] transition-[background-color,color] duration-150',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#005c55]/40',
+                            'relative flex items-center gap-3 w-full h-[50px] pl-4 pr-4 text-left rounded-2xl',
+                            'text-[16px] tracking-[-0.01em] transition-[background-color,color] duration-150',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#9cf2e8]/60',
                             active
-                                ? 'bg-[#9cf2e8] text-[#00201d]'
+                                ? 'bg-[#9cf2e8] text-[#00201d] font-bold shadow-[0_8px_24px_-10px_rgba(156,242,232,0.55)]'
                                 : isOpen
-                                    ? 'bg-[#ecfbf8] text-[#00201d]'
-                                    : 'text-[#1d3a37] hover:text-[#00201d] hover:bg-[#f5f6f6]',
-                            active ? 'font-bold' : 'font-semibold'
+                                    ? 'bg-white/[0.08] text-white font-semibold'
+                                    : 'text-white/80 font-semibold hover:text-white hover:bg-white/[0.05]'
                         );
 
                         return (
@@ -330,22 +353,22 @@ const DesktopNav: React.FC = () => {
                                             aria-hidden
                                             className={cn(
                                                 'w-[19px] h-[19px] shrink-0 transition-colors duration-150',
-                                                active ? 'text-[#00201d]' : isOpen ? 'text-[#005c55]' : 'text-[#4f8079]'
+                                                active ? 'text-[#00201d]' : isOpen ? 'text-[#9cf2e8]' : 'text-white/45'
                                             )}
                                             strokeWidth={active || isOpen ? 2.2 : 1.9}
                                         />
-                                    ) : <span aria-hidden className="w-[19px] shrink-0" />}
+                                    ) : <LayoutGrid aria-hidden className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#00201d]' : 'text-white/45')} strokeWidth={active ? 2.2 : 1.9} />}
                                     <span className="flex-1 truncate">{s.label}</span>
                                     {s.badge ? <Count n={s.badge} /> : null}
-                                    {s.subs && (
+                                    {s.subs ? (
                                         <ChevronRight
                                             aria-hidden
                                             className={cn(
                                                 'w-4 h-4 shrink-0 transition-[opacity,transform,color] duration-150',
-                                                isOpen ? 'opacity-100 translate-x-0.5 text-[#005c55]' : 'opacity-50'
+                                                isOpen ? 'opacity-100 translate-x-0.5 text-[#9cf2e8]' : 'opacity-40'
                                             )}
                                         />
-                                    )}
+                                    ) : active ? <ArrowUpRight aria-hidden className="w-4 h-4 shrink-0" /> : null}
                                 </Link>
                             </li>
                         );
@@ -360,8 +383,8 @@ const DesktopNav: React.FC = () => {
                     onMouseEnter={keep}
                     onMouseLeave={hide}
                     className={cn(
-                        'absolute left-[calc(100%+6px)] z-50 rounded-2xl bg-white overflow-hidden ring-1 ring-[#e6e8e8]',
-                        'shadow-[24px_28px_60px_-28px_rgba(0,48,43,0.5),0_2px_6px_rgba(0,32,29,0.06)]',
+                        'absolute left-[calc(100%+8px)] z-50 rounded-2xl bg-white overflow-hidden',
+                        'shadow-[24px_28px_60px_-24px_rgba(0,32,29,0.45),0_2px_8px_rgba(0,32,29,0.08)]',
                         'transition-[opacity,transform,top] motion-reduce:transition-none',
                         settled ? 'duration-150' : 'duration-200',
                         open ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2 pointer-events-none'
@@ -505,7 +528,7 @@ const FlyoutHeader: React.FC<{ section: Section }> = ({ section }) => {
     }
 
     return (
-        <div className="px-5 pt-4 pb-3 border-b border-[#eceeed] bg-[linear-gradient(180deg,#ecfbf8,#ffffff)]">
+        <div className="px-5 pt-4 pb-3.5 bg-[#f3f4f4]">
             <p className="text-[15.5px] font-bold tracking-tight text-[#00201d]">{section.label}</p>
             {meta && <div className="mt-1.5">{meta}</div>}
         </div>
@@ -521,26 +544,26 @@ const MonthCard: React.FC = () => {
     return (
         <Link
             to="/instructor/finance/report"
-            className="group mx-3 mb-3 rounded-2xl bg-[#ecfbf8] hover:bg-[#e1f8f3] px-4 py-3.5 transition-colors duration-150"
+            className="group mx-4 mb-3 rounded-2xl bg-white/[0.06] hover:bg-white/[0.1] px-4 py-3.5 transition-colors duration-150"
         >
-            <span className="flex items-center justify-between text-[12px] font-semibold text-[#4a6360]">
+            <span className="flex items-center justify-between text-[12px] font-semibold text-white/55">
                 Bu ayki kazancın
                 <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-[opacity,transform] duration-150" />
             </span>
             {isLoading || !stats ? (
                 <span className="block mt-2 space-y-1.5" aria-hidden>
-                    <span className="block h-4 w-24 rounded bg-[#d6efe9] animate-pulse" />
-                    <span className="block h-2.5 w-16 rounded bg-[#d6efe9] animate-pulse" />
+                    <span className="block h-4 w-24 rounded bg-white/10 animate-pulse" />
+                    <span className="block h-2.5 w-16 rounded bg-white/10 animate-pulse" />
                 </span>
             ) : (
                 <>
-                    <span className="block mt-1 text-[22px] leading-tight font-extrabold tabular-nums tracking-tight text-[#00201d]">
+                    <span className="block mt-1 text-[22px] leading-tight font-extrabold tabular-nums tracking-tight text-white">
                         {lira(stats.monthlyRevenue)}
                     </span>
-                    <span className="block mt-0.5 text-[12px] text-[#4a6360]">
+                    <span className="block mt-0.5 text-[12px] text-white/55">
                         {stats.monthlySales || 0} satış
                         {stats.monthlyChange != null && (
-                            <span className={stats.monthlyChange >= 0 ? 'text-[#00695f] font-semibold' : 'text-[#b42318] font-semibold'}>
+                            <span className={stats.monthlyChange >= 0 ? 'text-[#9cf2e8] font-semibold' : 'text-[#ff9b8f] font-semibold'}>
                                 {' '}· {stats.monthlyChange > 0 ? '+' : ''}{stats.monthlyChange}%
                             </span>
                         )}
@@ -561,8 +584,8 @@ const MobileNav: React.FC = () => {
 
     return (
         <>
-            <div className="h-16 shrink-0 flex items-center justify-center">
-                <Brand size="sm" />
+            <div className="h-20 shrink-0 flex items-center px-6">
+                <Brand />
             </div>
             <nav aria-label="Eğitmen paneli" className="flex-1 overflow-y-auto py-3 px-2">
                 {sections.map(s => {
@@ -570,15 +593,15 @@ const MobileNav: React.FC = () => {
                     const isOpen = expanded === s.id;
                     const Icon = s.icon;
                     const icon = Icon
-                        ? <Icon className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#00201d]' : 'text-[#4f8079]')} />
-                        : <span aria-hidden className="w-[19px] shrink-0" />;
+                        ? <Icon className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#00201d]' : 'text-white/45')} />
+                        : <LayoutGrid className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#00201d]' : 'text-white/45')} />;
                     const link = (
                         <Link
                             to={firstPage(s)}
                             aria-current={active ? 'page' : undefined}
                             className={cn(
                                 'flex items-center gap-3 flex-1 min-w-0 h-[50px] px-4 rounded-xl text-[17px] tracking-[-0.01em]',
-                                active ? 'bg-[#9cf2e8] text-[#00201d] font-bold' : 'text-[#1d3a37] font-semibold'
+                                active ? 'bg-[#9cf2e8] text-[#00201d] font-bold' : 'text-white/80 font-semibold'
                             )}
                         >
                             {icon}
@@ -588,7 +611,7 @@ const MobileNav: React.FC = () => {
                     );
                     if (!s.subs) return <div key={s.id} className="flex">{link}</div>;
                     return (
-                        <div key={s.id} className={cn('rounded-xl transition-colors', isOpen && 'bg-[#f5f6f6]')}>
+                        <div key={s.id} className={cn('rounded-xl transition-colors', isOpen && 'bg-white/[0.05]')}>
                             <div className="flex items-center gap-1">
                                 {link}
                                 <button
@@ -596,7 +619,7 @@ const MobileNav: React.FC = () => {
                                     aria-expanded={isOpen}
                                     aria-label={`${s.label} sayfalarını ${isOpen ? 'gizle' : 'göster'}`}
                                     onClick={() => setExpanded(isOpen ? null : s.id)}
-                                    className="w-11 h-[50px] shrink-0 rounded-xl flex items-center justify-center text-[#4a6360] hover:bg-[#ecfbf8]"
+                                    className="w-11 h-[50px] shrink-0 rounded-xl flex items-center justify-center text-white/55 hover:text-white hover:bg-white/10"
                                 >
                                     <ChevronDown className={cn('w-4 h-4 transition-transform duration-200', isOpen && 'rotate-180')} />
                                 </button>
@@ -609,7 +632,7 @@ const MobileNav: React.FC = () => {
                                                 to={sub.to}
                                                 className={({ isActive }) => cn(
                                                     'flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-[15px]',
-                                                    isActive ? 'bg-[#9cf2e8] text-[#00201d] font-bold' : 'text-[#1d3a37] font-medium'
+                                                    isActive ? 'bg-[#9cf2e8]/15 text-[#9cf2e8] font-bold' : 'text-white/70 font-medium'
                                                 )}
                                             >
                                                 {sub.label}
@@ -621,7 +644,7 @@ const MobileNav: React.FC = () => {
                                         <li>
                                             <Link
                                                 to={s.action.to}
-                                                className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2.5 text-[15px] font-bold text-[#005c55]"
+                                                className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2.5 text-[15px] font-bold text-[#9cf2e8]"
                                             >
                                                 <Plus className="w-4 h-4" /> {s.action.label}
                                             </Link>
@@ -647,7 +670,7 @@ const UserFooter: React.FC = () => {
     return (
         <Link
             to="/instructor/settings/profile"
-            className="shrink-0 mx-3 mb-3 rounded-xl px-3 py-2.5 flex items-center gap-2.5 hover:bg-[#f4f6f5] transition-colors"
+            className="shrink-0 mx-3 mb-3 rounded-xl px-3 py-2.5 flex items-center gap-2.5 hover:bg-white/[0.05] transition-colors"
         >
             {user?.profile_image ? (
                 <img src={user.profile_image} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-[#9cf2e8]/40" />
@@ -656,7 +679,7 @@ const UserFooter: React.FC = () => {
                     {initials}
                 </span>
             )}
-            <span className="min-w-0 flex-1 text-[13px] font-bold text-[#00201d] truncate">{name || 'Eğitmen'}</span>
+            <span className="min-w-0 flex-1 text-[13px] font-bold text-white truncate">{name || 'Eğitmen'}</span>
         </Link>
     );
 };

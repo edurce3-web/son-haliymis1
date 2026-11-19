@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { API_BASE_URL } from '@/lib/api';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
-import { EditorFrame, NextSteps, Chip } from '@/components/instructor/shell/EditorFrame';
-import { btn, field, hint } from '@/components/instructor/shell/kit';
+import { EditorFrame } from '@/components/instructor/shell/EditorFrame';
+
+const TITLE_MAX = 80;
 
 /**
  * Kurs taslağı oluşturma — kurs oluşturucunun ilk adımı.
  *
- * Panelden ayrı, kendi sayfası. Solda iki soru (ad ve konu), sağda yazdıkça
- * dolan katalog kartı ve sonra gelecek adımlar. Kategoriler açılır liste
- * yerine çip: hepsi bir bakışta görünüyor, tek tıkla seçiliyor.
+ * Panelden ayrı, kendi sayfası. Tek sütun, iki soru: ad (en çok 80 karakter)
+ * ve konu. Kategoriler açılır liste yerine seçenek kutusu: hepsi bir bakışta
+ * görünüyor, tek tıkla seçiliyor.
  *
  * Alt kategori zorunlu. Boş bırakılan kurslar kategori sayfalarının alt
  * dallarında hiç görünmüyor.
@@ -30,7 +31,6 @@ export const CreateCourseInitial: React.FC = () => {
     const categories = (navData?.categories || []).filter(c => c.id != null);
     const selectedCategory = categories.find(c => String(c.id) === categoryId);
     const subcategories = (selectedCategory?.subcategories || []).filter(c => c.id != null);
-    const selectedSub = subcategories.find(c => String(c.id) === subcategoryId);
 
     const needsSubcategory = subcategories.length > 0;
     const canSubmit = Boolean(title.trim() && categoryId && (!needsSubcategory || subcategoryId));
@@ -70,106 +70,131 @@ export const CreateCourseInitial: React.FC = () => {
     };
 
     return (
-        <EditorFrame back={{ to: '/instructor/courses/list', label: 'Kurslarım' }} title="Yeni kurs">
-            <div className="grid lg:grid-cols-[minmax(0,1fr)_340px] gap-10 lg:gap-14 items-start">
-                <form onSubmit={e => { e.preventDefault(); handleCreate(); }} className="min-w-0 max-w-[680px]">
-                    <h1 className="text-[30px] sm:text-[38px] leading-[1.08] font-extrabold tracking-[-0.03em] text-[#00201d] text-balance">
-                        Yeni bir kurs başlatalım
-                    </h1>
-                    <p className="mt-3 text-[15px] text-[#4a6360] leading-relaxed max-w-[52ch]">
-                        Şimdilik iki şey yeter: kursun adı ve konusu. Bölümler, dersler ve fiyat taslağı açınca;
-                        hepsi sonradan değişebilir.
-                    </p>
+        <EditorFrame back={{ to: '/instructor/courses/list', label: 'Kurslarım' }} title="Yeni kurs" width="narrow">
+            <form onSubmit={e => { e.preventDefault(); handleCreate(); }} className="max-w-[880px]">
+                <span className="inline-flex items-center gap-2 h-7 pl-2.5 pr-3 rounded-full bg-[#9cf2e8]/45 text-[12.5px] font-bold text-[#00483f]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#00897b]" />
+                    Yeni kurs taslağı
+                </span>
+                <h1 className="mt-4 text-[32px] sm:text-[42px] leading-[1.05] font-extrabold tracking-[-0.035em] text-[#00201d] text-balance">
+                    Yeni bir kurs başlatalım
+                </h1>
+                <p className="mt-3 text-[15.5px] sm:text-[16.5px] text-[#4a6360] leading-relaxed max-w-[62ch]">
+                    Şimdilik iki temel bilgi yeterli: kursun adı ve konusu. Bölümler, dersler ve fiyatı
+                    taslağı açınca istediğin gibi ekleyip değiştirebilirsin.
+                </p>
 
-                    <section className="mt-10">
-                        <label htmlFor="course-title" className="block text-[17px] font-extrabold tracking-tight text-[#00201d]">
-                            Kursunun adı ne?
-                        </label>
-                        <p className={cn(hint, 'mt-1')}>Öğrencinin arama kutusuna yazacağı kelimeleri kullan.</p>
-                        <input
-                            id="course-title"
-                            autoFocus
-                            placeholder="Örnek: Sıfırdan ileri seviye React"
-                            className={cn(field, 'mt-3 h-14 px-4 text-[18px] font-bold')}
-                            value={title}
-                            maxLength={120}
-                            onChange={e => setTitle(e.target.value)}
-                        />
-                        <p className={cn(hint, 'mt-1.5 text-right tabular-nums')}>{title.length}/120</p>
-                    </section>
-
-                    <section className="mt-8">
-                        <h2 id="cat-label" className="text-[17px] font-extrabold tracking-tight text-[#00201d]">Hangi konuda?</h2>
-                        <p className={cn(hint, 'mt-1')}>Kursun katalogda bu başlığın altında listelenir.</p>
-                        <div role="radiogroup" aria-labelledby="cat-label" className="mt-3 flex flex-wrap gap-2">
-                            {catsLoading && Array.from({ length: 6 }).map((_, i) => (
-                                <span key={i} className="h-10 w-28 rounded-full bg-[#eceeed] animate-pulse" />
-                            ))}
-                            {categories.map(cat => (
-                                <Chip
-                                    key={cat.id}
-                                    on={String(cat.id) === categoryId}
-                                    onClick={() => { setCategoryId(String(cat.id)); setSubcategoryId(''); }}
-                                >
-                                    {cat.name}
-                                </Chip>
-                            ))}
-                        </div>
-                    </section>
-
-                    {needsSubcategory && (
-                        <section className="mt-7 animate-in fade-in slide-in-from-top-1 duration-200">
-                            <h2 id="sub-label" className="text-[15px] font-extrabold tracking-tight text-[#00201d]">
-                                {selectedCategory?.name} içinde daha tam olarak?
-                            </h2>
-                            <div role="radiogroup" aria-labelledby="sub-label" className="mt-3 flex flex-wrap gap-2">
-                                {subcategories.map(sub => (
-                                    <Chip key={sub.id} on={String(sub.id) === subcategoryId} onClick={() => setSubcategoryId(String(sub.id))}>
-                                        {sub.name}
-                                    </Chip>
-                                ))}
-                            </div>
-                        </section>
-                    )}
-
-                    <div className="mt-10 pt-6 border-t border-[#e6e8e8] flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
-                        <button type="submit" disabled={loading || !canSubmit} className={cn(btn.primary, 'h-12 px-6 text-[15px] min-w-[240px]')}>
-                            {loading
-                                ? <><Loader2 className="w-4 h-4 animate-spin" /> Taslak açılıyor</>
-                                : <>Taslağı oluştur <ArrowRight className="w-4 h-4" /></>}
-                        </button>
-                        <p className="text-[13px] text-[#4a6360]">{missing || 'Taslak yalnızca sana görünür.'}</p>
+                <section className="mt-10">
+                    <div className="flex items-baseline justify-between gap-4">
+                        <label htmlFor="course-title" className="text-[14px] font-bold text-[#00201d]">Kursunun adı ne?</label>
+                        <span className="hidden sm:block text-[12.5px] text-[#6b817e]">Öğrencinin arayacağı kelimeleri kullan</span>
                     </div>
-                </form>
-
-                <aside aria-label="Önizleme" className="lg:sticky lg:top-24">
-                    <p className="text-[13px] font-bold text-[#00201d] mb-3">Katalogdaki kartın</p>
-                    <div className="rounded-2xl bg-white ring-1 ring-[#e3e6e5] overflow-hidden shadow-[0_18px_36px_-22px_rgba(0,32,29,0.45)]">
-                        <div className="relative aspect-video bg-[linear-gradient(135deg,#e3f6f2_0%,#9cf2e8_100%)]">
-                            <span className="absolute left-4 bottom-3 text-[12px] font-semibold text-[#00483f]">Kapak görseli sonraki adımda</span>
-                        </div>
-                        <div className="p-4">
-                            <p className={cn(
-                                'text-[15.5px] font-extrabold leading-snug line-clamp-2 min-h-[2.6em]',
-                                title.trim() ? 'text-[#00201d]' : 'text-[#9bb0ad]'
-                            )}>
-                                {title.trim() || 'Kursunun adı burada görünecek'}
-                            </p>
-                            <p className="mt-1.5 text-[12.5px] text-[#4a6360] truncate">
-                                {[selectedCategory?.name, selectedSub?.name].filter(Boolean).join(' · ') || 'Konu'}
-                            </p>
-                        </div>
+                    <input
+                        id="course-title"
+                        autoFocus
+                        placeholder="Örnek: Sıfırdan ileri seviye React ve Next.js"
+                        className={cn(
+                            'mt-2.5 w-full h-[60px] px-5 rounded-2xl bg-white text-[17px] sm:text-[18px] font-semibold text-[#00201d]',
+                            'placeholder:font-normal placeholder:text-[#93a6a3] border-0 outline-none',
+                            'shadow-[0_1px_2px_rgba(0,32,29,0.06),0_10px_28px_-20px_rgba(0,32,29,0.35)]',
+                            'ring-1 ring-inset ring-[#00201d]/[0.06] focus:ring-2 focus:ring-[#005c55]/55 transition-shadow duration-150'
+                        )}
+                        value={title}
+                        maxLength={TITLE_MAX}
+                        onChange={e => setTitle(e.target.value)}
+                    />
+                    <div className="mt-2 flex justify-between gap-4 px-1 text-[12.5px]">
+                        <span className="text-[#6b817e]">Net ve ilgi çeken bir başlık seç; sonra da değiştirebilirsin.</span>
+                        <span className={cn('tabular-nums font-bold', title.length >= TITLE_MAX ? 'text-[#b45309]' : 'text-[#6b817e]')}>
+                            {title.length}/{TITLE_MAX}
+                        </span>
                     </div>
-                    <NextSteps items={[
-                        'Bölümleri ve dersleri ekle, videolarını yükle',
-                        'Kapak görseli ve kısa tanıtım yaz',
-                        'Fiyatını belirle',
-                        'İncelemeye gönder; onaylanınca yayında',
-                    ]} />
-                </aside>
-            </div>
+                </section>
+
+                <section className="mt-9">
+                    <div className="flex items-baseline justify-between gap-4">
+                        <h2 id="cat-label" className="text-[14px] font-bold text-[#00201d]">Hangi konuda?</h2>
+                        <span className="hidden sm:block text-[12.5px] text-[#6b817e]">Katalogda bu başlığın altında listelenir</span>
+                    </div>
+                    <div role="radiogroup" aria-labelledby="cat-label" className="mt-3 flex flex-wrap gap-2.5">
+                        {catsLoading && Array.from({ length: 8 }).map((_, i) => (
+                            <span key={i} className="h-12 w-40 rounded-2xl bg-[#e6e9e8] animate-pulse" />
+                        ))}
+                        {categories.map(cat => (
+                            <Pick
+                                key={cat.id}
+                                on={String(cat.id) === categoryId}
+                                onClick={() => { setCategoryId(String(cat.id)); setSubcategoryId(''); }}
+                            >
+                                {cat.name}
+                            </Pick>
+                        ))}
+                    </div>
+                </section>
+
+                {needsSubcategory && (
+                    <section className="mt-7 animate-in fade-in slide-in-from-top-1 duration-200">
+                        <h2 id="sub-label" className="text-[14px] font-bold text-[#00201d]">
+                            {selectedCategory?.name} içinde daha tam olarak?
+                        </h2>
+                        <div role="radiogroup" aria-labelledby="sub-label" className="mt-3 flex flex-wrap gap-2">
+                            {subcategories.map(sub => (
+                                <Pick key={sub.id} small on={String(sub.id) === subcategoryId} onClick={() => setSubcategoryId(String(sub.id))}>
+                                    {sub.name}
+                                </Pick>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                <div className="mt-12 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+                    <button
+                        type="submit"
+                        disabled={loading || !canSubmit}
+                        className={cn(
+                            'inline-flex items-center justify-center gap-2 h-[52px] px-7 rounded-2xl text-[15px] font-bold',
+                            'transition-[background-color,color,transform,box-shadow] duration-150 active:scale-[0.98]',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45 focus-visible:ring-offset-2',
+                            canSubmit
+                                ? 'bg-[#00201d] text-[#9cf2e8] hover:bg-[#03302b] shadow-[0_12px_28px_-14px_rgba(0,32,29,0.7)]'
+                                : 'bg-[#e3e7e6] text-[#8a9b98] cursor-not-allowed'
+                        )}
+                    >
+                        {loading
+                            ? <><Loader2 className="w-4 h-4 animate-spin" /> Taslak açılıyor</>
+                            : <>Taslağı oluştur <ArrowRight className="w-4 h-4" /></>}
+                    </button>
+                    <p className="text-[13px] font-medium text-[#5f7774]">{missing || 'Taslak yalnızca sana görünür.'}</p>
+                    <Link
+                        to="/instructor/courses/list"
+                        className="sm:ml-auto text-[13.5px] font-bold text-[#5f7774] hover:text-[#00201d] transition-colors"
+                    >
+                        Daha sonra devam et
+                    </Link>
+                </div>
+            </form>
         </EditorFrame>
     );
 };
+
+/** Konu seçeneği: çizgisiz beyaz kutu; seçilince koyu zemin, nane yazı. */
+const Pick: React.FC<{ on: boolean; onClick: () => void; small?: boolean; children: React.ReactNode }> = ({ on, onClick, small, children }) => (
+    <button
+        type="button"
+        role="radio"
+        aria-checked={on}
+        onClick={onClick}
+        className={cn(
+            'rounded-2xl font-bold transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.97]',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45 focus-visible:ring-offset-2',
+            small ? 'h-10 px-4 text-[13.5px]' : 'h-12 px-5 text-[14.5px]',
+            on
+                ? 'bg-[#00201d] text-[#9cf2e8] shadow-[0_10px_24px_-14px_rgba(0,32,29,0.8)]'
+                : 'bg-white text-[#1d3a37] shadow-[0_1px_2px_rgba(0,32,29,0.07)] hover:bg-[#ecfbf8] hover:text-[#00201d]'
+        )}
+    >
+        {children}
+    </button>
+);
 
 export default CreateCourseInitial;

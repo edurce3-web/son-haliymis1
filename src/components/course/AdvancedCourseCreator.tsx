@@ -1994,7 +1994,7 @@ export default function AdvancedCourseCreator() {
                 <div>
                   <div className="flex items-baseline justify-between mb-2">
                     <Label htmlFor="title" className="text-[14px] font-bold text-[#00201d]">Kursun adı</Label>
-                    <span className="text-[12px] tabular-nums text-[#6b827f]">{courseData.title.length}/75</span>
+                    <span className="text-[12px] tabular-nums text-[#6b827f]">{courseData.title.length}/80</span>
                   </div>
                   <Input
                     id="title"
@@ -2006,7 +2006,7 @@ export default function AdvancedCourseCreator() {
                       if (validationErrors.title) setValidationErrors(prev => ({ ...prev, title: '' }));
                     }}
                     required
-                    maxLength={75}
+                    maxLength={80}
                   />
                   {validationErrors.title && <p className="text-red-600 text-[12.5px] mt-1.5 font-semibold">{validationErrors.title}</p>}
                 </div>
