@@ -42,7 +42,7 @@ const InstructorStats: React.FC<InstructorStatsProps> = ({ stats }) => (
       title="Ortalama Puan"
       value={`${stats.averageRating.toFixed(1)}/5`}
       icon={Star}
-      color="text-purple-600"
+      color="text-brand-600"
       description="Öğrenci değerlendirmeleri"
     />
   </div>

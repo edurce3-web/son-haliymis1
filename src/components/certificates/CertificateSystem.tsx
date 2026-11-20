@@ -264,7 +264,7 @@ export const CertificateSystem: React.FC = () => {
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
               <Award className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -414,7 +414,7 @@ export const CertificateSystem: React.FC = () => {
           </h1>
           <p className="text-gray-600 mt-1">Blockchain doğrulamalı dijital sertifikalar</p>
         </div>
-        <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+        <Button className="bg-gradient-to-r from-blue-600 to-brand-600 hover:from-blue-700 hover:to-brand-700">
           <Plus className="w-4 h-4 mr-2" />
           Yeni Sertifika
         </Button>
@@ -499,7 +499,7 @@ export const CertificateSystem: React.FC = () => {
                     className="flex items-center space-x-3 p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"
                     onClick={() => setSelectedTemplate(template.template_id)}
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded"></div>
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-brand-600 rounded"></div>
                     <div className="flex-1">
                       <div className="font-medium text-sm">{template.name}</div>
                       <div className="text-xs text-gray-600">{template.category}</div>
@@ -535,7 +535,7 @@ export const CertificateSystem: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-lg text-center">
+                <div className="bg-gradient-to-r from-blue-600 to-brand-600 text-white p-6 rounded-lg text-center">
                   <Award className="w-16 h-16 mx-auto mb-4" />
                   <h2 className="text-2xl font-bold mb-2">{selectedCertificate.course_title}</h2>
                   <p className="text-lg">{selectedCertificate.student_name}</p>

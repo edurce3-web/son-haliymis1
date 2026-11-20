@@ -116,7 +116,7 @@ export const ShelfSection: React.FC<{
                             {title}
                         </h2>
                         {chip && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#005c55]/10 text-[#005c55] text-[11px] leading-[14px] font-bold">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#12613b]/10 text-[#12613b] text-[11px] leading-[14px] font-bold">
                                 {chip.icon}
                                 {chip.text}
                             </span>
@@ -131,7 +131,7 @@ export const ShelfSection: React.FC<{
                     {href && (
                         <Link
                             to={href}
-                            className="hidden sm:inline-flex items-center gap-1 text-[14px] leading-5 font-semibold text-[#005c55] hover:text-[#0f766e] transition-colors"
+                            className="hidden sm:inline-flex items-center gap-1 text-[14px] leading-5 font-semibold text-[#12613b] hover:text-[#0f766e] transition-colors"
                         >
                             {hrefLabel}
                             <ArrowRight className="w-[18px] h-[18px]" />
@@ -144,7 +144,7 @@ export const ShelfSection: React.FC<{
                             onClick={() => scroll(-1)}
                             disabled={!canLeft}
                             aria-label="Önceki"
-                            className="w-9 h-9 rounded-full bg-white text-[#3e4947] shadow-sm flex items-center justify-center hover:text-[#131b2e] hover:bg-[#eaedff] disabled:opacity-35 disabled:hover:bg-white transition-all"
+                            className="w-9 h-9 rounded-full bg-white text-[#3e4947] shadow-sm flex items-center justify-center hover:text-[#131b2e] hover:bg-[#e6f6ec] disabled:opacity-35 disabled:hover:bg-white transition-all"
                         >
                             <ChevronLeft className="w-5 h-5" />
                         </button>
@@ -153,7 +153,7 @@ export const ShelfSection: React.FC<{
                             onClick={() => scroll(1)}
                             disabled={!canRight}
                             aria-label="Sonraki"
-                            className="w-9 h-9 rounded-full bg-white text-[#3e4947] shadow-sm flex items-center justify-center hover:text-[#131b2e] hover:bg-[#eaedff] disabled:opacity-35 disabled:hover:bg-white transition-all"
+                            className="w-9 h-9 rounded-full bg-white text-[#3e4947] shadow-sm flex items-center justify-center hover:text-[#131b2e] hover:bg-[#e6f6ec] disabled:opacity-35 disabled:hover:bg-white transition-all"
                         >
                             <ChevronRight className="w-5 h-5" />
                         </button>
@@ -178,12 +178,12 @@ export const ShelfSection: React.FC<{
                                 key={i}
                                 className={cn(mobileItem, 'bg-white rounded-lg overflow-hidden animate-pulse shadow-[0_1px_3px_rgba(19,27,46,0.08)]')}
                             >
-                                <div className="aspect-video bg-[#e2e7ff]" />
+                                <div className="aspect-video bg-[#dcf3e4]" />
                                 <div className="p-3 space-y-2">
-                                    <div className="h-3.5 bg-[#eaedff] rounded w-full" />
-                                    <div className="h-3.5 bg-[#eaedff] rounded w-3/5" />
-                                    <div className="h-3 bg-[#eaedff] rounded w-2/5 mt-3" />
-                                    <div className="h-5 bg-[#eaedff] rounded w-1/3 mt-3" />
+                                    <div className="h-3.5 bg-[#e6f6ec] rounded w-full" />
+                                    <div className="h-3.5 bg-[#e6f6ec] rounded w-3/5" />
+                                    <div className="h-3 bg-[#e6f6ec] rounded w-2/5 mt-3" />
+                                    <div className="h-5 bg-[#e6f6ec] rounded w-1/3 mt-3" />
                                 </div>
                             </div>
                         ))
@@ -213,12 +213,12 @@ export const ShelfSection: React.FC<{
                                 key={i}
                                 className={cn(cardWidth, 'shrink-0 ', 'bg-white rounded-lg overflow-hidden animate-pulse shadow-[0_1px_3px_rgba(19,27,46,0.08)]')}
                             >
-                                <div className="aspect-video bg-[#e2e7ff]" />
+                                <div className="aspect-video bg-[#dcf3e4]" />
                                 <div className="p-3 space-y-2">
-                                    <div className="h-3.5 bg-[#eaedff] rounded w-full" />
-                                    <div className="h-3.5 bg-[#eaedff] rounded w-3/5" />
-                                    <div className="h-3 bg-[#eaedff] rounded w-2/5 mt-3" />
-                                    <div className="h-5 bg-[#eaedff] rounded w-1/3 mt-3" />
+                                    <div className="h-3.5 bg-[#e6f6ec] rounded w-full" />
+                                    <div className="h-3.5 bg-[#e6f6ec] rounded w-3/5" />
+                                    <div className="h-3 bg-[#e6f6ec] rounded w-2/5 mt-3" />
+                                    <div className="h-5 bg-[#e6f6ec] rounded w-1/3 mt-3" />
                                 </div>
                             </div>
                         ))

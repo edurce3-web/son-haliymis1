@@ -136,7 +136,7 @@ const InstructorFinanceReport: React.FC = () => {
             />
 
             {/* Paranın yolu: brüt → vergi → senin payın → ödenecek */}
-            <section className="rounded-2xl bg-[#00201d] text-white overflow-hidden mb-6">
+            <section className="rounded-2xl bg-[#0b2619] text-white overflow-hidden mb-6">
                 <div className="grid grid-cols-2 lg:grid-cols-4">
                     <Flow label="Toplam satış" value={formatPrice(summary.gross)} note={`${summary.count.toLocaleString('tr-TR')} satış`} />
                     <Flow label={`Vergi (%${taxPct})`} value={`−${formatPrice(summary.tax)}`} note="Brütten düşülen" dim />
@@ -145,7 +145,7 @@ const InstructorFinanceReport: React.FC = () => {
                         label="Ödenecek bakiye"
                         value={formatPrice(summary.balance)}
                         note={`${formatPrice(summary.paidOut)} ödendi`}
-                        action={<Link to="/instructor/finance/payout" className="text-[12.5px] font-bold text-[#9cf2e8] underline underline-offset-4 decoration-[#9cf2e8]/40 hover:decoration-[#9cf2e8]">Ödeme bilgilerin</Link>}
+                        action={<Link to="/instructor/finance/payout" className="text-[12.5px] font-bold text-[#b2f0c8] underline underline-offset-4 decoration-[#b2f0c8]/40 hover:decoration-[#b2f0c8]">Ödeme bilgilerin</Link>}
                     />
                 </div>
             </section>
@@ -161,7 +161,7 @@ const InstructorFinanceReport: React.FC = () => {
                 <Panel as="section">
                     <PanelHead title="Kurslara göre" />
                     {data.byCourse.length === 0 ? (
-                        <p className="text-[14px] text-[#4a6360] px-6 py-10 text-center">Henüz satış yok.</p>
+                        <p className="text-[14px] text-[#4a5f55] px-6 py-10 text-center">Henüz satış yok.</p>
                     ) : (
                         <ul className="divide-y divide-[#f0f1f1]">
                             {data.byCourse.slice(0, 8).map(c => (
@@ -171,13 +171,13 @@ const InstructorFinanceReport: React.FC = () => {
                                         alt=""
                                         loading="lazy"
                                         onError={e => { (e.currentTarget as HTMLImageElement).style.visibility = 'hidden'; }}
-                                        className="w-14 h-9 rounded-lg object-cover bg-[#e3f6f2] shrink-0"
+                                        className="w-14 h-9 rounded-lg object-cover bg-[#e2f6e9] shrink-0"
                                     />
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-[13.5px] font-bold text-[#00201d] truncate">{c.title}</p>
-                                        <p className="text-[12.5px] text-[#5f7774]">{c.sales} satış</p>
+                                        <p className="text-[13.5px] font-bold text-[#0b2619] truncate">{c.title}</p>
+                                        <p className="text-[12.5px] text-[#5e7268]">{c.sales} satış</p>
                                     </div>
-                                    <span className="text-[14px] font-bold tabular-nums text-[#005c55] whitespace-nowrap">{formatPrice(c.instructor)}</span>
+                                    <span className="text-[14px] font-bold tabular-nums text-[#12613b] whitespace-nowrap">{formatPrice(c.instructor)}</span>
                                 </li>
                             ))}
                         </ul>
@@ -192,14 +192,14 @@ const InstructorFinanceReport: React.FC = () => {
                         )}
                     />
                     {filteredSales.length === 0 ? (
-                        <p className="text-[14px] text-[#4a6360] px-6 py-12 text-center">
+                        <p className="text-[14px] text-[#4a5f55] px-6 py-12 text-center">
                             {data.sales.length === 0 ? 'Henüz satış yok. İlk satışın burada görünecek.' : 'Bu aramayla eşleşen satış yok.'}
                         </p>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full min-w-[600px]">
                                 <thead>
-                                    <tr className="text-left text-[12.5px] text-[#4a6360] border-b border-[#eceeed]">
+                                    <tr className="text-left text-[12.5px] text-[#4a5f55] border-b-2 border-white">
                                         <th scope="col" className="font-bold px-5 sm:px-6 py-3">Tarih</th>
                                         <th scope="col" className="font-bold px-3 py-3">Kurs</th>
                                         <th scope="col" className="font-bold px-3 py-3">Öğrenci</th>
@@ -210,20 +210,20 @@ const InstructorFinanceReport: React.FC = () => {
                                 <tbody className="divide-y divide-[#f0f1f1] text-[13.5px]">
                                     {filteredSales.slice(0, 100).map(s => (
                                         <tr key={s.id} className="hover:bg-[#f7f8f8]">
-                                            <td className="px-5 sm:px-6 py-3 text-[#4a6360] whitespace-nowrap tabular-nums">
+                                            <td className="px-5 sm:px-6 py-3 text-[#4a5f55] whitespace-nowrap tabular-nums">
                                                 {new Date(s.date).toLocaleDateString('tr-TR')}
                                             </td>
                                             <td className="px-3 py-3 max-w-[220px]">
-                                                <span className="block truncate font-semibold text-[#00201d]">{s.course_title}</span>
+                                                <span className="block truncate font-semibold text-[#0b2619]">{s.course_title}</span>
                                             </td>
                                             <td className="px-3 py-3">
                                                 <span className="flex items-center gap-2">
                                                     <Initials name={s.student_name} src={s.student_image} size={26} />
-                                                    <span className="text-[#1d3a37] truncate max-w-[140px]">{s.student_name}</span>
+                                                    <span className="text-[#1d3a2c] truncate max-w-[140px]">{s.student_name}</span>
                                                 </span>
                                             </td>
-                                            <td className="px-3 py-3 text-right text-[#4a6360] whitespace-nowrap tabular-nums">{formatPrice(s.gross)}</td>
-                                            <td className="px-5 sm:px-6 py-3 text-right font-bold text-[#005c55] whitespace-nowrap tabular-nums">
+                                            <td className="px-3 py-3 text-right text-[#4a5f55] whitespace-nowrap tabular-nums">{formatPrice(s.gross)}</td>
+                                            <td className="px-5 sm:px-6 py-3 text-right font-bold text-[#12613b] whitespace-nowrap tabular-nums">
                                                 {formatPrice(s.instructor)}
                                             </td>
                                         </tr>
@@ -231,7 +231,7 @@ const InstructorFinanceReport: React.FC = () => {
                                 </tbody>
                             </table>
                             {filteredSales.length > 100 && (
-                                <p className="text-[12.5px] text-[#5f7774] text-center py-3 border-t border-[#f0f1f1]">
+                                <p className="text-[12.5px] text-[#5e7268] text-center py-3 border-t border-[#f0f1f1]">
                                     Son 100 satış gösteriliyor. Tamamı indirilen dosyada.
                                 </p>
                             )}
@@ -247,14 +247,14 @@ const Flow: React.FC<{
     label: string; value: string; note: string; dim?: boolean; strong?: boolean; action?: React.ReactNode;
 }> = ({ label, value, note, dim, strong, action }) => (
     <div className="px-5 sm:px-6 py-5 border-white/[0.08] [&:not(:last-child)]:border-r max-lg:[&:nth-child(2)]:border-r-0 max-lg:[&:nth-child(-n+2)]:border-b">
-        <p className="text-[12.5px] text-[#a9cfc9]">{label}</p>
+        <p className="text-[12.5px] text-[#a9d4b9]">{label}</p>
         <p className={cn(
             'mt-1.5 text-[24px] sm:text-[26px] leading-none font-extrabold tracking-[-0.02em] tabular-nums',
-            strong ? 'text-[#9cf2e8]' : dim ? 'text-[#a9cfc9]' : 'text-white'
+            strong ? 'text-[#b2f0c8]' : dim ? 'text-[#a9d4b9]' : 'text-white'
         )}>
             {value}
         </p>
-        <p className="mt-2 text-[12.5px] text-[#a9cfc9]">{note}</p>
+        <p className="mt-2 text-[12.5px] text-[#a9d4b9]">{note}</p>
         {action && <div className="mt-2">{action}</div>}
     </div>
 );

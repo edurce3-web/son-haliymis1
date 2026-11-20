@@ -1,296 +1,471 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import HeroVisual from '@/components/instructor/HeroVisual';
+import {
+  ArrowRight, BadgePercent, CalendarClock, Check, ChevronDown, Clapperboard, FileVideo,
+  MessagesSquare, Megaphone, ShieldCheck, Tags, TrendingUp, Wallet, X,
+} from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { useSeo } from '@/hooks/useSeo';
+import { cn } from '@/lib/utils';
 
-/**
+/*
  * Eğitmen ol.
  *
- * Sayfa bilinçli olarak sayı vermiyor: önceki hâlinde "10.000+ aktif öğrenci",
- * "₺2M+ ödenen gelir" gibi doğrulanamayan rakamlar vardı. Onların yerine
- * platformun gerçekten sunduğu şeyler ve kazanç modelinin tam dökümü var.
- * İkon kullanılmıyor; hiyerarşi tipografi ve boşlukla kuruluyor.
+ * Sayfa doğrulanamayan rakam vermiyor (öğrenci sayısı, ödenen toplam gelir
+ * gibi) ve komisyon oranını yazmıyor; kazanç tarafı "yüksek komisyon" ve
+ * "kendi kuponunla gelen satışın tamamı senin" diye anlatılıyor.
+ *
+ * Hesaplayıcı yalnızca brüt satış potansiyelini gösteriyor: öğrenci sayısı ×
+ * fiyat. Bunun büyük kısmının eğitmene kaldığı ayrıca söyleniyor.
+ *
+ * Çağrı düğmeleri ziyaretçinin durumuna göre değişiyor: eğitmen panele,
+ * giriş yapmış kullanıcı başvuru formuna, misafir önce girişe gidiyor.
  */
 
-/** Bölüm başlığı — altında markanın kısa çizgisi. */
-const SectionTitle: React.FC<{ children: React.ReactNode; hint?: string }> = ({ children, hint }) => (
-  <div className="mb-8">
-    <h2 className="font-montserrat text-[24px] sm:text-[28px] font-extrabold text-slate-900 tracking-[-0.02em]">
-      {children}
-    </h2>
-    <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-2.5" />
-    {hint && <p className="text-[15.5px] text-slate-500 mt-3 max-w-2xl">{hint}</p>}
-  </div>
-);
+const INK = '#0b2619';
+const MINT = '#b2f0c8';
+
+const lira = (n: number) => `₺${Math.round(n).toLocaleString('tr-TR')}`;
+
+function useCta() {
+  const { user, isAuthenticated } = useAuth();
+  const instructor = user?.role === 'instructor' || user?.is_instructor === true;
+  if (isAuthenticated && instructor) return { to: '/instructor/dashboard', label: 'Eğitmen paneline git' };
+  if (isAuthenticated) return { to: '/instructor-application', label: 'Eğitmen hesabını aç' };
+  return { to: `/login?redirect=${encodeURIComponent('/instructor-application')}`, label: 'Giriş yap ve başla' };
+}
+
+const FACTS = ['Kurs açmak ücretsiz', 'Aylık ücret yok', 'Ödeme gününü sen seçersin'];
 
 const BENEFITS = [
-  {
-    title: 'Kurs açmak ücretsiz',
-    body: 'Aylık ücret, listeleme bedeli ya da yükleme kotası yok. Platform yalnızca satış gerçekleştiğinde pay alır.',
-  },
-  {
-    title: 'Fiyatı siz belirlersiniz',
-    body: 'Kursunuzun fiyatını kendiniz seçer, dilediğiniz zaman değiştirir, kupon tanımlayarak indirim yaparsınız.',
-  },
-  {
-    title: 'Videolar sizin için hazırlanır',
-    body: 'Yüklediğiniz video arka planda farklı kalitelerde işlenir ve dağıtım ağına aktarılır. Siz sadece dosyayı bırakırsınız.',
-  },
-  {
-    title: 'İçerik size ait kalır',
-    body: 'Kursunuzun hakları sizde. Platform içeriği yalnızca yayınlamak ve tanıtmak için kullanır.',
-  },
-  {
-    title: 'Ödeme gününü siz seçersiniz',
-    body: 'Hakedişinizi eğitmen panelinden takip eder, ödeme gününü kendiniz belirlersiniz.',
-  },
-  {
-    title: 'Öğrenciyle doğrudan iletişim',
-    body: 'Soru-cevap ve mesajlaşma üzerinden öğrencilerinize ulaşır, kursa duyuru yaparsınız.',
-  },
+  { icon: BadgePercent, title: 'Yüksek komisyon', body: 'Satıştan aldığın pay yüksek. Kendi kupon kodunla getirdiğin öğrencinin ödemesinin ise tamamı senin.' },
+  { icon: Tags, title: 'Fiyat senin elinde', body: 'Kursunun fiyatını sen seçersin, istediğin zaman değiştirir, kendi kuponlarınla kampanya yaparsın.' },
+  { icon: FileVideo, title: 'Video işleri bizde', body: 'Yüklediğin video arka planda farklı kalitelere dönüştürülür ve hızlı bir dağıtım ağından izletilir.' },
+  { icon: ShieldCheck, title: 'İçerik senin kalır', body: 'Kursunun hakları sende. Edurce içeriği yalnızca yayınlamak ve tanıtmak için kullanır.' },
+  { icon: CalendarClock, title: 'Ödeme gününü seç', body: 'Hakedişini panelden takip edersin; ödemenin hangi gün yapılacağını kendin belirlersin.' },
+  { icon: MessagesSquare, title: 'Öğrencinle doğrudan', body: 'Soru-cevap, mesajlar ve duyurularla öğrencilerine panelden tek yerden ulaşırsın.' },
+];
+
+const TOOLS = [
+  { icon: Clapperboard, title: 'Kurs oluşturucu', body: 'Bölümler, dersler, kaynak dosyaları ve ücretsiz önizleme dersleri.' },
+  { icon: TrendingUp, title: 'Gelir raporu', body: 'Aylık ve yıllık satışlar, net kazancın ve ödenecek bakiyen.' },
+  { icon: Megaphone, title: 'Duyurular', body: 'Yeni ders eklediğinde kursun bütün öğrencilerine haber ver.' },
+  { icon: Wallet, title: 'Ödeme bilgileri', body: 'IBAN ve fatura bilgilerini bir kez gir, ödemeler otomatik planlansın.' },
 ];
 
 const STEPS = [
-  {
-    title: 'Başvurun',
-    body: 'Kısa bir form doldurup uzmanlık alanınızı ve deneyiminizi paylaşırsınız. Başvurunuz incelenip sonuçlandırılır.',
-  },
-  {
-    title: 'Kursu kurun',
-    body: 'Bölümleri ve dersleri oluşturur, videoları yükler, kaynak dosyalarını eklersiniz. Dilediğiniz dersi ücretsiz önizlemeye açabilirsiniz.',
-  },
-  {
-    title: 'Fiyatlayın',
-    body: 'Kursun fiyatını seçer, isterseniz kupon tanımlarsınız. Yayın öncesi kontrol ekranı eksikleri tek tek gösterir.',
-  },
-  {
-    title: 'Yayınlayın',
-    body: 'Kurs katalogda görünmeye başlar. Satışları, kazancınızı ve öğrenci ilerlemesini panelden izlersiniz.',
-  },
+  { title: 'Eğitmen hesabını aç', body: 'Dört kısa adımda bilgilerini, fotoğrafını ve uzmanlık alanlarını gir. Hesabın anında açılır.' },
+  { title: 'Kursunu kur', body: 'Bölümleri ve dersleri oluştur, videolarını yükle, kaynak dosyalarını ekle.' },
+  { title: 'Fiyatla', body: 'Fiyatı seç, istersen kupon tanımla. Yayın öncesi kontrol eksikleri tek tek gösterir.' },
+  { title: 'İncelemeye gönder, kazan', body: 'Kursun incelemeden geçince katalogda yerini alır. Satışlarını panelden izlersin.' },
 ];
+
+const NEED = [
+  'Anlatacağın konuda gerçek bir deneyim',
+  'Sesi anlaşılır, görüntüsü net kayıtlar',
+  'Bölümlere ayrılmış bir ders planı',
+  'Ödeme için IBAN ve kimlik bilgileri',
+];
+const NO_NEED = [
+  'Profesyonel stüdyo ya da pahalı ekipman',
+  'Video kurgu bilgisi; dosyayı yüklemen yeterli',
+  'Belirli sayıda takipçi ya da izleyici kitlesi',
+  'Başlangıç ücreti; kurs açmak tamamen ücretsiz',
+];
+
+const FAQ = [
+  { q: 'Eğitmen olmak ücretli mi?', a: 'Hayır. Kurs açmak, video yüklemek ve yayınlamak ücretsiz; aylık ücret de yok. Edurce yalnızca bir satış olduğunda pay alır.' },
+  { q: 'Ne kadar kazanırım?', a: 'Her satıştan yüksek komisyon alırsın. Kendi kupon kodunla gelen satışlarda platform pay almaz, ödemenin tamamı senindir. Ayrıntılı kazanç modeli Fiyatlandırma sayfasında.' },
+  { q: 'Ödemeler ne zaman yapılır?', a: 'Hakedişin eğitmen panelinde birikir. Ödeme gününü panelden kendin seçersin, tutar kayıtlı IBAN hesabına gönderilir.' },
+  { q: 'Kursumun hakları kimde olur?', a: 'Sende. Edurce içeriği yalnızca platformda yayınlamak ve tanıtmak için kullanır.' },
+  { q: 'Video düzenlemem ya da özel ekipman almam gerekir mi?', a: 'Hayır. Net görüntü ve anlaşılır ses yeterli. Yüklediğin dosya otomatik olarak farklı kalitelere işlenir.' },
+  { q: 'Eğitmen hesabım ne zaman açılır?', a: 'Formu tamamladığın anda. Eğitmen panelin hemen açılır ve kurs oluşturmaya başlarsın. Kursların yayına girmeden önce kalite incelemesinden geçer.' },
+];
+
+const Eyebrow: React.FC<{ children: React.ReactNode; dark?: boolean }> = ({ children, dark }) => (
+  <p className={cn('text-[12.5px] font-bold uppercase tracking-[0.18em]', dark ? 'text-[#b2f0c8]' : 'text-[#12613b]')}>{children}</p>
+);
 
 const BecomeInstructor: React.FC = () => {
   useSeo({
     title: 'Eğitmen Ol | Edurce',
-    description: 'Edurce\'de kurs açmak ücretsiz. Kazanç modeli, süreç ve eğitmenlik koşulları.',
+    description: 'Edurce\'de kurs açmak ücretsiz. Bildiğini öğret, yüksek komisyonla kazan.',
     canonical: 'https://edurce.com/become-instructor',
     robots: 'index, follow',
   }, []);
 
+  const cta = useCta();
+  const { isAuthenticated } = useAuth();
+
   return (
-    <div className="min-h-screen bg-white">
-      {/* Kahraman bölümü — görsel sağ yarıyı kaplayıp zemine karışıyor */}
-      <section className="relative overflow-hidden bg-brand-50/70 border-b border-brand-100">
-        <div className="hidden lg:block absolute inset-y-0 right-0 w-[58%] pointer-events-none">
-          <HeroVisual />
-        </div>
-
-        <div className="relative container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-16 lg:py-24">
-          <div className="max-w-xl">
-            <h1 className="font-montserrat text-[34px] sm:text-[44px] lg:text-[52px] font-extrabold text-slate-900 leading-[1.08] tracking-[-0.03em]">
-              Bildiğinizi
-              <span className="block text-brand-700">öğretin</span>
-            </h1>
-
-            <p className="text-[17px] text-slate-600 leading-[1.7] mt-5 max-w-md">
-              Kurs açmak ücretsiz. Videolarınızı yükleyin, fiyatını siz belirleyin,
-              her satıştan pay alın.
+    <div className="bg-white text-[#0b2619]">
+      {/* ── Kahraman ───────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden" style={{ background: INK }}>
+        <div aria-hidden className="pointer-events-none absolute -top-48 -right-40 w-[640px] h-[640px] rounded-full bg-[#b2f0c8]/10 blur-3xl" />
+        <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24 grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] gap-12 lg:gap-16 items-center">
+          <div className="min-w-0">
+            <p className="inline-flex items-center gap-2 h-8 pl-2.5 pr-3.5 rounded-full bg-white/[0.08] text-[13px] font-bold text-[#b2f0c8]">
+              <span className="w-2 h-2 rounded-full bg-[#b2f0c8]" />
+              Edurce eğitmenliği
             </p>
-
-            <div className="flex flex-wrap gap-3 mt-8">
+            <h1 className="mt-5 text-[40px] sm:text-[54px] lg:text-[62px] leading-[1.03] font-extrabold tracking-[-0.045em] text-white text-balance">
+              Bildiğini öğret,{' '}
+              <span className="inline-block px-3 -mx-0.5 rounded-2xl bg-[#b2f0c8] text-[#0b2619] -rotate-[1.5deg]">yüksek komisyonla</span>{' '}
+              kazan.
+            </h1>
+            <p className="mt-6 text-[17px] sm:text-[18px] leading-relaxed text-white/70 max-w-[52ch]">
+              Kursunu kur, videolarını yükle, fiyatını belirle. Edurce yalnızca satış olduğunda
+              pay alır; kendi kuponunla getirdiğin öğrencinin ödemesinin tamamı senin.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
-                to="/instructor-application"
-                className="h-12 px-8 leading-[48px] rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold transition-colors"
+                to={cta.to}
+                className="group inline-flex items-center gap-2 h-[52px] px-7 rounded-2xl bg-[#b2f0c8] text-[#0b2619] text-[15.5px] font-bold hover:bg-white active:scale-[0.98] transition-[background-color,transform]"
               >
-                Eğitmen başvurusu yap
+                {cta.label}
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <a
-                href="#kazanc"
-                className="h-12 px-8 leading-[46px] rounded-lg border border-slate-300 bg-white hover:border-brand-400 hover:text-brand-800 text-slate-800 text-[15px] font-semibold transition-colors"
+                href="#hesapla"
+                className="inline-flex items-center h-[52px] px-6 rounded-2xl bg-white/[0.08] text-white text-[15px] font-bold hover:bg-white/[0.14] transition-colors"
               >
                 Ne kazanırım?
               </a>
             </div>
+            <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-2.5">
+              {FACTS.map(f => (
+                <li key={f} className="inline-flex items-center gap-2 text-[14px] font-semibold text-white/85">
+                  <span className="w-5 h-5 rounded-full bg-[#b2f0c8] text-[#0b2619] flex items-center justify-center">
+                    <Check className="w-3 h-3" strokeWidth={3} />
+                  </span>
+                  {f}
+                </li>
+              ))}
+            </ul>
           </div>
+
+          <PanelPreview />
         </div>
       </section>
 
-      <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px]">
+      {/* ── Hesaplayıcı ────────────────────────────────────────────── */}
+      <Calculator ctaTo={cta.to} ctaLabel={cta.label} />
 
-        {/* ── Neden Edurce ──────────────────────────────────────────── */}
-        <section className="py-14 lg:py-16">
-          <SectionTitle hint="Eğitmenlik tarafında platformun taahhüt ettiği şeyler.">
-            Neden Edurce
-          </SectionTitle>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8">
-            {BENEFITS.map(item => (
-              <div key={item.title}>
-                <h3 className="text-[16px] font-bold text-slate-900">{item.title}</h3>
-                <span className="block w-6 h-[2px] rounded-full bg-brand-600 mt-2 mb-2.5" />
-                <p className="text-[14.5px] text-slate-600 leading-[1.75]">{item.body}</p>
+      {/* ── Neden Edurce ───────────────────────────────────────────── */}
+      <section className="bg-[#f5f7f6]">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+          <div className="max-w-2xl">
+            <Eyebrow>Neden Edurce?</Eyebrow>
+            <h2 className="mt-3 text-[30px] sm:text-[40px] leading-[1.08] font-extrabold tracking-[-0.035em] text-balance">
+              Sen anlat, gerisini birlikte halledelim.
+            </h2>
+          </div>
+          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {BENEFITS.map(({ icon: Icon, title, body }, i) => (
+              <div
+                key={title}
+                className={cn(
+                  'rounded-[24px] p-6 sm:p-7',
+                  i === 0 ? 'bg-[#0b2619] text-white' : 'bg-white'
+                )}
+              >
+                <span className={cn('w-12 h-12 rounded-2xl flex items-center justify-center', i === 0 ? 'bg-[#b2f0c8] text-[#0b2619]' : 'bg-[#e2f6e9] text-[#12613b]')}>
+                  <Icon className="w-[22px] h-[22px]" />
+                </span>
+                <h3 className="mt-5 text-[18px] font-extrabold tracking-[-0.01em]">{title}</h3>
+                <p className={cn('mt-2 text-[14.5px] leading-[1.7]', i === 0 ? 'text-white/70' : 'text-[#4a5f55]')}>{body}</p>
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── Kazanç modeli ─────────────────────────────────────────── */}
-        <section id="kazanc" className="scroll-mt-24 py-14 lg:py-16 border-t border-slate-200">
-          <SectionTitle hint="Pay kursun niteliğine göre değişir; kendi kuponunuzla gelen satışın tamamı sizindir.">
-            Ne kazanırsınız
-          </SectionTitle>
-
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-start">
-            <div className="overflow-x-auto rounded-xl border border-slate-200">
-              <table className="w-full text-[14.5px] min-w-[320px]">
-                <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200 text-left">
-                    {['Kursun durumu', 'Payınız'].map(h => (
-                      <th
-                        key={h}
-                        className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.12em] text-slate-500 px-5 py-3 whitespace-nowrap"
-                      >
-                        {h}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  <tr className="bg-brand-50">
-                    <td className="px-5 py-3.5 font-semibold text-brand-900">
-                      Kendi kupon kodunuzla gelen satış
-                    </td>
-                    <td className="px-5 py-3.5 font-montserrat text-[18px] font-extrabold text-brand-900">
-                      %100
-                    </td>
-                  </tr>
-                  {[
-                    ['Yalnızca Edurce\'de, özgün içerik', '%70'],
-                    ['Başka platformlarda da yayında', '%55'],
-                  ].map(row => (
-                    <tr key={row[0]}>
-                      <td className="px-5 py-3.5 font-medium text-slate-800">{row[0]}</td>
-                      <td className="px-5 py-3.5 font-montserrat text-[18px] font-extrabold text-slate-700">
-                        {row[1]}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+      {/* ── Panel araçları ─────────────────────────────────────────── */}
+      <section className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-16 lg:py-24 grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-10 lg:gap-16 items-start">
+        <div className="lg:sticky lg:top-28">
+          <Eyebrow>Eğitmen paneli</Eyebrow>
+          <h2 className="mt-3 text-[30px] sm:text-[40px] leading-[1.08] font-extrabold tracking-[-0.035em] text-balance">
+            İhtiyacın olan her şey tek panelde.
+          </h2>
+          <p className="mt-4 text-[16px] leading-relaxed text-[#4a5f55] max-w-[46ch]">
+            Kursunu hazırlamaktan kazancını takip etmeye kadar her adım aynı yerde. Taslağına
+            istediğin yerden başlar, istediğin zaman devam edersin.
+          </p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {TOOLS.map(({ icon: Icon, title, body }) => (
+            <div key={title} className="rounded-[24px] bg-[#f5f7f6] p-6">
+              <Icon className="w-6 h-6 text-[#12613b]" />
+              <h3 className="mt-4 text-[17px] font-extrabold tracking-[-0.01em]">{title}</h3>
+              <p className="mt-1.5 text-[14.5px] leading-[1.7] text-[#4a5f55]">{body}</p>
             </div>
-
-            <div className="space-y-5">
-              <p className="text-[17px] font-semibold text-slate-900 leading-[1.6]">
-                Bildiğinizi anlatın, kazancın büyük kısmı sizde kalsın.
-              </p>
-              <p className="text-[15.5px] text-slate-600 leading-[1.8]">
-                Kursunuzu yalnızca Edurce'de yayınlarsanız her satışın %70'i sizindir.
-                Kendi kupon kodunuzu paylaşıp öğrenci getirdiğinizde ise platform hiç
-                pay almaz — o satışın tamamı size kalır.
-              </p>
-              <p className="text-[15.5px] text-slate-600 leading-[1.8]">
-                Başlamak için ne bir ücret ne de bir taahhüt gerekiyor. Kurs açmak,
-                video yüklemek ve yayınlamak baştan sona ücretsiz; kazanmaya ilk
-                satışınızla başlarsınız.
-              </p>
-              <Link
-                to="/instructor-application"
-                className="inline-block h-11 px-6 leading-[44px] rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold transition-colors"
-              >
-                Hemen başvur
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Süreç ─────────────────────────────────────────────────── */}
-        <section className="py-14 lg:py-16 border-t border-slate-200">
-          <SectionTitle hint="Başvurudan yayına dört adım.">Nasıl çalışır</SectionTitle>
-
-          <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-9">
-            {STEPS.map((step, i) => (
-              <li key={step.title} className="border-t-2 border-brand-600 pt-4">
-                <span className="font-montserrat text-[12px] font-extrabold text-brand-700 tabular-nums">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <h3 className="text-[16px] font-bold text-slate-900 mt-1.5">{step.title}</h3>
-                <p className="text-[14.5px] text-slate-600 leading-[1.75] mt-2">{step.body}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        {/* ── Gereken şeyler ────────────────────────────────────────── */}
-        <section className="py-14 lg:py-16 border-t border-slate-200">
-          <SectionTitle>Başlamadan önce</SectionTitle>
-
-          <div className="grid md:grid-cols-2 gap-10 lg:gap-14">
+          ))}
+          <div className="sm:col-span-2 rounded-[24px] bg-[#b2f0c8] p-6 sm:p-7 grid sm:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-[16px] font-bold text-slate-900 mb-3">Neye ihtiyacınız var</h3>
-              <ul className="space-y-2.5">
-                {[
-                  'Anlatacağınız konuda gerçek bir deneyim',
-                  'Sesi anlaşılır, görüntüsü net kayıtlar',
-                  'Bölümlere ayrılmış bir ders planı',
-                  'Ödeme için IBAN ve kimlik bilgileri',
-                ].map(item => (
-                  <li key={item} className="text-[14.5px] text-slate-600 leading-[1.75] pl-5 relative">
-                    <span className="absolute left-0 top-[11px] w-2.5 h-px bg-brand-600" />
-                    {item}
+              <h3 className="text-[16px] font-extrabold">İhtiyacın olanlar</h3>
+              <ul className="mt-3 space-y-2">
+                {NEED.map(t => (
+                  <li key={t} className="flex gap-2.5 text-[14.5px] leading-snug">
+                    <Check className="w-4 h-4 mt-0.5 shrink-0" strokeWidth={2.6} /> {t}
                   </li>
                 ))}
               </ul>
             </div>
-
             <div>
-              <h3 className="text-[16px] font-bold text-slate-900 mb-3">Neye ihtiyacınız yok</h3>
-              <ul className="space-y-2.5">
-                {[
-                  'Profesyonel stüdyo ya da pahalı ekipman',
-                  'Video düzenleme bilgisi — dosyayı yüklemeniz yeterli',
-                  'Belirli sayıda takipçi ya da izleyici kitlesi',
-                  'Başlangıç ücreti; kurs açmak tamamen ücretsiz',
-                ].map(item => (
-                  <li key={item} className="text-[14.5px] text-slate-600 leading-[1.75] pl-5 relative">
-                    <span className="absolute left-0 top-[11px] w-2.5 h-px bg-slate-300" />
-                    {item}
+              <h3 className="text-[16px] font-extrabold">İhtiyacın olmayanlar</h3>
+              <ul className="mt-3 space-y-2">
+                {NO_NEED.map(t => (
+                  <li key={t} className="flex gap-2.5 text-[14.5px] leading-snug text-[#0b2619]/75">
+                    <X className="w-4 h-4 mt-0.5 shrink-0" strokeWidth={2.6} /> {t}
                   </li>
                 ))}
               </ul>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      {/* ── Kapanış ───────────────────────────────────────────────── */}
-      <section className="border-t border-slate-200 bg-slate-50">
-        <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-14 lg:py-16">
-          <div className="max-w-2xl">
-            <h2 className="font-montserrat text-[24px] sm:text-[28px] font-extrabold text-slate-900 tracking-[-0.02em]">
-              Başvurmaya hazır mısınız?
-            </h2>
-            <p className="text-[15.5px] text-slate-600 leading-[1.75] mt-3">
-              Başvuru formu birkaç dakika sürer. Onaylandığında eğitmen paneline
-              erişiminiz açılır ve ilk kursunuzu oluşturmaya başlayabilirsiniz.
-            </p>
-            <div className="flex flex-wrap gap-3 mt-7">
-              <Link
-                to="/instructor-application"
-                className="h-12 px-8 leading-[48px] rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold transition-colors"
-              >
-                Eğitmen başvurusu yap
-              </Link>
-              <Link
-                to="/help"
-                className="h-12 px-8 leading-[46px] rounded-lg border border-slate-300 bg-white hover:border-brand-400 hover:text-brand-800 text-slate-800 text-[15px] font-semibold transition-colors"
-              >
-                Sorularınız için
-              </Link>
             </div>
           </div>
         </div>
       </section>
+
+      {/* ── Dört adım + başvuru kartı ──────────────────────────────── */}
+      <section id="basvuru" className="scroll-mt-24 bg-[#f5f7f6]">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-16 lg:py-24 grid lg:grid-cols-[minmax(0,1fr)_420px] gap-10 lg:gap-14 items-start">
+          <div>
+            <Eyebrow>Nasıl başlarım?</Eyebrow>
+            <h2 className="mt-3 text-[30px] sm:text-[40px] leading-[1.08] font-extrabold tracking-[-0.035em]">
+              Dört adımda yayında.
+            </h2>
+            <ol className="mt-9 space-y-3">
+              {STEPS.map((s, i) => (
+                <li key={s.title} className="flex gap-5 rounded-[22px] bg-white p-5 sm:p-6">
+                  <span className="shrink-0 w-11 h-11 rounded-2xl bg-[#0b2619] text-[#b2f0c8] text-[17px] font-extrabold tabular-nums flex items-center justify-center">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <h3 className="text-[17px] font-extrabold tracking-[-0.01em]">{s.title}</h3>
+                    <p className="mt-1 text-[14.5px] leading-[1.7] text-[#4a5f55]">{s.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <aside className="lg:sticky lg:top-28 rounded-[28px] bg-[#0b2619] text-white p-7 sm:p-8">
+            <p className="text-[13px] font-bold uppercase tracking-[0.16em] text-[#b2f0c8]">Eğitmen hesabı</p>
+            <h3 className="mt-3 text-[26px] font-extrabold tracking-[-0.02em] leading-tight">
+              Birkaç dakikada eğitmen ol.
+            </h3>
+            <p className="mt-3 text-[15px] leading-relaxed text-white/70">
+              Dört kısa adım. Bilgilerini tamamladığında eğitmen hesabın anında
+              açılır, ilk kursunu oluşturmaya başlarsın.
+            </p>
+            <ul className="mt-6 space-y-2.5">
+              {['Kişisel bilgiler ve ders dili', 'Profil fotoğrafı', 'Kendini tanıtma ve uzmanlık alanları', 'Varsa web siten ve sosyal hesapların'].map(t => (
+                <li key={t} className="flex items-center gap-2.5 text-[14.5px] text-white/85">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#b2f0c8]" /> {t}
+                </li>
+              ))}
+            </ul>
+            <Link
+              to={cta.to}
+              className="mt-8 flex items-center justify-center gap-2 h-[52px] rounded-2xl bg-[#b2f0c8] text-[#0b2619] text-[15.5px] font-bold hover:bg-white active:scale-[0.98] transition-[background-color,transform]"
+            >
+              {cta.label} <ArrowRight className="w-4 h-4" />
+            </Link>
+            {!isAuthenticated && (
+              <p className="mt-4 text-center text-[13.5px] text-white/60">
+                Hesabın yok mu?{' '}
+                <Link to="/register" className="font-bold text-[#b2f0c8] hover:underline underline-offset-4">Ücretsiz kaydol</Link>
+              </p>
+            )}
+          </aside>
+        </div>
+      </section>
+
+      {/* ── Sık sorulanlar ─────────────────────────────────────────── */}
+      <section className="mx-auto max-w-[880px] px-4 sm:px-6 py-16 lg:py-24">
+        <div className="text-center">
+          <Eyebrow>Sorular</Eyebrow>
+          <h2 className="mt-3 text-[30px] sm:text-[40px] leading-[1.08] font-extrabold tracking-[-0.035em]">Sıkça sorulanlar</h2>
+        </div>
+        <div className="mt-10 space-y-3">
+          {FAQ.map(item => <Faq key={item.q} {...item} />)}
+        </div>
+        <p className="mt-8 text-center text-[14.5px] text-[#4a5f55]">
+          Başka bir sorun mu var?{' '}
+          <Link to="/help" className="font-bold text-[#12613b] hover:underline underline-offset-4">Yardım merkezine bak</Link>
+        </p>
+      </section>
+
+      {/* ── Kapanış ────────────────────────────────────────────────── */}
+      <section className="px-4 sm:px-6 pb-16 lg:pb-24">
+        <div className="mx-auto max-w-[1280px] rounded-[32px] bg-[#b2f0c8] px-6 sm:px-12 py-12 sm:py-16 text-center">
+          <h2 className="text-[30px] sm:text-[44px] leading-[1.05] font-extrabold tracking-[-0.04em] text-balance">
+            İlk kursun, ilk adımın.
+          </h2>
+          <p className="mt-4 text-[16.5px] text-[#0b2619]/70 max-w-[46ch] mx-auto">
+            Başlamak ücretsiz. Bildiğini anlat, her satıştan yüksek komisyonla kazan.
+          </p>
+          <Link
+            to={cta.to}
+            className="mt-8 inline-flex items-center gap-2 h-[52px] px-8 rounded-2xl bg-[#0b2619] text-[#b2f0c8] text-[15.5px] font-bold hover:bg-[#123a27] active:scale-[0.98] transition-[background-color,transform]"
+          >
+            {cta.label} <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+/** Kahramanın sağındaki panel görünümü: örnek, gerçek veri değil. */
+const PanelPreview: React.FC = () => {
+  const bars = [28, 40, 34, 52, 46, 64, 58, 76, 70, 88, 82, 100];
+  return (
+    <div aria-hidden className="relative hidden sm:block">
+      <div className="rounded-[28px] bg-white p-6 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.6)] rotate-[1.5deg]">
+        <div className="flex items-center justify-between">
+          <p className="text-[13px] font-bold text-[#4a5f55]">Bu ayki kazancın</p>
+          <span className="h-6 px-2.5 rounded-full bg-[#e2f6e9] text-[#12613b] text-[11.5px] font-bold inline-flex items-center">Örnek görünüm</span>
+        </div>
+        <p className="mt-1 text-[34px] font-extrabold tracking-[-0.03em] tabular-nums" style={{ color: INK }}>₺12.480</p>
+        <div className="mt-5 h-[120px] flex items-end gap-1.5">
+          {bars.map((h, i) => (
+            <span
+              key={i}
+              className="flex-1 rounded-t-md animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both"
+              style={{ height: `${h}%`, background: i === bars.length - 1 ? INK : MINT, animationDelay: `${i * 40}ms` }}
+            />
+          ))}
+        </div>
+        <div className="mt-5 grid grid-cols-3 gap-2">
+          {[['Satış', '86'], ['Yeni öğrenci', '74'], ['Puan', '4,8']].map(([k, v]) => (
+            <div key={k} className="rounded-2xl bg-[#f5f7f6] px-3 py-2.5">
+              <p className="text-[11.5px] text-[#6a7f74]">{k}</p>
+              <p className="text-[17px] font-extrabold tabular-nums" style={{ color: INK }}>{v}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="absolute -left-6 -bottom-7 rounded-2xl bg-[#b2f0c8] px-4 py-3 shadow-[0_24px_40px_-24px_rgba(0,0,0,0.6)] -rotate-[2deg] flex items-center gap-3">
+        <span className="w-9 h-9 rounded-xl bg-[#0b2619] text-[#b2f0c8] flex items-center justify-center">
+          <Wallet className="w-[18px] h-[18px]" />
+        </span>
+        <span>
+          <span className="block text-[12px] font-bold text-[#0b2619]/70">Yeni satış</span>
+          <span className="block text-[14.5px] font-extrabold" style={{ color: INK }}>Kuponla geldi, tamamı senin</span>
+        </span>
+      </div>
+    </div>
+  );
+};
+
+/** Satış potansiyeli: öğrenci sayısı × fiyat. Komisyon oranı gösterilmiyor. */
+const Calculator: React.FC<{ ctaTo: string; ctaLabel: string }> = ({ ctaTo, ctaLabel }) => {
+  const [students, setStudents] = useState(150);
+  const [price, setPrice] = useState(499);
+  const monthly = students * price;
+
+  return (
+    <section id="hesapla" className="scroll-mt-24 mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div className="max-w-2xl">
+        <Eyebrow>Kazanç</Eyebrow>
+        <h2 className="mt-3 text-[30px] sm:text-[40px] leading-[1.08] font-extrabold tracking-[-0.035em] text-balance">
+          Kursunun satış potansiyelini hesapla.
+        </h2>
+        <p className="mt-3 text-[16px] text-[#4a5f55]">İki değeri kaydır; aylık ve yıllık satış tutarını anında gör.</p>
+      </div>
+
+      <div className="mt-10 grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-4">
+        <div className="rounded-[28px] bg-[#f5f7f6] p-6 sm:p-9 space-y-9">
+          <Slider
+            id="calc-students" label="Ayda kaç öğrenci kaydolur?" value={students} min={10} max={1000} step={10}
+            onChange={setStudents} display={`${students.toLocaleString('tr-TR')} öğrenci`} ends={['10', '1.000']}
+          />
+          <Slider
+            id="calc-price" label="Kursunun fiyatı" value={price} min={99} max={2999} step={50}
+            onChange={setPrice} display={lira(price)} ends={['₺99', '₺2.999']}
+          />
+          <p className="text-[13px] text-[#6a7f74] leading-relaxed">
+            Tahmindir; gerçek satışlar kursun konusuna, kalitesine ve tanıtımına göre değişir.
+          </p>
+        </div>
+
+        <div className="rounded-[28px] bg-[#0b2619] text-white p-6 sm:p-9 flex flex-col">
+          <p className="text-[14px] font-semibold text-white/60">Aylık satış tutarı</p>
+          <p className="mt-1 text-[42px] sm:text-[52px] font-extrabold tracking-[-0.04em] tabular-nums text-[#b2f0c8] leading-none">{lira(monthly)}</p>
+          <div className="mt-6 rounded-2xl bg-white/[0.07] px-5 py-4 flex items-center justify-between gap-4">
+            <span className="text-[14px] text-white/70">Yıllık</span>
+            <span className="text-[20px] font-extrabold tabular-nums">{lira(monthly * 12)}</span>
+          </div>
+          <ul className="mt-6 space-y-2.5 text-[14.5px] text-white/80">
+            <li className="flex gap-2.5"><Check className="w-4 h-4 mt-0.5 shrink-0 text-[#b2f0c8]" strokeWidth={2.6} /> Bunun büyük kısmı senin: yüksek komisyon</li>
+            <li className="flex gap-2.5"><Check className="w-4 h-4 mt-0.5 shrink-0 text-[#b2f0c8]" strokeWidth={2.6} /> Kendi kuponunla gelen satışın tamamı senin</li>
+          </ul>
+          <Link
+            to={ctaTo}
+            className="mt-auto pt-8"
+          >
+            <span className="flex items-center justify-center gap-2 h-[52px] rounded-2xl bg-[#b2f0c8] text-[#0b2619] text-[15px] font-bold hover:bg-white transition-colors">
+              {ctaLabel} <ArrowRight className="w-4 h-4" />
+            </span>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Slider: React.FC<{
+  id: string; label: string; value: number; min: number; max: number; step: number;
+  onChange: (n: number) => void; display: string; ends: [string, string];
+}> = ({ id, label, value, min, max, step, onChange, display, ends }) => {
+  const pct = ((value - min) / (max - min)) * 100;
+  return (
+    <div>
+      <div className="flex items-baseline justify-between gap-4">
+        <label htmlFor={id} className="text-[15px] font-bold">{label}</label>
+        <span className="text-[20px] font-extrabold tabular-nums tracking-[-0.01em]">{display}</span>
+      </div>
+      <input
+        id={id}
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={e => onChange(Number(e.target.value))}
+        className="edu-range mt-4 w-full"
+        style={{ background: `linear-gradient(to right, ${INK} ${pct}%, #dfe7e2 ${pct}%)` }}
+      />
+      <div className="mt-2 flex justify-between text-[12.5px] text-[#6a7f74] tabular-nums">
+        <span>{ends[0]}</span><span>{ends[1]}</span>
+      </div>
+      <style>{`
+        .edu-range { -webkit-appearance: none; appearance: none; height: 8px; border-radius: 999px; outline: none; }
+        .edu-range::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 999px; background: ${MINT}; border: 5px solid ${INK}; cursor: grab; }
+        .edu-range::-moz-range-thumb { width: 18px; height: 18px; border-radius: 999px; background: ${MINT}; border: 5px solid ${INK}; cursor: grab; }
+        .edu-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgba(18,97,59,0.3); }
+      `}</style>
+    </div>
+  );
+};
+
+const Faq: React.FC<{ q: string; a: string }> = ({ q, a }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-[20px] bg-[#f5f7f6]">
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between gap-4 text-left px-6 py-5 rounded-[20px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/40"
+      >
+        <span className="text-[16px] font-bold">{q}</span>
+        <ChevronDown className={cn('w-5 h-5 shrink-0 text-[#12613b] transition-transform duration-200', open && 'rotate-180')} />
+      </button>
+      {open && (
+        <p className="px-6 pb-5 -mt-1 text-[15px] leading-[1.75] text-[#4a5f55] animate-in fade-in duration-200">{a}</p>
+      )}
     </div>
   );
 };

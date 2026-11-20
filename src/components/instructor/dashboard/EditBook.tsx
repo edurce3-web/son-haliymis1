@@ -301,11 +301,11 @@ export function EditBook() {
                                     aria-current={isActive ? 'page' : undefined}
                                     className={cn(
                                         'shrink-0 lg:w-full flex items-center gap-3 px-3.5 h-11 rounded-xl text-left transition-colors duration-150',
-                                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40',
-                                        isActive ? 'bg-[#9cf2e8] text-[#00201d]' : 'text-[#3d5754] hover:bg-white hover:text-[#00201d]'
+                                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/40',
+                                        isActive ? 'bg-[#b2f0c8] text-[#0b2619]' : 'text-[#3d564a] hover:bg-white hover:text-[#0b2619]'
                                     )}
                                 >
-                                    <Icon className={cn('w-[18px] h-[18px] shrink-0', isActive ? 'text-[#00201d]' : 'text-[#5f8a84]')} strokeWidth={isActive ? 2.2 : 1.9} />
+                                    <Icon className={cn('w-[18px] h-[18px] shrink-0', isActive ? 'text-[#0b2619]' : 'text-[#5f8a84]')} strokeWidth={isActive ? 2.2 : 1.9} />
                                     <span className={cn('text-[14.5px] whitespace-nowrap', isActive ? 'font-bold' : 'font-semibold')}>{sec.title}</span>
                                 </button>
                             );
@@ -313,10 +313,10 @@ export function EditBook() {
                     </nav>
                 </div>
 
-                <section className="min-w-0 rounded-2xl bg-white ring-1 ring-[#e3e6e5] shadow-[0_1px_2px_rgba(0,32,29,0.04)] overflow-hidden">
+                <section className="min-w-0 rounded-2xl bg-[#f5f7f6] overflow-hidden">
                     <div className="px-5 sm:px-8 pt-7 pb-6 border-b border-[#f0f1f1]">
-                        <h2 className="text-[24px] font-extrabold tracking-[-0.02em] text-[#00201d]">{STEPS[step - 1].title}</h2>
-                        <p className="text-[14.5px] text-[#4a6360] mt-1">{STEPS[step - 1].desc}</p>
+                        <h2 className="text-[24px] font-extrabold tracking-[-0.02em] text-[#0b2619]">{STEPS[step - 1].title}</h2>
+                        <p className="text-[14.5px] text-[#4a5f55] mt-1">{STEPS[step - 1].desc}</p>
                     </div>
 
                     <div className="px-5 sm:px-8 py-7 animate-in fade-in duration-300" key={step}>
@@ -329,7 +329,7 @@ export function EditBook() {
                                         placeholder="Kapakta görünen ana isim" className={cn(field, 'h-11')} />
                                 </div>
                                 <div>
-                                    <label htmlFor="b-sub" className={label}>Alt başlık <span className="font-medium text-[#5f7774]">(isteğe bağlı)</span></label>
+                                    <label htmlFor="b-sub" className={label}>Alt başlık <span className="font-medium text-[#5e7268]">(isteğe bağlı)</span></label>
                                     <input id="b-sub" value={formData.subtitle} onChange={e => setFormData({ ...formData, subtitle: e.target.value })}
                                         placeholder="Kitabın ne vaat ettiği" className={cn(field, 'h-11')} />
                                 </div>
@@ -344,7 +344,7 @@ export function EditBook() {
                                         placeholder="Arka kapak yazısı gibi düşün: okuyucu bu kitaptan ne alacak?" className={cn(field, 'py-3 resize-y leading-relaxed')} />
                                 </div>
                                 <div className="md:col-span-2">
-                                    <label htmlFor="b-kw" className={label}>Anahtar kelimeler <span className="font-medium text-[#5f7774] tabular-nums">({keywordsList.length}/7)</span></label>
+                                    <label htmlFor="b-kw" className={label}>Anahtar kelimeler <span className="font-medium text-[#5e7268] tabular-nums">({keywordsList.length}/7)</span></label>
                                     <div className="flex gap-2">
                                         <input
                                             id="b-kw"
@@ -367,7 +367,7 @@ export function EditBook() {
                                                         type="button"
                                                         onClick={() => setKeywordsList(keywordsList.filter((_, idx) => idx !== i))}
                                                         aria-label={`${kw} kelimesini kaldır`}
-                                                        className="inline-flex items-center gap-1.5 h-8 pl-3 pr-2 rounded-full bg-[#e3f6f2] hover:bg-[#fff3f1] text-[13px] font-bold text-[#00201d] hover:text-[#b42318] transition-colors"
+                                                        className="inline-flex items-center gap-1.5 h-8 pl-3 pr-2 rounded-full bg-[#e2f6e9] hover:bg-[#fff3f1] text-[13px] font-bold text-[#0b2619] hover:text-[#b42318] transition-colors"
                                                     >
                                                         {kw} <X className="w-3.5 h-3.5" />
                                                     </button>
@@ -421,15 +421,15 @@ export function EditBook() {
                                                     key={o.v}
                                                     className={cn(
                                                         'flex items-start gap-3 rounded-xl px-4 py-3.5 cursor-pointer transition-colors ring-1 ring-inset',
-                                                        on ? 'bg-[#ecfbf8] ring-[#005c55]' : 'bg-white ring-[#dadfdd] hover:ring-[#9cdcd3]'
+                                                        on ? 'bg-[#ecfaf1] ring-[#12613b]' : 'bg-white ring-[#dadfdd] hover:ring-[#a3dfb9]'
                                                     )}
                                                 >
                                                     <input type="radio" name="rights_type" value={o.v} checked={on}
                                                         onChange={e => setFormData({ ...formData, rights_type: e.target.value })}
-                                                        className="mt-0.5 w-4 h-4 accent-[#005c55]" />
+                                                        className="mt-0.5 w-4 h-4 accent-[#12613b]" />
                                                     <span>
-                                                        <span className="block text-[14px] font-bold text-[#00201d]">{o.t}</span>
-                                                        <span className="block text-[12.5px] text-[#4a6360] mt-0.5">{o.d}</span>
+                                                        <span className="block text-[14px] font-bold text-[#0b2619]">{o.t}</span>
+                                                        <span className="block text-[12.5px] text-[#4a5f55] mt-0.5">{o.d}</span>
                                                     </span>
                                                 </label>
                                             );
@@ -440,7 +440,7 @@ export function EditBook() {
                                 <div>
                                     <label htmlFor="b-price" className={label}>Satış fiyatı</label>
                                     <div className="relative max-w-[220px]">
-                                        <span aria-hidden className="absolute left-4 top-1/2 -translate-y-1/2 text-[18px] font-bold text-[#4a6360]">₺</span>
+                                        <span aria-hidden className="absolute left-4 top-1/2 -translate-y-1/2 text-[18px] font-bold text-[#4a5f55]">₺</span>
                                         <input id="b-price" type="number" inputMode="decimal" step="0.01" min="0" value={formData.price}
                                             onChange={e => setFormData({ ...formData, price: e.target.value })}
                                             className={cn(field, 'h-12 pl-10 text-[18px] font-extrabold tabular-nums')} />
@@ -458,25 +458,25 @@ export function EditBook() {
                                     <button
                                         type="button"
                                         onClick={() => document.getElementById('cover-upload')?.click()}
-                                        className="group relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-[#f5f6f6] ring-1 ring-inset ring-[#d3d9d7] hover:ring-[#5fb8ac] hover:bg-[#ecfbf8] transition-colors flex items-center justify-center"
+                                        className="group relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-[#f5f6f6] ring-1 ring-inset ring-[#d3d9d7] hover:ring-[#5fbb86] hover:bg-[#ecfaf1] transition-colors flex items-center justify-center"
                                     >
                                         {uploadCoverMutation.isPending && (
-                                            <span className="absolute inset-0 z-[1] bg-white/80 flex items-center justify-center text-[13px] font-bold text-[#00201d]">
+                                            <span className="absolute inset-0 z-[1] bg-white/80 flex items-center justify-center text-[13px] font-bold text-[#0b2619]">
                                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Yükleniyor
                                             </span>
                                         )}
                                         {coverPreview ? (
                                             <>
                                                 <img src={coverPreview} alt="Kapak önizlemesi" className="absolute inset-0 w-full h-full object-cover" />
-                                                <span className="absolute inset-x-2 bottom-2 rounded-lg bg-white/90 py-1.5 text-[12.5px] font-bold text-[#00201d] opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <span className="absolute inset-x-2 bottom-2 rounded-lg bg-white/90 py-1.5 text-[12.5px] font-bold text-[#0b2619] opacity-0 group-hover:opacity-100 transition-opacity">
                                                     Değiştir
                                                 </span>
                                             </>
                                         ) : (
                                             <span className="text-center px-4">
-                                                <ImageIcon className="w-7 h-7 mx-auto text-[#005c55]" />
-                                                <span className="block mt-2 text-[14px] font-bold text-[#00201d]">Kapak seç</span>
-                                                <span className="block mt-0.5 text-[12px] text-[#4a6360]">JPG ya da PNG, dik (3:4)</span>
+                                                <ImageIcon className="w-7 h-7 mx-auto text-[#12613b]" />
+                                                <span className="block mt-2 text-[14px] font-bold text-[#0b2619]">Kapak seç</span>
+                                                <span className="block mt-0.5 text-[12px] text-[#4a5f55]">JPG ya da PNG, dik (3:4)</span>
                                             </span>
                                         )}
                                     </button>
@@ -488,16 +488,16 @@ export function EditBook() {
                                     <button
                                         type="button"
                                         onClick={() => document.getElementById('book-upload')?.click()}
-                                        className="flex-1 min-h-[180px] w-full rounded-xl bg-[#f5f6f6] ring-1 ring-inset ring-[#d3d9d7] hover:ring-[#5fb8ac] hover:bg-[#ecfbf8] transition-colors flex items-center justify-center px-6 text-center"
+                                        className="flex-1 min-h-[180px] w-full rounded-xl bg-[#f5f6f6] ring-1 ring-inset ring-[#d3d9d7] hover:ring-[#5fbb86] hover:bg-[#ecfaf1] transition-colors flex items-center justify-center px-6 text-center"
                                     >
                                         <span>
                                             {bookFileName || book?.epub_file_path
-                                                ? <FileText className="w-7 h-7 mx-auto text-[#005c55]" />
-                                                : <Upload className="w-7 h-7 mx-auto text-[#005c55]" />}
-                                            <span className="block mt-2 text-[14px] font-bold text-[#00201d] break-all">
+                                                ? <FileText className="w-7 h-7 mx-auto text-[#12613b]" />
+                                                : <Upload className="w-7 h-7 mx-auto text-[#12613b]" />}
+                                            <span className="block mt-2 text-[14px] font-bold text-[#0b2619] break-all">
                                                 {uploadFileMutation.isPending ? 'Yükleniyor…' : bookFileName || (book?.epub_file_path ? 'Dosya yüklü' : 'EPUB ya da PDF seç')}
                                             </span>
-                                            <span className="block mt-0.5 text-[12.5px] text-[#4a6360]">
+                                            <span className="block mt-0.5 text-[12.5px] text-[#4a5f55]">
                                                 {uploadFileMutation.isPending && bookFile
                                                     ? `${(bookFile.size / 1024 / 1024).toFixed(1).replace('.', ',')} MB`
                                                     : (bookFileName || book?.epub_file_path) ? 'Yenisiyle değiştirmek için tıkla' : 'Okuyucunun indireceği asıl içerik · en fazla 150 MB'}
@@ -512,22 +512,22 @@ export function EditBook() {
                         {/* 4: Yayınla — mağazadaki görünüm */}
                         {step === 4 && (
                             <div className="flex flex-col sm:flex-row gap-6 sm:items-center">
-                                <div className="w-[150px] shrink-0 aspect-[3/4] rounded-r-xl rounded-l-[4px] overflow-hidden bg-[#e3f6f2] shadow-[0_18px_34px_-18px_rgba(0,32,29,0.55)]">
+                                <div className="w-[150px] shrink-0 aspect-[3/4] rounded-r-xl rounded-l-[4px] overflow-hidden bg-[#e2f6e9] shadow-[0_18px_34px_-18px_rgba(0,32,29,0.55)]">
                                     {coverPreview && <img src={coverPreview} alt="" className="w-full h-full object-cover" />}
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-[20px] font-extrabold tracking-tight text-[#00201d] text-balance">{formData.title}</p>
-                                    {formData.subtitle && <p className="text-[14px] text-[#1d3a37] mt-0.5">{formData.subtitle}</p>}
-                                    <p className="text-[13.5px] font-semibold text-[#005c55] mt-1.5">{formData.author_name}</p>
+                                    <p className="text-[20px] font-extrabold tracking-tight text-[#0b2619] text-balance">{formData.title}</p>
+                                    {formData.subtitle && <p className="text-[14px] text-[#1d3a2c] mt-0.5">{formData.subtitle}</p>}
+                                    <p className="text-[13.5px] font-semibold text-[#12613b] mt-1.5">{formData.author_name}</p>
                                     <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 text-[13.5px] max-w-sm">
-                                        <dt className="text-[#4a6360]">Fiyat</dt>
-                                        <dd className="font-bold text-[#00201d] tabular-nums">{priceNum > 0 ? `₺${priceNum.toLocaleString('tr-TR')}` : 'Ücretsiz'}</dd>
-                                        <dt className="text-[#4a6360]">Dil</dt>
-                                        <dd className="font-bold text-[#00201d]">{formData.language}</dd>
-                                        <dt className="text-[#4a6360]">Dosya</dt>
-                                        <dd className="font-bold text-[#00201d] truncate">{bookFileName || (book?.epub_file_path ? 'Yüklü' : 'Henüz yok')}</dd>
+                                        <dt className="text-[#4a5f55]">Fiyat</dt>
+                                        <dd className="font-bold text-[#0b2619] tabular-nums">{priceNum > 0 ? `₺${priceNum.toLocaleString('tr-TR')}` : 'Ücretsiz'}</dd>
+                                        <dt className="text-[#4a5f55]">Dil</dt>
+                                        <dd className="font-bold text-[#0b2619]">{formData.language}</dd>
+                                        <dt className="text-[#4a5f55]">Dosya</dt>
+                                        <dd className="font-bold text-[#0b2619] truncate">{bookFileName || (book?.epub_file_path ? 'Yüklü' : 'Henüz yok')}</dd>
                                     </dl>
-                                    <p className="mt-4 text-[13.5px] text-[#4a6360] max-w-md">
+                                    <p className="mt-4 text-[13.5px] text-[#4a5f55] max-w-md">
                                         {published ? 'Kitabın mağazada satışta.' : 'Hazır olduğunda üstteki Yayınla ile satışa açabilirsin.'}
                                     </p>
                                 </div>

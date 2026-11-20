@@ -88,6 +88,7 @@ export const Header = () => {
       return false;
     })();
   const [searchQuery, setSearchQuery] = useState('');
+  const [mobileSearch, setMobileSearch] = useState(false);
 
   // State for dynamic data
   const [cartItems, setCartItems] = useState<any[]>([]);
@@ -457,11 +458,15 @@ export const Header = () => {
               <MenuRow onClick={() => navigate('/instructor')} tone="primary"
                 label="Eğitmen Paneli" />
               <MenuRow onClick={() => navigate('/instructor/courses/create')}
-                label="Kurs Oluşturucu" />
+                label="Yeni kurs oluştur" />
             </>
           )}
 
           <div className="h-px bg-slate-100 my-1.5" />
+          <div className="flex items-center justify-between px-3 py-1.5">
+            <span className="text-sm text-slate-700">Dil</span>
+            <LanguageSwitcher withIcon={false} />
+          </div>
           <MenuRow onClick={() => navigate('/home/settings/profile')}
             label="Ayarlar" />
           <MenuRow onClick={() => { logout(); navigate('/login'); }} tone="danger"
@@ -480,106 +485,157 @@ export const Header = () => {
     </div>
   );
 
-  return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white/95 backdrop-blur-xl shadow-sm">
-      {/* Top gradient line */}
-      <div className="h-[2px] w-full bg-gradient-to-r from-brand-600 via-brand-700 to-brand-800" />
+  const learningActive = location.pathname.startsWith('/home/learning') || location.pathname === '/learning';
 
-      <div className="container flex h-16 items-center px-4 gap-3">
+  return (
+    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-xl shadow-[0_1px_0_rgba(11,38,25,0.07)]">
+      <div className="mx-auto max-w-[1440px] flex h-16 lg:h-[72px] items-center gap-2 sm:gap-3 lg:gap-5 px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link to="/" className="flex items-center mr-4 shrink-0" aria-label="Edurce ana sayfa">
-          <img src="/logo-wordmark.png" alt="Edurce" className="h-[30px] w-auto" />
+        <Link to="/" className="shrink-0 flex items-center" aria-label="Edurce ana sayfa">
+          <img src="/logo-ink.png" alt="Edurce" className="h-[26px] lg:h-[30px] w-auto" />
         </Link>
 
-        {/* Kategoriler — fareyle üzerine gelince açılan iki sütunlu menü.
-            Veritabanındaki gerçek kategorileri ve kurs sayılarını gösterir;
-            eskiden sabit bir listeden besleniyordu. */}
+        {/* Tüm kurslar: üzerine gelince kategoriler açılıyor */}
         <CategoryMegaMenu />
 
-        {/* Search */}
-        <form onSubmit={handleSearch} className="flex-1 relative group hidden md:block">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-[17px] h-[17px] text-slate-400 group-focus-within:text-brand-600 transition-colors" />
+        {/* Arama */}
+        <form onSubmit={handleSearch} role="search" className="relative hidden md:block flex-1 max-w-[680px] group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#6a7f74] group-focus-within:text-brand-700 transition-colors pointer-events-none" />
           <input
             type="search"
-            placeholder="Kurs veya eğitmen ara"
-            className="w-full h-10 pl-10 pr-4 rounded-xl border-[1.5px] border-slate-200 bg-slate-50/70 text-[14px] hover:border-slate-300 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none placeholder:text-slate-400 transition-all"
+            aria-label="Kurs ara"
+            placeholder="Dilediğin kursu, konuyu ya da eğitmeni ara…"
+            className="w-full h-11 lg:h-12 pl-11 pr-4 rounded-full bg-[#f0f4f1] text-[14.5px] text-[#0b2619] placeholder:text-[#7d9086] border-0 outline-none ring-1 ring-inset ring-transparent hover:bg-[#e9efea] focus:bg-white focus:ring-2 focus:ring-brand-700/35 transition-[background-color,box-shadow]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </form>
 
-        {/* Actions */}
-        <div className="flex items-center gap-1 ml-auto">
-          {/*
-              Eğitmen bağlantısı — düğme değil, menü bağlantısı.
-              Çerçeveli bir düğme, başlıktaki tek eylem çağrısı gibi
-              görünüp gerçek eylemlerin (sepet, giriş) önüne geçiyordu.
-          */}
-          {!loading && (
-            <button
-              onClick={() => navigate(isInstructor ? '/instructor' : '/become-instructor')}
-              className="hidden md:inline-flex items-center h-8 px-3 text-[13.5px] font-semibold text-slate-600 hover:text-brand-800 transition-colors"
+        <div className="flex items-center gap-0.5 sm:gap-1 ml-auto">
+          {/* Telefonda arama ayrı bir satırda açılıyor */}
+          <button
+            type="button"
+            onClick={() => setMobileSearch(v => !v)}
+            aria-label="Ara"
+            aria-expanded={mobileSearch}
+            className="md:hidden w-10 h-10 rounded-full flex items-center justify-center text-[#0b2619] hover:bg-[#f0f4f1]"
+          >
+            {mobileSearch ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
+          </button>
+
+          {isAuthenticated && (
+            <Link
+              to="/home/learning"
+              className={cn(
+                'hidden lg:inline-flex items-center h-10 px-3 rounded-full text-[14.5px] font-semibold whitespace-nowrap transition-colors',
+                learningActive ? 'text-brand-700' : 'text-[#0b2619] hover:text-brand-700'
+              )}
             >
-              {isInstructor ? 'Eğitmen paneli' : 'Eğitimci ol'}
-            </button>
+              Öğrenim İçeriğim
+            </Link>
           )}
 
-          {/* Cart with Hover Popover */}
-          <HoverPopover content={<CartPopoverContent />}>
-            <button onClick={() => navigate('/cart')} className="w-9 h-9 rounded-full flex items-center justify-center relative text-slate-500 hover:text-brand-700 hover:bg-brand-50 transition-all">
-              <ShoppingCart className="w-[18px] h-[18px]" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 bg-[#0D9488] text-white text-[11px] font-black rounded-full flex items-center justify-center shadow-md shadow-teal-200 ring-2 ring-white">
-                  {cartCount}
-                </span>
-              )}
-            </button>
-          </HoverPopover>
+          {!loading && (
+            <Link
+              to={isInstructor ? '/instructor' : '/become-instructor'}
+              className="hidden lg:inline-flex items-center h-10 px-3 rounded-full text-[14.5px] font-semibold whitespace-nowrap text-[#0b2619] hover:text-brand-700 transition-colors"
+            >
+              {isInstructor ? 'Eğitmen Paneli' : 'Eğitmen Ol'}
+            </Link>
+          )}
 
-          {/* Notifications with Hover Popover */}
+          {/* Bildirimler */}
           {isAuthenticated && (
             <HoverPopover content={<NotificationsPopoverContent />} width="w-96">
-              <button onClick={() => navigate('/notifications')} className="w-8 h-8 rounded-full flex items-center justify-center relative text-slate-500 hover:text-brand-700 hover:bg-brand-50 transition-all">
-                <Bell className="w-4.5 h-4.5" />
+              <button
+                onClick={() => navigate('/notifications')}
+                aria-label={unreadCount > 0 ? `Bildirimler, ${unreadCount} okunmamış` : 'Bildirimler'}
+                className="w-10 h-10 rounded-full flex items-center justify-center relative text-[#0b2619] hover:bg-[#f0f4f1] transition-colors"
+              >
+                <Bell className="w-[21px] h-[21px]" strokeWidth={1.9} />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white">
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
+                  <span aria-hidden className="absolute top-[9px] right-[10px] w-2.5 h-2.5 rounded-full bg-[#e5484d] ring-2 ring-white" />
                 )}
               </button>
             </HoverPopover>
           )}
 
-          {/* Dil */}
-          <LanguageSwitcher withIcon={false} className="hidden sm:inline-flex mx-1" />
-
-          {/* Divider */}
-          <div className="w-px h-5 bg-slate-200 mx-1" />
-
-          {/* Kullanıcı menüsü — sepet ve bildirim menüleri gibi FARE ÜZERİNE
-              GELİNCE açılır; tıklamak gerekmiyor. */}
-          <HoverPopover content={<UserMenuContent />} width="w-60">
+          {/* Sepet */}
+          <HoverPopover content={<CartPopoverContent />}>
             <button
-              onClick={() => navigate(isAuthenticated ? '/home/settings/profile' : '/login')}
-              aria-label={isAuthenticated ? 'Hesap menüsü' : 'Giriş yap'}
-              className="w-8 h-8 rounded-full border-2 border-slate-200 hover:border-brand-300 transition-all overflow-hidden"
+              onClick={() => navigate('/cart')}
+              aria-label={cartCount > 0 ? `Sepet, ${cartCount} ürün` : 'Sepet'}
+              className="w-10 h-10 rounded-full flex items-center justify-center relative text-[#0b2619] hover:bg-[#f0f4f1] transition-colors"
             >
-              {isAuthenticated && user ? (
-                <Avatar className="w-full h-full">
-                  <AvatarImage src={user.profile_image || ''} className="object-cover" />
-                  <AvatarFallback className="bg-brand-700 text-white font-bold text-xs">
-                    {user.first_name?.[0]}{user.last_name?.[0]}
-                  </AvatarFallback>
-                </Avatar>
-              ) : (
-                <div className="w-full h-full bg-slate-100 flex items-center justify-center">
-                  <User className="w-4 h-4 text-slate-400" />
-                </div>
+              <ShoppingCart className="w-[21px] h-[21px]" strokeWidth={1.9} />
+              {cartCount > 0 && (
+                <span className="absolute top-0.5 right-0 min-w-[19px] h-[19px] px-1 rounded-full bg-[#f5a524] text-[#3d2600] text-[11px] font-extrabold tabular-nums flex items-center justify-center ring-2 ring-white">
+                  {cartCount > 9 ? '9+' : cartCount}
+                </span>
               )}
             </button>
           </HoverPopover>
+
+          {/* Hesap */}
+          {isAuthenticated && user ? (
+            <HoverPopover content={<UserMenuContent />} width="w-64">
+              <button
+                onClick={() => navigate('/home/settings/profile')}
+                aria-label="Hesap menüsü"
+                className="relative ml-1 sm:ml-1.5 w-10 h-10 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-700/40"
+              >
+                <Avatar className="w-10 h-10">
+                  <AvatarImage src={user.profile_image || ''} className="object-cover" />
+                  <AvatarFallback className="bg-[#b2f0c8] text-[#0b2619] font-bold text-[13px]">
+                    {user.first_name?.[0]}{user.last_name?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <span aria-hidden className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-brand-500 ring-2 ring-white" />
+              </button>
+            </HoverPopover>
+          ) : !loading && (
+            <>
+              <Link
+                to="/login"
+                className="hidden sm:inline-flex items-center h-10 px-3 text-[14.5px] font-semibold text-[#0b2619] hover:text-brand-700 transition-colors"
+              >
+                Giriş yap
+              </Link>
+              <Link
+                to="/register"
+                className="hidden sm:inline-flex items-center h-10 px-5 ml-1 rounded-full bg-[#0b2619] text-[#b2f0c8] text-[14px] font-bold hover:bg-[#123a27] transition-colors"
+              >
+                Kayıt ol
+              </Link>
+              <Link
+                to="/login"
+                aria-label="Giriş yap"
+                className="sm:hidden w-10 h-10 rounded-full flex items-center justify-center text-[#0b2619] hover:bg-[#f0f4f1]"
+              >
+                <User className="w-5 h-5" />
+              </Link>
+            </>
+          )}
         </div>
       </div>
+
+      {/* Telefon arama satırı */}
+      {mobileSearch && (
+        <form onSubmit={(e) => { handleSearch(e); setMobileSearch(false); }} role="search" className="md:hidden px-4 pb-3 animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#6a7f74] pointer-events-none" />
+            <input
+              type="search"
+              autoFocus
+              aria-label="Kurs ara"
+              placeholder="Kurs, konu ya da eğitmen ara…"
+              className="w-full h-11 pl-11 pr-4 rounded-full bg-[#f0f4f1] text-[15px] text-[#0b2619] placeholder:text-[#7d9086] border-0 outline-none focus:bg-white focus:ring-2 focus:ring-brand-700/35"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </form>
+      )}
     </header>
   );
 };

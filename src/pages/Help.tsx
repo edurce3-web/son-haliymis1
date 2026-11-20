@@ -355,7 +355,7 @@ const GROUP_THEME: Record<string, { icon: React.ElementType; card: string; chip:
     hesap: { icon: UserRound, card: 'border-brand-200 bg-brand-50/70 hover:bg-brand-50', chip: 'bg-brand-700', text: 'text-brand-800' },
     'satin-alma': { icon: CreditCard, card: 'border-amber-200 bg-amber-50/70 hover:bg-amber-50', chip: 'bg-amber-500', text: 'text-amber-700' },
     kurslar: { icon: PlayCircle, card: 'border-sky-200 bg-sky-50/70 hover:bg-sky-50', chip: 'bg-sky-600', text: 'text-sky-700' },
-    kredi: { icon: Coins, card: 'border-violet-200 bg-violet-50/70 hover:bg-violet-50', chip: 'bg-violet-600', text: 'text-violet-700' },
+    kredi: { icon: Coins, card: 'border-brand-200 bg-brand-50/70 hover:bg-brand-50', chip: 'bg-brand-600', text: 'text-brand-700' },
     egitmen: { icon: GraduationCap, card: 'border-rose-200 bg-rose-50/70 hover:bg-rose-50', chip: 'bg-rose-500', text: 'text-rose-700' },
 };
 

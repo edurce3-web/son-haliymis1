@@ -230,7 +230,7 @@ export const EnhancedDashboard: React.FC = () => {
       case 'lesson_completed': return <CheckCircle className="w-4 h-4 text-green-600" />;
       case 'course_enrolled': return <BookOpen className="w-4 h-4 text-blue-600" />;
       case 'certificate_earned': return <Award className="w-4 h-4 text-yellow-600" />;
-      case 'achievement_unlocked': return <Trophy className="w-4 h-4 text-purple-600" />;
+      case 'achievement_unlocked': return <Trophy className="w-4 h-4 text-brand-600" />;
       default: return <Activity className="w-4 h-4 text-gray-600" />;
     }
   };
@@ -297,16 +297,16 @@ export const EnhancedDashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+          <Card className="bg-gradient-to-r from-brand-500 to-brand-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-purple-100">Öğrenme Süresi</p>
+                  <p className="text-brand-100">Öğrenme Süresi</p>
                   <p className="text-3xl font-bold">{mockStats.total_hours_watched}s</p>
                 </div>
-                <Clock className="w-8 h-8 text-purple-200" />
+                <Clock className="w-8 h-8 text-brand-200" />
               </div>
-              <div className="mt-4 flex items-center text-sm text-purple-100">
+              <div className="mt-4 flex items-center text-sm text-brand-100">
                 <Activity className="w-4 h-4 mr-1" />
                 Bu hafta 12 saat
               </div>

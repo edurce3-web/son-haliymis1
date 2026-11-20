@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 
 /** Logodaki turkuaz — belgedeki tüm vurgular bu renkten türüyor. */
-const BRAND = '#175D5D';
+const BRAND = '#12613b';
 
 export interface CertificateData {
   studentName: string;

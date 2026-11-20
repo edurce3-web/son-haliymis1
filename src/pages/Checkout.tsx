@@ -298,7 +298,7 @@ export const Checkout: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-slate-50 to-white">
-        <div className="w-12 h-12 border-3 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-3 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
         <p className="text-base font-medium text-slate-400">Yükleniyor...</p>
       </div>
     );
@@ -346,7 +346,7 @@ export const Checkout: React.FC = () => {
               </header>
 
               {isBundle && bundleQuote && (
-                <div className="px-6 py-3 bg-[#f2f3ff] border-b border-slate-100">
+                <div className="px-6 py-3 bg-[#ecfaf1] border-b border-slate-100">
                   <p className="text-[13px] font-bold text-slate-900">{bundleQuote.bundle?.title}</p>
                   <p className="text-[12px] text-slate-500 mt-0.5">
                     Paket fiyatı kurslara liste fiyatları oranında dağıtıldı.
@@ -479,7 +479,7 @@ export const Checkout: React.FC = () => {
               )}
 
               <Button
-                className="w-full h-12 mt-5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold disabled:bg-slate-200 disabled:text-slate-400"
+                className="w-full h-12 mt-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold disabled:bg-slate-200 disabled:text-slate-400"
                 onClick={handlePayment}
                 disabled={isLoading || isProcessing || items.length === 0}
               >

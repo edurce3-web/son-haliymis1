@@ -250,7 +250,7 @@ export const EnhancedCourseDetail: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-900 to-purple-900 text-white">
+      <div className="bg-gradient-to-r from-blue-900 to-brand-900 text-white">
         <div className="container mx-auto px-4 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
@@ -504,7 +504,7 @@ export const EnhancedCourseDetail: React.FC = () => {
                       <ul className="space-y-2">
                         {course.target_audience?.map((audience: string, index: number) => (
                           <li key={index} className="flex items-start space-x-2">
-                            <div className="w-2 h-2 bg-purple-600 rounded-full mt-2 flex-shrink-0"></div>
+                            <div className="w-2 h-2 bg-brand-600 rounded-full mt-2 flex-shrink-0"></div>
                             <span className="text-sm">{audience}</span>
                           </li>
                         ))}
@@ -614,7 +614,7 @@ export const EnhancedCourseDetail: React.FC = () => {
                             <div className="text-sm text-gray-500">Değerlendirme</div>
                           </div>
                           <div>
-                            <div className="text-2xl font-bold text-purple-600">{course.total_students}</div>
+                            <div className="text-2xl font-bold text-brand-600">{course.total_students}</div>
                             <div className="text-sm text-gray-500">Öğrenci</div>
                           </div>
                           <div>

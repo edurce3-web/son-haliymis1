@@ -261,7 +261,7 @@ export const NotificationSystem: React.FC = () => {
         case 'warning': return 'text-yellow-600 bg-yellow-50';
         case 'error': return 'text-red-600 bg-red-50';
         case 'course': return 'text-blue-600 bg-blue-50';
-        case 'payment': return 'text-purple-600 bg-purple-50';
+        case 'payment': return 'text-brand-600 bg-brand-50';
         default: return 'text-gray-600 bg-gray-50';
       }
     };

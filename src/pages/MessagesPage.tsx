@@ -242,7 +242,7 @@ export default function MessagesPage() {
                         <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
                             Mesajlar
                             {totalUnread > 0 && (
-                                <span className="text-xs bg-indigo-600 text-white font-semibold px-2 py-0.5 rounded-full">
+                                <span className="text-xs bg-brand-600 text-white font-semibold px-2 py-0.5 rounded-full">
                                     {totalUnread}
                                 </span>
                             )}
@@ -254,7 +254,7 @@ export default function MessagesPage() {
                         variant={showNewMessage ? 'outline' : 'default'}
                         className={cn(
                             'h-10 rounded-xl gap-2',
-                            !showNewMessage && 'bg-indigo-600 hover:bg-indigo-700'
+                            !showNewMessage && 'bg-brand-600 hover:bg-brand-700'
                         )}
                     >
                         {showNewMessage ? <><X className="w-4 h-4" /> Kapat</> : <><Plus className="w-4 h-4" /> Yeni mesaj</>}
@@ -340,7 +340,7 @@ export default function MessagesPage() {
                                         onClick={() => openConversation(c.other_user_id)}
                                         className={cn(
                                             'w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 text-left border-b border-slate-50 transition-colors',
-                                            selectedUserId === c.other_user_id && 'bg-indigo-50/70'
+                                            selectedUserId === c.other_user_id && 'bg-brand-50/70'
                                         )}
                                     >
                                         <div className="relative shrink-0">
@@ -350,7 +350,7 @@ export default function MessagesPage() {
                                                 size={40}
                                             />
                                             {Number(c.unread_count) > 0 && (
-                                                <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-indigo-600 rounded-full text-[10px] text-white font-semibold flex items-center justify-center">
+                                                <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-brand-600 rounded-full text-[10px] text-white font-semibold flex items-center justify-center">
                                                     {c.unread_count}
                                                 </span>
                                             )}
@@ -366,7 +366,7 @@ export default function MessagesPage() {
                                             </div>
                                             <div className="flex items-center gap-1.5 mt-0.5">
                                                 {c.role === 'instructor' && (
-                                                    <span className="text-[9px] font-semibold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded shrink-0">
+                                                    <span className="text-[9px] font-semibold text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded shrink-0">
                                                         Eğitmen
                                                     </span>
                                                 )}
@@ -465,7 +465,7 @@ export default function MessagesPage() {
                                                                 <div className={cn(
                                                                     'rounded-2xl px-3.5 py-2 text-sm leading-relaxed whitespace-pre-wrap break-words',
                                                                     isMe
-                                                                        ? 'bg-indigo-600 text-white rounded-br-sm'
+                                                                        ? 'bg-brand-600 text-white rounded-br-sm'
                                                                         : 'bg-white text-slate-700 border border-slate-200 rounded-bl-sm'
                                                                 )}>
                                                                     {m.message_content}
@@ -476,7 +476,7 @@ export default function MessagesPage() {
                                                                 )}>
                                                                     {new Date(m.sent_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
                                                                     {isMe && (
-                                                                        <CheckCheck className={cn('w-3 h-3', m.is_read ? 'text-indigo-500' : 'text-slate-300')} />
+                                                                        <CheckCheck className={cn('w-3 h-3', m.is_read ? 'text-brand-500' : 'text-slate-300')} />
                                                                     )}
                                                                 </div>
                                                             </div>
@@ -501,7 +501,7 @@ export default function MessagesPage() {
                                         <Button
                                             onClick={handleSend}
                                             disabled={!messageText.trim() || sendMutation.isPending}
-                                            className="h-10 w-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 shrink-0 p-0"
+                                            className="h-10 w-10 rounded-xl bg-brand-600 hover:bg-brand-700 shrink-0 p-0"
                                             aria-label="Gönder"
                                         >
                                             {sendMutation.isPending

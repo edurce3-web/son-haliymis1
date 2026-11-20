@@ -57,7 +57,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, onMessage, onEmail, 
   };
 
   return (
-    <Card className={`transition-all duration-300 border-white/5 ${expanded ? 'ring-2 ring-indigo-500/50 shadow-xl shadow-indigo-500/10' : 'hover:border-white/10 hover:shadow-lg'}`}>
+    <Card className={`transition-all duration-300 border-white/5 ${expanded ? 'ring-2 ring-brand-500/50 shadow-xl shadow-brand-500/10' : 'hover:border-white/10 hover:shadow-lg'}`}>
       <div className="cursor-pointer" onClick={handleExpand}>
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
@@ -79,7 +79,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, onMessage, onEmail, 
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4 text-xs">
             <div className="flex items-center space-x-2 text-slate-300 bg-slate-800/50 p-2 rounded-lg border border-white/5">
-              <BookOpen className="h-4 w-4 text-indigo-400" />
+              <BookOpen className="h-4 w-4 text-brand-400" />
               <span className="font-medium">{student.enrolledCourses} Kurs</span>
             </div>
             <div className="flex items-center space-x-2 text-slate-300 bg-slate-800/50 p-2 rounded-lg border border-white/5">
@@ -91,7 +91,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, onMessage, onEmail, 
           <div className="space-y-1.5">
             <div className="flex justify-between text-[11px] font-medium px-1">
               <span className="text-slate-400">Genel İlerleme</span>
-              <span className="text-indigo-400">{student.progress}%</span>
+              <span className="text-brand-400">{student.progress}%</span>
             </div>
             <Progress value={student.progress} className="h-1.5 bg-slate-800" />
           </div>
@@ -103,7 +103,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, onMessage, onEmail, 
           <div className="pt-4 border-t border-white/5 space-y-3 animate-in fade-in slide-in-from-top-2">
             <h4 className="text-sm font-semibold text-slate-200 mb-2">Kurstaki İlerlemeler</h4>
             {isLoadingCourses ? (
-              <div className="flex justify-center py-4"><Loader2 className="w-5 h-5 text-indigo-500 animate-spin" /></div>
+              <div className="flex justify-center py-4"><Loader2 className="w-5 h-5 text-brand-500 animate-spin" /></div>
             ) : courses && courses.length > 0 ? (
               <div className="space-y-3">
                 {courses.map(course => (

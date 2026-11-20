@@ -76,10 +76,10 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({
 
   if (variant === 'hero') {
     return (
-      <Card className={cn("bg-gradient-to-r from-primary/10 to-purple-500/10 border-primary/20", className)}>
+      <Card className={cn("bg-gradient-to-r from-primary/10 to-brand-500/10 border-primary/20", className)}>
         <CardContent className="p-6">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-primary to-purple-500 rounded-full flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-primary to-brand-500 rounded-full flex items-center justify-center">
               <Mail className="w-8 h-8 text-white" />
             </div>
             <h3 className="text-2xl font-bold mb-2">En Son Kursları Kaçırmayın!</h3>

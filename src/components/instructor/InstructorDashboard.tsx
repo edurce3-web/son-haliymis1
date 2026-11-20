@@ -318,8 +318,8 @@ export const InstructorDashboard: React.FC = () => {
                 <p className="text-sm font-medium text-gray-600">Ortalama Puan</p>
                 <p className="text-2xl font-bold">{statsLoading ? '...' : (stats?.avg_rating?.toFixed(1) || '0.0')}</p>
               </div>
-              <div className="p-3 bg-purple-100 rounded-full">
-                <Star className="w-6 h-6 text-purple-600" />
+              <div className="p-3 bg-brand-100 rounded-full">
+                <Star className="w-6 h-6 text-brand-600" />
               </div>
             </div>
             <div className="mt-4 flex items-center text-sm">
@@ -405,9 +405,9 @@ export const InstructorDashboard: React.FC = () => {
                       <p className="text-xs text-gray-500">4 saat önce</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
-                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                      <DollarSign className="w-4 h-4 text-purple-600" />
+                  <div className="flex items-center space-x-3 p-3 bg-brand-50 rounded-lg">
+                    <div className="w-8 h-8 bg-brand-100 rounded-full flex items-center justify-center">
+                      <DollarSign className="w-4 h-4 text-brand-600" />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium">₺1,250 gelir elde ettiniz</p>

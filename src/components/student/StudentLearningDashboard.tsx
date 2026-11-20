@@ -212,7 +212,7 @@ export const StudentLearningDashboard: React.FC = () => {
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
       case 'legendary': return 'text-yellow-500 bg-yellow-50';
-      case 'epic': return 'text-purple-500 bg-purple-50';
+      case 'epic': return 'text-brand-500 bg-brand-50';
       case 'rare': return 'text-blue-500 bg-blue-50';
       default: return 'text-gray-500 bg-gray-50';
     }
@@ -350,7 +350,7 @@ export const StudentLearningDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+      <div className="bg-gradient-to-r from-blue-600 to-brand-600 text-white">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between">
             <div>

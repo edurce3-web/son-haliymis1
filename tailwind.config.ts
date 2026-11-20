@@ -24,22 +24,22 @@ export default {
       },
       colors: {
         /**
-         * Marka paleti — logodaki koyu turkuazdan türetildi (#175D5D).
+         * Marka paleti — logodaki nane yeşilinden türetildi (#B2F0C8).
          * Ana sayfa ve öne çıkan çağrılar bu ölçeği kullanır; böylece renk
          * her ekranda tek yerden yönetilir.
          */
         brand: {
-          50: "#EFF8F7",
-          100: "#D6EDEB",
-          200: "#AEDBD7",
-          300: "#7CC2BD",
-          400: "#4AA5A0",
-          500: "#2A8580",
-          600: "#1E6E6B",
-          700: "#175D5D", // logo rengi
-          800: "#124A4A",
-          900: "#0D3838",
-          950: "#072424",
+          50: "#F0FBF4",
+          100: "#DDF6E6",
+          200: "#B2F0C8", // logo rengi
+          300: "#86E2A8",
+          400: "#4FC97F",
+          500: "#26AD62",
+          600: "#1A8A4E",
+          700: "#12613B",
+          800: "#0F4A2E",
+          900: "#0B3522",
+          950: "#0B2619",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

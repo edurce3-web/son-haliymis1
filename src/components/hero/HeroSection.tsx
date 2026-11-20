@@ -40,7 +40,7 @@ export const HeroSection = ({ data }: HeroSectionProps) => {
       subtitle: data?.subtitle || "Sektör liderlerinden öğrenin, gerçek projelerle yetkinlik kazanın.",
       image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop",
       link: data?.cta_link || "/courses",
-      bgColor: "bg-purple-100/80"
+      bgColor: "bg-brand-100/80"
     },
     {
       badge: "Geleceğin Teknolojileri",
@@ -68,7 +68,7 @@ export const HeroSection = ({ data }: HeroSectionProps) => {
     <section className="relative bg-white pt-6 pb-12 overflow-hidden">
       {/* Subtle Background Elements */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-50/40 rounded-full blur-3xl -mr-64 -mt-64" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-50/40 rounded-full blur-3xl -mr-64 -mt-64" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-50/40 rounded-full blur-3xl -ml-48 -mb-48" />
       </div>
 
@@ -81,13 +81,13 @@ export const HeroSection = ({ data }: HeroSectionProps) => {
                   <div className={cn(
                     "rounded-[2rem] p-6 lg:p-10 border transition-colors duration-500",
                     slide.bgColor,
-                    index === 0 ? "border-purple-200/50" : index === 1 ? "border-blue-200/50" : "border-emerald-200/50"
+                    index === 0 ? "border-brand-200/50" : index === 1 ? "border-blue-200/50" : "border-emerald-200/50"
                   )}>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 
                       {/* Left Content */}
                       <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                        <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-200 border-0 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                        <Badge className="bg-brand-100 text-brand-700 hover:bg-brand-200 border-0 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
                           <Sparkles className="w-3 h-3 mr-1.5" />
                           {slide.badge}
                         </Badge>
@@ -95,8 +95,8 @@ export const HeroSection = ({ data }: HeroSectionProps) => {
                         <h1 className="text-3xl lg:text-5xl font-extrabold tracking-tight text-gray-900 leading-tight">
                           <span className="block mb-1">{slide.title[0]}</span>
                           <span className="relative inline-block pb-1">
-                            <span className="relative z-10 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{slide.title[1]}</span>
-                            <span className="absolute bottom-2 left-0 w-full h-2.5 bg-purple-100 -z-0 rounded-lg opacity-40" />
+                            <span className="relative z-10 bg-gradient-to-r from-brand-600 to-brand-600 bg-clip-text text-transparent">{slide.title[1]}</span>
+                            <span className="absolute bottom-2 left-0 w-full h-2.5 bg-brand-100 -z-0 rounded-lg opacity-40" />
                           </span>
                           <span className="block">{slide.title[2]}</span>
                         </h1>
@@ -115,7 +115,7 @@ export const HeroSection = ({ data }: HeroSectionProps) => {
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                               />
-                              <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white px-4 h-10 rounded-lg font-bold">
+                              <Button size="sm" className="bg-brand-600 hover:bg-brand-700 text-white px-4 h-10 rounded-lg font-bold">
                                 Ara
                               </Button>
                             </form>
@@ -180,14 +180,14 @@ export const HeroSection = ({ data }: HeroSectionProps) => {
           {/* Manual Controls (Oklar) */}
           <button
             onClick={scrollPrev}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 lg:-translate-x-6 w-10 h-10 bg-white shadow-xl rounded-full flex items-center justify-center border border-gray-50 text-gray-400 hover:text-purple-600 hover:scale-110 transition-all z-20 opacity-0 group-hover/hero:opacity-100"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 lg:-translate-x-6 w-10 h-10 bg-white shadow-xl rounded-full flex items-center justify-center border border-gray-50 text-gray-400 hover:text-brand-600 hover:scale-110 transition-all z-20 opacity-0 group-hover/hero:opacity-100"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
 
           <button
             onClick={scrollNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 lg:translate-x-6 w-10 h-10 bg-white shadow-xl rounded-full flex items-center justify-center border border-gray-50 text-gray-400 hover:text-purple-600 hover:scale-110 transition-all z-20 opacity-0 group-hover/hero:opacity-100"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 lg:translate-x-6 w-10 h-10 bg-white shadow-xl rounded-full flex items-center justify-center border border-gray-50 text-gray-400 hover:text-brand-600 hover:scale-110 transition-all z-20 opacity-0 group-hover/hero:opacity-100"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
@@ -202,7 +202,7 @@ export const HeroSection = ({ data }: HeroSectionProps) => {
               className={cn(
                 "w-1.5 h-1.5 rounded-full transition-all duration-300",
                 selectedIndex === index
-                  ? "bg-purple-600 w-4"
+                  ? "bg-brand-600 w-4"
                   : "bg-gray-200 hover:bg-gray-300"
               )}
             />

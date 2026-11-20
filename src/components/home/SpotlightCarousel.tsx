@@ -7,8 +7,8 @@ import { cn } from '@/lib/utils';
 /** Kartlar sırayla bu dört vurgu rengini alıyor (tasarımdaki gibi). */
 const ACCENTS = [
     { text: 'text-emerald-300', link: 'text-emerald-300', ring: 'hover:border-emerald-400/50', dot: 'bg-emerald-400' },
-    { text: 'text-teal-300', link: 'text-teal-300', ring: 'hover:border-teal-400/50', dot: 'bg-teal-400' },
-    { text: 'text-violet-300', link: 'text-violet-300', ring: 'hover:border-violet-400/50', dot: 'bg-violet-400' },
+    { text: 'text-brand-300', link: 'text-brand-300', ring: 'hover:border-brand-400/50', dot: 'bg-brand-400' },
+    { text: 'text-brand-300', link: 'text-brand-300', ring: 'hover:border-brand-400/50', dot: 'bg-brand-400' },
     { text: 'text-rose-300', link: 'text-rose-300', ring: 'hover:border-rose-400/50', dot: 'bg-rose-400' },
 ];
 
@@ -117,21 +117,21 @@ export const SpotlightCarousel: React.FC<{ courses: any[] }> = ({ courses }) => 
     return (
         <section className="relative w-full overflow-hidden bg-[#0b1220] py-16 lg:py-20 font-jakarta">
             <div className="absolute inset-0 pointer-events-none" aria-hidden>
-                <div className="absolute -top-40 -left-32 w-[520px] h-[520px] bg-teal-500/15 rounded-full blur-[150px]" />
+                <div className="absolute -top-40 -left-32 w-[520px] h-[520px] bg-brand-500/15 rounded-full blur-[150px]" />
                 <div className="absolute -bottom-48 right-[-8rem] w-[560px] h-[560px] bg-emerald-500/10 rounded-full blur-[150px]" />
             </div>
 
             <div className="container relative mx-auto px-4">
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
                     <div className="max-w-2xl">
-                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-400/10 border border-teal-400/25 text-teal-300 text-[11px] font-extrabold uppercase tracking-[0.12em]">
+                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-400/10 border border-brand-400/25 text-brand-300 text-[11px] font-extrabold uppercase tracking-[0.12em]">
                             <Sparkles className="w-3.5 h-3.5" />
                             Geleceğin becerileri & kariyer yetkinlikleri
                         </span>
 
                         <h2 className="text-[30px] sm:text-[38px] lg:text-[44px] leading-[1.1] font-extrabold text-white tracking-tight mt-5">
                             Yapay Zeka Devriminde{' '}
-                            <span className="bg-gradient-to-r from-emerald-300 via-teal-300 to-cyan-300 bg-clip-text text-transparent">
+                            <span className="bg-gradient-to-r from-emerald-300 via-brand-300 to-cyan-300 bg-clip-text text-transparent">
                                 Bir Adım Önde Olun
                             </span>
                         </h2>
@@ -149,7 +149,7 @@ export const SpotlightCarousel: React.FC<{ courses: any[] }> = ({ courses }) => 
                                     key={i}
                                     className={cn(
                                         'h-2 rounded-full transition-all duration-500',
-                                        i === activeDot ? 'w-7 bg-teal-400' : 'w-2 bg-white/20'
+                                        i === activeDot ? 'w-7 bg-brand-400' : 'w-2 bg-white/20'
                                     )}
                                 />
                             ))}

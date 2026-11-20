@@ -36,25 +36,25 @@ const GamificationDashboard: React.FC<GamificationDashboardProps> = ({ userId })
                         <section className="bg-white border-2 border-slate-900 p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
                             <div className="flex justify-between items-end mb-4">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-black text-2xl shadow-lg">12</div>
+                                    <div className="w-16 h-16 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl flex items-center justify-center text-white font-black text-2xl shadow-lg">12</div>
                                     <div>
                                         <h3 className="font-black text-xl">Usta Öğrenci</h3>
                                         <p className="text-slate-400 text-sm font-bold uppercase tracking-widest">350 XP sonra Seviye 13</p>
                                     </div>
                                 </div>
-                                <span className="text-indigo-600 font-black">75%</span>
+                                <span className="text-brand-600 font-black">75%</span>
                             </div>
-                            <Progress value={75} className="h-4 rounded-none bg-slate-100" indicatorClassName="bg-indigo-600" />
+                            <Progress value={75} className="h-4 rounded-none bg-slate-100" indicatorClassName="bg-brand-600" />
                         </section>
 
                         {/* Badges Grid */}
                         <section className="space-y-6">
-                            <h2 className="text-2xl font-black border-l-8 border-indigo-600 pl-4 uppercase tracking-tight">Kazanılan Rozetler</h2>
+                            <h2 className="text-2xl font-black border-l-8 border-brand-600 pl-4 uppercase tracking-tight">Kazanılan Rozetler</h2>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                                 {[
                                     { icon: Flame, title: '7 Gün Aktif', color: 'text-orange-500' },
                                     { icon: Star, title: 'Hızlı Başlangıç', color: 'text-amber-500' },
-                                    { icon: Zap, title: 'Pratik Zeka', color: 'text-indigo-500' },
+                                    { icon: Zap, title: 'Pratik Zeka', color: 'text-brand-500' },
                                     { icon: Target, title: 'İlk Kurs', color: 'text-green-500' },
                                 ].map((badge, idx) => (
                                     <div key={idx} className="bg-white border-2 border-slate-200 p-6 flex flex-col items-center text-center group hover:border-slate-900 transition-all cursor-pointer">
@@ -71,9 +71,9 @@ const GamificationDashboard: React.FC<GamificationDashboardProps> = ({ userId })
                     {/* Sidebar Area */}
                     <div className="space-y-10">
                         {/* Leaderboard */}
-                        <section className="bg-slate-900 text-white p-8 space-y-8 rounded-none border-t-8 border-indigo-500 shadow-2xl">
+                        <section className="bg-slate-900 text-white p-8 space-y-8 rounded-none border-t-8 border-brand-500 shadow-2xl">
                             <h3 className="text-xl font-black flex items-center gap-3 uppercase tracking-tighter">
-                                <Users className="w-5 h-5 text-indigo-400" /> Liderlik Tablosu
+                                <Users className="w-5 h-5 text-brand-400" /> Liderlik Tablosu
                             </h3>
                             <div className="space-y-4">
                                 {[
@@ -84,8 +84,8 @@ const GamificationDashboard: React.FC<GamificationDashboardProps> = ({ userId })
                                 ].map((u, idx) => (
                                     <div key={idx} className={`flex items-center justify-between p-3 border-b border-white/10 ${u.me ? 'bg-white/10' : ''}`}>
                                         <div className="flex items-center gap-3">
-                                            <span className="font-black text-indigo-400">#{u.pos}</span>
-                                            <span className={`font-bold text-sm ${u.me ? 'text-indigo-300' : ''}`}>{u.name}</span>
+                                            <span className="font-black text-brand-400">#{u.pos}</span>
+                                            <span className={`font-bold text-sm ${u.me ? 'text-brand-300' : ''}`}>{u.name}</span>
                                         </div>
                                         <span className="font-mono text-xs">{u.xp} XP</span>
                                     </div>

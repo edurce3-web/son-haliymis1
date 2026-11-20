@@ -632,12 +632,12 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                                             {/* Auto */}
                                             <button
                                                 onClick={() => setQuality(-1)}
-                                                className={`w-full flex items-center justify-between px-4 py-2.5 hover:bg-white/10 transition-colors ${currentQuality === -1 ? 'bg-purple-500/20' : ''
+                                                className={`w-full flex items-center justify-between px-4 py-2.5 hover:bg-white/10 transition-colors ${currentQuality === -1 ? 'bg-brand-500/20' : ''
                                                     }`}
                                             >
                                                 <span className="text-sm text-white">Otomatik</span>
                                                 {currentQuality === -1 && (
-                                                    <span className="w-2 h-2 rounded-full bg-purple-400" />
+                                                    <span className="w-2 h-2 rounded-full bg-brand-400" />
                                                 )}
                                             </button>
 
@@ -646,19 +646,19 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                                                 <button
                                                     key={level.index}
                                                     onClick={() => setQuality(level.index)}
-                                                    className={`w-full flex items-center justify-between px-4 py-2.5 hover:bg-white/10 transition-colors ${currentQuality === level.index ? 'bg-purple-500/20' : ''
+                                                    className={`w-full flex items-center justify-between px-4 py-2.5 hover:bg-white/10 transition-colors ${currentQuality === level.index ? 'bg-brand-500/20' : ''
                                                         }`}
                                                 >
                                                     <div className="flex items-center gap-2">
                                                         <span className="text-sm text-white">{level.label}</span>
                                                         {level.height >= 720 && (
-                                                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold uppercase">
+                                                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gradient-to-r from-brand-500 to-pink-500 text-white font-bold uppercase">
                                                                 HD
                                                             </span>
                                                         )}
                                                     </div>
                                                     {currentQuality === level.index && (
-                                                        <span className="w-2 h-2 rounded-full bg-purple-400" />
+                                                        <span className="w-2 h-2 rounded-full bg-brand-400" />
                                                     )}
                                                 </button>
                                             ))}
@@ -679,12 +679,12 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                                                 <button
                                                     key={speed}
                                                     onClick={() => setSpeed(speed)}
-                                                    className={`w-full flex items-center justify-between px-4 py-2.5 hover:bg-white/10 transition-colors ${playbackSpeed === speed ? 'bg-purple-500/20' : ''
+                                                    className={`w-full flex items-center justify-between px-4 py-2.5 hover:bg-white/10 transition-colors ${playbackSpeed === speed ? 'bg-brand-500/20' : ''
                                                         }`}
                                                 >
                                                     <span className="text-sm text-white">{speed === 1 ? 'Normal' : `${speed}x`}</span>
                                                     {playbackSpeed === speed && (
-                                                        <span className="w-2 h-2 rounded-full bg-purple-400" />
+                                                        <span className="w-2 h-2 rounded-full bg-brand-400" />
                                                     )}
                                                 </button>
                                             ))}

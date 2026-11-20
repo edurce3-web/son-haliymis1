@@ -588,7 +588,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
                     <div className="text-sm text-gray-600">Aktif Öğrenci</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-purple-600">4.8</div>
+                    <div className="text-3xl font-bold text-brand-600">4.8</div>
                     <div className="text-sm text-gray-600">Ortalama Puan</div>
                   </div>
                 </div>

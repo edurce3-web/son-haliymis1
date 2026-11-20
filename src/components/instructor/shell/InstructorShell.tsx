@@ -99,11 +99,10 @@ function useSections(): Section[] {
 const firstPage = (s: Section) => s.to || s.subs![0].to;
 
 /*
- * Menü koyu mürekkep yeşili; logo ve seçili başlık nane (#9cf2e8).
+ * Menü koyu mürekkep yeşili; logo ve seçili başlık nane (#b2f0c8).
  * Çizgi yok: ayrımlar yalnızca zemin tonuyla.
  */
-const RAIL_BG = 'bg-[#0d1b19]';
-const MINT = '#9cf2e8';
+const RAIL_BG = 'bg-[#0b2619]';
 
 export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [drawer, setDrawer] = useState(false);
@@ -124,7 +123,7 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
     }, [drawer]);
 
     return (
-        <div className="min-h-screen bg-[#f3f4f4] text-[#00201d] selection:bg-[#9cf2e8] selection:text-[#00201d]">
+        <div className="min-h-screen bg-white text-[#0b2619] selection:bg-[#b2f0c8] selection:text-[#0b2619]">
             <DesktopNav />
 
             {/* Telefon: üst şerit + çekmece */}
@@ -134,7 +133,7 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
                     onClick={() => setDrawer(true)}
                     aria-label="Menüyü aç"
                     aria-expanded={drawer}
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b2f0c8]/60"
                 >
                     <Menu className="w-5 h-5" />
                 </button>
@@ -146,7 +145,7 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
                 aria-hidden={!drawer}
                 onClick={() => setDrawer(false)}
                 className={cn(
-                    'lg:hidden fixed inset-0 z-50 bg-[#00201d]/45 transition-opacity duration-200 motion-reduce:transition-none',
+                    'lg:hidden fixed inset-0 z-50 bg-[#0b2619]/45 transition-opacity duration-200 motion-reduce:transition-none',
                     drawer ? 'opacity-100' : 'opacity-0 pointer-events-none'
                 )}
             />
@@ -190,34 +189,19 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
     );
 };
 
-/*
- * Logo nane renginde. Aynı PNG maske olarak kullanılıyor; ayrı bir renkli
- * dosya tutmaya gerek yok. Oran 579×160.
- */
-const LOGO_RATIO = 579 / 160;
-
-const Brand: React.FC<{ className?: string; size?: 'lg' | 'sm' }> = ({ className, size = 'lg' }) => {
-    const h = size === 'lg' ? 34 : 24;
-    const mask = 'url(/logo-wordmark.png) center / contain no-repeat';
-    return (
-        <Link
-            to="/instructor/dashboard"
-            aria-label="Edurce eğitmen paneli"
-            className={cn('inline-flex flex-col items-start rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60', className)}
-        >
-            <span
-                aria-hidden
-                className="block"
-                style={{ width: Math.round(h * LOGO_RATIO), height: h, background: MINT, WebkitMask: mask, mask }}
-            />
-            {size === 'lg' && (
-                <span className="mt-1 pl-[3px] text-[10.5px] font-bold uppercase tracking-[0.22em] text-white/45">
-                    Eğitmen paneli
-                </span>
-            )}
-        </Link>
-    );
-};
+/** Nane logo, hemen yanında "eğitmen". */
+const Brand: React.FC<{ className?: string; size?: 'lg' | 'sm' }> = ({ className, size = 'lg' }) => (
+    <Link
+        to="/instructor/dashboard"
+        aria-label="Edurce eğitmen paneli"
+        className={cn('inline-flex items-end gap-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b2f0c8]/60', className)}
+    >
+        <img src="/logo-mint.png" alt="" className={cn('w-auto', size === 'lg' ? 'h-[30px]' : 'h-[23px]')} />
+        <span className={cn('font-bold text-white/60 leading-none', size === 'lg' ? 'text-[15px] pb-[3px]' : 'text-[12.5px] pb-[2px]')}>
+            eğitmen
+        </span>
+    </Link>
+);
 
 /** Öğrenci tarafına geçiş: sitenin öğrenci görünümüne döner. */
 const StudentLink: React.FC<{ compact?: boolean; className?: string }> = ({ compact, className }) => (
@@ -226,14 +210,14 @@ const StudentLink: React.FC<{ compact?: boolean; className?: string }> = ({ comp
         title="Öğrenci görünümüne geç"
         className={cn(
             'inline-flex items-center gap-2 rounded-xl font-bold transition-colors duration-150',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/40',
             compact
                 ? 'h-9 px-2.5 text-[13px] text-white hover:bg-white/10'
-                : 'h-9 px-3.5 text-[13.5px] text-[#00201d] bg-white shadow-[0_1px_2px_rgba(0,32,29,0.08)] hover:bg-[#ecfbf8]',
+                : 'h-9 px-3.5 text-[13.5px] text-[#0b2619] bg-white shadow-[0_1px_2px_rgba(0,32,29,0.08)] hover:bg-[#ecfaf1]',
             className
         )}
     >
-        <GraduationCap className={cn('w-4 h-4', compact ? 'text-[#9cf2e8]' : 'text-[#005c55]')} />
+        <GraduationCap className={cn('w-4 h-4', compact ? 'text-[#b2f0c8]' : 'text-[#12613b]')} />
         Öğrenci
     </Link>
 );
@@ -301,7 +285,7 @@ const DesktopNav: React.FC = () => {
             style={{ width: NAV_WIDTH }}
             onMouseLeave={hide}
         >
-            <div className="h-[104px] shrink-0 flex items-center px-7">
+            <div className="h-[92px] shrink-0 flex items-center px-7">
                 <Brand />
             </div>
 
@@ -315,9 +299,9 @@ const DesktopNav: React.FC = () => {
                         const row = cn(
                             'relative flex items-center gap-3 w-full h-[50px] pl-4 pr-4 text-left rounded-2xl',
                             'text-[16px] tracking-[-0.01em] transition-[background-color,color] duration-150',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#9cf2e8]/60',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#b2f0c8]/60',
                             active
-                                ? 'bg-[#9cf2e8] text-[#00201d] font-bold shadow-[0_8px_24px_-10px_rgba(156,242,232,0.55)]'
+                                ? 'bg-[#b2f0c8] text-[#0b2619] font-bold'
                                 : isOpen
                                     ? 'bg-white/[0.08] text-white font-semibold'
                                     : 'text-white/80 font-semibold hover:text-white hover:bg-white/[0.05]'
@@ -353,11 +337,11 @@ const DesktopNav: React.FC = () => {
                                             aria-hidden
                                             className={cn(
                                                 'w-[19px] h-[19px] shrink-0 transition-colors duration-150',
-                                                active ? 'text-[#00201d]' : isOpen ? 'text-[#9cf2e8]' : 'text-white/45'
+                                                active ? 'text-[#0b2619]' : isOpen ? 'text-[#b2f0c8]' : 'text-white/45'
                                             )}
                                             strokeWidth={active || isOpen ? 2.2 : 1.9}
                                         />
-                                    ) : <LayoutGrid aria-hidden className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#00201d]' : 'text-white/45')} strokeWidth={active ? 2.2 : 1.9} />}
+                                    ) : <LayoutGrid aria-hidden className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#0b2619]' : 'text-white/45')} strokeWidth={active ? 2.2 : 1.9} />}
                                     <span className="flex-1 truncate">{s.label}</span>
                                     {s.badge ? <Count n={s.badge} /> : null}
                                     {s.subs ? (
@@ -365,7 +349,7 @@ const DesktopNav: React.FC = () => {
                                             aria-hidden
                                             className={cn(
                                                 'w-4 h-4 shrink-0 transition-[opacity,transform,color] duration-150',
-                                                isOpen ? 'opacity-100 translate-x-0.5 text-[#9cf2e8]' : 'opacity-40'
+                                                isOpen ? 'opacity-100 translate-x-0.5 text-[#b2f0c8]' : 'opacity-40'
                                             )}
                                         />
                                     ) : active ? <ArrowUpRight aria-hidden className="w-4 h-4 shrink-0" /> : null}
@@ -383,8 +367,8 @@ const DesktopNav: React.FC = () => {
                     onMouseEnter={keep}
                     onMouseLeave={hide}
                     className={cn(
-                        'absolute left-[calc(100%+8px)] z-50 rounded-2xl bg-white overflow-hidden',
-                        'shadow-[24px_28px_60px_-24px_rgba(0,32,29,0.45),0_2px_8px_rgba(0,32,29,0.08)]',
+                        'absolute left-full -mt-3 z-50 rounded-r-[24px] bg-[#123a27] text-white overflow-hidden',
+                        'shadow-[28px_24px_60px_-28px_rgba(11,38,25,0.65)]',
                         'transition-[opacity,transform,top] motion-reduce:transition-none',
                         settled ? 'duration-150' : 'duration-200',
                         open ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2 pointer-events-none'
@@ -402,69 +386,57 @@ const DesktopNav: React.FC = () => {
 };
 
 /** Çekmecenin içi: bölümün durumu, alt sayfalar, varsa ana eylem. */
-const Flyout: React.FC<{ section: Section; animate: boolean }> = ({ section, animate }) => {
-    const [hl, setHl] = useState<{ top: number; height: number } | null>(null);
+const Flyout: React.FC<{ section: Section; animate: boolean }> = ({ section, animate }) => (
+    <div className="py-5">
+        <FlyoutHeader section={section} />
 
-    // Fare hangi satırdaysa açık zemin onu takip ediyor; satırdan satıra
-    // kayarak geçiyor, her satırda yeniden yanıp sönmüyor.
-    const follow = (e: React.MouseEvent<HTMLElement>) => {
-        const el = e.currentTarget;
-        setHl({ top: el.offsetTop, height: el.offsetHeight });
-    };
-
-    return (
-        <>
-            <FlyoutHeader section={section} />
-
-            <ul className="relative p-2" onMouseLeave={() => setHl(null)}>
-                <span
-                    aria-hidden
-                    className={cn(
-                        'absolute left-2 right-2 rounded-xl bg-[#e8faf6] transition-[top,height,opacity] duration-200 motion-reduce:transition-none',
-                        hl ? 'opacity-100' : 'opacity-0'
-                    )}
-                    style={{ top: hl?.top ?? 0, height: hl?.height ?? 0, transitionTimingFunction: EASE_OUT }}
-                />
-                {section.subs!.map((sub, i) => (
-                    <li
-                        key={sub.to}
-                        onMouseEnter={follow}
-                        className={cn(
-                            'relative',
-                            animate && 'animate-in fade-in slide-in-from-left-1 duration-200 fill-mode-both'
+        <ul className="mt-3 px-3 space-y-0.5">
+            {section.subs!.map((sub, i) => (
+                <li
+                    key={sub.to}
+                    className={cn(animate && 'animate-in fade-in slide-in-from-left-1 duration-200 fill-mode-both')}
+                    style={animate ? { animationDelay: `${40 + i * 30}ms` } : undefined}
+                >
+                    <NavLink
+                        to={sub.to}
+                        role="menuitem"
+                        className={({ isActive }) => cn(
+                            'group flex items-center gap-3 h-11 rounded-xl px-3 text-[15px] transition-colors duration-150',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b2f0c8]/60',
+                            isActive ? 'bg-white/[0.09] text-[#b2f0c8] font-bold' : 'text-white/80 font-semibold hover:bg-white/[0.06] hover:text-white'
                         )}
-                        style={animate ? { animationDelay: `${40 + i * 30}ms` } : undefined}
                     >
-                        <NavLink
-                            to={sub.to}
-                            role="menuitem"
-                            className={({ isActive }) => cn(
-                                'flex items-center gap-3 h-11 rounded-xl px-3.5 text-[15px]',
-                                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/35',
-                                isActive ? 'bg-[#9cf2e8]/45 text-[#005c55] font-bold' : 'text-[#00201d] font-semibold'
-                            )}
-                        >
-                            <span className="flex-1 truncate">{sub.label}</span>
-                            {sub.badge ? <Count n={sub.badge} /> : null}
-                        </NavLink>
-                    </li>
-                ))}
-            </ul>
+                        {({ isActive }) => (
+                            <>
+                                <span
+                                    aria-hidden
+                                    className={cn(
+                                        'w-1.5 h-1.5 rounded-full shrink-0 transition-colors',
+                                        isActive ? 'bg-[#b2f0c8]' : 'bg-white/25 group-hover:bg-white/60'
+                                    )}
+                                />
+                                <span className="flex-1 truncate">{sub.label}</span>
+                                {sub.badge ? <Count n={sub.badge} /> : null}
+                            </>
+                        )}
+                    </NavLink>
+                </li>
+            ))}
+        </ul>
 
-            {section.action && (
-                <div className="px-4 pb-4 pt-1">
-                    <Link
-                        to={section.action.to}
-                        className="group flex items-center justify-center gap-2 h-10 rounded-xl bg-[#9cf2e8] hover:bg-[#86e9dd] active:scale-[0.98] text-[#00201d] text-[13.5px] font-bold shadow-[0_1px_2px_rgba(0,64,58,0.18)] transition-[background-color,transform] duration-150"
-                    >
-                        <Plus className="w-4 h-4" />
-                        {section.action.label}
-                    </Link>
-                </div>
-            )}
-        </>
-    );
-};
+        {section.action && (
+            <div className="px-5 pt-4">
+                <Link
+                    to={section.action.to}
+                    className="flex items-center justify-center gap-2 h-11 rounded-xl bg-[#b2f0c8] hover:bg-white active:scale-[0.98] text-[#0b2619] text-[14px] font-bold transition-[background-color,transform] duration-150"
+                >
+                    <Plus className="w-4 h-4" />
+                    {section.action.label}
+                </Link>
+            </div>
+        )}
+    </div>
+);
 
 /** Bölümün o anki durumu — çekmecenin tepesi. */
 const FlyoutHeader: React.FC<{ section: Section }> = ({ section }) => {
@@ -480,28 +452,28 @@ const FlyoutHeader: React.FC<{ section: Section }> = ({ section }) => {
     if (section.id === 'courses' && courses) {
         const n = (s: string) => courses.filter(c => (s === 'pending' ? !['draft', 'published'].includes(c.status) : c.status === s)).length;
         const parts = [
-            { k: 'draft', label: 'taslak', dot: 'bg-[#d08a1c]' },
-            { k: 'pending', label: 'incelemede', dot: 'bg-[#2f7fc1]' },
-            { k: 'published', label: 'yayında', dot: 'bg-[#0f9f8f]' },
+            { k: 'draft', label: 'taslak', dot: 'bg-[#f5a524]' },
+            { k: 'pending', label: 'incelemede', dot: 'bg-[#7cb7ff]' },
+            { k: 'published', label: 'yayında', dot: 'bg-[#b2f0c8]' },
         ].map(p => ({ ...p, n: n(p.k) })).filter(p => p.n > 0);
         meta = parts.length ? (
             <div className="flex flex-wrap gap-x-3 gap-y-1">
                 {parts.map(p => (
-                    <span key={p.k} className="inline-flex items-center gap-1.5 text-[12.5px] text-[#3e4947]">
+                    <span key={p.k} className="inline-flex items-center gap-1.5 text-[12.5px] text-white/60">
                         <span className={cn('w-1.5 h-1.5 rounded-full', p.dot)} />
-                        <b className="font-bold tabular-nums text-[#00201d]">{p.n}</b> {p.label}
+                        <b className="font-bold tabular-nums text-white">{p.n}</b> {p.label}
                     </span>
                 ))}
             </div>
-        ) : <span className="text-[12.5px] text-[#6e7977]">Henüz kursun yok</span>;
+        ) : <span className="text-[12.5px] text-white/50">Henüz kursun yok</span>;
     }
 
     if (section.id === 'students') {
         const waiting = unanswered + unread;
         meta = (
-            <div className="flex flex-wrap gap-x-3 gap-y-1 text-[12.5px] text-[#3e4947]">
-                {stats && <span><b className="font-bold tabular-nums text-[#00201d]">{Number(stats.totalStudents || 0).toLocaleString('tr-TR')}</b> öğrenci</span>}
-                <span className={waiting ? 'text-[#855300] font-semibold' : ''}>
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-[12.5px] text-white/60">
+                {stats && <span><b className="font-bold tabular-nums text-white">{Number(stats.totalStudents || 0).toLocaleString('tr-TR')}</b> öğrenci</span>}
+                <span className={waiting ? 'text-[#f5c26b] font-semibold' : ''}>
                     {waiting ? `${waiting} iş seni bekliyor` : 'Bekleyen iş yok'}
                 </span>
             </div>
@@ -510,26 +482,26 @@ const FlyoutHeader: React.FC<{ section: Section }> = ({ section }) => {
 
     if (section.id === 'money' && stats) {
         meta = (
-            <div className="grid grid-cols-2 gap-3 mt-0.5">
+            <div className="grid grid-cols-2 gap-3 mt-1">
                 <span>
-                    <span className="block text-[11.5px] text-[#6e7977]">Bu ay</span>
-                    <span className="block text-[17px] font-bold tabular-nums tracking-tight">{lira(stats.monthlyRevenue)}</span>
+                    <span className="block text-[11.5px] text-white/50">Bu ay</span>
+                    <span className="block text-[17px] font-bold tabular-nums tracking-tight text-white">{lira(stats.monthlyRevenue)}</span>
                 </span>
                 <span>
-                    <span className="block text-[11.5px] text-[#6e7977]">Ödenecek bakiye</span>
-                    <span className="block text-[17px] font-bold tabular-nums tracking-tight text-[#005c55]">{lira(stats.balance)}</span>
+                    <span className="block text-[11.5px] text-white/50">Ödenecek bakiye</span>
+                    <span className="block text-[17px] font-bold tabular-nums tracking-tight text-[#b2f0c8]">{lira(stats.balance)}</span>
                 </span>
             </div>
         );
     }
 
     if (section.id === 'account' && user?.email) {
-        meta = <span className="block text-[12.5px] text-[#6e7977] truncate">{user.email}</span>;
+        meta = <span className="block text-[12.5px] text-white/50 truncate">{user.email}</span>;
     }
 
     return (
-        <div className="px-5 pt-4 pb-3.5 bg-[#f3f4f4]">
-            <p className="text-[15.5px] font-bold tracking-tight text-[#00201d]">{section.label}</p>
+        <div className="px-6">
+            <p className="text-[18px] font-extrabold tracking-[-0.015em] text-white">{section.label}</p>
             {meta && <div className="mt-1.5">{meta}</div>}
         </div>
     );
@@ -563,7 +535,7 @@ const MonthCard: React.FC = () => {
                     <span className="block mt-0.5 text-[12px] text-white/55">
                         {stats.monthlySales || 0} satış
                         {stats.monthlyChange != null && (
-                            <span className={stats.monthlyChange >= 0 ? 'text-[#9cf2e8] font-semibold' : 'text-[#ff9b8f] font-semibold'}>
+                            <span className={stats.monthlyChange >= 0 ? 'text-[#b2f0c8] font-semibold' : 'text-[#ff9b8f] font-semibold'}>
                                 {' '}· {stats.monthlyChange > 0 ? '+' : ''}{stats.monthlyChange}%
                             </span>
                         )}
@@ -593,15 +565,15 @@ const MobileNav: React.FC = () => {
                     const isOpen = expanded === s.id;
                     const Icon = s.icon;
                     const icon = Icon
-                        ? <Icon className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#00201d]' : 'text-white/45')} />
-                        : <LayoutGrid className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#00201d]' : 'text-white/45')} />;
+                        ? <Icon className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#0b2619]' : 'text-white/45')} />
+                        : <LayoutGrid className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#0b2619]' : 'text-white/45')} />;
                     const link = (
                         <Link
                             to={firstPage(s)}
                             aria-current={active ? 'page' : undefined}
                             className={cn(
                                 'flex items-center gap-3 flex-1 min-w-0 h-[50px] px-4 rounded-xl text-[17px] tracking-[-0.01em]',
-                                active ? 'bg-[#9cf2e8] text-[#00201d] font-bold' : 'text-white/80 font-semibold'
+                                active ? 'bg-[#b2f0c8] text-[#0b2619] font-bold' : 'text-white/80 font-semibold'
                             )}
                         >
                             {icon}
@@ -632,7 +604,7 @@ const MobileNav: React.FC = () => {
                                                 to={sub.to}
                                                 className={({ isActive }) => cn(
                                                     'flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-[15px]',
-                                                    isActive ? 'bg-[#9cf2e8]/15 text-[#9cf2e8] font-bold' : 'text-white/70 font-medium'
+                                                    isActive ? 'bg-[#b2f0c8]/15 text-[#b2f0c8] font-bold' : 'text-white/70 font-medium'
                                                 )}
                                             >
                                                 {sub.label}
@@ -644,7 +616,7 @@ const MobileNav: React.FC = () => {
                                         <li>
                                             <Link
                                                 to={s.action.to}
-                                                className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2.5 text-[15px] font-bold text-[#9cf2e8]"
+                                                className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2.5 text-[15px] font-bold text-[#b2f0c8]"
                                             >
                                                 <Plus className="w-4 h-4" /> {s.action.label}
                                             </Link>
@@ -673,9 +645,9 @@ const UserFooter: React.FC = () => {
             className="shrink-0 mx-3 mb-3 rounded-xl px-3 py-2.5 flex items-center gap-2.5 hover:bg-white/[0.05] transition-colors"
         >
             {user?.profile_image ? (
-                <img src={user.profile_image} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-[#9cf2e8]/40" />
+                <img src={user.profile_image} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-[#b2f0c8]/40" />
             ) : (
-                <span className="w-8 h-8 rounded-full bg-[#9cf2e8] text-[#00201d] text-[12px] font-bold flex items-center justify-center">
+                <span className="w-8 h-8 rounded-full bg-[#b2f0c8] text-[#0b2619] text-[12px] font-bold flex items-center justify-center">
                     {initials}
                 </span>
             )}
@@ -701,7 +673,7 @@ export const StatusDot: React.FC<{ tone: 'draft' | 'review' | 'live' }> = ({ ton
         aria-hidden
         className={cn(
             'w-1.5 h-1.5 rounded-full shrink-0',
-            tone === 'live' && 'bg-[#0f9f8f]',
+            tone === 'live' && 'bg-[#1a9d5c]',
             tone === 'review' && 'bg-[#2f7fc1]',
             tone === 'draft' && 'bg-[#d08a1c]'
         )}

@@ -62,11 +62,11 @@ export const CategoryMegaMenu: React.FC = () => {
                 aria-expanded={open}
                 aria-haspopup="true"
                 className={cn(
-                    'relative flex items-center h-9 px-3 text-sm font-semibold transition-colors',
-                    open ? 'text-brand-800' : 'text-slate-600 hover:text-brand-800'
+                    'relative flex items-center h-10 px-3 text-[14.5px] font-semibold whitespace-nowrap transition-colors',
+                    open ? 'text-brand-700' : 'text-[#0b2619] hover:text-brand-700'
                 )}
             >
-                Kategoriler
+                Tüm Kurslar
                 {/* Açıkken başlığın altında ince bir marka çizgisi */}
                 <span
                     aria-hidden
@@ -83,7 +83,7 @@ export const CategoryMegaMenu: React.FC = () => {
 
             {open && (
                 <div
-                    className="absolute left-0 top-[calc(100%+10px)] z-50 flex bg-white rounded-xl border border-slate-200 shadow-[0_24px_60px_-20px_rgba(15,23,42,0.35)] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150"
+                    className="absolute left-0 top-[calc(100%+10px)] z-50 flex bg-white rounded-2xl shadow-[0_24px_60px_-20px_rgba(11,38,25,0.35),0_0_0_1px_rgba(11,38,25,0.06)] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150"
                     role="menu"
                 >
                     {/* Sol sütun: kategoriler */}

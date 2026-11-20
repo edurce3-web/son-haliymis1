@@ -112,9 +112,9 @@ export const PlatformOverview: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-brand-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
+      <div className="bg-gradient-to-r from-blue-600 to-brand-600 text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Crown className="w-12 h-12 text-yellow-400" />
@@ -210,7 +210,7 @@ export const PlatformOverview: React.FC = () => {
                 </ul>
               </div>
               <div>
-                <h3 className="font-semibold text-lg mb-4 text-purple-600">Özellikler</h3>
+                <h3 className="font-semibold text-lg mb-4 text-brand-600">Özellikler</h3>
                 <ul className="space-y-2">
                   <li>• Responsive Design</li>
                   <li>• Real-time Updates</li>
@@ -262,7 +262,7 @@ export const PlatformOverview: React.FC = () => {
         </Card>
 
         {/* Call to Action */}
-        <div className="text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl p-12">
+        <div className="text-center bg-gradient-to-r from-blue-600 to-brand-600 text-white rounded-2xl p-12">
           <h2 className="text-3xl font-bold mb-4">Platform Hazır! 🚀</h2>
           <p className="text-xl mb-8 opacity-90">
             Udemy seviyesinde kapsamlı eğitim platformunuz kullanıma hazır. 

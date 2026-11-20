@@ -60,7 +60,7 @@ export const MobileNavigation: React.FC = () => {
       label: 'Eğitimlerim',
       href: '/learning',
       show: isAuthenticated,
-      color: 'from-purple-500 to-purple-600',
+      color: 'from-brand-500 to-brand-600',
     },
     {
       icon: Trophy,

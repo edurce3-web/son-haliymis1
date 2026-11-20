@@ -38,10 +38,10 @@ const META: Record<string, { icon: React.ElementType; fg: string; bg: string; la
     sale: { icon: TrendingUp, fg: 'text-emerald-600', bg: 'bg-emerald-50', label: 'Satış' },
     enrollment: { icon: BookOpen, fg: 'text-blue-600', bg: 'bg-blue-50', label: 'Kayıt' },
     announcement: { icon: Megaphone, fg: 'text-orange-600', bg: 'bg-orange-50', label: 'Duyuru' },
-    message: { icon: MessageSquare, fg: 'text-indigo-600', bg: 'bg-indigo-50', label: 'Mesaj' },
+    message: { icon: MessageSquare, fg: 'text-brand-600', bg: 'bg-brand-50', label: 'Mesaj' },
     review: { icon: Star, fg: 'text-amber-600', bg: 'bg-amber-50', label: 'Değerlendirme' },
-    question: { icon: HelpCircle, fg: 'text-violet-600', bg: 'bg-violet-50', label: 'Soru' },
-    answer: { icon: MessageCircleReply, fg: 'text-violet-600', bg: 'bg-violet-50', label: 'Cevap' },
+    question: { icon: HelpCircle, fg: 'text-brand-600', bg: 'bg-brand-50', label: 'Soru' },
+    answer: { icon: MessageCircleReply, fg: 'text-brand-600', bg: 'bg-brand-50', label: 'Cevap' },
     system: { icon: Settings, fg: 'text-slate-600', bg: 'bg-slate-100', label: 'Sistem' },
 };
 
@@ -199,7 +199,7 @@ const NotificationsPage = () => {
                     <p className="text-sm text-slate-500 mb-5">
                         Satın alma, mesaj ve duyuru bildirimlerin burada toplanır.
                     </p>
-                    <Button onClick={() => navigate('/login')} className="rounded-xl bg-indigo-600 hover:bg-indigo-700">
+                    <Button onClick={() => navigate('/login')} className="rounded-xl bg-brand-600 hover:bg-brand-700">
                         Giriş yap
                     </Button>
                 </div>
@@ -216,7 +216,7 @@ const NotificationsPage = () => {
                         <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
                             Bildirimler
                             {unreadCount > 0 && (
-                                <span className="text-xs bg-indigo-600 text-white font-semibold px-2 py-0.5 rounded-full">
+                                <span className="text-xs bg-brand-600 text-white font-semibold px-2 py-0.5 rounded-full">
                                     {unreadCount}
                                 </span>
                             )}
@@ -261,7 +261,7 @@ const NotificationsPage = () => {
                                 placeholder="Bildirimlerde ara…"
                                 value={query}
                                 onChange={e => setQuery(e.target.value)}
-                                className="w-full h-9 pl-9 pr-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                                className="w-full h-9 pl-9 pr-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                             />
                         </div>
                         <div className="flex flex-wrap gap-1.5">
@@ -280,7 +280,7 @@ const NotificationsPage = () => {
                                     {t.badge > 0 && (
                                         <span className={cn(
                                             'ml-1.5 px-1.5 rounded-full text-[10px]',
-                                            filter === t.key ? 'bg-white/20' : 'bg-indigo-100 text-indigo-700'
+                                            filter === t.key ? 'bg-white/20' : 'bg-brand-100 text-brand-700'
                                         )}>
                                             {t.badge}
                                         </span>
@@ -340,7 +340,7 @@ const NotificationsPage = () => {
                                                 onKeyDown={e => { if (e.key === 'Enter') open(n); }}
                                                 className={cn(
                                                     'group flex items-start gap-3 p-4 transition-colors cursor-pointer',
-                                                    unread ? 'bg-indigo-50/40 hover:bg-indigo-50/70' : 'hover:bg-slate-50'
+                                                    unread ? 'bg-brand-50/40 hover:bg-brand-50/70' : 'hover:bg-slate-50'
                                                 )}
                                             >
                                                 <div className={cn(
@@ -355,7 +355,7 @@ const NotificationsPage = () => {
                                                         <span className={cn('text-[10px] font-semibold uppercase tracking-wide', meta.fg)}>
                                                             {meta.label}
                                                         </span>
-                                                        {unread && <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />}
+                                                        {unread && <span className="w-1.5 h-1.5 bg-brand-500 rounded-full" />}
                                                     </div>
                                                     <h3 className={cn(
                                                         'text-sm leading-snug',

@@ -44,7 +44,7 @@ export default function ProfessionalInstructorDashboard() {
                         </p>
                         <Link
                             to="/instructor/dashboard"
-                            className="inline-flex mt-6 h-10 px-4 items-center rounded-lg bg-[#005c55] text-white text-[13.5px] font-semibold"
+                            className="inline-flex mt-6 h-10 px-4 items-center rounded-lg bg-[#12613b] text-white text-[13.5px] font-semibold"
                         >
                             Genel bakışa dön
                         </Link>

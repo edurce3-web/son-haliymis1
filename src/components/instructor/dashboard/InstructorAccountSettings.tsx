@@ -123,14 +123,14 @@ export const InstructorAccountSettings: React.FC = () => {
             type="button"
             onClick={() => setShow(s => ({ ...s, [key]: !s[key] }))}
             aria-label={show[key] ? 'Şifreyi gizle' : 'Şifreyi göster'}
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center text-[#5f7774] hover:text-[#00201d] hover:bg-[#e8faf6]"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center text-[#5e7268] hover:text-[#0b2619] hover:bg-[#e8f8ee]"
         >
             {show[key] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>
     );
 
     const Rule: React.FC<{ ok: boolean; children: React.ReactNode }> = ({ ok, children }) => (
-        <li className={cn('flex items-center gap-2 text-[13px]', ok ? 'text-[#005c55] font-semibold' : 'text-[#4a6360]')}>
+        <li className={cn('flex items-center gap-2 text-[13px]', ok ? 'text-[#12613b] font-semibold' : 'text-[#4a5f55]')}>
             {ok ? <CheckCircle2 className="w-4 h-4" /> : <Circle className="w-4 h-4 text-[#b9cfcb]" />}
             {children}
         </li>
@@ -145,15 +145,15 @@ export const InstructorAccountSettings: React.FC = () => {
                 <dl className="divide-y divide-[#f0f1f1]">
                     <div className="flex items-center justify-between gap-4 px-5 sm:px-6 py-4">
                         <div className="min-w-0">
-                            <dt className="text-[13px] font-bold text-[#00201d]">E-posta</dt>
-                            <dd className="text-[14px] text-[#1d3a37] mt-0.5 truncate">{account?.email || '—'}</dd>
+                            <dt className="text-[13px] font-bold text-[#0b2619]">E-posta</dt>
+                            <dd className="text-[14px] text-[#1d3a2c] mt-0.5 truncate">{account?.email || '—'}</dd>
                         </div>
-                        <span className="text-[12.5px] text-[#5f7774] shrink-0">Değiştirilemez</span>
+                        <span className="text-[12.5px] text-[#5e7268] shrink-0">Değiştirilemez</span>
                     </div>
                     {account?.created_at && (
                         <div className="flex items-center justify-between gap-4 px-5 sm:px-6 py-4">
-                            <dt className="text-[13px] font-bold text-[#00201d]">Üyelik tarihi</dt>
-                            <dd className="text-[14px] text-[#1d3a37] tabular-nums">
+                            <dt className="text-[13px] font-bold text-[#0b2619]">Üyelik tarihi</dt>
+                            <dd className="text-[14px] text-[#1d3a2c] tabular-nums">
                                 {new Date(account.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
                             </dd>
                         </div>
@@ -218,8 +218,8 @@ export const InstructorAccountSettings: React.FC = () => {
                         className="p-5 sm:p-6"
                         onSubmit={e => { e.preventDefault(); if (form.code.length === 6) confirmChange(); }}
                     >
-                        <p className="text-[14.5px] text-[#1d3a37]">
-                            <b className="font-bold text-[#00201d]">{maskedEmail}</b> adresine 6 haneli bir kod gönderdik. Kod 10 dakika geçerli.
+                        <p className="text-[14.5px] text-[#1d3a2c]">
+                            <b className="font-bold text-[#0b2619]">{maskedEmail}</b> adresine 6 haneli bir kod gönderdik. Kod 10 dakika geçerli.
                         </p>
                         <label htmlFor="ac-code" className="sr-only">Doğrulama kodu</label>
                         <input

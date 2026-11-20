@@ -103,7 +103,7 @@ export function InstructorQA(_props: InstructorQAProps) {
             <PageHead
                 title="Soru-Cevap"
                 sub={unansweredCount > 0
-                    ? <><b className="font-bold text-[#00201d]">{unansweredCount} soru</b> cevabını bekliyor.</>
+                    ? <><b className="font-bold text-[#0b2619]">{unansweredCount} soru</b> cevabını bekliyor.</>
                     : 'Bekleyen soru yok, hepsi cevaplanmış.'}
             />
 
@@ -135,7 +135,7 @@ export function InstructorQA(_props: InstructorQAProps) {
                         : 'Başka bir sekmeyi seç ya da aramayı temizle.'}
                 />
             ) : (
-                <Panel as="section" className="divide-y divide-[#eceeed]">
+                <Panel as="section" className="divide-y-2 divide-white">
                     {filtered.map(q => {
                         const studentName = `${q.first_name || ''} ${q.last_name || ''}`.trim() || 'Öğrenci';
                         const answered = Boolean(q.is_answered);
@@ -147,19 +147,19 @@ export function InstructorQA(_props: InstructorQAProps) {
                                     <Initials name={studentName} src={q.profile_image} size={40} />
                                     <div className="flex-1 min-w-0">
                                         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                                            <span className="text-[14px] font-bold text-[#00201d]">{studentName}</span>
-                                            <span className="text-[12.5px] text-[#5f7774]">{relativeTime(q.created_at)}</span>
+                                            <span className="text-[14px] font-bold text-[#0b2619]">{studentName}</span>
+                                            <span className="text-[12.5px] text-[#5e7268]">{relativeTime(q.created_at)}</span>
                                             {answered
                                                 ? <Tag tone="live">Cevaplandı</Tag>
                                                 : <Tag tone="warn">Cevap bekliyor</Tag>}
                                         </div>
                                         {q.course_title && (
-                                            <p className="text-[12.5px] text-[#5f7774] mt-0.5">
+                                            <p className="text-[12.5px] text-[#5e7268] mt-0.5">
                                                 {q.course_title}{q.lesson_title ? ` · ${q.lesson_title}` : ''}
                                             </p>
                                         )}
-                                        {q.title && <h3 className="text-[15.5px] font-bold text-[#00201d] mt-2.5">{q.title}</h3>}
-                                        <p className={cn('text-[14.5px] text-[#1d3a37] leading-relaxed whitespace-pre-wrap', q.title ? 'mt-1' : 'mt-2.5')}>
+                                        {q.title && <h3 className="text-[15.5px] font-bold text-[#0b2619] mt-2.5">{q.title}</h3>}
+                                        <p className={cn('text-[14.5px] text-[#1d3a2c] leading-relaxed whitespace-pre-wrap', q.title ? 'mt-1' : 'mt-2.5')}>
                                             {q.content}
                                         </p>
 
@@ -171,16 +171,16 @@ export function InstructorQA(_props: InstructorQAProps) {
                                                     return (
                                                         <li
                                                             key={a.answer_id}
-                                                            className={cn('flex items-start gap-3 rounded-xl px-3.5 py-3', mine ? 'bg-[#ecfbf8]' : 'bg-[#f6f9f8]')}
+                                                            className={cn('flex items-start gap-3 rounded-xl px-3.5 py-3', mine ? 'bg-[#ecfaf1]' : 'bg-[#f6f9f8]')}
                                                         >
                                                             <Initials name={name} src={a.profile_image} size={28} />
                                                             <div className="min-w-0 flex-1">
                                                                 <div className="flex flex-wrap items-center gap-x-2.5">
-                                                                    <span className="text-[13px] font-bold text-[#00201d]">{name}</span>
-                                                                    {mine && <span className="text-[12px] font-bold text-[#005c55]">Eğitmen</span>}
-                                                                    <span className="text-[12px] text-[#5f7774]">{relativeTime(a.created_at)}</span>
+                                                                    <span className="text-[13px] font-bold text-[#0b2619]">{name}</span>
+                                                                    {mine && <span className="text-[12px] font-bold text-[#12613b]">Eğitmen</span>}
+                                                                    <span className="text-[12px] text-[#5e7268]">{relativeTime(a.created_at)}</span>
                                                                 </div>
-                                                                <p className="text-[14px] text-[#1d3a37] mt-0.5 leading-relaxed whitespace-pre-wrap">{a.content}</p>
+                                                                <p className="text-[14px] text-[#1d3a2c] mt-0.5 leading-relaxed whitespace-pre-wrap">{a.content}</p>
                                                             </div>
                                                         </li>
                                                     );

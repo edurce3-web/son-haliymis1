@@ -265,7 +265,7 @@ export default function CoursePreviewTester() {
           <Card>
             <CardContent className="p-0">
               <div className="relative bg-black rounded-lg overflow-hidden">
-                <div className="aspect-video bg-gradient-to-br from-blue-900 to-purple-900 flex items-center justify-center">
+                <div className="aspect-video bg-gradient-to-br from-blue-900 to-brand-900 flex items-center justify-center">
                   <div className="text-center text-white">
                     <BookOpen className="w-16 h-16 mx-auto mb-4 opacity-50" />
                     <h3 className="text-xl font-semibold mb-2">React Temelleri</h3>
@@ -438,7 +438,7 @@ export default function CoursePreviewTester() {
 
             <Card>
               <CardContent className="p-4 text-center">
-                <TrendingUp className="w-8 h-8 mx-auto mb-2 text-purple-500" />
+                <TrendingUp className="w-8 h-8 mx-auto mb-2 text-brand-500" />
                 <div className="text-2xl font-bold">{analytics.completionRate}%</div>
                 <div className="text-sm text-muted-foreground">Tamamlama Oranı</div>
               </CardContent>

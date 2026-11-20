@@ -184,7 +184,7 @@ export const AdvancedUserProfile: React.FC = () => {
     switch (rarity) {
       case 'common': return 'bg-gray-100 text-gray-800 border-gray-300';
       case 'rare': return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'epic': return 'bg-purple-100 text-purple-800 border-purple-300';
+      case 'epic': return 'bg-brand-100 text-brand-800 border-brand-300';
       case 'legendary': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
       default: return 'bg-gray-100 text-gray-800 border-gray-300';
     }
@@ -217,7 +217,7 @@ export const AdvancedUserProfile: React.FC = () => {
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Profile Header */}
       <Card className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-brand-600 opacity-10"></div>
         <CardContent className="relative p-8">
           <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
             {/* Avatar */}
@@ -257,7 +257,7 @@ export const AdvancedUserProfile: React.FC = () => {
                   <div className="text-sm text-gray-600">Tamamlanan</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">{profile?.total_hours}h</div>
+                  <div className="text-2xl font-bold text-brand-600">{profile?.total_hours}h</div>
                   <div className="text-sm text-gray-600">Öğrenme Saati</div>
                 </div>
                 <div className="text-center">

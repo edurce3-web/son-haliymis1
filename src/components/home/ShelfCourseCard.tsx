@@ -18,8 +18,8 @@ export type ShelfBadge = { text: string; tone: 'brand' | 'amber' | 'mint' | 'sky
 const BADGE_TONES: Record<NonNullable<ShelfBadge>['tone'], string> = {
     amber: 'bg-[#fea619] text-[#684000]',
     sky: 'bg-[#cce5ff] text-[#004b73]',
-    mint: 'bg-[#9cf2e8] text-[#00504a]',
-    brand: 'bg-[#005c55] text-white',
+    mint: 'bg-[#b2f0c8] text-[#00504a]',
+    brand: 'bg-[#12613b] text-white',
 };
 
 /**
@@ -158,7 +158,7 @@ export const ShelfCourseCard: React.FC<{
             >
             <article className="group relative h-full flex flex-col font-jakarta bg-white rounded-lg overflow-hidden shadow-[0_1px_3px_rgba(19,27,46,0.08)] hover:shadow-[0_20px_40px_-12px_rgba(19,27,46,0.22)] transition-all duration-300">
 
-                <Link to={url} className="relative block aspect-video overflow-hidden bg-[#eaedff] shrink-0">
+                <Link to={url} className="relative block aspect-video overflow-hidden bg-[#e6f6ec] shrink-0">
                     <img
                         src={img}
                         alt={course.title}
@@ -170,7 +170,7 @@ export const ShelfCourseCard: React.FC<{
                             loaded ? 'opacity-100' : 'opacity-0'
                         )}
                     />
-                    {!loaded && <div className="absolute inset-0 bg-[#e2e7ff] animate-pulse" />}
+                    {!loaded && <div className="absolute inset-0 bg-[#dcf3e4] animate-pulse" />}
 
                     {shown && (
                         <span
@@ -203,7 +203,7 @@ export const ShelfCourseCard: React.FC<{
                 <div className="flex flex-col flex-1 p-3">
                     <h3
                         className={cn(
-                            'font-bold text-[#005c55] line-clamp-2 group-hover:text-[#00443f] transition-colors',
+                            'font-bold text-[#12613b] line-clamp-2 group-hover:text-[#00443f] transition-colors',
                             compact ? 'text-[13.5px] leading-[19px]' : 'text-[15px] leading-[22px]'
                         )}
                     >
@@ -243,9 +243,9 @@ export const ShelfCourseCard: React.FC<{
                     {owned ? (
                         <div className="mt-auto pt-3">
                             <div className="flex items-center gap-2.5">
-                                <div className="flex-1 h-1.5 bg-[#e2e7ff] rounded-full overflow-hidden">
+                                <div className="flex-1 h-1.5 bg-[#dcf3e4] rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-[#005c55] rounded-full transition-all"
+                                        className="h-full bg-[#12613b] rounded-full transition-all"
                                         style={{ width: `${progress}%` }}
                                     />
                                 </div>
@@ -256,7 +256,7 @@ export const ShelfCourseCard: React.FC<{
 
                             <Link
                                 to={url}
-                                className="mt-3 flex items-center justify-center gap-1.5 h-9 rounded-lg bg-[#eaedff] text-[#005c55] text-[13px] font-bold hover:bg-[#005c55] hover:text-white transition-colors"
+                                className="mt-3 flex items-center justify-center gap-1.5 h-9 rounded-lg bg-[#e6f6ec] text-[#12613b] text-[13px] font-bold hover:bg-[#12613b] hover:text-white transition-colors"
                             >
                                 <Play className="w-3.5 h-3.5 fill-current" />
                                 {progress > 0 ? 'Devam et' : 'Başla'}
@@ -283,8 +283,8 @@ export const ShelfCourseCard: React.FC<{
                                 className={cn(
                                     'shrink-0 p-1 rounded-md flex items-center justify-center transition-colors',
                                     inCart
-                                        ? 'text-[#005c55] cursor-default'
-                                        : 'text-[#6e7977] hover:text-[#005c55]'
+                                        ? 'text-[#12613b] cursor-default'
+                                        : 'text-[#6e7977] hover:text-[#12613b]'
                                 )}
                             >
                                 {cartMutation.isPending

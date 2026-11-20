@@ -49,20 +49,20 @@ const ChartTooltip = ({ active, payload }: any) => {
     const d = payload[0].payload as Bucket;
     return (
         <div className="rounded-lg border border-[#e3e6e5] bg-white p-3 shadow-lg text-[13px] min-w-[190px]">
-            <p className="font-semibold text-[#00201d] mb-2">{d.fullLabel}</p>
+            <p className="font-semibold text-[#0b2619] mb-2">{d.fullLabel}</p>
             <div className="flex justify-between gap-6">
-                <span className="text-[#4a6360]">Brüt satış</span>
-                <span className="text-[#00201d] font-medium">{money(d.gross)}</span>
+                <span className="text-[#4a5f55]">Brüt satış</span>
+                <span className="text-[#0b2619] font-medium">{money(d.gross)}</span>
             </div>
             <div className="flex justify-between gap-6">
-                <span className="text-[#4a6360]">Vergi (%20)</span>
-                <span className="text-[#00201d]">−{money(d.tax)}</span>
+                <span className="text-[#4a5f55]">Vergi (%20)</span>
+                <span className="text-[#0b2619]">−{money(d.tax)}</span>
             </div>
-            <div className="flex justify-between gap-6 mt-1.5 pt-1.5 border-t border-[#eceeed]">
-                <span className="text-[#1d3a37] font-medium">Net kazancın</span>
-                <span className="text-[#005c55] font-semibold">{money(d.instructor)}</span>
+            <div className="flex justify-between gap-6 mt-1.5 pt-1.5 border-t-2 border-white">
+                <span className="text-[#1d3a2c] font-medium">Net kazancın</span>
+                <span className="text-[#12613b] font-semibold">{money(d.instructor)}</span>
             </div>
-            <p className="text-[#5f7774] text-xs mt-1.5">{d.count} satış</p>
+            <p className="text-[#5e7268] text-xs mt-1.5">{d.count} satış</p>
         </div>
     );
 };
@@ -120,7 +120,7 @@ export const RevenueChart: React.FC<Props> = ({
         <div className={className}>
             {/* Görünüm kontrolleri */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                <div className="inline-flex bg-[#e3f6f2] rounded-xl p-1">
+                <div className="inline-flex bg-[#e2f6e9] rounded-xl p-1">
                     {([['month', 'Aylık'], ['year', 'Yıllık']] as const).map(([key, label]) => (
                         <button
                             key={key}
@@ -128,8 +128,8 @@ export const RevenueChart: React.FC<Props> = ({
                             className={cn(
                                 'px-3.5 py-1.5 rounded-lg text-[13px] font-bold transition-colors',
                                 mode === key
-                                    ? 'bg-[#00201d] text-[#9cf2e8]'
-                                    : 'text-[#4a6360] hover:text-[#00201d]'
+                                    ? 'bg-[#0b2619] text-[#b2f0c8]'
+                                    : 'text-[#4a5f55] hover:text-[#0b2619]'
                             )}
                         >
                             {label}
@@ -142,18 +142,18 @@ export const RevenueChart: React.FC<Props> = ({
                         <button
                             onClick={() => canPrev && setYear(years[yearIndex - 1])}
                             disabled={!canPrev}
-                            className="p-1.5 rounded-md text-[#5f7774] hover:bg-[#e8faf6] hover:text-[#00201d] disabled:opacity-30 disabled:hover:bg-transparent"
+                            className="p-1.5 rounded-md text-[#5e7268] hover:bg-[#e8f8ee] hover:text-[#0b2619] disabled:opacity-30 disabled:hover:bg-transparent"
                             aria-label="Önceki yıl"
                         >
                             <ChevronLeft className="w-4 h-4" />
                         </button>
-                        <span className="text-sm font-semibold text-[#00201d] tabular-nums w-12 text-center">
+                        <span className="text-sm font-semibold text-[#0b2619] tabular-nums w-12 text-center">
                             {year}
                         </span>
                         <button
                             onClick={() => canNext && setYear(years[yearIndex + 1])}
                             disabled={!canNext}
-                            className="p-1.5 rounded-md text-[#5f7774] hover:bg-[#e8faf6] hover:text-[#00201d] disabled:opacity-30 disabled:hover:bg-transparent"
+                            className="p-1.5 rounded-md text-[#5e7268] hover:bg-[#e8f8ee] hover:text-[#0b2619] disabled:opacity-30 disabled:hover:bg-transparent"
                             aria-label="Sonraki yıl"
                         >
                             <ChevronRight className="w-4 h-4" />
@@ -165,12 +165,12 @@ export const RevenueChart: React.FC<Props> = ({
             {/* Seçili aralığın özeti */}
             <div className="flex flex-wrap gap-x-8 gap-y-2 mb-4">
                 {[
-                    { label: 'Brüt satış', value: money(totals.gross), tone: 'text-[#00201d]' },
-                    { label: 'Net kazanç', value: money(totals.net), tone: 'text-[#005c55]' },
-                    { label: 'Satış', value: String(totals.count), tone: 'text-[#00201d]' },
+                    { label: 'Brüt satış', value: money(totals.gross), tone: 'text-[#0b2619]' },
+                    { label: 'Net kazanç', value: money(totals.net), tone: 'text-[#12613b]' },
+                    { label: 'Satış', value: String(totals.count), tone: 'text-[#0b2619]' },
                 ].map(s => (
                     <div key={s.label}>
-                        <p className="text-[11px] text-[#5f7774]">{s.label}</p>
+                        <p className="text-[11px] text-[#5e7268]">{s.label}</p>
                         <p className={cn('text-sm font-semibold', s.tone)}>{s.value}</p>
                     </div>
                 ))}
@@ -179,10 +179,10 @@ export const RevenueChart: React.FC<Props> = ({
             {!hasData ? (
                 <div style={{ height }} className="flex flex-col items-center justify-center text-center">
                     <BarChart3 className="w-9 h-9 text-[#d3d9d7] mb-3" />
-                    <p className="text-sm font-medium text-[#1d3a37]">
+                    <p className="text-sm font-medium text-[#1d3a2c]">
                         {mode === 'month' ? `${year} yılında satış yok` : 'Henüz satış yok'}
                     </p>
-                    <p className="text-xs text-[#5f7774] mt-1 max-w-xs">
+                    <p className="text-xs text-[#5e7268] mt-1 max-w-xs">
                         {years.length > 1 && mode === 'month'
                             ? 'Diğer yıllara bakmak için oklarla gezinebilirsin.'
                             : 'İlk satışından sonra kazancın burada grafiğe dönüşecek.'}
@@ -198,14 +198,14 @@ export const RevenueChart: React.FC<Props> = ({
                                     dataKey="label"
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: '#4a6360', fontSize: 11 }}
+                                    tick={{ fill: '#4a5f55', fontSize: 11 }}
                                     interval={0}
                                     dy={8}
                                 />
                                 <YAxis
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: '#6b827f', fontSize: 11 }}
+                                    tick={{ fill: '#6a7f74', fontSize: 11 }}
                                     tickFormatter={compactMoney}
                                     width={58}
                                 />
@@ -215,21 +215,21 @@ export const RevenueChart: React.FC<Props> = ({
                                     height={30}
                                     iconType="circle"
                                     iconSize={8}
-                                    wrapperStyle={{ fontSize: 12, color: '#4a6360' }}
+                                    wrapperStyle={{ fontSize: 12, color: '#4a5f55' }}
                                 />
                                 {/* Çubuk brüt satış, çizgi net kazanç: aradaki fark vergi + platform payı */}
                                 <Bar dataKey="gross" name="Brüt satış" radius={[4, 4, 0, 0]} maxBarSize={38}>
                                     {data.map((_, i) => (
-                                        <Cell key={i} fill={i === highlightIndex ? '#9cf2e8' : '#d9f3ee'} />
+                                        <Cell key={i} fill={i === highlightIndex ? '#b2f0c8' : '#d8f3e2'} />
                                     ))}
                                 </Bar>
                                 <Line
                                     type="monotone"
                                     dataKey="instructor"
                                     name="Net kazancın"
-                                    stroke="#00201d"
+                                    stroke="#0b2619"
                                     strokeWidth={2.5}
-                                    dot={{ r: 3, fill: '#00201d', strokeWidth: 0 }}
+                                    dot={{ r: 3, fill: '#0b2619', strokeWidth: 0 }}
                                     activeDot={{ r: 5 }}
                                 />
                             </ComposedChart>
@@ -240,14 +240,14 @@ export const RevenueChart: React.FC<Props> = ({
                                     dataKey="label"
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: '#4a6360', fontSize: 11 }}
+                                    tick={{ fill: '#4a5f55', fontSize: 11 }}
                                     interval={0}
                                     dy={8}
                                 />
                                 <YAxis
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: '#6b827f', fontSize: 11 }}
+                                    tick={{ fill: '#6a7f74', fontSize: 11 }}
                                     tickFormatter={compactMoney}
                                     width={58}
                                 />
@@ -258,10 +258,10 @@ export const RevenueChart: React.FC<Props> = ({
                                         dataKey="instructor"
                                         position="top"
                                         formatter={(v: number) => (v > 0 ? compactMoney(v) : '')}
-                                        style={{ fill: '#1d3a37', fontSize: 10, fontWeight: 600 }}
+                                        style={{ fill: '#1d3a2c', fontSize: 10, fontWeight: 600 }}
                                     />
                                     {data.map((_, i) => (
-                                        <Cell key={i} fill={i === highlightIndex ? '#00201d' : '#9cf2e8'} />
+                                        <Cell key={i} fill={i === highlightIndex ? '#0b2619' : '#b2f0c8'} />
                                     ))}
                                 </Bar>
                             </BarChart>

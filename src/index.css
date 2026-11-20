@@ -16,10 +16,10 @@
     --popover-foreground: 240 10% 3.9%;
 
     /* Primary - Udemy Purple */
-    --primary: 264 66% 54%;
+    --primary: 152 69% 23%;
     --primary-foreground: 0 0% 98%;
-    --primary-light: 264 66% 64%;
-    --primary-dark: 264 66% 44%;
+    --primary-light: 145 63% 50%;
+    --primary-dark: 150 54% 17%;
 
     /* Secondary - Course accent */
     --secondary: 240 4.8% 95.9%;
@@ -36,7 +36,7 @@
 
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 264 66% 54%;
+    --ring: 152 69% 23%;
 
     --radius: 0.75rem;
 
@@ -51,8 +51,8 @@
     --info-foreground: 0 0% 98%;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(264 66% 54%) 0%, hsl(310 100% 69%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(264 66% 54%) 0%, hsl(310 100% 69%) 50%, hsl(45 100% 58%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(152 69% 23%) 0%, hsl(145 63% 50%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(152 69% 23%) 0%, hsl(145 63% 50%) 60%, hsl(142 66% 82%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(240 4.8% 98%) 100%);
 
     /* Shadows */
@@ -62,8 +62,8 @@
     --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.1), 0 8px 10px -6px hsl(0 0% 0% / 0.1);
 
     /* Course card shadow */
-    --shadow-course: 0 4px 12px hsl(264 66% 54% / 0.15);
-    --shadow-course-hover: 0 8px 25px hsl(264 66% 54% / 0.25);
+    --shadow-course: 0 4px 12px hsl(152 69% 23% / 0.15);
+    --shadow-course-hover: 0 8px 25px hsl(152 69% 23% / 0.25);
 
     /* Animation */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

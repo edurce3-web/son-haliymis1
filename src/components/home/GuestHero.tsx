@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Search } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, BarChart3, Check, Code2, Cpu, Palette, Search } from 'lucide-react';
 import { CATEGORY_TREE } from '@/data/categoryTree';
 import { cn } from '@/lib/utils';
 
@@ -18,34 +18,20 @@ interface HeroInstructor {
     image: string;
 }
 
-/** Başlıktaki boşluğa sırayla gelen konular. Hepsi kategori ağacında var. */
-const ROTATING = [
-    'web geliştirme',
-    'otomasyon',
-    'yapay zekâ',
-    'grafik tasarım',
-    'elektronik',
-    'UI/UX tasarımı',
-    'siber güvenlik',
-    'PCB tasarımı',
-];
-
 const POPULAR = ['Python', 'Otomasyon', 'Excel', 'Grafik tasarım', 'Elektrik tesisatı'];
+const PROMISES = ['Tek seferlik ödeme', 'Süresiz erişim', 'Bitirince sertifika'];
 
-type Subject = { name: string; to: string };
+const byslug = (slug: string) => CATEGORY_TREE.find(c => c.slug === slug)!;
 
 /**
  * Misafir ana sayfasının üst bölümü.
  *
- * Koyu mürekkep zemin, büyük tek cümle ve arama. Cümlenin ortasındaki boşluğa
- * platformdaki konular sırayla geliyor: ziyaretçi "burada ne öğrenebilirim?"
- * sorusunun cevabını okumadan görüyor.
+ * Zemin logonun nane yeşili (#B2F0C8). Solda tek cümle, arama ve kısa
+ * vaatler; sağda platformun dört büyük alanı karolar halinde. Karolar
+ * doğrudan kategori sayfalarına gidiyor, alt dallar da tek tıkla açılıyor.
  *
- * Sağda konu başlıkları üç sütun halinde yavaşça akıyor; her biri o konunun
- * kurs sayfasına gidiyor. Bölüm sayılara ya da kapak görsellerine dayanmıyor:
- * platform büyüdükçe değişen sayılar küçükken vitrini zayıflatıyordu.
- *
- * Hareketi azaltmayı seçen kullanıcıda konu değişmiyor, sütunlar akmıyor.
+ * Bölüm sayılara ya da kapak görsellerine dayanmıyor: platform büyüdükçe
+ * değişen sayılar küçükken vitrini zayıflatıyordu.
  */
 export const GuestHero: React.FC<{
     stats?: HeroStats;
@@ -53,13 +39,6 @@ export const GuestHero: React.FC<{
 }> = () => {
     const navigate = useNavigate();
     const [term, setTerm] = useState('');
-    const [i, setI] = useState(0);
-
-    useEffect(() => {
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        const t = setInterval(() => setI(n => (n + 1) % ROTATING.length), 2600);
-        return () => clearInterval(t);
-    }, []);
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -67,168 +46,170 @@ export const GuestHero: React.FC<{
         if (q) navigate(`/search?q=${encodeURIComponent(q)}`);
     };
 
-    // Bütün alt konular, ana konuya göre karışık sırayla üç sütuna
-    const columns = useMemo(() => {
-        const all: Subject[] = CATEGORY_TREE.flatMap(p =>
-            p.children.map(c => ({ name: c.name, to: `/courses/${p.slug}/${c.slug}` }))
-        );
-        const cols: Subject[][] = [[], [], []];
-        all.forEach((s, n) => cols[n % 3].push(s));
-        return cols;
-    }, []);
+    const soft = byslug('yazilim-teknoloji');
+    const design = byslug('tasarim-gorsel-sanatlar');
+    const eng = byslug('muhendislik-donanim');
+    const biz = byslug('is-dunyasi-yonetim-finans');
 
     return (
-        <section className="relative overflow-hidden bg-[#00201d] text-white">
+        <section className="relative overflow-hidden bg-[#b2f0c8] text-[#0b2619]">
             <style>{`
-                @keyframes hero-up { from { transform: translateY(0) } to { transform: translateY(-50%) } }
-                @keyframes hero-down { from { transform: translateY(-50%) } to { transform: translateY(0) } }
-                @keyframes hero-left { from { transform: translateX(0) } to { transform: translateX(-50%) } }
-                .hero-flow:hover .hero-track { animation-play-state: paused; }
-                @media (prefers-reduced-motion: reduce) { .hero-track { animation: none !important; } }
+                @keyframes hero-draw { from { stroke-dashoffset: 420 } to { stroke-dashoffset: 0 } }
+                .hero-line { stroke-dasharray: 420; animation: hero-draw 900ms cubic-bezier(0.23,1,0.32,1) 250ms both; }
+                @media (prefers-reduced-motion: reduce) { .hero-line { animation: none; } .hero-tile { animation: none !important; } }
             `}</style>
 
-            {/* Zemin: tek nane ışığı ve ince nokta dokusu */}
-            <div aria-hidden className="absolute inset-0 pointer-events-none">
-                <div className="absolute -top-40 -left-24 w-[640px] h-[640px] rounded-full bg-[#9cf2e8]/[0.10] blur-[120px]" />
-                <div
-                    className="absolute inset-0 opacity-[0.35]"
-                    style={{
-                        backgroundImage: 'radial-gradient(rgba(156,242,232,0.18) 1px, transparent 1px)',
-                        backgroundSize: '22px 22px',
-                        maskImage: 'linear-gradient(90deg, #000 0%, transparent 60%)',
-                        WebkitMaskImage: 'linear-gradient(90deg, #000 0%, transparent 60%)',
-                    }}
-                />
-            </div>
+            {/* Arka planda iki yumuşak ışık; zemin düz kalmasın */}
+            <div aria-hidden className="pointer-events-none absolute -top-40 right-[-10%] w-[720px] h-[720px] rounded-full bg-white/35 blur-3xl" />
+            <div aria-hidden className="pointer-events-none absolute -bottom-56 -left-40 w-[560px] h-[560px] rounded-full bg-[#86e2a8]/50 blur-3xl" />
 
-            <div className="container relative px-4">
-                <div className="grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-10 lg:gap-14 items-center py-14 sm:py-16 lg:py-0 lg:min-h-[560px]">
+            <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 grid lg:grid-cols-[minmax(0,1.02fr)_minmax(0,1fr)] gap-10 lg:gap-14 items-center">
+                {/* Sol: söz ve arama */}
+                <div className="min-w-0">
+                    <p className="inline-flex items-center gap-2 h-8 pl-2.5 pr-3.5 rounded-full bg-white/60 text-[13px] font-bold">
+                        <span className="w-2 h-2 rounded-full bg-[#12613b]" />
+                        Türkçe online kurslar
+                    </p>
 
-                    {/* ── Sol: cümle ve arama ───────────────────────────── */}
-                    <div className="min-w-0 lg:py-20">
-                        <h1 className="font-jakarta font-extrabold tracking-[-0.035em] leading-[1.02] text-[42px] sm:text-[58px] lg:text-[68px]">
-                            <span className="block">Bugün</span>
-                            <span className="block relative h-[1.08em] overflow-hidden" aria-live="polite">
-                                <span
-                                    key={i}
-                                    className="absolute left-0 top-0 whitespace-nowrap text-[#9cf2e8] animate-in fade-in slide-in-from-bottom-6 duration-500 motion-reduce:animate-none"
-                                >
-                                    {ROTATING[i]}
-                                </span>
-                            </span>
-                            <span className="block">öğrenmeye başla.</span>
-                        </h1>
+                    <h1 className="mt-5 text-[40px] sm:text-[54px] lg:text-[64px] leading-[1.02] font-extrabold tracking-[-0.045em] text-balance">
+                        Yeni bir beceri,{' '}
+                        <span className="relative inline-block whitespace-nowrap">
+                            bir kurs
+                            <svg aria-hidden viewBox="0 0 300 24" preserveAspectRatio="none" className="absolute left-0 -bottom-1.5 sm:-bottom-2 w-full h-[14px] sm:h-[18px]">
+                                <path className="hero-line" d="M4 16 C 70 4, 150 4, 296 12" fill="none" stroke="#0b2619" strokeWidth="7" strokeLinecap="round" />
+                            </svg>
+                        </span>{' '}
+                        uzağında.
+                    </h1>
 
-                        <p className="mt-6 text-[16.5px] sm:text-[18px] leading-relaxed text-[#b6d6d0] max-w-[34rem]">
-                            Alanında çalışan eğitmenlerden Türkçe kurslar. Bir kez al, ömür boyu izle;
-                            abonelik yok, ders saati yok.
-                        </p>
+                    <p className="mt-6 text-[16.5px] sm:text-[18px] leading-relaxed text-[#0b2619]/75 max-w-[50ch]">
+                        Yazılımdan tasarıma, mühendislikten iş dünyasına; alanında çalışan eğitmenlerden
+                        istediğin zaman izleyebileceğin kurslar.
+                    </p>
 
-                        <form onSubmit={submit} className="mt-9 max-w-[36rem]">
-                            <label htmlFor="hero-search" className="sr-only">Kurs ara</label>
-                            <div className="flex items-center gap-2 rounded-2xl bg-white p-2 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.6)] focus-within:ring-4 focus-within:ring-[#9cf2e8]/40 transition-shadow">
-                                <Search aria-hidden className="w-5 h-5 text-[#4a6360] ml-3 shrink-0" />
-                                <input
-                                    id="hero-search"
-                                    value={term}
-                                    onChange={e => setTerm(e.target.value)}
-                                    placeholder="Ne öğrenmek istiyorsun?"
-                                    className="flex-1 min-w-0 bg-transparent px-2 py-3 text-[16px] text-[#00201d] placeholder:text-[#7c918e] outline-none"
-                                />
-                                <button
-                                    type="submit"
-                                    className="shrink-0 inline-flex items-center gap-2 h-12 px-5 sm:px-6 rounded-xl bg-[#9cf2e8] hover:bg-[#86e9dd] active:scale-[0.98] text-[#00201d] text-[15px] font-extrabold transition-[background-color,transform]"
-                                >
-                                    <span className="hidden sm:inline">Kurs bul</span>
-                                    <ArrowRight className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </form>
-
-                        <div className="mt-5 flex flex-wrap items-center gap-2">
-                            <span className="text-[13px] text-[#7fa8a1] mr-1">Çok arananlar</span>
-                            {POPULAR.map(s => (
-                                <Link
-                                    key={s}
-                                    to={`/search?q=${encodeURIComponent(s)}`}
-                                    className="h-8 px-3.5 inline-flex items-center rounded-full ring-1 ring-inset ring-white/15 text-[13px] font-semibold text-[#d7efea] hover:bg-white/10 hover:ring-white/30 transition-colors"
-                                >
-                                    {s}
-                                </Link>
-                            ))}
+                    <form onSubmit={submit} role="search" className="mt-8 max-w-[560px]">
+                        <label htmlFor="hero-search" className="sr-only">Kurs ara</label>
+                        <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-white shadow-[0_18px_40px_-22px_rgba(11,38,25,0.55)] focus-within:ring-2 focus-within:ring-[#0b2619]/25 transition-shadow">
+                            <Search aria-hidden className="ml-3 w-5 h-5 shrink-0 text-[#6a7f74]" />
+                            <input
+                                id="hero-search"
+                                type="search"
+                                value={term}
+                                onChange={e => setTerm(e.target.value)}
+                                placeholder="Ne öğrenmek istiyorsun?"
+                                className="min-w-0 flex-1 h-12 bg-transparent text-[16px] text-[#0b2619] placeholder:text-[#7d9086] border-0 outline-none"
+                            />
+                            <button
+                                type="submit"
+                                className="shrink-0 inline-flex items-center gap-2 h-12 px-5 sm:px-6 rounded-xl bg-[#0b2619] text-[#b2f0c8] text-[15px] font-bold hover:bg-[#123a27] active:scale-[0.98] transition-[background-color,transform]"
+                            >
+                                <span className="hidden sm:inline">Kurs bul</span>
+                                <ArrowRight className="w-4 h-4" />
+                            </button>
                         </div>
+                    </form>
+
+                    <div className="mt-4 flex flex-wrap items-center gap-2">
+                        <span className="text-[13px] font-semibold text-[#0b2619]/60 mr-1">Çok arananlar</span>
+                        {POPULAR.map(s => (
+                            <Link
+                                key={s}
+                                to={`/search?q=${encodeURIComponent(s)}`}
+                                className="h-8 px-3.5 inline-flex items-center rounded-full bg-white/55 text-[13px] font-semibold hover:bg-white transition-colors"
+                            >
+                                {s}
+                            </Link>
+                        ))}
                     </div>
 
-                    {/* ── Sağ: akan konular (masaüstü) ───────────────────── */}
-                    <div
-                        className="hero-flow hidden lg:grid grid-cols-3 gap-3 h-[560px] -my-px"
-                        style={{
-                            maskImage: 'linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%)',
-                            WebkitMaskImage: 'linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%)',
-                        }}
-                        aria-label="Konular"
-                    >
-                        {columns.map((col, c) => (
-                            <div key={c} className="overflow-hidden">
-                                <div
-                                    className="hero-track flex flex-col gap-3"
-                                    style={{ animation: `${c === 1 ? 'hero-down' : 'hero-up'} ${70 + c * 12}s linear infinite` }}
-                                >
-                                    {[...col, ...col].map((s, n) => (
-                                        <SubjectChip key={n} s={s} tone={(n + c) % 5 === 0 ? 'mint' : (n + c) % 3 === 0 ? 'soft' : 'line'} hidden={n >= col.length} />
-                                    ))}
-                                </div>
-                            </div>
+                    <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+                        {PROMISES.map(p => (
+                            <li key={p} className="inline-flex items-center gap-2 text-[14px] font-semibold">
+                                <span className="w-5 h-5 rounded-full bg-[#0b2619] text-[#b2f0c8] flex items-center justify-center">
+                                    <Check className="w-3 h-3" strokeWidth={3} />
+                                </span>
+                                {p}
+                            </li>
                         ))}
+                    </ul>
+                </div>
+
+                {/* Sağ: dört büyük alan */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-3.5">
+                    <Link
+                        to={`/courses/${soft.slug}`}
+                        className="hero-tile group col-span-2 sm:row-span-2 relative overflow-hidden rounded-[28px] bg-[#0b2619] text-white p-6 sm:p-7 flex flex-col min-h-[260px] sm:min-h-[330px] animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both hover:-translate-y-0.5 transition-transform"
+                    >
+                        <span className="w-12 h-12 rounded-2xl bg-[#b2f0c8] text-[#0b2619] flex items-center justify-center">
+                            <Code2 className="w-6 h-6" />
+                        </span>
+                        <pre aria-hidden className="mt-6 font-mono text-[12.5px] leading-[1.7] text-white/45 overflow-hidden">
+                            <span className="text-[#b2f0c8]">const</span> hedef = <span className="text-[#f5c26b]">'yeni beceri'</span>;{'\n'}
+                            <span className="text-[#b2f0c8]">await</span> öğren(hedef);{'\n'}
+                            kariyer.<span className="text-[#86e2a8]">ilerle</span>();
+                        </pre>
+                        <div className="mt-auto pt-6">
+                            <p className="text-[22px] sm:text-[26px] font-extrabold tracking-[-0.02em] leading-tight">{soft.name}</p>
+                            <div className="mt-3 flex flex-wrap gap-1.5">
+                                {soft.children.slice(0, 3).map(c => (
+                                    <span key={c.slug} className="h-7 px-2.5 inline-flex items-center rounded-full bg-white/10 text-[12.5px] font-semibold text-white/85">
+                                        {c.name}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                        <ArrowUpRight aria-hidden className="absolute top-6 right-6 w-6 h-6 text-[#b2f0c8] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </Link>
+
+                    <Tile to={`/courses/${design.slug}`} icon={Palette} name={design.name} count={design.children.length} delay={80} />
+                    <Tile to={`/courses/${eng.slug}`} icon={Cpu} name={eng.name} count={eng.children.length} delay={140} />
+
+                    <div
+                        className="hero-tile col-span-2 sm:col-span-3 rounded-[28px] bg-white/60 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both"
+                        style={{ animationDelay: '200ms' }}
+                    >
+                        <Link to={`/courses/${biz.slug}`} className="group flex items-center gap-3.5 min-w-0 flex-1">
+                            <span className="w-11 h-11 shrink-0 rounded-2xl bg-white text-[#12613b] flex items-center justify-center">
+                                <BarChart3 className="w-5 h-5" />
+                            </span>
+                            <span className="min-w-0">
+                                <span className="block text-[16px] font-extrabold tracking-[-0.01em] leading-snug group-hover:underline underline-offset-4">{biz.name}</span>
+                                <span className="block text-[13px] text-[#0b2619]/60">{`${biz.children.length} konu`}</span>
+                            </span>
+                        </Link>
+                        <Link
+                            to="/courses"
+                            className="shrink-0 inline-flex items-center justify-center gap-2 h-11 px-5 rounded-2xl bg-[#0b2619] text-[#b2f0c8] text-[14px] font-bold hover:bg-[#123a27] transition-colors"
+                        >
+                            Tüm kategoriler <ArrowRight className="w-4 h-4" />
+                        </Link>
                     </div>
                 </div>
-            </div>
-
-            {/* ── Akan konular (telefon ve tablet): iki yatay şerit ────── */}
-            <div
-                className="hero-flow lg:hidden relative pb-12 space-y-3 overflow-hidden"
-                style={{
-                    maskImage: 'linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)',
-                    WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)',
-                }}
-                aria-label="Konular"
-            >
-                {[columns[0], columns[1]].map((row, r) => (
-                    <div
-                        key={r}
-                        className="hero-track flex gap-3 w-max"
-                        style={{ animation: `hero-left ${80 + r * 15}s linear infinite`, animationDirection: r ? 'reverse' : 'normal' }}
-                    >
-                        {[...row, ...row].map((s, n) => (
-                            <SubjectChip key={n} s={s} tone={(n + r) % 4 === 0 ? 'mint' : 'line'} hidden={n >= row.length} inline />
-                        ))}
-                    </div>
-                ))}
             </div>
         </section>
     );
 };
 
-const SubjectChip: React.FC<{ s: Subject; tone: 'mint' | 'soft' | 'line'; hidden?: boolean; inline?: boolean }> = ({
-    s, tone, hidden, inline,
+const Tile: React.FC<{ to: string; icon: React.ElementType; name: string; count: number; delay: number }> = ({
+    to, icon: Icon, name, count, delay,
 }) => (
     <Link
-        to={s.to}
-        tabIndex={hidden ? -1 : undefined}
-        aria-hidden={hidden || undefined}
+        to={to}
         className={cn(
-            'group/chip flex items-center justify-between gap-3 rounded-2xl font-bold transition-colors duration-200',
-            inline ? 'h-11 px-4 text-[13.5px] whitespace-nowrap' : 'min-h-[64px] px-4 py-3 text-[14px] leading-snug',
-            tone === 'mint' && 'bg-[#9cf2e8] text-[#00201d] hover:bg-white',
-            tone === 'soft' && 'bg-white/[0.07] text-white hover:bg-white/[0.14]',
-            tone === 'line' && 'ring-1 ring-inset ring-white/[0.12] text-[#d7efea] hover:bg-white/[0.08] hover:text-white'
+            'hero-tile group relative rounded-[28px] bg-white p-5 sm:p-6 flex flex-col justify-between min-h-[160px]',
+            'shadow-[0_18px_40px_-28px_rgba(11,38,25,0.5)] hover:-translate-y-0.5 transition-transform',
+            'animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both'
         )}
+        style={{ animationDelay: `${delay}ms` }}
     >
-        <span>{s.name}</span>
-        <ArrowRight
-            aria-hidden
-            className="w-4 h-4 shrink-0 opacity-0 -translate-x-1 group-hover/chip:opacity-100 group-hover/chip:translate-x-0 transition-[opacity,transform] duration-200"
-        />
+        <span className="w-11 h-11 rounded-2xl bg-[#e2f6e9] text-[#12613b] flex items-center justify-center">
+            <Icon className="w-5 h-5" />
+        </span>
+        <span className="mt-5">
+            <span className="block text-[15.5px] font-extrabold tracking-[-0.01em] leading-snug">{name}</span>
+            <span className="block mt-1 text-[12.5px] text-[#0b2619]/55">{`${count} konu`}</span>
+        </span>
+        <ArrowUpRight aria-hidden className="absolute top-5 right-5 w-5 h-5 text-[#12613b] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-[opacity,transform] duration-200" />
     </Link>
 );
 

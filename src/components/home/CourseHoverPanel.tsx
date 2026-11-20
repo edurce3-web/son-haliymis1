@@ -143,30 +143,30 @@ export const CourseHoverPanel: React.FC<{
                 style={pos.side === 'right' ? { left: -16 } : { right: -16 }}
             />
 
-            <div className="relative bg-white rounded-xl border border-[#e2e7ff] shadow-[0_24px_60px_-15px_rgba(19,27,46,0.32)] animate-in fade-in zoom-in-95 duration-150">
+            <div className="relative bg-white rounded-xl border border-[#dcf3e4] shadow-[0_24px_60px_-15px_rgba(19,27,46,0.32)] animate-in fade-in zoom-in-95 duration-150">
                 <span
                     aria-hidden
                     className={cn(
-                        'absolute top-8 w-3 h-3 bg-white border-[#e2e7ff] rotate-45',
+                        'absolute top-8 w-3 h-3 bg-white border-[#dcf3e4] rotate-45',
                         pos.side === 'right' ? '-left-[7px] border-l border-b' : '-right-[7px] border-r border-t'
                     )}
                 />
 
                 <div className="p-5">
                     <Link to={url}>
-                        <h4 className="text-[16px] leading-[22px] font-extrabold text-[#131b2e] hover:text-[#005c55] line-clamp-2 transition-colors">
+                        <h4 className="text-[16px] leading-[22px] font-extrabold text-[#131b2e] hover:text-[#12613b] line-clamp-2 transition-colors">
                             {course.title}
                         </h4>
                     </Link>
 
                     <div className="flex flex-wrap items-center gap-1.5 mt-3">
                         {updated && (
-                            <span className="text-[11px] font-bold text-[#005c55] bg-[#9cf2e8]/50 rounded-full px-2.5 py-1">
+                            <span className="text-[11px] font-bold text-[#12613b] bg-[#b2f0c8]/50 rounded-full px-2.5 py-1">
                                 {updated} güncellendi
                             </span>
                         )}
                         {level && (
-                            <span className="text-[11px] font-semibold text-[#3e4947] bg-[#eaedff] rounded-full px-2.5 py-1">
+                            <span className="text-[11px] font-semibold text-[#3e4947] bg-[#e6f6ec] rounded-full px-2.5 py-1">
                                 {level}
                             </span>
                         )}
@@ -181,9 +181,9 @@ export const CourseHoverPanel: React.FC<{
 
                     {isLoading ? (
                         <div className="space-y-2 mt-4 animate-pulse">
-                            <div className="h-2.5 bg-[#eaedff] rounded w-full" />
-                            <div className="h-2.5 bg-[#eaedff] rounded w-4/5" />
-                            <div className="h-2.5 bg-[#eaedff] rounded w-2/3" />
+                            <div className="h-2.5 bg-[#e6f6ec] rounded w-full" />
+                            <div className="h-2.5 bg-[#e6f6ec] rounded w-4/5" />
+                            <div className="h-2.5 bg-[#e6f6ec] rounded w-2/3" />
                         </div>
                     ) : (
                         <>
@@ -197,7 +197,7 @@ export const CourseHoverPanel: React.FC<{
                                 <ul className="mt-4 space-y-2">
                                     {goals.slice(0, 4).map((g, i) => (
                                         <li key={i} className="flex items-start gap-2 text-[12.5px] leading-[17px] text-[#131b2e]">
-                                            <Check className="w-3.5 h-3.5 text-[#005c55] shrink-0 mt-0.5" strokeWidth={3} />
+                                            <Check className="w-3.5 h-3.5 text-[#12613b] shrink-0 mt-0.5" strokeWidth={3} />
                                             <span className="line-clamp-2">{g}</span>
                                         </li>
                                     ))}
@@ -214,8 +214,8 @@ export const CourseHoverPanel: React.FC<{
                             className={cn(
                                 'flex-1 h-11 rounded-lg text-[14px] font-bold transition-colors',
                                 inCart
-                                    ? 'bg-[#eaedff] text-[#6e7977] cursor-default'
-                                    : 'bg-[#005c55] hover:bg-[#0f766e] text-white'
+                                    ? 'bg-[#e6f6ec] text-[#6e7977] cursor-default'
+                                    : 'bg-[#12613b] hover:bg-[#0f766e] text-white'
                             )}
                         >
                             {adding ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : inCart ? 'Sepette' : 'Sepete ekle'}
@@ -226,7 +226,7 @@ export const CourseHoverPanel: React.FC<{
                             aria-label={favorited ? 'İstek listesinden çıkar' : 'İstek listesine ekle'}
                             className={cn(
                                 'w-11 h-11 shrink-0 rounded-lg flex items-center justify-center transition-colors',
-                                favorited ? 'bg-rose-50 text-rose-500' : 'bg-[#eaedff] text-[#3e4947] hover:text-rose-500'
+                                favorited ? 'bg-rose-50 text-rose-500' : 'bg-[#e6f6ec] text-[#3e4947] hover:text-rose-500'
                             )}
                         >
                             <Heart className={cn('w-[18px] h-[18px]', favorited && 'fill-rose-500')} />

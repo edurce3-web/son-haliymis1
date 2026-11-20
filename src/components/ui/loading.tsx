@@ -75,7 +75,7 @@ const LoadingBounce = ({ size = 'md' }: { size: string }) => {
           key={i}
           className={cn(
             ballSize,
-            'bg-gradient-to-r from-primary to-purple-500 rounded-full animate-bounce'
+            'bg-gradient-to-r from-primary to-brand-500 rounded-full animate-bounce'
           )}
           style={{
             animationDelay: `${i * 0.15}s`,
@@ -117,7 +117,7 @@ const LoadingEducational = ({ size = 'md' }: { size: string }) => {
           <BookOpen className={cn(iconSize, 'text-primary/60')} />
         </div>
       </div>
-      <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-lg animate-pulse" />
+      <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-brand-500/20 rounded-full blur-lg animate-pulse" />
     </div>
   );
 };
@@ -187,7 +187,7 @@ export const Loading: React.FC<LoadingProps> = ({
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
         <div className="relative">
-          <div className="absolute -inset-8 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-2xl blur-2xl animate-pulse" />
+          <div className="absolute -inset-8 bg-gradient-to-r from-primary/10 to-brand-500/10 rounded-2xl blur-2xl animate-pulse" />
           <div className="relative bg-background/90 backdrop-blur-sm border border-border/50 rounded-2xl p-8 shadow-2xl">
             {content}
           </div>

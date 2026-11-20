@@ -297,7 +297,7 @@ export default function EnhancedInstructorDashboard() {
       case 'enrollment': return 'text-blue-500';
       case 'review': return 'text-yellow-500';
       case 'completion': return 'text-green-500';
-      case 'question': return 'text-purple-500';
+      case 'question': return 'text-brand-500';
       case 'purchase': return 'text-emerald-500';
       default: return 'text-gray-500';
     }
@@ -316,16 +316,16 @@ export default function EnhancedInstructorDashboard() {
     <div className="min-h-screen bg-slate-50 p-4 md:p-8 space-y-8">
       {/* Balanced Professional Header */}
       <div className="relative overflow-hidden bg-slate-900 rounded-3xl p-8 md:p-10 text-white shadow-xl group">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-indigo-500/20 to-transparent" />
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand-500/20 to-transparent" />
 
         <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-3 text-center md:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">
-              <Zap className="w-3.5 h-3.5 text-indigo-400 fill-indigo-400" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-300">Eğitmen Paneli</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20">
+              <Zap className="w-3.5 h-3.5 text-brand-400 fill-brand-400" />
+              <span className="text-[10px] font-bold uppercase tracking-wider text-brand-300">Eğitmen Paneli</span>
             </div>
             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
-              Hoş geldin, <span className="text-indigo-400">{firstName}</span>.
+              Hoş geldin, <span className="text-brand-400">{firstName}</span>.
             </h1>
             <p className="text-slate-400 font-medium text-base max-w-lg">
               Performans özetiniz ve kurs aktiviteleriniz burada yer almaktadır.
@@ -342,7 +342,7 @@ export default function EnhancedInstructorDashboard() {
               Yenile
             </Button>
             <Button
-              className="h-12 px-8 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-lg shadow-indigo-900/20 transition-all hover:scale-[1.02]"
+              className="h-12 px-8 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-lg shadow-brand-900/20 transition-all hover:scale-[1.02]"
               onClick={() => navigate('/instructor/courses/create')}
             >
               <Plus className="w-5 h-5 mr-2" />
@@ -364,10 +364,10 @@ export default function EnhancedInstructorDashboard() {
         <TabsContent value="overview" className="space-y-6">
           {/* Overview Stat Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-500 transition-all group">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-brand-500 transition-all group">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-600 transition-colors">
-                  <Users className="w-5 h-5 text-indigo-600 group-hover:text-white transition-colors" />
+                <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center group-hover:bg-brand-600 transition-colors">
+                  <Users className="w-5 h-5 text-brand-600 group-hover:text-white transition-colors" />
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Toplam Öğrenci</p>
@@ -414,10 +414,10 @@ export default function EnhancedInstructorDashboard() {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-purple-500 transition-all group">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-brand-500 transition-all group">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center group-hover:bg-purple-600 transition-colors">
-                  <Activity className="w-5 h-5 text-purple-600 group-hover:text-white transition-colors" />
+                <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center group-hover:bg-brand-600 transition-colors">
+                  <Activity className="w-5 h-5 text-brand-600 group-hover:text-white transition-colors" />
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Etkileşim</p>
@@ -436,7 +436,7 @@ export default function EnhancedInstructorDashboard() {
                   <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Son 12 Ay</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-brand-500" />
                   <span className="text-xs font-bold text-slate-600">Gelir (₺)</span>
                 </div>
               </div>
@@ -577,7 +577,7 @@ export default function EnhancedInstructorDashboard() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <Input
                   placeholder="Hızlıca kurs ara..."
-                  className="pl-12 h-14 rounded-2xl bg-white border-2 border-slate-200 shadow-sm focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/20 transition-all font-bold text-slate-700"
+                  className="pl-12 h-14 rounded-2xl bg-white border-2 border-slate-200 shadow-sm focus:border-brand-600 focus:ring-4 focus:ring-brand-500/20 transition-all font-bold text-slate-700"
                   value={courseSearchQuery}
                   onChange={(e) => setCourseSearchQuery(e.target.value)}
                 />
@@ -601,7 +601,7 @@ export default function EnhancedInstructorDashboard() {
                 size="sm"
                 className={cn(
                   "rounded-full px-4 font-semibold text-xs",
-                  courseStatusFilter === tab.id ? "bg-purple-600 hover:bg-purple-700" : "bg-white border-gray-200"
+                  courseStatusFilter === tab.id ? "bg-brand-600 hover:bg-brand-700" : "bg-white border-gray-200"
                 )}
                 onClick={() => setCourseStatusFilter(tab.id as any)}
               >
@@ -612,7 +612,7 @@ export default function EnhancedInstructorDashboard() {
 
           {loadingCourses ? (
             <div className="flex items-center justify-center py-20">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-600"></div>
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-600"></div>
             </div>
           ) : (
             <div className="space-y-4">
@@ -628,7 +628,7 @@ export default function EnhancedInstructorDashboard() {
                     return matchesSearch && matchesStatus;
                   })
                   .map((course) => (
-                    <div key={course.id} className="bg-white rounded-[2.5rem] border-2 border-slate-200 shadow-xl shadow-slate-200/40 hover:border-indigo-500 transition-all hover:shadow-2xl hover:shadow-indigo-500/10 group overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div key={course.id} className="bg-white rounded-[2.5rem] border-2 border-slate-200 shadow-xl shadow-slate-200/40 hover:border-brand-500 transition-all hover:shadow-2xl hover:shadow-brand-500/10 group overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                       <div className="flex flex-col lg:flex-row">
                         <div className="relative w-full lg:w-72 h-48 lg:h-auto overflow-hidden">
                           <img
@@ -639,12 +639,12 @@ export default function EnhancedInstructorDashboard() {
                           <div className="absolute top-4 left-4 flex flex-col gap-2">
                             {course.status === 'active' && <Badge className="bg-emerald-500 text-white border-0 text-[10px] font-black px-3 py-1 rounded-lg shadow-lg shadow-emerald-500/30">YAYINDA</Badge>}
                             {course.status === 'draft' && <Badge className="bg-slate-700 text-white border-0 text-[10px] font-black px-3 py-1 rounded-lg">TASLAK</Badge>}
-                            {course.status === 'pending' && <Badge className="bg-indigo-500 text-white border-0 text-[10px] font-black px-3 py-1 rounded-lg shadow-lg shadow-indigo-500/30">İNCELEMEDE</Badge>}
+                            {course.status === 'pending' && <Badge className="bg-brand-500 text-white border-0 text-[10px] font-black px-3 py-1 rounded-lg shadow-lg shadow-brand-500/30">İNCELEMEDE</Badge>}
                           </div>
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
                             <Button
                               size="icon"
-                              className="w-12 h-12 rounded-2xl bg-white text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all shadow-xl"
+                              className="w-12 h-12 rounded-2xl bg-white text-brand-600 hover:bg-brand-600 hover:text-white transition-all shadow-xl"
                               onClick={() => navigate(`/instructor/courses/edit/${course.id}`)}
                             >
                               <Edit className="w-6 h-6" />
@@ -659,7 +659,7 @@ export default function EnhancedInstructorDashboard() {
                           <div className="space-y-6">
                             <div className="flex justify-between items-start">
                               <div>
-                                <h4 className="text-2xl font-black text-slate-900 group-hover:text-indigo-600 transition-colors leading-none tracking-tight mb-2">
+                                <h4 className="text-2xl font-black text-slate-900 group-hover:text-brand-600 transition-colors leading-none tracking-tight mb-2">
                                   {course.title}
                                 </h4>
                                 <div className="flex items-center gap-3 text-xs font-black text-slate-400 uppercase tracking-widest">
@@ -677,7 +677,7 @@ export default function EnhancedInstructorDashboard() {
                               <div className="space-y-1">
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Öğrenci</p>
                                 <div className="flex items-center gap-2">
-                                  <Users className="w-4 h-4 text-indigo-500" />
+                                  <Users className="w-4 h-4 text-brand-500" />
                                   <span className="text-lg font-black text-slate-900">{course.students.toLocaleString()}</span>
                                 </div>
                               </div>
@@ -700,7 +700,7 @@ export default function EnhancedInstructorDashboard() {
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tamamlanma</p>
                                 <div className="flex items-center gap-3">
                                   <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                                    <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${course.completionRate}%` }} />
+                                    <div className="h-full bg-brand-500 rounded-full" style={{ width: `${course.completionRate}%` }} />
                                   </div>
                                   <span className="text-sm font-black text-slate-900">%{course.completionRate}</span>
                                 </div>
@@ -780,7 +780,7 @@ export default function EnhancedInstructorDashboard() {
                       <div className="col-span-4 flex items-center gap-3">
                         <Avatar className="h-10 w-10 rounded-xl border border-slate-200">
                           <AvatarImage src={s.avatar || '/avatar.svg'} alt={s.name} />
-                          <AvatarFallback className="bg-indigo-50 text-indigo-600 font-bold text-xs">{(s.name || '?').slice(0, 2).toUpperCase()}</AvatarFallback>
+                          <AvatarFallback className="bg-brand-50 text-brand-600 font-bold text-xs">{(s.name || '?').slice(0, 2).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <div className="min-w-0">
                           <div className="font-bold text-slate-800 text-sm truncate">{s.name}</div>
@@ -795,7 +795,7 @@ export default function EnhancedInstructorDashboard() {
                       <div className="col-span-3">
                         <div className="flex items-center gap-3">
                           <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                            <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${s.progress}%` }} />
+                            <div className="h-full bg-brand-500 rounded-full" style={{ width: `${s.progress}%` }} />
                           </div>
                           <span className="text-xs font-bold text-slate-800">%{s.progress}</span>
                         </div>
@@ -808,7 +808,7 @@ export default function EnhancedInstructorDashboard() {
                         </Badge>
                       </div>
                       <div className="col-span-2 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button size="icon" className="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-600 transition-all">
+                        <Button size="icon" className="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-brand-600 hover:border-brand-600 transition-all">
                           <Mail className="w-3.5 h-3.5" />
                         </Button>
                         <Button size="icon" className="w-8 h-8 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition-all">
@@ -903,22 +903,22 @@ export default function EnhancedInstructorDashboard() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Ad</Label>
-                      <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-10 rounded-xl border-slate-200 focus:border-indigo-500 font-medium" />
+                      <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="lastName" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Soyad</Label>
-                      <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-10 rounded-xl border-slate-200 focus:border-indigo-500 font-medium" />
+                      <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium" />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="title" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Unvan/Pozisyon</Label>
-                    <Input id="title" value={titleValue} onChange={(e) => setTitleValue(e.target.value)} className="h-10 rounded-xl border-slate-200 focus:border-indigo-500 font-medium" />
+                    <Input id="title" value={titleValue} onChange={(e) => setTitleValue(e.target.value)} className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="bio" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Kendinizi Tanıtın</Label>
-                    <Textarea id="bio" rows={4} value={bioValue} onChange={(e) => setBioValue(e.target.value)} className="rounded-xl border-slate-200 focus:border-indigo-500 font-medium resize-none" />
+                    <Textarea id="bio" rows={4} value={bioValue} onChange={(e) => setBioValue(e.target.value)} className="rounded-xl border-slate-200 focus:border-brand-500 font-medium resize-none" />
                   </div>
 
                   {/* Specializations Section */}
@@ -938,7 +938,7 @@ export default function EnhancedInstructorDashboard() {
                             }
                           }
                         }}
-                        className="h-10 rounded-xl border-slate-200 focus:border-indigo-500 font-medium"
+                        className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
                       />
                       <Button
                         type="button"
@@ -979,7 +979,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.youtube}
                           onChange={(e) => setSocialLinks({ ...socialLinks, youtube: e.target.value })}
                           placeholder="https://youtube.com/@kanal"
-                          className="h-10 rounded-xl border-slate-200 focus:border-indigo-500 font-medium"
+                          className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -988,7 +988,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.instagram}
                           onChange={(e) => setSocialLinks({ ...socialLinks, instagram: e.target.value })}
                           placeholder="https://instagram.com/kullanici"
-                          className="h-10 rounded-xl border-slate-200 focus:border-indigo-500 font-medium"
+                          className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -997,7 +997,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.facebook}
                           onChange={(e) => setSocialLinks({ ...socialLinks, facebook: e.target.value })}
                           placeholder="https://facebook.com/sayfa"
-                          className="h-10 rounded-xl border-slate-200 focus:border-indigo-500 font-medium"
+                          className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -1006,7 +1006,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.x}
                           onChange={(e) => setSocialLinks({ ...socialLinks, x: e.target.value })}
                           placeholder="https://x.com/kullanici"
-                          className="h-10 rounded-xl border-slate-200 focus:border-indigo-500 font-medium"
+                          className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -1015,7 +1015,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.website}
                           onChange={(e) => setSocialLinks({ ...socialLinks, website: e.target.value })}
                           placeholder="https://websitesi.com"
-                          className="h-10 rounded-xl border-slate-200 focus:border-indigo-500 font-medium"
+                          className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -1024,7 +1024,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.tiktok}
                           onChange={(e) => setSocialLinks({ ...socialLinks, tiktok: e.target.value })}
                           placeholder="https://tiktok.com/@kullanici"
-                          className="h-10 rounded-xl border-slate-200 focus:border-indigo-500 font-medium"
+                          className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
                         />
                       </div>
                     </div>
@@ -1047,8 +1047,8 @@ export default function EnhancedInstructorDashboard() {
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-all group">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
-                        <Mail className="w-4 h-4 text-indigo-600" />
+                      <div className="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center">
+                        <Mail className="w-4 h-4 text-brand-600" />
                       </div>
                       <span className="text-sm font-bold text-slate-800">E-posta</span>
                     </div>
@@ -1087,10 +1087,10 @@ export default function EnhancedInstructorDashboard() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="p-6 rounded-2xl border border-slate-200 bg-white hover:border-indigo-500 transition-all group">
+            <div className="p-6 rounded-2xl border border-slate-200 bg-white hover:border-brand-500 transition-all group">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
-                  <Gift className="w-5 h-5 text-indigo-600" />
+                <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center">
+                  <Gift className="w-5 h-5 text-brand-600" />
                 </div>
                 <Badge className="bg-emerald-500 text-white border-0 text-[10px] font-bold px-2 py-0.5 rounded-lg">AKTİF</Badge>
               </div>
@@ -1103,7 +1103,7 @@ export default function EnhancedInstructorDashboard() {
                   <span className="text-slate-900">45/100</span>
                 </div>
                 <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-indigo-500 rounded-full" style={{ width: '45%' }} />
+                  <div className="h-full bg-brand-500 rounded-full" style={{ width: '45%' }} />
                 </div>
               </div>
             </div>
