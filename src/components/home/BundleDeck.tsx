@@ -100,7 +100,7 @@ export const BundleDeck: React.FC<{ bundles: Bundle[] }> = ({ bundles }) => {
         : 'Bir Arada Mega Paketler';
 
     return (
-        <section className="w-full bg-[#ecfaf1] py-10 lg:py-12 font-jakarta overflow-hidden">
+        <section className="w-full bg-[#EEFBF3] py-10 lg:py-12 font-jakarta overflow-hidden">
             <div className="container mx-auto px-4">
                 <div className="flex items-end justify-between gap-6 mb-5">
                     <div className="min-w-0">
@@ -196,7 +196,7 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
 
     return (
         <article
-            className="group h-full flex flex-col bg-white rounded-[22px] ring-1 ring-[#dfe9e3] p-4 transition-shadow duration-300 hover:shadow-[0_28px_56px_-28px_rgba(19,27,46,0.42)]"
+            className="group h-full flex flex-col bg-white rounded-[22px] ring-1 ring-[#E5E7EB] p-4 transition-shadow duration-300 hover:shadow-[0_28px_56px_-28px_rgba(19,27,46,0.42)]"
             onPointerEnter={e => { if (e.pointerType === 'mouse') setFan(true); }}
             onPointerLeave={e => { if (e.pointerType === 'mouse') setFan(false); }}
         >
@@ -258,7 +258,7 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
 
                     {extra > 0 && (
                         <span
-                            className="absolute z-20 right-2 top-2 h-8 min-w-[2rem] px-2.5 rounded-full bg-[#12613b] text-white text-[13px] font-extrabold tabular-nums flex items-center justify-center shadow-[0_8px_18px_-8px_rgba(91,79,245,0.8)]"
+                            className="absolute z-20 right-2 top-2 h-8 min-w-[2rem] px-2.5 rounded-full bg-[#1B7A43] text-white text-[13px] font-extrabold tabular-nums flex items-center justify-center shadow-[0_8px_18px_-8px_rgba(91,79,245,0.8)]"
                             title={`${extra} kurs daha`}
                         >
                             +{extra}
@@ -281,13 +281,13 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                             .filter(Boolean).join(' · ');
                         const row = (
                             <>
-                                <span className="w-5 text-center text-[11.5px] font-extrabold text-[#12613b] tabular-nums shrink-0">{i + 1}</span>
+                                <span className="w-5 text-center text-[11.5px] font-extrabold text-[#1B7A43] tabular-nums shrink-0">{i + 1}</span>
                                 <img
                                     src={imageOf(c)}
                                     alt=""
                                     loading="lazy"
                                     onError={e => { (e.target as HTMLImageElement).src = '/placeholder.svg'; }}
-                                    className="w-12 h-[27px] rounded-md object-cover shrink-0 bg-[#e6f6ec]"
+                                    className="w-12 h-[27px] rounded-md object-cover shrink-0 bg-[#EEFBF3]"
                                 />
                                 <span className="min-w-0 flex-1">
                                     <span className="block text-[12.5px] leading-tight font-bold text-[#131b2e] truncate">{c.title}</span>
@@ -302,7 +302,7 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                                 {c.slug ? (
                                     <Link
                                         to={`/course/${c.slug}`}
-                                        className={cn(rowClass, 'hover:bg-[#eceeff] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/50')}
+                                        className={cn(rowClass, 'hover:bg-[#eceeff] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/50')}
                                     >
                                         {row}
                                     </Link>
@@ -320,13 +320,13 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                 aria-expanded={list}
                 aria-controls={listId}
                 onClick={() => setList(v => !v)}
-                className="relative z-20 self-center mt-3 inline-flex items-center gap-1.5 h-7 pl-3.5 pr-2.5 rounded-full bg-white ring-1 ring-[#d6d9e8] text-[11.5px] font-bold text-[#131b2e] hover:ring-[#131b2e]/40 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/50"
+                className="relative z-20 self-center mt-3 inline-flex items-center gap-1.5 h-7 pl-3.5 pr-2.5 rounded-full bg-white ring-1 ring-[#d6d9e8] text-[11.5px] font-bold text-[#131b2e] hover:ring-[#131b2e]/40 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/50"
             >
                 {list ? 'Kartlara dön' : `İçindeki ${courses.length} kursu gör`}
                 <ChevronDown className={cn('w-3.5 h-3.5 transition-transform duration-200', list && 'rotate-180')} />
             </button>
 
-            <h3 className="text-[16px] font-extrabold text-[#131b2e] mt-4 leading-snug text-balance transition-colors duration-200 group-hover:text-[#12613b]">
+            <h3 className="text-[16px] font-extrabold text-[#131b2e] mt-4 leading-snug text-balance transition-colors duration-200 group-hover:text-[#1B7A43]">
                 {bundle.title}
             </h3>
             {bundle.description && (
@@ -359,7 +359,7 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                     <button
                         type="button"
                         onClick={buy}
-                        className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-[#131b2e] hover:bg-[#12613b] active:scale-[0.98] text-white text-[13.5px] font-bold whitespace-nowrap transition-[background-color,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/50 focus-visible:ring-offset-2"
+                        className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-[#131b2e] hover:bg-[#1B7A43] active:scale-[0.98] text-white text-[13.5px] font-bold whitespace-nowrap transition-[background-color,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/50 focus-visible:ring-offset-2"
                     >
                         Paketi al
                         <ArrowRight className="w-4 h-4" />
@@ -384,7 +384,7 @@ const CourseFace: React.FC<{ course: BundleCourse; label: string; lifted?: boole
                     : ''
         )}
     >
-        <div className="relative h-[90px] shrink-0 bg-[#e6f6ec] m-[2px] mb-0 rounded-t-[12px] overflow-hidden">
+        <div className="relative h-[90px] shrink-0 bg-[#EEFBF3] m-[2px] mb-0 rounded-t-[12px] overflow-hidden">
             <img
                 src={imageOf(course)}
                 alt=""

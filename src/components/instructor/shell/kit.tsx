@@ -5,27 +5,27 @@ import { cn } from '@/lib/utils';
 
 /*
  * Eğitmen panelinin ortak parçaları. Renk dili menüden geliyor:
- * nane (#b2f0c8) zemin üstünde koyu mürekkep (#0b2619). Ana düğme nane,
+ * nane (#9cf2e8) zemin üstünde koyu mürekkep (#00201d). Ana düğme nane,
  * seçili durum koyu mürekkep üstünde nane — menüdeki seçili başlık gibi.
  */
 
 export const C = {
-    ink: '#0b2619',
-    mint: '#b2f0c8',
-    teal: '#12613b',
+    ink: '#00201d',
+    mint: '#9cf2e8',
+    teal: '#005c55',
 };
 
 const base =
     'inline-flex items-center justify-center gap-2 rounded-xl font-bold whitespace-nowrap select-none ' +
     'transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.98] ' +
     'disabled:opacity-50 disabled:pointer-events-none ' +
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/45 focus-visible:ring-offset-2';
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45 focus-visible:ring-offset-2';
 
 export const btn = {
-    primary: cn(base, 'bg-[#b2f0c8] text-[#0b2619] hover:bg-[#9ce8b8] shadow-[0_1px_2px_rgba(0,64,58,0.18)]'),
-    dark: cn(base, 'bg-[#0b2619] text-[#b2f0c8] hover:bg-[#10331f]'),
-    outline: cn(base, 'bg-white text-[#0b2619] shadow-[0_1px_2px_rgba(0,32,29,0.1)] ring-1 ring-inset ring-[#0b2619]/[0.06] hover:bg-[#ecfaf1]'),
-    ghost: cn(base, 'text-[#1d4a45] hover:bg-[#e8f8ee] hover:text-[#0b2619]'),
+    primary: cn(base, 'bg-[#9cf2e8] text-[#00201d] hover:bg-[#86e9dd] shadow-[0_1px_2px_rgba(0,64,58,0.18)]'),
+    dark: cn(base, 'bg-[#00201d] text-[#9cf2e8] hover:bg-[#03302b]'),
+    outline: cn(base, 'bg-white text-[#00201d] shadow-[0_1px_2px_rgba(0,32,29,0.1)] ring-1 ring-inset ring-[#00201d]/[0.06] hover:bg-[#ecfbf8]'),
+    ghost: cn(base, 'text-[#1d4a45] hover:bg-[#e8faf6] hover:text-[#00201d]'),
     danger: cn(base, 'bg-white text-[#b42318] ring-1 ring-inset ring-[#f3c9c4] hover:bg-[#fff3f1]'),
     md: 'h-10 px-4 text-[13.5px]',
     sm: 'h-8 px-3 text-[12.5px] rounded-lg',
@@ -34,13 +34,13 @@ export const btn = {
 
 /** Form alanları için tek sınıf: input, textarea, select. */
 export const field =
-    'w-full rounded-xl bg-white px-3.5 text-[14px] text-[#0b2619] placeholder:text-[#7c918e] ' +
-    'ring-1 ring-inset ring-[#0b2619]/[0.09] border-0 outline-none transition-shadow duration-150 ' +
-    'hover:ring-[#0b2619]/[0.16] focus:ring-2 focus:ring-[#12613b]/55 focus-visible:ring-2 focus-visible:ring-[#12613b]/55 ' +
-    'disabled:bg-[#f3f7f6] disabled:text-[#6a7f74]';
+    'w-full rounded-xl bg-white px-3.5 text-[14px] text-[#00201d] placeholder:text-[#7c918e] ' +
+    'ring-1 ring-inset ring-[#00201d]/[0.09] border-0 outline-none transition-shadow duration-150 ' +
+    'hover:ring-[#00201d]/[0.16] focus:ring-2 focus:ring-[#005c55]/55 focus-visible:ring-2 focus-visible:ring-[#005c55]/55 ' +
+    'disabled:bg-[#f3f7f6] disabled:text-[#6b827f]';
 
-export const label = 'block text-[13px] font-bold text-[#0b2619] mb-1.5';
-export const hint = 'text-[12.5px] text-[#5e7268]';
+export const label = 'block text-[13px] font-bold text-[#00201d] mb-1.5';
+export const hint = 'text-[12.5px] text-[#5f7774]';
 
 export const PageHead: React.FC<{
     title: string;
@@ -50,10 +50,10 @@ export const PageHead: React.FC<{
 }> = ({ title, sub, actions, className }) => (
     <header className={cn('flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7', className)}>
         <div className="min-w-0">
-            <h1 className="text-[28px] sm:text-[32px] leading-[1.1] font-extrabold tracking-[-0.025em] text-[#0b2619] text-balance">
+            <h1 className="text-[28px] sm:text-[32px] leading-[1.1] font-extrabold tracking-[-0.025em] text-[#00201d] text-balance">
                 {title}
             </h1>
-            {sub && <p className="mt-2 text-[14.5px] text-[#4a5f55]">{sub}</p>}
+            {sub && <p className="mt-2 text-[14.5px] text-[#4a6360]">{sub}</p>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2 shrink-0">{actions}</div>}
     </header>
@@ -64,7 +64,7 @@ export const Panel: React.FC<React.HTMLAttributes<HTMLDivElement> & { as?: 'div'
     className, as: Tag = 'div', ...rest
 }) => (
     <Tag
-        className={cn('rounded-2xl bg-[#f5f7f6]', className)}
+        className={cn('rounded-2xl bg-[#f4f6f6]', className)}
         {...rest}
     />
 );
@@ -74,8 +74,8 @@ export const PanelHead: React.FC<{ title: string; sub?: React.ReactNode; actions
 }) => (
     <div className="flex items-start justify-between gap-4 px-5 sm:px-6 pt-5 pb-3">
         <div className="min-w-0">
-            <h2 className="text-[16.5px] font-extrabold tracking-[-0.01em] text-[#0b2619]">{title}</h2>
-            {sub && <p className="mt-0.5 text-[13px] text-[#5e7268]">{sub}</p>}
+            <h2 className="text-[16.5px] font-extrabold tracking-[-0.01em] text-[#00201d]">{title}</h2>
+            {sub && <p className="mt-0.5 text-[13px] text-[#5f7774]">{sub}</p>}
         </div>
         {actions}
     </div>
@@ -104,13 +104,13 @@ export function Segments<T extends string>({
                         className={cn(
                             'h-9 px-3.5 rounded-xl text-[13.5px] font-bold inline-flex items-center gap-2',
                             'transition-[background-color,color] duration-150',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/45',
-                            on ? 'bg-[#0b2619] text-[#b2f0c8]' : 'text-[#1d4a45] hover:bg-[#f3f4f4]'
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45',
+                            on ? 'bg-[#00201d] text-[#9cf2e8]' : 'text-[#1d4a45] hover:bg-[#f3f4f4]'
                         )}
                     >
                         {it.label}
                         {it.count != null && (
-                            <span className={cn('text-[12px] tabular-nums', on ? 'text-[#b2f0c8]/70' : 'text-[#5e7268]')}>
+                            <span className={cn('text-[12px] tabular-nums', on ? 'text-[#9cf2e8]/70' : 'text-[#5f7774]')}>
                                 {it.count}
                             </span>
                         )}
@@ -129,7 +129,7 @@ export const SearchBox: React.FC<{
 }> = ({ value, onChange, placeholder = 'Ara', className }) => (
     <label className={cn('relative block', className)}>
         <span className="sr-only">{placeholder}</span>
-        <Search aria-hidden className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5e7268] pointer-events-none" />
+        <Search aria-hidden className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5f7774] pointer-events-none" />
         <input
             type="search"
             value={value}
@@ -146,9 +146,9 @@ export const Empty: React.FC<{
     action?: { label: string; to?: string; onClick?: () => void };
     className?: string;
 }> = ({ title, text, action, className }) => (
-    <div className={cn('rounded-2xl bg-[#ecfaf1] px-6 py-14 text-center', className)}>
-        <p className="text-[17px] font-extrabold tracking-tight text-[#0b2619]">{title}</p>
-        {text && <p className="mt-1.5 text-[14px] text-[#4a5f55] max-w-md mx-auto">{text}</p>}
+    <div className={cn('rounded-2xl bg-[#ecfbf8] px-6 py-14 text-center', className)}>
+        <p className="text-[17px] font-extrabold tracking-tight text-[#00201d]">{title}</p>
+        {text && <p className="mt-1.5 text-[14px] text-[#4a6360] max-w-md mx-auto">{text}</p>}
         {action && (action.to ? (
             <Link to={action.to} className={cn(btn.primary, btn.md, 'mt-6')}>{action.label}</Link>
         ) : (
@@ -158,8 +158,8 @@ export const Empty: React.FC<{
 );
 
 export const Loading: React.FC<{ label?: string }> = ({ label = 'Yükleniyor' }) => (
-    <div className="flex items-center justify-center gap-2.5 min-h-[40vh] text-[14px] text-[#4a5f55]" role="status">
-        <Loader2 className="w-5 h-5 animate-spin text-[#12613b]" />
+    <div className="flex items-center justify-center gap-2.5 min-h-[40vh] text-[14px] text-[#4a6360]" role="status">
+        <Loader2 className="w-5 h-5 animate-spin text-[#005c55]" />
         {label}
     </div>
 );
@@ -170,23 +170,23 @@ type Tone = 'live' | 'review' | 'draft' | 'warn' | 'bad' | 'muted' | 'mint';
 export const Tag: React.FC<{ tone: Tone; children: React.ReactNode; className?: string }> = ({ tone, children, className }) => (
     <span className={cn(
         'inline-flex items-center gap-1.5 text-[12.5px] font-bold',
-        tone === 'live' && 'text-[#146c43]',
+        tone === 'live' && 'text-[#00695f]',
         tone === 'review' && 'text-[#1f5f99]',
         tone === 'draft' && 'text-[#8a5a0b]',
         tone === 'warn' && 'text-[#8a5a0b]',
         tone === 'bad' && 'text-[#b42318]',
-        tone === 'muted' && 'text-[#5e7268]',
-        tone === 'mint' && 'text-[#12613b]',
+        tone === 'muted' && 'text-[#5f7774]',
+        tone === 'mint' && 'text-[#005c55]',
         className
     )}>
         <span aria-hidden className={cn(
             'w-1.5 h-1.5 rounded-full',
-            tone === 'live' && 'bg-[#1a9d5c]',
+            tone === 'live' && 'bg-[#0f9f8f]',
             tone === 'review' && 'bg-[#2f7fc1]',
             (tone === 'draft' || tone === 'warn') && 'bg-[#d08a1c]',
             tone === 'bad' && 'bg-[#d92d20]',
-            tone === 'muted' && 'bg-[#9aaea3]',
-            tone === 'mint' && 'bg-[#12613b]'
+            tone === 'muted' && 'bg-[#9bb0ad]',
+            tone === 'mint' && 'bg-[#005c55]'
         )} />
         {children}
     </span>
@@ -201,7 +201,7 @@ export const Initials: React.FC<{ name?: string; src?: string | null; size?: num
     return (
         <span
             aria-hidden
-            className={cn('rounded-full bg-[#b2f0c8] text-[#0b2619] font-extrabold flex items-center justify-center shrink-0', className)}
+            className={cn('rounded-full bg-[#9cf2e8] text-[#00201d] font-extrabold flex items-center justify-center shrink-0', className)}
             style={{ width: size, height: size, fontSize: Math.round(size * 0.36) }}
         >
             {letters}

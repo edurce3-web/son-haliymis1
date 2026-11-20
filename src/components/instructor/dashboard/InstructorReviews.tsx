@@ -56,13 +56,13 @@ export function InstructorReviews() {
             ) : (
                 <>
                     {/* Puan özeti: koyu mürekkep üstünde nane, panelin imzası */}
-                    <section className="rounded-2xl bg-[#0b2619] text-white px-6 sm:px-8 py-6 grid sm:grid-cols-[auto_1fr] gap-6 sm:gap-10 items-center mb-6">
+                    <section className="rounded-2xl bg-[#00201d] text-white px-6 sm:px-8 py-6 grid sm:grid-cols-[auto_1fr] gap-6 sm:gap-10 items-center mb-6">
                         <div>
-                            <p className="text-[56px] leading-none font-extrabold tracking-[-0.03em] text-[#b2f0c8] tabular-nums">
+                            <p className="text-[56px] leading-none font-extrabold tracking-[-0.03em] text-[#9cf2e8] tabular-nums">
                                 {avg.toFixed(1).replace('.', ',')}
                             </p>
                             <div className="mt-2.5"><Stars value={Math.round(avg)} size="w-4 h-4" /></div>
-                            <p className="mt-1.5 text-[13px] text-[#a9d4b9]">{total.toLocaleString('tr-TR')} değerlendirme</p>
+                            <p className="mt-1.5 text-[13px] text-[#a9cfc9]">{total.toLocaleString('tr-TR')} değerlendirme</p>
                         </div>
                         <ul className="space-y-1.5">
                             {[5, 4, 3, 2, 1].map(s => {
@@ -82,9 +82,9 @@ export function InstructorReviews() {
                                                 {s} <Star className="w-3.5 h-3.5 fill-[#fea619] text-[#fea619]" />
                                             </span>
                                             <span className="h-2 rounded-full bg-white/10 overflow-hidden">
-                                                <span className="block h-full rounded-full bg-[#b2f0c8]" style={{ width: `${pct}%` }} />
+                                                <span className="block h-full rounded-full bg-[#9cf2e8]" style={{ width: `${pct}%` }} />
                                             </span>
-                                            <span className="text-[12.5px] text-[#a9d4b9] tabular-nums text-right">%{pct}</span>
+                                            <span className="text-[12.5px] text-[#a9cfc9] tabular-nums text-right">%{pct}</span>
                                         </button>
                                     </li>
                                 );
@@ -115,16 +115,16 @@ export function InstructorReviews() {
                                         <Initials name={name} src={r.profile_image || r.profile_image_path} size={40} />
                                         <div className="flex-1 min-w-0">
                                             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                                                <span className="text-[14px] font-bold text-[#0b2619]">{name}</span>
+                                                <span className="text-[14px] font-bold text-[#00201d]">{name}</span>
                                                 <Stars value={Number(r.rating) || 0} />
-                                                <span className="text-[12.5px] text-[#5e7268]" title={new Date(r.created_at).toLocaleDateString('tr-TR')}>
+                                                <span className="text-[12.5px] text-[#5f7774]" title={new Date(r.created_at).toLocaleDateString('tr-TR')}>
                                                     {relativeTime(r.created_at)}
                                                 </span>
                                             </div>
-                                            {r.course_title && <p className="text-[12.5px] text-[#12613b] font-semibold mt-0.5">{r.course_title}</p>}
+                                            {r.course_title && <p className="text-[12.5px] text-[#005c55] font-semibold mt-0.5">{r.course_title}</p>}
                                             {r.comment
-                                                ? <p className="text-[14.5px] text-[#1d3a2c] leading-relaxed mt-2 whitespace-pre-wrap">{r.comment}</p>
-                                                : <p className="text-[13.5px] text-[#5e7268] mt-2">Yalnızca puan verdi, yorum yazmadı.</p>}
+                                                ? <p className="text-[14.5px] text-[#1d3a37] leading-relaxed mt-2 whitespace-pre-wrap">{r.comment}</p>
+                                                : <p className="text-[13.5px] text-[#5f7774] mt-2">Yalnızca puan verdi, yorum yazmadı.</p>}
                                         </div>
                                     </article>
                                 );

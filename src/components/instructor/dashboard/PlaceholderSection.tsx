@@ -55,14 +55,14 @@ export const PlaceholderSection: React.FC<PlaceholderSectionProps> = () => {
                                     aria-expanded={isOpen}
                                     aria-controls={`faq-${i}`}
                                     onClick={() => setOpen(isOpen ? null : i)}
-                                    className="w-full flex items-center justify-between gap-4 px-5 sm:px-6 py-4 text-left hover:bg-[#f7f8f8] focus-visible:outline-none focus-visible:bg-[#ecfaf1] transition-colors"
+                                    className="w-full flex items-center justify-between gap-4 px-5 sm:px-6 py-4 text-left hover:bg-[#f7f8f8] focus-visible:outline-none focus-visible:bg-[#ecfbf8] transition-colors"
                                 >
-                                    <span className="text-[15.5px] font-bold text-[#0b2619]">{f.q}</span>
-                                    <ChevronDown className={cn('w-4 h-4 text-[#4a5f55] shrink-0 transition-transform duration-200', isOpen && 'rotate-180')} />
+                                    <span className="text-[15.5px] font-bold text-[#00201d]">{f.q}</span>
+                                    <ChevronDown className={cn('w-4 h-4 text-[#4a6360] shrink-0 transition-transform duration-200', isOpen && 'rotate-180')} />
                                 </button>
                             </h2>
                             {isOpen && (
-                                <p id={`faq-${i}`} className="px-5 sm:px-6 pb-5 -mt-1 text-[14.5px] leading-relaxed text-[#1d3a2c] max-w-[68ch] [&_b]:font-bold [&_b]:text-[#0b2619]">
+                                <p id={`faq-${i}`} className="px-5 sm:px-6 pb-5 -mt-1 text-[14.5px] leading-relaxed text-[#1d3a37] max-w-[68ch] [&_b]:font-bold [&_b]:text-[#00201d]">
                                     {f.a}
                                 </p>
                             )}
@@ -71,13 +71,13 @@ export const PlaceholderSection: React.FC<PlaceholderSectionProps> = () => {
                 })}
             </Panel>
 
-            <section className="mt-6 rounded-2xl bg-[#b2f0c8] px-6 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <section className="mt-6 rounded-2xl bg-[#9cf2e8] px-6 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-[17px] font-extrabold tracking-tight text-[#0b2619]">Cevabını bulamadın mı?</h2>
+                    <h2 className="text-[17px] font-extrabold tracking-tight text-[#00201d]">Cevabını bulamadın mı?</h2>
                     <p className="mt-1 text-[14px] text-[#1d4a45]">Bize yaz, sorunun ne olduğunu birlikte çözelim.</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                    <Link to="/help" className={cn(btn.outline, btn.md, 'ring-[#0b2619]/15')}>Yardım merkezi</Link>
+                    <Link to="/help" className={cn(btn.outline, btn.md, 'ring-[#00201d]/15')}>Yardım merkezi</Link>
                     <Link to="/contact" className={cn(btn.dark, btn.md)}>Bize yaz</Link>
                 </div>
             </section>

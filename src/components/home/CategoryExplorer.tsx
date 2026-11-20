@@ -72,8 +72,8 @@ export const CategoryExplorer: React.FC<{
                             className={cn(
                                 'shrink-0 px-4 py-2 rounded-full text-[13px] font-semibold transition-all whitespace-nowrap shadow-sm',
                                 isActive
-                                    ? 'bg-[#12613b] text-white'
-                                    : 'bg-white text-[#3e4947] hover:text-[#131b2e] hover:bg-[#e6f6ec]'
+                                    ? 'bg-[#1B7A43] text-white'
+                                    : 'bg-white text-[#3e4947] hover:text-[#131b2e] hover:bg-[#EEFBF3]'
                             )}
                         >
                             {cat.name}

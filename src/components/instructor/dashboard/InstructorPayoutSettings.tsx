@@ -122,15 +122,15 @@ const InstructorPayoutSettings: React.FC = () => {
         <>
             <PageHead title="Ödeme bilgileri" sub="Kazancının yatacağı hesap ve şimdiye kadarki ödemelerin" />
 
-            <section className="rounded-2xl bg-[#0b2619] text-white grid sm:grid-cols-3 mb-6 overflow-hidden">
+            <section className="rounded-2xl bg-[#00201d] text-white grid sm:grid-cols-3 mb-6 overflow-hidden">
                 {[
                     { l: 'Ödenecek bakiye', v: formatPrice(balance), mint: true },
                     { l: 'Bugüne kadar ödenen', v: formatPrice(totalPaid) },
                     { l: 'Sonraki ödeme', v: next || '—' },
                 ].map((x, i) => (
                     <div key={x.l} className={cn('px-6 py-5', i > 0 && 'border-t sm:border-t-0 sm:border-l border-white/[0.08]')}>
-                        <p className="text-[12.5px] text-[#a9d4b9]">{x.l}</p>
-                        <p className={cn('mt-1.5 text-[26px] leading-none font-extrabold tracking-[-0.02em] tabular-nums', x.mint ? 'text-[#b2f0c8]' : 'text-white')}>
+                        <p className="text-[12.5px] text-[#a9cfc9]">{x.l}</p>
+                        <p className={cn('mt-1.5 text-[26px] leading-none font-extrabold tracking-[-0.02em] tabular-nums', x.mint ? 'text-[#9cf2e8]' : 'text-white')}>
                             {x.v}
                         </p>
                     </div>
@@ -208,14 +208,14 @@ const InstructorPayoutSettings: React.FC = () => {
             <Panel as="section" className="overflow-hidden">
                 <PanelHead title="Gelen ödemeler" />
                 {payouts.length === 0 ? (
-                    <p className="px-6 py-10 text-center text-[14px] text-[#4a5f55]">
+                    <p className="px-6 py-10 text-center text-[14px] text-[#4a6360]">
                         Henüz ödeme yapılmadı. Bakiyen {next ? `${next} tarihinde` : 'ödeme gününde'} hesabına aktarılacak.
                     </p>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-[560px] text-[13.5px]">
                             <thead>
-                                <tr className="text-left text-[12.5px] text-[#4a5f55] border-b-2 border-white">
+                                <tr className="text-left text-[12.5px] text-[#4a6360] border-b-2 border-white">
                                     <th scope="col" className="font-bold px-5 sm:px-6 py-3">Tarih</th>
                                     <th scope="col" className="font-bold px-3 py-3">Dönem</th>
                                     <th scope="col" className="font-bold px-3 py-3">Durum</th>
@@ -227,16 +227,16 @@ const InstructorPayoutSettings: React.FC = () => {
                                     const m = statusMeta[p.status] || statusMeta.pending;
                                     return (
                                         <tr key={p.id} className="hover:bg-[#f7f8f8]">
-                                            <td className="px-5 sm:px-6 py-3 text-[#1d3a2c] whitespace-nowrap tabular-nums">
+                                            <td className="px-5 sm:px-6 py-3 text-[#1d3a37] whitespace-nowrap tabular-nums">
                                                 {new Date(p.paid_at || p.created_at).toLocaleDateString('tr-TR')}
                                             </td>
-                                            <td className="px-3 py-3 text-[#4a5f55] whitespace-nowrap tabular-nums">
+                                            <td className="px-3 py-3 text-[#4a6360] whitespace-nowrap tabular-nums">
                                                 {p.period_start && p.period_end
                                                     ? `${new Date(p.period_start).toLocaleDateString('tr-TR')} – ${new Date(p.period_end).toLocaleDateString('tr-TR')}`
                                                     : '—'}
                                             </td>
                                             <td className="px-3 py-3"><Tag tone={m.tone}>{m.label}</Tag></td>
-                                            <td className="px-5 sm:px-6 py-3 text-right font-bold text-[#0b2619] whitespace-nowrap tabular-nums">{formatPrice(p.amount)}</td>
+                                            <td className="px-5 sm:px-6 py-3 text-right font-bold text-[#00201d] whitespace-nowrap tabular-nums">{formatPrice(p.amount)}</td>
                                         </tr>
                                     );
                                 })}

@@ -154,12 +154,12 @@ export const CourseList: React.FC = () => {
 const Group: React.FC<{ title: string; note: string; items: Course[]; empty: string }> = ({ title, note, items, empty }) => (
     <section>
         <header className="flex items-baseline gap-3 mb-3">
-            <h2 className="text-[19px] font-extrabold tracking-tight text-[#0b2619]">{title}</h2>
-            <span className="text-[14px] font-bold tabular-nums text-[#5e7268]">{items.length}</span>
-            <span className="hidden sm:inline text-[13px] text-[#5e7268]">· {note}</span>
+            <h2 className="text-[19px] font-extrabold tracking-tight text-[#00201d]">{title}</h2>
+            <span className="text-[14px] font-bold tabular-nums text-[#5f7774]">{items.length}</span>
+            <span className="hidden sm:inline text-[13px] text-[#5f7774]">· {note}</span>
         </header>
         {items.length === 0 ? (
-            <p className="rounded-2xl bg-[#ecfaf1] px-5 py-6 text-[14px] text-[#4a5f55]">{empty}</p>
+            <p className="rounded-2xl bg-[#ecfbf8] px-5 py-6 text-[14px] text-[#4a6360]">{empty}</p>
         ) : (
             <Panel className="divide-y-2 divide-white overflow-hidden">
                 {items.map(c => <Row key={c.id} course={c} />)}
@@ -174,7 +174,7 @@ const Row: React.FC<{ course: Course }> = ({ course: c }) => {
     return (
         <div className="group flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-4 sm:px-5 py-4 hover:bg-[#f7f8f8] transition-colors duration-150">
             <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
-            <Link to={`/instructor/courses/edit/${c.id}`} tabIndex={-1} aria-hidden className="w-[88px] h-[50px] sm:w-[112px] sm:h-[63px] rounded-xl overflow-hidden bg-[#e2f6e9] shrink-0">
+            <Link to={`/instructor/courses/edit/${c.id}`} tabIndex={-1} aria-hidden className="w-[88px] h-[50px] sm:w-[112px] sm:h-[63px] rounded-xl overflow-hidden bg-[#e3f6f2] shrink-0">
                 {c.thumbnail ? (
                     <img
                         src={c.thumbnail}
@@ -188,13 +188,13 @@ const Row: React.FC<{ course: Course }> = ({ course: c }) => {
             <div className="min-w-0 flex-1">
                 <Link
                     to={`/instructor/courses/edit/${c.id}`}
-                    className="block text-[15px] font-bold text-[#0b2619] leading-snug line-clamp-2 hover:text-[#12613b]"
+                    className="block text-[15px] font-bold text-[#00201d] leading-snug line-clamp-2 hover:text-[#005c55]"
                 >
                     {c.title}
                 </Link>
                 <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
                     <Tag tone={st.tone}>{st.label}</Tag>
-                    <span className="text-[12.5px] text-[#5e7268]" title={new Date(c.lastUpdated).toLocaleString('tr-TR')}>
+                    <span className="text-[12.5px] text-[#5f7774]" title={new Date(c.lastUpdated).toLocaleString('tr-TR')}>
                         Son düzenleme {relativeTime(c.lastUpdated)}
                     </span>
                 </div>
@@ -224,8 +224,8 @@ const Row: React.FC<{ course: Course }> = ({ course: c }) => {
 
 const Fig: React.FC<{ label: string; value: string; icon?: React.ReactNode }> = ({ label, value, icon }) => (
     <div className="min-w-[64px]">
-        <dt className="text-[11.5px] text-[#5e7268]">{label}</dt>
-        <dd className="mt-0.5 inline-flex items-center gap-1 text-[14.5px] font-bold tabular-nums text-[#0b2619]">
+        <dt className="text-[11.5px] text-[#5f7774]">{label}</dt>
+        <dd className="mt-0.5 inline-flex items-center gap-1 text-[14.5px] font-bold tabular-nums text-[#00201d]">
             {icon}{value}
         </dd>
     </div>

@@ -153,13 +153,13 @@ export function InstructorMessages() {
             {showNewMessage && (
                 <Panel className="p-5 mb-4 animate-in fade-in slide-in-from-top-1 duration-200">
                     <div className="flex items-center justify-between gap-3 mb-3">
-                        <p className="text-[14.5px] font-extrabold text-[#0b2619]">Kime yazacaksın?</p>
+                        <p className="text-[14.5px] font-extrabold text-[#00201d]">Kime yazacaksın?</p>
                         <button type="button" onClick={() => setShowNewMessage(false)} className={cn(btn.ghost, btn.sm)} aria-label="Kapat">
                             <X className="w-4 h-4" />
                         </button>
                     </div>
                     {students.length === 0 ? (
-                        <p className="text-[14px] text-[#4a5f55]">Henüz kursuna kayıtlı öğrencin yok.</p>
+                        <p className="text-[14px] text-[#4a6360]">Henüz kursuna kayıtlı öğrencin yok.</p>
                     ) : (
                         <div className="flex flex-wrap gap-2 max-h-44 overflow-y-auto">
                             {students.map((s: any) => (
@@ -167,7 +167,7 @@ export function InstructorMessages() {
                                     key={s.user_id}
                                     type="button"
                                     onClick={() => { setSelectedUserId(s.user_id); setShowNewMessage(false); }}
-                                    className="inline-flex items-center gap-2 h-10 pl-1.5 pr-3.5 rounded-full bg-[#f5f6f6] ring-1 ring-inset ring-[#dadfdd] hover:bg-[#b2f0c8]/50 hover:ring-[#a3dfb9] text-[13.5px] font-semibold text-[#0b2619] transition-colors"
+                                    className="inline-flex items-center gap-2 h-10 pl-1.5 pr-3.5 rounded-full bg-[#f5f6f6] ring-1 ring-inset ring-[#dadfdd] hover:bg-[#9cf2e8]/50 hover:ring-[#9cdcd3] text-[13.5px] font-semibold text-[#00201d] transition-colors"
                                 >
                                     <Initials name={`${s.first_name || ''} ${s.last_name || ''}`} size={28} />
                                     {s.first_name} {s.last_name}
@@ -186,11 +186,11 @@ export function InstructorMessages() {
                     </div>
                     <div className="flex-1 overflow-y-auto p-2">
                         {convLoading ? (
-                            <div className="flex justify-center py-12"><Loader2 className="w-5 h-5 text-[#12613b] animate-spin" /></div>
+                            <div className="flex justify-center py-12"><Loader2 className="w-5 h-5 text-[#005c55] animate-spin" /></div>
                         ) : filteredConversations.length === 0 ? (
                             <div className="text-center py-12 px-6">
-                                <p className="text-[14.5px] font-bold text-[#0b2619]">{search ? 'Bu isimde biri yok' : 'Henüz yazışma yok'}</p>
-                                {!search && <p className="text-[13px] text-[#5e7268] mt-1">Yeni mesaj ile bir öğrencine yaz.</p>}
+                                <p className="text-[14.5px] font-bold text-[#00201d]">{search ? 'Bu isimde biri yok' : 'Henüz yazışma yok'}</p>
+                                {!search && <p className="text-[13px] text-[#5f7774] mt-1">Yeni mesaj ile bir öğrencine yaz.</p>}
                             </div>
                         ) : (
                             <ul className="space-y-0.5">
@@ -204,24 +204,24 @@ export function InstructorMessages() {
                                                 onClick={() => setSelectedUserId(c.other_user_id)}
                                                 className={cn(
                                                     'w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-colors duration-150',
-                                                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/45',
-                                                    on ? 'bg-[#b2f0c8]/45' : 'hover:bg-[#f5f6f6]'
+                                                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45',
+                                                    on ? 'bg-[#9cf2e8]/45' : 'hover:bg-[#f5f6f6]'
                                                 )}
                                             >
                                                 <Initials name={`${c.first_name || ''} ${c.last_name || ''}`} src={c.profile_image || c.profile_image_path} size={40} />
                                                 <span className="flex-1 min-w-0">
                                                     <span className="flex items-baseline justify-between gap-2">
-                                                        <span className={cn('text-[14px] truncate text-[#0b2619]', unread ? 'font-extrabold' : 'font-semibold')}>
+                                                        <span className={cn('text-[14px] truncate text-[#00201d]', unread ? 'font-extrabold' : 'font-semibold')}>
                                                             {c.first_name} {c.last_name}
                                                         </span>
-                                                        <span className="text-[11.5px] text-[#5e7268] shrink-0">{relativeTime(c.last_message_at)}</span>
+                                                        <span className="text-[11.5px] text-[#5f7774] shrink-0">{relativeTime(c.last_message_at)}</span>
                                                     </span>
                                                     <span className="flex items-center gap-2 mt-0.5">
-                                                        <span className={cn('text-[13px] truncate flex-1', unread ? 'text-[#0b2619] font-semibold' : 'text-[#5e7268]')}>
+                                                        <span className={cn('text-[13px] truncate flex-1', unread ? 'text-[#00201d] font-semibold' : 'text-[#5f7774]')}>
                                                             {c.last_message || '…'}
                                                         </span>
                                                         {unread && (
-                                                            <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#0b2619] text-[#b2f0c8] text-[11px] font-bold tabular-nums flex items-center justify-center">
+                                                            <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#00201d] text-[#9cf2e8] text-[11px] font-bold tabular-nums flex items-center justify-center">
                                                                 {c.unread_count}
                                                             </span>
                                                         )}
@@ -240,8 +240,8 @@ export function InstructorMessages() {
                 <div className={cn('flex flex-col min-h-0', !selectedUserId && 'hidden lg:flex')}>
                     {!selectedUserId ? (
                         <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-white">
-                            <p className="text-[17px] font-extrabold text-[#0b2619]">Bir yazışma seç</p>
-                            <p className="text-[14px] text-[#4a5f55] mt-1.5 max-w-xs">Soldan bir kişi seç ya da yeni mesaj başlat.</p>
+                            <p className="text-[17px] font-extrabold text-[#00201d]">Bir yazışma seç</p>
+                            <p className="text-[14px] text-[#4a6360] mt-1.5 max-w-xs">Soldan bir kişi seç ya da yeni mesaj başlat.</p>
                         </div>
                     ) : (
                         <>
@@ -256,16 +256,16 @@ export function InstructorMessages() {
                                 </button>
                                 <Initials name={otherName} src={otherUser?.profile_image || otherUser?.profile_image_path || selected?.profile_image} size={38} />
                                 <div className="min-w-0">
-                                    <p className="text-[14.5px] font-extrabold text-[#0b2619] truncate">{otherName || 'Yükleniyor'}</p>
-                                    <p className="text-[12.5px] text-[#5e7268]">{otherUser?.role === 'instructor' ? 'Eğitmen' : 'Öğrenci'}</p>
+                                    <p className="text-[14.5px] font-extrabold text-[#00201d] truncate">{otherName || 'Yükleniyor'}</p>
+                                    <p className="text-[12.5px] text-[#5f7774]">{otherUser?.role === 'instructor' ? 'Eğitmen' : 'Öğrenci'}</p>
                                 </div>
                             </div>
 
                             <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5 space-y-2.5 bg-white">
                                 {msgLoading ? (
-                                    <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 text-[#12613b] animate-spin" /></div>
+                                    <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 text-[#005c55] animate-spin" /></div>
                                 ) : messages.length === 0 ? (
-                                    <p className="text-center text-[14px] text-[#4a5f55] py-12">Henüz mesaj yok. İlk mesajı sen yaz.</p>
+                                    <p className="text-center text-[14px] text-[#4a6360] py-12">Henüz mesaj yok. İlk mesajı sen yaz.</p>
                                 ) : (
                                     messages.map((m: Message) => {
                                         const isMe = m.sender_id === currentUserId;
@@ -275,17 +275,17 @@ export function InstructorMessages() {
                                                     <div className={cn(
                                                         'rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed whitespace-pre-wrap break-words',
                                                         isMe
-                                                            ? 'bg-[#b2f0c8] text-[#0b2619] rounded-br-md'
-                                                            : 'bg-white text-[#0b2619] ring-1 ring-[#e3e6e5] rounded-bl-md'
+                                                            ? 'bg-[#9cf2e8] text-[#00201d] rounded-br-md'
+                                                            : 'bg-white text-[#00201d] ring-1 ring-[#e3e6e5] rounded-bl-md'
                                                     )}>
                                                         {m.message_content}
                                                     </div>
-                                                    <div className={cn('flex items-center gap-1 mt-1 text-[11.5px] text-[#5e7268]', isMe ? 'justify-end' : 'justify-start')}>
+                                                    <div className={cn('flex items-center gap-1 mt-1 text-[11.5px] text-[#5f7774]', isMe ? 'justify-end' : 'justify-start')}>
                                                         {new Date(m.sent_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
                                                         {isMe && (
                                                             <CheckCheck
                                                                 aria-label={m.is_read ? 'Okundu' : 'İletildi'}
-                                                                className={cn('w-3.5 h-3.5', m.is_read ? 'text-[#12613b]' : 'text-[#9aaea3]')}
+                                                                className={cn('w-3.5 h-3.5', m.is_read ? 'text-[#005c55]' : 'text-[#9bb0ad]')}
                                                             />
                                                         )}
                                                     </div>

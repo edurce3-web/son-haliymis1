@@ -72,40 +72,40 @@ export const CreateCourseInitial: React.FC = () => {
     return (
         <EditorFrame back={{ to: '/instructor/courses/list', label: 'Kurslarım' }} title="Yeni kurs" width="narrow">
             <form onSubmit={e => { e.preventDefault(); handleCreate(); }} className="max-w-[880px]">
-                <span className="inline-flex items-center gap-2 h-7 pl-2.5 pr-3 rounded-full bg-[#b2f0c8]/45 text-[12.5px] font-bold text-[#0f4a2e]">
+                <span className="inline-flex items-center gap-2 h-7 pl-2.5 pr-3 rounded-full bg-[#9cf2e8]/45 text-[12.5px] font-bold text-[#00483f]">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#00897b]" />
                     Yeni kurs taslağı
                 </span>
-                <h1 className="mt-4 text-[32px] sm:text-[42px] leading-[1.05] font-extrabold tracking-[-0.035em] text-[#0b2619] text-balance">
+                <h1 className="mt-4 text-[32px] sm:text-[42px] leading-[1.05] font-extrabold tracking-[-0.035em] text-[#00201d] text-balance">
                     Yeni bir kurs başlatalım
                 </h1>
-                <p className="mt-3 text-[15.5px] sm:text-[16.5px] text-[#4a5f55] leading-relaxed max-w-[62ch]">
+                <p className="mt-3 text-[15.5px] sm:text-[16.5px] text-[#4a6360] leading-relaxed max-w-[62ch]">
                     Şimdilik iki temel bilgi yeterli: kursun adı ve konusu. Bölümler, dersler ve fiyatı
                     taslağı açınca istediğin gibi ekleyip değiştirebilirsin.
                 </p>
 
                 <section className="mt-10">
                     <div className="flex items-baseline justify-between gap-4">
-                        <label htmlFor="course-title" className="text-[14px] font-bold text-[#0b2619]">Kursunun adı ne?</label>
-                        <span className="hidden sm:block text-[12.5px] text-[#6a7f74]">Öğrencinin arayacağı kelimeleri kullan</span>
+                        <label htmlFor="course-title" className="text-[14px] font-bold text-[#00201d]">Kursunun adı ne?</label>
+                        <span className="hidden sm:block text-[12.5px] text-[#6b827f]">Öğrencinin arayacağı kelimeleri kullan</span>
                     </div>
                     <input
                         id="course-title"
                         autoFocus
                         placeholder="Örnek: Sıfırdan ileri seviye React ve Next.js"
                         className={cn(
-                            'mt-2.5 w-full h-[60px] px-5 rounded-2xl bg-white text-[17px] sm:text-[18px] font-semibold text-[#0b2619]',
+                            'mt-2.5 w-full h-[60px] px-5 rounded-2xl bg-white text-[17px] sm:text-[18px] font-semibold text-[#00201d]',
                             'placeholder:font-normal placeholder:text-[#93a6a3] border-0 outline-none',
                             'shadow-[0_1px_2px_rgba(0,32,29,0.06),0_10px_28px_-20px_rgba(0,32,29,0.35)]',
-                            'ring-1 ring-inset ring-[#0b2619]/[0.06] focus:ring-2 focus:ring-[#12613b]/55 transition-shadow duration-150'
+                            'ring-1 ring-inset ring-[#00201d]/[0.06] focus:ring-2 focus:ring-[#005c55]/55 transition-shadow duration-150'
                         )}
                         value={title}
                         maxLength={TITLE_MAX}
                         onChange={e => setTitle(e.target.value)}
                     />
                     <div className="mt-2 flex justify-between gap-4 px-1 text-[12.5px]">
-                        <span className="text-[#6a7f74]">Net ve ilgi çeken bir başlık seç; sonra da değiştirebilirsin.</span>
-                        <span className={cn('tabular-nums font-bold', title.length >= TITLE_MAX ? 'text-[#b45309]' : 'text-[#6a7f74]')}>
+                        <span className="text-[#6b827f]">Net ve ilgi çeken bir başlık seç; sonra da değiştirebilirsin.</span>
+                        <span className={cn('tabular-nums font-bold', title.length >= TITLE_MAX ? 'text-[#b45309]' : 'text-[#6b827f]')}>
                             {title.length}/{TITLE_MAX}
                         </span>
                     </div>
@@ -113,8 +113,8 @@ export const CreateCourseInitial: React.FC = () => {
 
                 <section className="mt-9">
                     <div className="flex items-baseline justify-between gap-4">
-                        <h2 id="cat-label" className="text-[14px] font-bold text-[#0b2619]">Hangi konuda?</h2>
-                        <span className="hidden sm:block text-[12.5px] text-[#6a7f74]">Katalogda bu başlığın altında listelenir</span>
+                        <h2 id="cat-label" className="text-[14px] font-bold text-[#00201d]">Hangi konuda?</h2>
+                        <span className="hidden sm:block text-[12.5px] text-[#6b827f]">Katalogda bu başlığın altında listelenir</span>
                     </div>
                     <div role="radiogroup" aria-labelledby="cat-label" className="mt-3 flex flex-wrap gap-2.5">
                         {catsLoading && Array.from({ length: 8 }).map((_, i) => (
@@ -134,7 +134,7 @@ export const CreateCourseInitial: React.FC = () => {
 
                 {needsSubcategory && (
                     <section className="mt-7 animate-in fade-in slide-in-from-top-1 duration-200">
-                        <h2 id="sub-label" className="text-[14px] font-bold text-[#0b2619]">
+                        <h2 id="sub-label" className="text-[14px] font-bold text-[#00201d]">
                             {selectedCategory?.name} içinde daha tam olarak?
                         </h2>
                         <div role="radiogroup" aria-labelledby="sub-label" className="mt-3 flex flex-wrap gap-2">
@@ -154,9 +154,9 @@ export const CreateCourseInitial: React.FC = () => {
                         className={cn(
                             'inline-flex items-center justify-center gap-2 h-[52px] px-7 rounded-2xl text-[15px] font-bold',
                             'transition-[background-color,color,transform,box-shadow] duration-150 active:scale-[0.98]',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/45 focus-visible:ring-offset-2',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45 focus-visible:ring-offset-2',
                             canSubmit
-                                ? 'bg-[#0b2619] text-[#b2f0c8] hover:bg-[#10331f] shadow-[0_12px_28px_-14px_rgba(0,32,29,0.7)]'
+                                ? 'bg-[#00201d] text-[#9cf2e8] hover:bg-[#03302b] shadow-[0_12px_28px_-14px_rgba(0,32,29,0.7)]'
                                 : 'bg-[#e3e7e6] text-[#8a9b98] cursor-not-allowed'
                         )}
                     >
@@ -164,10 +164,10 @@ export const CreateCourseInitial: React.FC = () => {
                             ? <><Loader2 className="w-4 h-4 animate-spin" /> Taslak açılıyor</>
                             : <>Taslağı oluştur <ArrowRight className="w-4 h-4" /></>}
                     </button>
-                    <p className="text-[13px] font-medium text-[#5e7268]">{missing || 'Taslak yalnızca sana görünür.'}</p>
+                    <p className="text-[13px] font-medium text-[#5f7774]">{missing || 'Taslak yalnızca sana görünür.'}</p>
                     <Link
                         to="/instructor/courses/list"
-                        className="sm:ml-auto text-[13.5px] font-bold text-[#5e7268] hover:text-[#0b2619] transition-colors"
+                        className="sm:ml-auto text-[13.5px] font-bold text-[#5f7774] hover:text-[#00201d] transition-colors"
                     >
                         Daha sonra devam et
                     </Link>
@@ -186,11 +186,11 @@ const Pick: React.FC<{ on: boolean; onClick: () => void; small?: boolean; childr
         onClick={onClick}
         className={cn(
             'rounded-2xl font-bold transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.97]',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/45 focus-visible:ring-offset-2',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45 focus-visible:ring-offset-2',
             small ? 'h-10 px-4 text-[13.5px]' : 'h-12 px-5 text-[14.5px]',
             on
-                ? 'bg-[#0b2619] text-[#b2f0c8] shadow-[0_10px_24px_-14px_rgba(0,32,29,0.8)]'
-                : 'bg-white text-[#1d3a2c] shadow-[0_1px_2px_rgba(0,32,29,0.07)] hover:bg-[#ecfaf1] hover:text-[#0b2619]'
+                ? 'bg-[#00201d] text-[#9cf2e8] shadow-[0_10px_24px_-14px_rgba(0,32,29,0.8)]'
+                : 'bg-white text-[#1d3a37] shadow-[0_1px_2px_rgba(0,32,29,0.07)] hover:bg-[#ecfbf8] hover:text-[#00201d]'
         )}
     >
         {children}

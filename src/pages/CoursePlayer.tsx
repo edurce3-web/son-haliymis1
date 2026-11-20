@@ -27,7 +27,10 @@ import {
     Loader2,
     HelpCircle,
     Megaphone,
-    StickyNote
+    StickyNote,
+    FileArchive,
+    Presentation,
+    File as FileIcon
 } from 'lucide-react';
 import { coursesAPI, progressAPI, reviewsAPI, certificatesAPI } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
@@ -997,7 +1000,7 @@ const CoursePlayer = () => {
                                                 <h3 className="text-lg font-bold text-slate-100 mb-2">Ders Kaynakları</h3>
                                                 {resourcesData.resources.map((r: any) => {
                                                     const ext = r.name?.split('.').pop()?.toLowerCase() || '';
-                                                    const icon = ['pdf'].includes(ext) ? '📄' : ['doc', 'docx'].includes(ext) ? '📝' : ['zip', 'rar'].includes(ext) ? '📦' : ['ppt', 'pptx'].includes(ext) ? '📊' : '📁';
+                                                    const icon = ['zip', 'rar'].includes(ext) ? <FileArchive className="w-5 h-5" /> : ['ppt', 'pptx'].includes(ext) ? <Presentation className="w-5 h-5" /> : ['pdf', 'doc', 'docx', 'txt'].includes(ext) ? <FileText className="w-5 h-5" /> : <FileIcon className="w-5 h-5" />;
                                                     const sizeKB = r.file_size ? (r.file_size / 1024).toFixed(0) : '?';
                                                     const sizeMB = r.file_size > 1048576 ? (r.file_size / 1048576).toFixed(1) + ' MB' : sizeKB + ' KB';
                                                     const fileUrl = r.url || r.file_url || r.file_path;
@@ -1010,7 +1013,7 @@ const CoursePlayer = () => {
                                                             rel="noopener noreferrer"
                                                             className="flex items-center gap-4 p-4 bg-slate-800/30 hover:bg-slate-800/60 rounded-xl border border-white/5 hover:border-brand-500/20 transition-all group"
                                                         >
-                                                            <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-xl border border-white/5 group-hover:border-brand-500/30">
+                                                            <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-slate-300 border border-white/5 group-hover:border-brand-500/30">
                                                                 {icon}
                                                             </div>
                                                             <div className="flex-1 min-w-0">

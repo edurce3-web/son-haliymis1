@@ -18,12 +18,22 @@
  * eklemek yeterli.
  */
 
-export type Lang = 'tr' | 'en';
+export type Lang = 'tr' | 'en' | 'de' | 'fr' | 'it' | 'ru' | 'ar' | 'id' | 'ky';
 
-export const LANGUAGES: { code: Lang; label: string; short: string }[] = [
-    { code: 'tr', label: 'Türkçe', short: 'TR' },
-    { code: 'en', label: 'English', short: 'EN' },
+/** Seçilebilen diller. `name` Türkçe adı; seçicide yerel adın altında görünüyor. */
+export const LANGUAGES: { code: Lang; label: string; name: string; short: string }[] = [
+    { code: 'tr', label: 'Türkçe', name: 'Türkçe', short: 'TR' },
+    { code: 'en', label: 'English', name: 'İngilizce', short: 'EN' },
+    { code: 'de', label: 'Deutsch', name: 'Almanca', short: 'DE' },
+    { code: 'fr', label: 'Français', name: 'Fransızca', short: 'FR' },
+    { code: 'it', label: 'Italiano', name: 'İtalyanca', short: 'IT' },
+    { code: 'ru', label: 'Русский', name: 'Rusça', short: 'RU' },
+    { code: 'ar', label: 'العربية', name: 'Arapça', short: 'AR' },
+    { code: 'id', label: 'Bahasa Indonesia', name: 'Endonezce', short: 'ID' },
+    { code: 'ky', label: 'Кыргызча', name: 'Kırgızca', short: 'KY' },
 ];
+
+const CODES = new Set<string>(LANGUAGES.map(l => l.code));
 
 const STORAGE_KEY = 'edurce-lang';
 const EVENT = 'edurce-lang-change';
@@ -31,7 +41,7 @@ const EVENT = 'edurce-lang-change';
 export function getLang(): Lang {
     try {
         const v = localStorage.getItem(STORAGE_KEY);
-        if (v === 'en' || v === 'tr') return v;
+        if (v && CODES.has(v)) return v as Lang;
     } catch { /* gizli pencere */ }
     return 'tr';
 }
@@ -42,51 +52,78 @@ type Pattern = { re: RegExp; out: string };
 
 let dict: Map<string, string> | null = null;
 let patterns: Pattern[] = [];
-let loading: Promise<void> | null = null;
+let dictLang: Lang | null = null;
+let loading: { lang: Lang; p: Promise<void> } | null = null;
 
 const norm = (s: string) => s.replace(/\s+/g, ' ').trim();
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-async function loadDict() {
-    if (dict) return;
-    if (!loading) {
-        loading = import('./en').then(mod => {
-            const data = mod.default as Record<string, string>;
-            const map = new Map<string, string>();
-            const pats: Pattern[] = [];
-            for (let [tr, en] of Object.entries(data)) {
-                if (!en) continue;
-                // Yan yana iki yer tutucu ("{}{}%") metni nereden böleceğini
-                // bilemiyor; "11" gibi bir sayıyı ikiye ayırabiliyor. Tek yap.
-                while (tr.includes('{}{}')) tr = tr.replace('{}{}', '{}');
-                while (en.includes('{}{}')) en = en.replace('{}{}', '{}');
-                if (tr.includes('{}')) {
-                    // "{} kurs hazırlanıyor" → /^(.+?) kurs hazırlanıyor$/
-                    const parts = tr.split('{}').map(escapeRe);
-                    pats.push({ re: new RegExp('^' + parts.join('(.+?)') + '$'), out: en });
-                } else {
-                    map.set(norm(tr), en);
-                }
-            }
-            // Uzun kalıplar önce: daha özgül olan kazansın
-            pats.sort((a, b) => b.re.source.length - a.re.source.length);
-            dict = map;
-            patterns = pats;
-        });
+/* Her dilin sözlüğü ayrı parça; yalnızca o dil seçilince indiriliyor.
+   İngilizce dışındaki dillerde karşılığı olmayan metin İngilizceye düşüyor. */
+const LOADERS: Record<Exclude<Lang, 'tr'>, () => Promise<{ default: Record<string, string> }>> = {
+    en: () => import('./en'),
+    de: () => import('./locales/de'),
+    fr: () => import('./locales/fr'),
+    it: () => import('./locales/it'),
+    ru: () => import('./locales/ru'),
+    ar: () => import('./locales/ar'),
+    id: () => import('./locales/id'),
+    ky: () => import('./locales/ky'),
+};
+
+function build(data: Record<string, string>) {
+    const map = new Map<string, string>();
+    const pats: Pattern[] = [];
+    for (let [tr, out] of Object.entries(data)) {
+        if (!out) continue;
+        // Yan yana iki yer tutucu ("{}{}%") metni nereden böleceğini
+        // bilemiyor; "11" gibi bir sayıyı ikiye ayırabiliyor. Tek yap.
+        while (tr.includes('{}{}')) tr = tr.replace('{}{}', '{}');
+        while (out.includes('{}{}')) out = out.replace('{}{}', '{}');
+        if (tr.includes('{}')) {
+            // "{} kurs hazırlanıyor" → /^(.+?) kurs hazırlanıyor$/
+            const parts = tr.split('{}').map(escapeRe);
+            pats.push({ re: new RegExp('^' + parts.join('(.+?)') + '$'), out });
+        } else {
+            map.set(norm(tr), out);
+        }
     }
-    await loading;
+    // Uzun kalıplar önce: daha özgül olan kazansın
+    pats.sort((a, b) => b.re.source.length - a.re.source.length);
+    return { map, pats };
 }
 
-const MONTHS: Record<string, string> = {
-    Ocak: 'January', Şubat: 'February', Mart: 'March', Nisan: 'April', Mayıs: 'May', Haziran: 'June',
-    Temmuz: 'July', Ağustos: 'August', Eylül: 'September', Ekim: 'October', Kasım: 'November', Aralık: 'December',
-    Oca: 'Jan', Şub: 'Feb', Mar: 'Mar', Nis: 'Apr', May: 'May', Haz: 'Jun', Tem: 'Jul', Ağu: 'Aug', Eyl: 'Sep', Eki: 'Oct', Kas: 'Nov', Ara: 'Dec',
+async function loadDict(lang: Exclude<Lang, 'tr'>) {
+    if (dictLang === lang) return;
+    if (!loading || loading.lang !== lang) {
+        const p = (async () => {
+            const en = (await LOADERS.en()).default;
+            const own = lang === 'en' ? {} : (await LOADERS[lang]()).default;
+            const { map, pats } = build({ ...en, ...own });
+            if (loading?.lang !== lang) return;
+            dict = map; patterns = pats; dictLang = lang;
+        })();
+        loading = { lang, p };
+    }
+    await loading.p;
+}
+
+/* Tarihler: Türkçe ay ve gün adları seçili dilde Intl ile yazılıyor. */
+const MONTHS_TR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+const MONTHS_TR_SHORT = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+const DAYS_TR = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+const MONTH_ALT = [...MONTHS_TR, ...MONTHS_TR_SHORT].join('|');
+const DATE_RE = new RegExp(`^(\\d{1,2})\\s(${MONTH_ALT})(\\s\\d{4})?$`);
+const MONTH_YEAR_RE = new RegExp(`^(${MONTH_ALT})(\\s\\d{4})?$`);
+
+const locale = () => (dictLang === 'ar' ? 'ar-u-nu-latn' : dictLang || 'en');
+const monthIndex = (m: string) => {
+    const i = MONTHS_TR.indexOf(m);
+    return i >= 0 ? { i, short: false } : { i: MONTHS_TR_SHORT.indexOf(m), short: true };
 };
-const DAYS: Record<string, string> = {
-    Pazartesi: 'Monday', Salı: 'Tuesday', Çarşamba: 'Wednesday', Perşembe: 'Thursday', Cuma: 'Friday', Cumartesi: 'Saturday', Pazar: 'Sunday',
-};
-const DATE_RE = new RegExp(`^(\\d{1,2})\\s(${Object.keys(MONTHS).join('|')})(\\s\\d{4})?$`);
-const MONTH_YEAR_RE = new RegExp(`^(${Object.keys(MONTHS).join('|')})(\\s\\d{4})?$`);
+function fmt(date: Date, opts: Intl.DateTimeFormatOptions) {
+    try { return new Intl.DateTimeFormat(locale(), opts).format(date); } catch { return null; }
+}
 
 /* Türkçede sayıdan sonra isim tekil kalıyor ("1 gün", "3 gün"); İngilizcede
    sözlük çoğul yazıyor. Sayı 1 ise ismi tekile çevir: "1 days" → "1 day". */
@@ -101,7 +138,7 @@ const singular = (s: string) => s
     .replace(SINGULAR_RE, (_m, pre, w) => `${pre}1 ${SINGULAR[w]}`)
     .replace(/\b1 tasks are\b/, '1 task is');
 
-/** Bir metnin İngilizcesi; karşılığı yoksa null. */
+/** Bir metnin seçili dildeki karşılığı; yoksa null. */
 export function translate(text: string): string | null {
     if (!dict) return null;
     const t = norm(text);
@@ -114,18 +151,27 @@ export function translate(text: string): string | null {
         if (m) {
             let i = 1;
             // Yer tutucuların içi de çevrilebiliyorsa çevir ("3 gün önce" içindeki "gün" değil, tamamı)
-            return singular(p.out.replace(/\{\}/g, () => {
+            const out = p.out.replace(/\{\}/g, () => {
                 const v = m[i++] ?? '';
                 return translate(v) ?? v;
-            }));
+            });
+            return dictLang === 'en' ? singular(out) : out;
         }
     }
 
     const d = t.match(DATE_RE);
-    if (d) return `${MONTHS[d[2]]} ${d[1]}${d[3] ? ',' + d[3] : ''}`;
+    if (d) {
+        const { i, short } = monthIndex(d[2]);
+        const y = d[3] ? Number(d[3]) : 2000;
+        return fmt(new Date(y, i, Number(d[1])), { day: 'numeric', month: short ? 'short' : 'long', ...(d[3] ? { year: 'numeric' } : {}) });
+    }
     const my = t.match(MONTH_YEAR_RE);
-    if (my) return `${MONTHS[my[1]]}${my[2] || ''}`;
-    if (DAYS[t]) return DAYS[t];
+    if (my) {
+        const { i, short } = monthIndex(my[1]);
+        return fmt(new Date(my[2] ? Number(my[2]) : 2000, i, 1), { month: short ? 'short' : 'long', ...(my[2] ? { year: 'numeric' } : {}) });
+    }
+    const day = DAYS_TR.indexOf(t);
+    if (day >= 0) return fmt(new Date(2024, 0, 7 + day), { weekday: 'long' });
     return null;
 }
 
@@ -271,12 +317,13 @@ function stop() {
 
 export async function applyLang(lang: Lang) {
     document.documentElement.lang = lang;
-    if (lang === 'en') {
-        await loadDict();
-        if (getLang() === 'en') start();
-    } else {
-        stop();
-    }
+    if (lang === 'tr') { stop(); return; }
+    const switching = active && dictLang !== lang;
+    await loadDict(lang);
+    if (getLang() !== lang) return;
+    // Başka bir yabancı dilden geçiliyorsa önce Türkçe asıllara dön, sonra yeniden çevir
+    if (switching) stop();
+    start();
 }
 
 export async function setLang(lang: Lang) {

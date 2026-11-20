@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useSeo } from '@/hooks/useSeo';
 import { PageHeader, ContactBand } from '@/components/content/PageLayout';
 import { cn } from '@/lib/utils';
-import { UserRound, CreditCard, PlayCircle, Coins, GraduationCap, Search } from 'lucide-react';
 
 interface Entry {
     q: string;
@@ -344,21 +343,6 @@ const GROUPS: Group[] = [
     },
 ];
 
-/**
- * Bölüm renkleri ve simgeleri.
- *
- * Sayfa tek renk gri metin yığınıyken hangi bölümde olunduğu ancak başlık
- * okunarak anlaşılıyordu. Her bölüm kendi rengini taşıyınca, kart ızgarasından
- * seçilen bölüm aşağıda da aynı renkle karşılıyor.
- */
-const GROUP_THEME: Record<string, { icon: React.ElementType; card: string; chip: string; text: string }> = {
-    hesap: { icon: UserRound, card: 'border-brand-200 bg-brand-50/70 hover:bg-brand-50', chip: 'bg-brand-700', text: 'text-brand-800' },
-    'satin-alma': { icon: CreditCard, card: 'border-amber-200 bg-amber-50/70 hover:bg-amber-50', chip: 'bg-amber-500', text: 'text-amber-700' },
-    kurslar: { icon: PlayCircle, card: 'border-sky-200 bg-sky-50/70 hover:bg-sky-50', chip: 'bg-sky-600', text: 'text-sky-700' },
-    kredi: { icon: Coins, card: 'border-brand-200 bg-brand-50/70 hover:bg-brand-50', chip: 'bg-brand-600', text: 'text-brand-700' },
-    egitmen: { icon: GraduationCap, card: 'border-rose-200 bg-rose-50/70 hover:bg-rose-50', chip: 'bg-rose-500', text: 'text-rose-700' },
-};
-
 const Help: React.FC = () => {
     const [query, setQuery] = useState('');
     const [open, setOpen] = useState<string | null>(null);
@@ -387,164 +371,101 @@ const Help: React.FC = () => {
     const totalHits = filtered.reduce((n, g) => n + g.entries.length, 0);
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-white text-[#111827]">
             <PageHeader
+                eyebrow="Destek"
                 title="Yardım merkezi"
-                lead="Hesap, satın alma, kurslar, Edurce Kredi ve eğitmenlik hakkında en sık sorulan soruların yanıtları. Aramak için yazmaya başlayın."
+                lead="Hesap, satın alma, kurslar, Edurce Kredi ve eğitmenlik hakkında en sık sorulan soruların yanıtları."
             >
-                <div className="mt-8 max-w-xl mx-auto">
+                <div className="mt-8 max-w-xl">
                     <label htmlFor="help-search" className="sr-only">Yardım konularında ara</label>
-                    <div className="relative">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400 pointer-events-none" />
-                        <input
-                            id="help-search"
-                            value={query}
-                            onChange={e => setQuery(e.target.value)}
-                            placeholder="Konu ara — iade, sertifika, video, kredi…"
-                            className="w-full h-[52px] pl-12 pr-4 rounded-xl border border-brand-200 bg-white text-[15.5px] placeholder:text-slate-400 shadow-[0_2px_10px_-4px_rgba(23,93,93,0.18)] focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/12 transition-all"
-                        />
-                    </div>
+                    <input
+                        id="help-search"
+                        type="search"
+                        value={query}
+                        onChange={e => setQuery(e.target.value)}
+                        placeholder="Konu ara: iade, sertifika, video, kredi…"
+                        className="w-full h-14 px-5 rounded-2xl bg-white text-[16px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none shadow-[0_10px_30px_-18px_rgba(17,24,39,0.35)] focus:ring-2 focus:ring-[#1B7A43]/45 transition-shadow"
+                    />
                     {query && (
-                        <p className="text-[13.5px] text-slate-500 mt-3">
+                        <p className="text-[13.5px] text-[#4B5563] mt-3">
                             {totalHits > 0 ? `${totalHits} sonuç bulundu` : 'Sonuç bulunamadı'}
                         </p>
                     )}
                 </div>
             </PageHeader>
 
-            <div className="container px-5 sm:px-8 py-12 lg:py-16">
-                <div className="max-w-3xl mx-auto">
+            <div className="mx-auto max-w-[1140px] px-5 sm:px-10 py-14 lg:py-20 grid lg:grid-cols-[240px_minmax(0,1fr)] gap-10 lg:gap-16 items-start">
+                {/* Sol: bölümler */}
+                <nav aria-label="Bölümler" className="lg:sticky lg:top-28">
+                    <p className="text-[12px] font-bold uppercase tracking-[0.16em] text-[#9CA3AF] mb-3 px-3">Bölümler</p>
+                    <ul className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible -mx-1 px-1 pb-1">
+                        {GROUPS.map(g => (
+                            <li key={g.id} className="shrink-0">
+                                <a
+                                    href={`#${g.id}`}
+                                    onClick={() => setQuery('')}
+                                    className="flex items-center justify-between gap-4 rounded-xl px-3 py-2.5 text-[14.5px] font-semibold text-[#374151] hover:bg-[#F5F6F8] hover:text-[#111827] transition-colors whitespace-nowrap"
+                                >
+                                    {g.title}
+                                    <span className="text-[12.5px] font-bold tabular-nums text-[#9CA3AF]">{g.entries.length}</span>
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
 
-                    {/*
-                        Bölüm kartları.
-
-                        Eskiden solda ince, gri, yapışkan bir bağlantı listesi vardı; içeriği
-                        ekranın kenarına itiyor ve hiçbir şey anlatmıyordu. Kartlar hem
-                        bölümlere atlıyor hem de sayfada ne bulunacağını tek bakışta gösteriyor.
-                    */}
-                    {!query && (
-                        <nav aria-label="Bölümler" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-                            {GROUPS.map(g => {
-                                const theme = GROUP_THEME[g.id];
-                                const Icon = theme?.icon;
-                                return (
-                                    <a
-                                        key={g.id}
-                                        href={`#${g.id}`}
-                                        className={cn(
-                                            'rounded-2xl border p-5 transition-colors',
-                                            theme?.card || 'border-slate-200 bg-slate-50'
-                                        )}
-                                    >
-                                        <span className={cn(
-                                            'flex items-center justify-center w-9 h-9 rounded-lg text-white',
-                                            theme?.chip || 'bg-slate-500'
-                                        )}>
-                                            {Icon && <Icon className="w-[18px] h-[18px]" />}
-                                        </span>
-                                        <span className="block mt-3.5 text-[14.5px] font-bold text-slate-900 leading-snug">
-                                            {g.title}
-                                        </span>
-                                        <span className={cn('block mt-1 text-[13px] font-medium', theme?.text || 'text-slate-500')}>
-                                            {g.entries.length} başlık
-                                        </span>
-                                    </a>
-                                );
-                            })}
-                        </nav>
-                    )}
-
-                    <div className={cn(!query && 'mt-14')}>
-                        {totalHits === 0 ? (
-                            <div className="rounded-2xl border border-slate-200 bg-slate-50/60 py-16 px-6 text-center">
-                                <p className="font-montserrat text-[18px] font-extrabold text-slate-900 tracking-tight">
-                                    "{query}" için sonuç bulunamadı
-                                </p>
-                                <p className="text-[15.5px] text-slate-600 mt-3 max-w-md mx-auto leading-[1.75]">
-                                    Farklı bir kelime deneyin ya da{' '}
-                                    <Link to="/contact" className="text-brand-700 font-medium hover:underline">
-                                        doğrudan bize yazın
-                                    </Link>
-                                    .
-                                </p>
-                            </div>
-                        ) : (
-                            filtered.map((group, gi) => {
-                                const theme = GROUP_THEME[group.id];
-                                const Icon = theme?.icon;
-                                return (
-                                    <section
-                                        key={group.id}
-                                        id={group.id}
-                                        className={cn('scroll-mt-28', gi > 0 && 'mt-14')}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <span className={cn(
-                                                'flex items-center justify-center w-10 h-10 rounded-xl text-white shrink-0',
-                                                theme?.chip || 'bg-slate-500'
-                                            )}>
-                                                {Icon && <Icon className="w-5 h-5" />}
-                                            </span>
-                                            <h2 className="font-montserrat text-[22px] lg:text-[25px] font-extrabold text-slate-900 tracking-[-0.02em] leading-tight">
-                                                {group.title}
-                                            </h2>
-                                        </div>
-
-                                        <div className="mt-5 rounded-2xl border border-slate-200 divide-y divide-slate-100 overflow-hidden">
-                                            {group.entries.map(entry => {
-                                                const key = `${group.id}-${entry.q}`;
-                                                const isOpen = open === key || Boolean(query);
-                                                return (
-                                                    <div key={key} className={cn(isOpen && 'bg-slate-50/60')}>
-                                                        <button
-                                                            onClick={() => setOpen(isOpen && !query ? null : key)}
-                                                            aria-expanded={isOpen}
-                                                            className="w-full flex items-start justify-between gap-6 px-5 sm:px-6 py-4 text-left group"
-                                                        >
-                                                            <span className={cn(
-                                                                'text-[15.5px] leading-snug transition-colors py-0.5',
-                                                                isOpen
-                                                                    ? cn('font-semibold', theme?.text || 'text-slate-900')
-                                                                    : 'text-slate-800 font-medium group-hover:text-slate-950'
-                                                            )}>
-                                                                {entry.q}
-                                                            </span>
-                                                            {!query && (
-                                                                <span
-                                                                    aria-hidden
-                                                                    className={cn(
-                                                                        'shrink-0 mt-1.5 w-4 h-4 relative transition-transform duration-300',
-                                                                        isOpen && 'rotate-90'
-                                                                    )}
-                                                                >
-                                                                    {/* İki çizgiden artı — açılınca eksiye döner */}
-                                                                    <span className={cn(
-                                                                        'absolute left-0 top-1/2 w-4 h-[2px] -translate-y-1/2 rounded-full transition-colors',
-                                                                        isOpen ? (theme?.chip || 'bg-slate-500') : 'bg-slate-400 group-hover:bg-slate-600'
-                                                                    )} />
-                                                                    <span className={cn(
-                                                                        'absolute left-1/2 top-0 h-4 w-[2px] -translate-x-1/2 rounded-full transition-all duration-300',
-                                                                        isOpen ? 'opacity-0' : 'bg-slate-400 group-hover:bg-slate-600'
-                                                                    )} />
-                                                                </span>
-                                                            )}
-                                                        </button>
-                                                        {isOpen && (
-                                                            <div className="px-5 sm:px-6 pb-5 -mt-1">
-                                                                <p className="text-[15px] text-slate-600 leading-[1.8]">
-                                                                    {entry.a}
-                                                                </p>
-                                                            </div>
-                                                        )}
+                {/* Sağ: sorular */}
+                <div className="min-w-0">
+                    {totalHits === 0 ? (
+                        <div className="rounded-[28px] bg-[#F5F6F8] py-16 px-6 text-center">
+                            <p className="font-montserrat text-[20px] font-extrabold tracking-tight">
+                                "{query}" için sonuç bulunamadı
+                            </p>
+                            <p className="text-[15.5px] text-[#4B5563] mt-3 max-w-md mx-auto leading-[1.75]">
+                                Farklı bir kelime dene ya da{' '}
+                                <Link to="/contact" className="text-[#1B7A43] font-semibold hover:underline">doğrudan bize yaz</Link>.
+                            </p>
+                        </div>
+                    ) : (
+                        filtered.map((group, gi) => (
+                            <section key={group.id} id={group.id} className={cn('scroll-mt-28', gi > 0 && 'mt-14')}>
+                                <h2 className="font-montserrat text-[24px] lg:text-[28px] font-extrabold tracking-[-0.025em] leading-tight">
+                                    {group.title}
+                                </h2>
+                                <div className="mt-5 space-y-2">
+                                    {group.entries.map(entry => {
+                                        const key = `${group.id}-${entry.q}`;
+                                        const isOpen = open === key || Boolean(query);
+                                        return (
+                                            <div key={key} className={cn('rounded-[18px] transition-colors', isOpen ? 'bg-[#F5F6F8]' : 'bg-[#F5F6F8]/60 hover:bg-[#F5F6F8]')}>
+                                                <button
+                                                    onClick={() => setOpen(isOpen && !query ? null : key)}
+                                                    aria-expanded={isOpen}
+                                                    className="w-full flex items-start justify-between gap-6 px-5 sm:px-6 py-4 text-left rounded-[18px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/40"
+                                                >
+                                                    <span className={cn('text-[15.5px] leading-snug py-0.5', isOpen ? 'font-bold' : 'font-semibold text-[#1F2937]')}>
+                                                        {entry.q}
+                                                    </span>
+                                                    {!query && (
+                                                        <span aria-hidden className={cn('shrink-0 mt-1.5 w-4 h-4 relative transition-transform duration-300', isOpen && 'rotate-90')}>
+                                                            <span className={cn('absolute left-0 top-1/2 w-4 h-[2px] -translate-y-1/2 rounded-full', isOpen ? 'bg-[#1B7A43]' : 'bg-[#9CA3AF]')} />
+                                                            <span className={cn('absolute left-1/2 top-0 h-4 w-[2px] -translate-x-1/2 rounded-full transition-opacity duration-300', isOpen ? 'opacity-0' : 'bg-[#9CA3AF]')} />
+                                                        </span>
+                                                    )}
+                                                </button>
+                                                {isOpen && (
+                                                    <div className="px-5 sm:px-6 pb-5 -mt-1">
+                                                        <p className="text-[15px] text-[#4B5563] leading-[1.8]">{entry.a}</p>
                                                     </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </section>
-                                );
-                            })
-                        )}
-                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </section>
+                        ))
+                    )}
                 </div>
             </div>
 

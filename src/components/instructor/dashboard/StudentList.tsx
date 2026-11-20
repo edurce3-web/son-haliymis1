@@ -39,7 +39,7 @@ export const StudentList: React.FC = () => {
             <PageHead
                 title="Öğrenci listesi"
                 sub={all.length
-                    ? <><b className="font-bold text-[#0b2619]">{Number(total).toLocaleString('tr-TR')} öğrenci</b> · ortalama ilerleme %{avgProgress}</>
+                    ? <><b className="font-bold text-[#00201d]">{Number(total).toLocaleString('tr-TR')} öğrenci</b> · ortalama ilerleme %{avgProgress}</>
                     : 'Kurslarına kayıtlı öğrenciler'}
                 actions={all.length ? <SearchBox value={search} onChange={setSearch} placeholder="İsim veya e-posta ara" className="w-full sm:w-72" /> : undefined}
             />
@@ -55,7 +55,7 @@ export const StudentList: React.FC = () => {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left min-w-[640px]">
                             <thead>
-                                <tr className="border-b-2 border-white text-[12.5px] font-bold text-[#4a5f55]">
+                                <tr className="border-b-2 border-white text-[12.5px] font-bold text-[#4a6360]">
                                     <th scope="col" className="px-5 sm:px-6 py-3.5 font-bold">Öğrenci</th>
                                     <th scope="col" className="px-4 py-3.5 font-bold text-right">Kurs</th>
                                     <th scope="col" className="px-4 py-3.5 font-bold w-[30%]">İlerleme</th>
@@ -71,22 +71,22 @@ export const StudentList: React.FC = () => {
                                                 <div className="flex items-center gap-3 min-w-0">
                                                     <Initials name={s.name} src={s.avatar} size={36} />
                                                     <div className="min-w-0">
-                                                        <p className="text-[14px] font-bold text-[#0b2619] truncate">{s.name || 'Öğrenci'}</p>
-                                                        <p className="text-[12.5px] text-[#5e7268] truncate">{s.email}</p>
+                                                        <p className="text-[14px] font-bold text-[#00201d] truncate">{s.name || 'Öğrenci'}</p>
+                                                        <p className="text-[12.5px] text-[#5f7774] truncate">{s.email}</p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3.5 text-right text-[14px] font-bold tabular-nums text-[#0b2619]">{s.course_count || 0}</td>
+                                            <td className="px-4 py-3.5 text-right text-[14px] font-bold tabular-nums text-[#00201d]">{s.course_count || 0}</td>
                                             <td className="px-4 py-3.5">
                                                 <div className="flex items-center gap-3">
-                                                    <span className="flex-1 h-2 rounded-full bg-[#e2f6e9] overflow-hidden" role="progressbar" aria-valuenow={p} aria-valuemin={0} aria-valuemax={100}>
-                                                        <span className="block h-full rounded-full bg-[#0b2619]" style={{ width: `${p}%` }} />
+                                                    <span className="flex-1 h-2 rounded-full bg-[#e3f6f2] overflow-hidden" role="progressbar" aria-valuenow={p} aria-valuemin={0} aria-valuemax={100}>
+                                                        <span className="block h-full rounded-full bg-[#00201d]" style={{ width: `${p}%` }} />
                                                     </span>
-                                                    <span className="w-10 text-right text-[13px] font-bold tabular-nums text-[#0b2619]">%{p}</span>
+                                                    <span className="w-10 text-right text-[13px] font-bold tabular-nums text-[#00201d]">%{p}</span>
                                                 </div>
                                             </td>
                                             <td
-                                                className="px-5 sm:px-6 py-3.5 text-right text-[13px] text-[#4a5f55] whitespace-nowrap"
+                                                className="px-5 sm:px-6 py-3.5 text-right text-[13px] text-[#4a6360] whitespace-nowrap"
                                                 title={s.last_activity ? new Date(s.last_activity).toLocaleString('tr-TR') : undefined}
                                             >
                                                 {s.last_activity ? relativeTime(s.last_activity) : '—'}

@@ -218,18 +218,18 @@ export function InstructorAnnouncements() {
                                         type="button"
                                         onClick={() => setExpandedId(isExp ? null : ann.announcement_id)}
                                         aria-expanded={isExp}
-                                        className="flex-1 min-w-0 text-left rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/45"
+                                        className="flex-1 min-w-0 text-left rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45"
                                     >
                                         <span className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12.5px]">
-                                            <span className="font-bold text-[#12613b]">{ann.course_title}</span>
-                                            <span className="text-[#5e7268]">{new Date(ann.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                                            <span className="font-bold text-[#005c55]">{ann.course_title}</span>
+                                            <span className="text-[#5f7774]">{new Date(ann.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                                         </span>
                                         <span className="mt-1 flex items-center gap-2">
-                                            <span className="text-[15.5px] font-bold text-[#0b2619]">{ann.title}</span>
-                                            <ChevronDown className={cn('w-4 h-4 text-[#5e7268] shrink-0 transition-transform duration-200', isExp && 'rotate-180')} />
+                                            <span className="text-[15.5px] font-bold text-[#00201d]">{ann.title}</span>
+                                            <ChevronDown className={cn('w-4 h-4 text-[#5f7774] shrink-0 transition-transform duration-200', isExp && 'rotate-180')} />
                                         </span>
                                         {!isExp && (
-                                            <span className="block mt-1 text-[13.5px] text-[#4a5f55] line-clamp-1">{ann.content}</span>
+                                            <span className="block mt-1 text-[13.5px] text-[#4a6360] line-clamp-1">{ann.content}</span>
                                         )}
                                     </button>
                                     <div className="flex items-center gap-1 shrink-0">
@@ -247,7 +247,7 @@ export function InstructorAnnouncements() {
                                     </div>
                                 </div>
                                 {isExp && (
-                                    <p className="px-5 sm:px-6 pb-5 -mt-1 text-[14.5px] text-[#1d3a2c] leading-relaxed whitespace-pre-wrap max-w-[72ch]">
+                                    <p className="px-5 sm:px-6 pb-5 -mt-1 text-[14.5px] text-[#1d3a37] leading-relaxed whitespace-pre-wrap max-w-[72ch]">
                                         {ann.content}
                                     </p>
                                 )}

@@ -346,7 +346,7 @@ export const Checkout: React.FC = () => {
               </header>
 
               {isBundle && bundleQuote && (
-                <div className="px-6 py-3 bg-[#ecfaf1] border-b border-slate-100">
+                <div className="px-6 py-3 bg-[#EEFBF3] border-b border-slate-100">
                   <p className="text-[13px] font-bold text-slate-900">{bundleQuote.bundle?.title}</p>
                   <p className="text-[12px] text-slate-500 mt-0.5">
                     Paket fiyatı kurslara liste fiyatları oranında dağıtıldı.

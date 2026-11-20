@@ -24,7 +24,7 @@ export const ContinueBanner: React.FC<{ courses?: any[] | null }> = ({ courses }
     if (list.length === 0) return null;
 
     return (
-        <section className="w-full font-jakarta bg-gradient-to-r from-[#dcf3e4] via-[#e6f6ec] to-[#ecfaf1]">
+        <section className="w-full font-jakarta bg-gradient-to-r from-[#D7F5E2] via-[#EEFBF3] to-[#EEFBF3]">
             <div className="container mx-auto px-4 py-3">
                 <div
                     className={cn(
@@ -80,7 +80,7 @@ const ContinueCard: React.FC<{ course: any }> = ({ course }) => {
                 </button>
 
                 <div className="flex flex-col min-w-0 flex-1">
-                    <span className="flex items-center gap-1.5 text-[#12613b] text-[10px] font-bold uppercase tracking-[0.1em]">
+                    <span className="flex items-center gap-1.5 text-[#1B7A43] text-[10px] font-bold uppercase tracking-[0.1em]">
                         <GraduationCap className="w-3.5 h-3.5" />
                         Kaldığın yerden devam et
                     </span>
@@ -90,9 +90,9 @@ const ContinueCard: React.FC<{ course: any }> = ({ course }) => {
                     </h2>
 
                     <div className="flex items-center gap-2 mt-1 max-w-xs">
-                        <div className="flex-1 h-1 bg-[#dcf3e4] rounded-full overflow-hidden">
+                        <div className="flex-1 h-1 bg-[#D7F5E2] rounded-full overflow-hidden">
                             <div
-                                className="h-full bg-[#12613b] rounded-full transition-all duration-500"
+                                className="h-full bg-[#1B7A43] rounded-full transition-all duration-500"
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
@@ -106,7 +106,7 @@ const ContinueCard: React.FC<{ course: any }> = ({ course }) => {
             <button
                 type="button"
                 onClick={open}
-                className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-lg bg-[#12613b] hover:bg-[#0f766e] text-white text-[12.5px] font-bold transition-colors"
+                className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-lg bg-[#1B7A43] hover:bg-[#0f766e] text-white text-[12.5px] font-bold transition-colors"
             >
                 <Play className="w-3.5 h-3.5 fill-current" />
                 Derse devam et

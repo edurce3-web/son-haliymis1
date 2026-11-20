@@ -4,8 +4,7 @@ import { API_BASE_URL } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSeo } from '@/hooks/useSeo';
 import { PageHeader } from '@/components/content/PageLayout';
-import { Button } from '@/components/ui/button';
-import { Loader2, Clock, Hash, LifeBuoy, Check } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 /** Konu listesi — talebi doğru kişiye yönlendirmek için. */
@@ -20,37 +19,16 @@ const SUBJECTS = [
     'Diğer',
 ];
 
-/**
- * Sayfanın üstündeki üç güvence kartı.
- *
- * Eskiden bunların yerinde, formun sağında uzun bir metin sütunu vardı:
- * telif bildirimi, KVKK, güvenlik açığı… Hepsi konu listesinde zaten var olan
- * şeylerdi ve formu ekranın soluna sıkıştırıyordu. Kullanıcının gerçekten
- * merak ettiği üç şey kaldı: ne zaman dönülür, ne alırım, önce nereye bakarım.
- */
-const ASSURANCES = [
-    {
-        icon: Clock,
-        title: '48 saat içinde yanıt',
-        text: 'Her mesaj en geç 48 saat içinde yanıtlanır.',
-        ring: 'border-brand-200 bg-brand-50/70',
-        chip: 'bg-brand-700',
-    },
-    {
-        icon: Hash,
-        title: 'Talep numarası',
-        text: 'Mesajınıza numara verilir, e-postayla iletilir.',
-        ring: 'border-amber-200 bg-amber-50/70',
-        chip: 'bg-amber-500',
-    },
-    {
-        icon: LifeBuoy,
-        title: 'Anında çözüm',
-        text: 'Soruların çoğunun yanıtı yardım merkezinde.',
-        ring: 'border-sky-200 bg-sky-50/70',
-        chip: 'bg-sky-600',
-        to: '/help',
-    },
+/** Sol sütundaki kısa bilgiler: ne zaman dönülür, ne alınır. */
+const FACTS = [
+    { k: 'Yanıt süresi', v: '48 saat içinde', d: 'Her mesaj en geç 48 saat içinde yanıtlanır.' },
+    { k: 'Takip', v: 'Talep numarası', d: 'Mesajına bir numara verilir ve e-postana iletilir.' },
+];
+
+const ROUTES = [
+    { t: 'Telif hakkı bildirimi', d: 'İçeriğin bulunduğu kursun bağlantısını ve hak sahipliğini gösteren bilgiyi ekle.' },
+    { t: 'Kişisel veri talebi', d: 'Hesabına kayıtlı e-posta adresinden yazman talebi hızlandırır.' },
+    { t: 'Güvenlik açığı', d: 'Konu olarak "Teknik arıza"yı seç; bu bildirimleri öncelikli ele alıyoruz.' },
 ];
 
 const Contact: React.FC = () => {
@@ -112,171 +90,151 @@ const Contact: React.FC = () => {
     };
 
     const inputClass =
-        'w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50/60 text-[15px] placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all';
-
-    const labelClass = 'text-[13.5px] font-semibold text-slate-800';
+        'w-full h-12 px-4 rounded-2xl bg-white text-[15px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none ' +
+        'ring-1 ring-inset ring-black/[0.06] hover:ring-black/[0.12] focus:ring-2 focus:ring-[#1B7A43]/50 transition-shadow';
+    const labelClass = 'block text-[13.5px] font-bold text-[#111827] mb-1.5';
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-white text-[#111827]">
             <PageHeader
+                eyebrow="Destek"
                 title="İletişim"
-                lead="Sorunuzu aşağıdaki formdan iletin. Mesajınız kayda alınır, size bir talep numarası verilir ve 48 saat içinde yanıtlanır."
+                lead="Sorunu bize yaz. Mesajın kayda alınır, sana bir talep numarası verilir ve 48 saat içinde yanıtlanır."
             />
 
-            <div className="container px-5 sm:px-8 py-12 lg:py-16">
-                <div className="max-w-3xl mx-auto">
-
-                    {/* Güvence kartları */}
-                    <div className="grid sm:grid-cols-3 gap-3.5">
-                        {ASSURANCES.map(item => {
-                            const Icon = item.icon;
-                            const inner = (
-                                <>
-                                    <span className={`flex items-center justify-center w-9 h-9 rounded-lg ${item.chip} text-white shrink-0`}>
-                                        <Icon className="w-[18px] h-[18px]" />
-                                    </span>
-                                    <span className="block mt-3.5 text-[14.5px] font-bold text-slate-900 leading-snug">
-                                        {item.title}
-                                    </span>
-                                    <span className="block mt-1 text-[13.5px] text-slate-600 leading-[1.6]">
-                                        {item.text}
-                                    </span>
-                                </>
-                            );
-                            const cls = `rounded-2xl border p-5 transition-colors ${item.ring}`;
-                            return item.to ? (
-                                <Link key={item.title} to={item.to} className={`${cls} hover:brightness-[0.98] block`}>
-                                    {inner}
-                                </Link>
-                            ) : (
-                                <div key={item.title} className={cls}>{inner}</div>
-                            );
-                        })}
-                    </div>
-
-                    {/* Form / gönderildi ekranı */}
-                    <div className="mt-10">
-                        {ticketId !== null ? (
-                            <div className="rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 to-white px-8 py-12 text-center">
-                                <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-brand-700 text-white">
-                                    <Check className="w-7 h-7 stroke-[3]" />
-                                </span>
-                                <h2 className="font-montserrat text-[24px] font-extrabold text-slate-900 tracking-tight mt-5">
-                                    Mesajınız alındı
-                                </h2>
-                                <p className="text-[15.5px] text-slate-600 mt-3 leading-[1.75] max-w-md mx-auto">
-                                    Onay e-postası gönderdik; dönüşü de aynı adrese, 48 saat içinde
-                                    yapacağız.
-                                </p>
-
-                                <div className="inline-flex items-center gap-3 rounded-xl bg-white border border-brand-200 px-5 py-3 mt-7">
-                                    <span className="font-montserrat text-[10.5px] font-extrabold uppercase tracking-[0.16em] text-slate-400">
-                                        Talep no
-                                    </span>
-                                    <span className="font-montserrat text-[24px] font-extrabold text-brand-800 tracking-[-0.02em] leading-none tabular-nums">
-                                        #{ticketId}
-                                    </span>
-                                </div>
-
-                                <div className="mt-7">
-                                    <button
-                                        onClick={() => setTicketId(null)}
-                                        className="text-[15px] font-semibold text-brand-700 hover:text-brand-900 hover:underline"
-                                    >
-                                        Yeni mesaj gönder
-                                    </button>
-                                </div>
+            <div className="mx-auto max-w-[1140px] px-5 sm:px-10 py-14 lg:py-20 grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-12 lg:gap-16 items-start">
+                {/* Sol: önce bilmen gerekenler */}
+                <aside className="lg:sticky lg:top-28 space-y-10">
+                    <div className="grid grid-cols-2 gap-3">
+                        {FACTS.map(f => (
+                            <div key={f.k} className="rounded-[22px] bg-[#F5F6F8] p-5">
+                                <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#6B7280]">{f.k}</p>
+                                <p className="mt-2 text-[18px] font-extrabold tracking-[-0.01em] leading-tight">{f.v}</p>
+                                <p className="mt-1.5 text-[13.5px] leading-[1.55] text-[#6B7280]">{f.d}</p>
                             </div>
-                        ) : (
-                            <form
-                                onSubmit={submit}
-                                className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-9 shadow-[0_1px_3px_rgba(15,23,42,0.04)] space-y-5"
-                            >
-                                <div className="grid sm:grid-cols-2 gap-4">
-                                    <div className="space-y-1.5">
-                                        <label htmlFor="name" className={labelClass}>
-                                            Ad soyad <span className="text-brand-700">*</span>
-                                        </label>
-                                        <input
-                                            id="name" required value={form.name}
-                                            onChange={e => set('name', e.target.value)}
-                                            className={inputClass}
-                                        />
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <label htmlFor="email" className={labelClass}>
-                                            E-posta <span className="text-brand-700">*</span>
-                                        </label>
-                                        <input
-                                            id="email" type="email" required value={form.email}
-                                            onChange={e => set('email', e.target.value)}
-                                            className={inputClass}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="grid sm:grid-cols-2 gap-4">
-                                    <div className="space-y-1.5">
-                                        <label htmlFor="subject" className={labelClass}>
-                                            Konu <span className="text-brand-700">*</span>
-                                        </label>
-                                        <select
-                                            id="subject" value={form.subject}
-                                            onChange={e => set('subject', e.target.value)}
-                                            className={`${inputClass} cursor-pointer`}
-                                        >
-                                            {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
-                                        </select>
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <label htmlFor="phone" className={labelClass}>
-                                            Telefon <span className="text-slate-400 font-normal">(isteğe bağlı)</span>
-                                        </label>
-                                        <input
-                                            id="phone" value={form.phone}
-                                            onChange={e => set('phone', e.target.value)}
-                                            className={inputClass}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-1.5">
-                                    <label htmlFor="message" className={labelClass}>
-                                        Mesajınız <span className="text-brand-700">*</span>
-                                    </label>
-                                    <textarea
-                                        id="message" required rows={7} value={form.message}
-                                        onChange={e => set('message', e.target.value)}
-                                        placeholder="Sorununuzu mümkün olduğunca açık anlatın. Bir kursla ilgiliyse kursun adını, hata alıyorsanız hatanın tam metnini yazmanız çözümü hızlandırır."
-                                        className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50/60 text-[15px] leading-[1.7] placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all resize-y"
-                                    />
-                                    <p className="text-xs text-slate-400 text-right">
-                                        {form.message.length} / 5000
-                                    </p>
-                                </div>
-
-                                <div className="pt-1">
-                                    <Button
-                                        type="submit"
-                                        disabled={sending}
-                                        className="w-full sm:w-auto h-12 px-10 rounded-xl bg-brand-700 hover:bg-brand-800 font-semibold text-[15px]"
-                                    >
-                                        {sending
-                                            ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Gönderiliyor</>
-                                            : 'Mesajı gönder'}
-                                    </Button>
-                                    <p className="text-[12.5px] text-slate-500 leading-relaxed mt-4">
-                                        Formu göndererek bilgilerinizin talebinizi yanıtlamak amacıyla
-                                        işlenmesini kabul etmiş olursunuz. Ayrıntılar{' '}
-                                        <Link to="/privacy" className="text-brand-700 font-medium hover:underline">
-                                            gizlilik politikasında
-                                        </Link>.
-                                    </p>
-                                </div>
-                            </form>
-                        )}
+                        ))}
                     </div>
-                </div>
+
+                    <div className="rounded-[22px] bg-[#B2F0C8] p-6">
+                        <p className="text-[17px] font-bold">Önce yardım merkezine bak</p>
+                        <p className="mt-1.5 text-[14.5px] leading-[1.6] text-[#1F2937]/80">
+                            Ödeme, iade, erişim ve video sorunlarının çoğunun yanıtı orada; beklemeden çözülür.
+                        </p>
+                        <Link to="/help" className="mt-4 inline-flex items-center h-10 px-5 rounded-xl bg-white/80 hover:bg-white text-[14px] font-bold transition-colors">
+                            Yardım merkezi
+                        </Link>
+                    </div>
+
+                    <div>
+                        <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#6B7280]">Özel konular</p>
+                        <ul className="mt-4 space-y-5">
+                            {ROUTES.map(r => (
+                                <li key={r.t}>
+                                    <p className="text-[15.5px] font-bold">{r.t}</p>
+                                    <p className="mt-1 text-[14px] leading-[1.6] text-[#6B7280]">{r.d}</p>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </aside>
+
+                {/* Sağ: form ya da gönderildi ekranı */}
+                {ticketId !== null ? (
+                    <div className="rounded-[28px] bg-[#F5F6F8] px-7 sm:px-10 py-14 text-center">
+                        <p className="text-[12.5px] font-bold uppercase tracking-[0.18em] text-[#1B7A43]">Mesajın alındı</p>
+                        <h2 className="mt-3 font-montserrat text-[28px] sm:text-[34px] font-extrabold tracking-[-0.025em]">Teşekkürler.</h2>
+                        <p className="mt-3 text-[15.5px] leading-[1.75] text-[#4B5563] max-w-md mx-auto">
+                            Onay e-postası gönderdik; dönüşü de aynı adrese, 48 saat içinde yapacağız.
+                        </p>
+                        <div className="mt-8 inline-flex flex-col items-center rounded-[22px] bg-white px-8 py-5">
+                            <span className="text-[11.5px] font-bold uppercase tracking-[0.16em] text-[#9CA3AF]">Talep no</span>
+                            <span className="mt-1 font-montserrat text-[34px] font-extrabold tracking-[-0.02em] leading-none tabular-nums text-[#1B7A43]">
+                                #{ticketId}
+                            </span>
+                        </div>
+                        <div className="mt-8">
+                            <button
+                                onClick={() => setTicketId(null)}
+                                className="text-[15px] font-bold text-[#1B7A43] hover:underline underline-offset-4"
+                            >
+                                Yeni mesaj gönder
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <form onSubmit={submit} className="rounded-[28px] bg-[#F5F6F8] p-6 sm:p-9 space-y-6">
+                        <div>
+                            <h2 className="font-montserrat text-[24px] sm:text-[28px] font-extrabold tracking-[-0.025em]">Bize yaz</h2>
+                            <p className="mt-1.5 text-[14.5px] text-[#6B7280]">Yıldızlı alanlar zorunlu.</p>
+                        </div>
+
+                        <fieldset>
+                            <legend className={labelClass}>Konu <span className="text-[#1B7A43]">*</span></legend>
+                            <div role="radiogroup" className="flex flex-wrap gap-2">
+                                {SUBJECTS.map(sub => {
+                                    const on = form.subject === sub;
+                                    return (
+                                        <button
+                                            key={sub}
+                                            type="button"
+                                            role="radio"
+                                            aria-checked={on}
+                                            onClick={() => set('subject', sub)}
+                                            className={on
+                                                ? 'h-10 px-4 rounded-xl bg-[#1B7A43] text-white text-[14px] font-bold'
+                                                : 'h-10 px-4 rounded-xl bg-white text-[#374151] text-[14px] font-semibold hover:bg-[#EEFBF3] hover:text-[#1B7A43] transition-colors'}
+                                        >
+                                            {sub}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </fieldset>
+
+                        <div className="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label htmlFor="name" className={labelClass}>Ad soyad <span className="text-[#1B7A43]">*</span></label>
+                                <input id="name" required value={form.name} onChange={e => set('name', e.target.value)} className={inputClass} />
+                            </div>
+                            <div>
+                                <label htmlFor="email" className={labelClass}>E-posta <span className="text-[#1B7A43]">*</span></label>
+                                <input id="email" type="email" required value={form.email} onChange={e => set('email', e.target.value)} className={inputClass} />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label htmlFor="phone" className={labelClass}>
+                                Telefon <span className="font-normal text-[#9CA3AF]">(isteğe bağlı)</span>
+                            </label>
+                            <input id="phone" value={form.phone} onChange={e => set('phone', e.target.value)} className={inputClass} />
+                        </div>
+
+                        <div>
+                            <label htmlFor="message" className={labelClass}>Mesajın <span className="text-[#1B7A43]">*</span></label>
+                            <textarea
+                                id="message" required rows={7} maxLength={5000} value={form.message}
+                                onChange={e => set('message', e.target.value)}
+                                placeholder="Sorunu olabildiğince açık anlat. Bir kursla ilgiliyse kursun adını, hata alıyorsan hatanın tam metnini yazman çözümü hızlandırır."
+                                className="w-full p-4 rounded-2xl bg-white text-[15px] leading-[1.7] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none ring-1 ring-inset ring-black/[0.06] hover:ring-black/[0.12] focus:ring-2 focus:ring-[#1B7A43]/50 transition-shadow resize-y"
+                            />
+                            <p className="mt-1.5 text-[12.5px] text-[#9CA3AF] text-right tabular-nums">{`${form.message.length} / 5000`}</p>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                            <button
+                                type="submit"
+                                disabled={sending}
+                                className="shrink-0 inline-flex items-center justify-center gap-2 h-12 px-8 rounded-2xl bg-[#1B7A43] hover:bg-[#16613A] disabled:opacity-60 text-white text-[15px] font-bold transition-colors"
+                            >
+                                {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> Gönderiliyor</> : 'Mesajı gönder'}
+                            </button>
+                            <p className="text-[12.5px] text-[#6B7280] leading-relaxed">
+                                Formu göndererek bilgilerinin talebini yanıtlamak amacıyla işlenmesini kabul edersin.
+                                Ayrıntılar <Link to="/privacy" className="font-semibold text-[#1B7A43] hover:underline">gizlilik politikasında</Link>.
+                            </p>
+                        </div>
+                    </form>
+                )}
             </div>
         </div>
     );

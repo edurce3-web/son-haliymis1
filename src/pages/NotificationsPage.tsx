@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import api from '@/services/api';
 import { API_BASE_URL } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import { notificationMeta } from '@/components/notifications/notificationMeta';
 import { toast } from 'sonner';
 import {
     Bell, Check, CheckCheck, Trash2, Search, Loader2,
@@ -33,20 +34,7 @@ interface TypeCount {
  * Bildirim türü -> görsel kimlik.
  * Türler backend'de services/notificationService.js içindeki TYPES ile aynı.
  */
-const META: Record<string, { icon: React.ElementType; fg: string; bg: string; label: string }> = {
-    purchase: { icon: ShoppingCart, fg: 'text-emerald-600', bg: 'bg-emerald-50', label: 'Satın alma' },
-    sale: { icon: TrendingUp, fg: 'text-emerald-600', bg: 'bg-emerald-50', label: 'Satış' },
-    enrollment: { icon: BookOpen, fg: 'text-blue-600', bg: 'bg-blue-50', label: 'Kayıt' },
-    announcement: { icon: Megaphone, fg: 'text-orange-600', bg: 'bg-orange-50', label: 'Duyuru' },
-    message: { icon: MessageSquare, fg: 'text-brand-600', bg: 'bg-brand-50', label: 'Mesaj' },
-    review: { icon: Star, fg: 'text-amber-600', bg: 'bg-amber-50', label: 'Değerlendirme' },
-    question: { icon: HelpCircle, fg: 'text-brand-600', bg: 'bg-brand-50', label: 'Soru' },
-    answer: { icon: MessageCircleReply, fg: 'text-brand-600', bg: 'bg-brand-50', label: 'Cevap' },
-    system: { icon: Settings, fg: 'text-slate-600', bg: 'bg-slate-100', label: 'Sistem' },
-};
-
-const metaFor = (type: string) =>
-    META[type] || { icon: Bell, fg: 'text-slate-600', bg: 'bg-slate-100', label: 'Bildirim' };
+const metaFor = notificationMeta;
 
 const timeAgo = (date: string) => {
     const d = new Date(date);

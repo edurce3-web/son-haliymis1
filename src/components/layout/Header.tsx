@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { LanguageSwitcher } from '@/i18n/LanguageSwitcher';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import CategoryMegaMenu from './CategoryMegaMenu';
+import { NotificationIcon } from '@/components/notifications/notificationMeta';
 import api from '@/services/api';
 import { API_BASE_URL } from '@/lib/api';
 import {
@@ -38,24 +38,6 @@ const HoverPopover = ({ children, content, width = 'w-80' }: { children: React.R
       )}
     </div>
   );
-};
-
-// ─── Notification Type Icons ───
-// Türler backend'deki services/notificationService.js TYPES ile aynı
-const getNotificationIcon = (type: string) => {
-  switch (type) {
-    case 'purchase': return '🛒';
-    case 'sale': return '💰';
-    case 'enrollment': return '📚';
-    case 'announcement': return '📢';
-    case 'message': return '💬';
-    case 'question': return '❓';
-    case 'answer': return '↩️';
-    case 'achievement': return '🏆';
-    case 'system': return '⚙️';
-    case 'review': return '⭐';
-    default: return '🔔';
-  }
 };
 
 /** "3 dakika önce" — açılır kutuda tam tarihten daha okunur. */
@@ -371,7 +353,7 @@ export const Header = () => {
                 if (notif.action_url) navigate(notif.action_url);
               }}
             >
-              <span className="text-lg mt-0.5">{getNotificationIcon(notif.type)}</span>
+              <NotificationIcon type={notif.type} size="sm" />
               <div className="flex-1 min-w-0">
                 <p className={cn("text-xs truncate", !notif.is_read ? "font-bold text-slate-900" : "font-medium text-slate-700")}>{notif.title}</p>
                 <p className="text-[11px] text-slate-500 line-clamp-2 mt-0.5">{notif.message}</p>
@@ -463,10 +445,6 @@ export const Header = () => {
           )}
 
           <div className="h-px bg-slate-100 my-1.5" />
-          <div className="flex items-center justify-between px-3 py-1.5">
-            <span className="text-sm text-slate-700">Dil</span>
-            <LanguageSwitcher withIcon={false} />
-          </div>
           <MenuRow onClick={() => navigate('/home/settings/profile')}
             label="Ayarlar" />
           <MenuRow onClick={() => { logout(); navigate('/login'); }} tone="danger"
@@ -492,7 +470,7 @@ export const Header = () => {
       <div className="mx-auto max-w-[1440px] flex h-16 lg:h-[72px] items-center gap-2 sm:gap-3 lg:gap-5 px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link to="/" className="shrink-0 flex items-center" aria-label="Edurce ana sayfa">
-          <img src="/logo-ink.png" alt="Edurce" className="h-[26px] lg:h-[30px] w-auto" />
+          <img src="/logo-mint.png" alt="Edurce" className="h-[28px] lg:h-[32px] w-auto" />
         </Link>
 
         {/* Tüm kurslar: üzerine gelince kategoriler açılıyor */}
@@ -500,12 +478,12 @@ export const Header = () => {
 
         {/* Arama */}
         <form onSubmit={handleSearch} role="search" className="relative hidden md:block flex-1 max-w-[680px] group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#6a7f74] group-focus-within:text-brand-700 transition-colors pointer-events-none" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#6B7280] group-focus-within:text-brand-700 transition-colors pointer-events-none" />
           <input
             type="search"
             aria-label="Kurs ara"
             placeholder="Dilediğin kursu, konuyu ya da eğitmeni ara…"
-            className="w-full h-11 lg:h-12 pl-11 pr-4 rounded-full bg-[#f0f4f1] text-[14.5px] text-[#0b2619] placeholder:text-[#7d9086] border-0 outline-none ring-1 ring-inset ring-transparent hover:bg-[#e9efea] focus:bg-white focus:ring-2 focus:ring-brand-700/35 transition-[background-color,box-shadow]"
+            className="w-full h-11 lg:h-12 pl-11 pr-4 rounded-full bg-[#F1F3F5] text-[14.5px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none ring-1 ring-inset ring-transparent hover:bg-[#E9ECEF] focus:bg-white focus:ring-2 focus:ring-brand-700/35 transition-[background-color,box-shadow]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -518,7 +496,7 @@ export const Header = () => {
             onClick={() => setMobileSearch(v => !v)}
             aria-label="Ara"
             aria-expanded={mobileSearch}
-            className="md:hidden w-10 h-10 rounded-full flex items-center justify-center text-[#0b2619] hover:bg-[#f0f4f1]"
+            className="md:hidden w-10 h-10 rounded-full flex items-center justify-center text-[#111827] hover:bg-[#F1F3F5]"
           >
             {mobileSearch ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
           </button>
@@ -528,7 +506,7 @@ export const Header = () => {
               to="/home/learning"
               className={cn(
                 'hidden lg:inline-flex items-center h-10 px-3 rounded-full text-[14.5px] font-semibold whitespace-nowrap transition-colors',
-                learningActive ? 'text-brand-700' : 'text-[#0b2619] hover:text-brand-700'
+                learningActive ? 'text-brand-700' : 'text-[#111827] hover:text-brand-700'
               )}
             >
               Öğrenim İçeriğim
@@ -538,7 +516,7 @@ export const Header = () => {
           {!loading && (
             <Link
               to={isInstructor ? '/instructor' : '/become-instructor'}
-              className="hidden lg:inline-flex items-center h-10 px-3 rounded-full text-[14.5px] font-semibold whitespace-nowrap text-[#0b2619] hover:text-brand-700 transition-colors"
+              className="hidden lg:inline-flex items-center h-10 px-3 rounded-full text-[14.5px] font-semibold whitespace-nowrap text-[#111827] hover:text-brand-700 transition-colors"
             >
               {isInstructor ? 'Eğitmen Paneli' : 'Eğitmen Ol'}
             </Link>
@@ -550,7 +528,7 @@ export const Header = () => {
               <button
                 onClick={() => navigate('/notifications')}
                 aria-label={unreadCount > 0 ? `Bildirimler, ${unreadCount} okunmamış` : 'Bildirimler'}
-                className="w-10 h-10 rounded-full flex items-center justify-center relative text-[#0b2619] hover:bg-[#f0f4f1] transition-colors"
+                className="w-10 h-10 rounded-full flex items-center justify-center relative text-[#111827] hover:bg-[#F1F3F5] transition-colors"
               >
                 <Bell className="w-[21px] h-[21px]" strokeWidth={1.9} />
                 {unreadCount > 0 && (
@@ -565,7 +543,7 @@ export const Header = () => {
             <button
               onClick={() => navigate('/cart')}
               aria-label={cartCount > 0 ? `Sepet, ${cartCount} ürün` : 'Sepet'}
-              className="w-10 h-10 rounded-full flex items-center justify-center relative text-[#0b2619] hover:bg-[#f0f4f1] transition-colors"
+              className="w-10 h-10 rounded-full flex items-center justify-center relative text-[#111827] hover:bg-[#F1F3F5] transition-colors"
             >
               <ShoppingCart className="w-[21px] h-[21px]" strokeWidth={1.9} />
               {cartCount > 0 && (
@@ -586,7 +564,7 @@ export const Header = () => {
               >
                 <Avatar className="w-10 h-10">
                   <AvatarImage src={user.profile_image || ''} className="object-cover" />
-                  <AvatarFallback className="bg-[#b2f0c8] text-[#0b2619] font-bold text-[13px]">
+                  <AvatarFallback className="bg-[#b2f0c8] text-[#111827] font-bold text-[13px]">
                     {user.first_name?.[0]}{user.last_name?.[0]}
                   </AvatarFallback>
                 </Avatar>
@@ -597,20 +575,20 @@ export const Header = () => {
             <>
               <Link
                 to="/login"
-                className="hidden sm:inline-flex items-center h-10 px-3 text-[14.5px] font-semibold text-[#0b2619] hover:text-brand-700 transition-colors"
+                className="hidden sm:inline-flex items-center h-10 px-3 text-[14.5px] font-semibold text-[#111827] hover:text-brand-700 transition-colors"
               >
                 Giriş yap
               </Link>
               <Link
                 to="/register"
-                className="hidden sm:inline-flex items-center h-10 px-5 ml-1 rounded-full bg-[#0b2619] text-[#b2f0c8] text-[14px] font-bold hover:bg-[#123a27] transition-colors"
+                className="hidden sm:inline-flex items-center h-10 px-5 ml-1 rounded-full bg-[#1B7A43] text-white text-[14px] font-bold hover:bg-[#16613A] transition-colors"
               >
                 Kayıt ol
               </Link>
               <Link
                 to="/login"
                 aria-label="Giriş yap"
-                className="sm:hidden w-10 h-10 rounded-full flex items-center justify-center text-[#0b2619] hover:bg-[#f0f4f1]"
+                className="sm:hidden w-10 h-10 rounded-full flex items-center justify-center text-[#111827] hover:bg-[#F1F3F5]"
               >
                 <User className="w-5 h-5" />
               </Link>
@@ -623,13 +601,13 @@ export const Header = () => {
       {mobileSearch && (
         <form onSubmit={(e) => { handleSearch(e); setMobileSearch(false); }} role="search" className="md:hidden px-4 pb-3 animate-in fade-in slide-in-from-top-1 duration-150">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#6a7f74] pointer-events-none" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#6B7280] pointer-events-none" />
             <input
               type="search"
               autoFocus
               aria-label="Kurs ara"
               placeholder="Kurs, konu ya da eğitmen ara…"
-              className="w-full h-11 pl-11 pr-4 rounded-full bg-[#f0f4f1] text-[15px] text-[#0b2619] placeholder:text-[#7d9086] border-0 outline-none focus:bg-white focus:ring-2 focus:ring-brand-700/35"
+              className="w-full h-11 pl-11 pr-4 rounded-full bg-[#F1F3F5] text-[15px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none focus:bg-white focus:ring-2 focus:ring-brand-700/35"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />

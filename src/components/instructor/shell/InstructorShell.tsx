@@ -6,7 +6,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
-import { LanguageSwitcher } from '@/i18n/LanguageSwitcher';
 import {
     useInstructorCourses, useInstructorDashboard, useUnansweredCount, useUnreadMessages,
 } from './useInstructorWorkspace';
@@ -99,10 +98,10 @@ function useSections(): Section[] {
 const firstPage = (s: Section) => s.to || s.subs![0].to;
 
 /*
- * Menü koyu mürekkep yeşili; logo ve seçili başlık nane (#b2f0c8).
+ * Menü koyu mürekkep yeşili; logo ve seçili başlık nane (#9cf2e8).
  * Çizgi yok: ayrımlar yalnızca zemin tonuyla.
  */
-const RAIL_BG = 'bg-[#0b2619]';
+const RAIL_BG = 'bg-[#00201d]';
 
 export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [drawer, setDrawer] = useState(false);
@@ -123,7 +122,7 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
     }, [drawer]);
 
     return (
-        <div className="min-h-screen bg-white text-[#0b2619] selection:bg-[#b2f0c8] selection:text-[#0b2619]">
+        <div className="min-h-screen bg-white text-[#00201d] selection:bg-[#9cf2e8] selection:text-[#00201d]">
             <DesktopNav />
 
             {/* Telefon: üst şerit + çekmece */}
@@ -133,7 +132,7 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
                     onClick={() => setDrawer(true)}
                     aria-label="Menüyü aç"
                     aria-expanded={drawer}
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b2f0c8]/60"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60"
                 >
                     <Menu className="w-5 h-5" />
                 </button>
@@ -145,7 +144,7 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
                 aria-hidden={!drawer}
                 onClick={() => setDrawer(false)}
                 className={cn(
-                    'lg:hidden fixed inset-0 z-50 bg-[#0b2619]/45 transition-opacity duration-200 motion-reduce:transition-none',
+                    'lg:hidden fixed inset-0 z-50 bg-[#00201d]/45 transition-opacity duration-200 motion-reduce:transition-none',
                     drawer ? 'opacity-100' : 'opacity-0 pointer-events-none'
                 )}
             />
@@ -168,18 +167,12 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
                     <X className="w-4 h-4" />
                 </button>
                 <MobileNav />
-                <div className="shrink-0 px-4 pb-4 flex justify-center">
-                    <LanguageSwitcher tone="dark" />
-                </div>
             </aside>
 
             <main className="lg:pl-[256px]">
                 {/* Masaüstü üst şerit: öğrenci tarafına geçiş sağ üstte */}
                 <div className="hidden lg:flex h-14 items-center justify-end px-10 max-w-[1280px] mx-auto">
-                    <div className="flex items-center gap-3">
-                        <LanguageSwitcher withIcon={false} />
-                        <StudentLink />
-                    </div>
+                    <StudentLink />
                 </div>
                 <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 py-6 lg:pt-2 lg:pb-9 pb-24">
                     {children}
@@ -189,14 +182,24 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
     );
 };
 
-/** Nane logo, hemen yanında "eğitmen". */
+/*
+ * Panelin logosu nane (#9cf2e8): aynı logo dosyası maske olarak boyanıyor.
+ * Hemen yanında "eğitmen". Platformun kendi logosu (#B2F0C8) ayrı.
+ */
+const LOGO_RATIO = 579 / 160;
+const LOGO_MASK = 'url(/logo-wordmark.png) center / contain no-repeat';
+
 const Brand: React.FC<{ className?: string; size?: 'lg' | 'sm' }> = ({ className, size = 'lg' }) => (
     <Link
         to="/instructor/dashboard"
         aria-label="Edurce eğitmen paneli"
-        className={cn('inline-flex items-end gap-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b2f0c8]/60', className)}
+        className={cn('inline-flex items-end gap-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60', className)}
     >
-        <img src="/logo-mint.png" alt="" className={cn('w-auto', size === 'lg' ? 'h-[30px]' : 'h-[23px]')} />
+        <span
+            aria-hidden
+            className="block"
+            style={{ width: Math.round((size === 'lg' ? 30 : 23) * LOGO_RATIO), height: size === 'lg' ? 30 : 23, background: '#9cf2e8', WebkitMask: LOGO_MASK, mask: LOGO_MASK }}
+        />
         <span className={cn('font-bold text-white/60 leading-none', size === 'lg' ? 'text-[15px] pb-[3px]' : 'text-[12.5px] pb-[2px]')}>
             eğitmen
         </span>
@@ -210,14 +213,14 @@ const StudentLink: React.FC<{ compact?: boolean; className?: string }> = ({ comp
         title="Öğrenci görünümüne geç"
         className={cn(
             'inline-flex items-center gap-2 rounded-xl font-bold transition-colors duration-150',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/40',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40',
             compact
                 ? 'h-9 px-2.5 text-[13px] text-white hover:bg-white/10'
-                : 'h-9 px-3.5 text-[13.5px] text-[#0b2619] bg-white shadow-[0_1px_2px_rgba(0,32,29,0.08)] hover:bg-[#ecfaf1]',
+                : 'h-9 px-3.5 text-[13.5px] text-[#00201d] bg-white shadow-[0_1px_2px_rgba(0,32,29,0.08)] hover:bg-[#ecfbf8]',
             className
         )}
     >
-        <GraduationCap className={cn('w-4 h-4', compact ? 'text-[#b2f0c8]' : 'text-[#12613b]')} />
+        <GraduationCap className={cn('w-4 h-4', compact ? 'text-[#9cf2e8]' : 'text-[#005c55]')} />
         Öğrenci
     </Link>
 );
@@ -299,9 +302,9 @@ const DesktopNav: React.FC = () => {
                         const row = cn(
                             'relative flex items-center gap-3 w-full h-[50px] pl-4 pr-4 text-left rounded-2xl',
                             'text-[16px] tracking-[-0.01em] transition-[background-color,color] duration-150',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#b2f0c8]/60',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#9cf2e8]/60',
                             active
-                                ? 'bg-[#b2f0c8] text-[#0b2619] font-bold'
+                                ? 'bg-[#9cf2e8] text-[#00201d] font-bold'
                                 : isOpen
                                     ? 'bg-white/[0.08] text-white font-semibold'
                                     : 'text-white/80 font-semibold hover:text-white hover:bg-white/[0.05]'
@@ -337,11 +340,11 @@ const DesktopNav: React.FC = () => {
                                             aria-hidden
                                             className={cn(
                                                 'w-[19px] h-[19px] shrink-0 transition-colors duration-150',
-                                                active ? 'text-[#0b2619]' : isOpen ? 'text-[#b2f0c8]' : 'text-white/45'
+                                                active ? 'text-[#00201d]' : isOpen ? 'text-[#9cf2e8]' : 'text-white/45'
                                             )}
                                             strokeWidth={active || isOpen ? 2.2 : 1.9}
                                         />
-                                    ) : <LayoutGrid aria-hidden className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#0b2619]' : 'text-white/45')} strokeWidth={active ? 2.2 : 1.9} />}
+                                    ) : <LayoutGrid aria-hidden className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#00201d]' : 'text-white/45')} strokeWidth={active ? 2.2 : 1.9} />}
                                     <span className="flex-1 truncate">{s.label}</span>
                                     {s.badge ? <Count n={s.badge} /> : null}
                                     {s.subs ? (
@@ -349,7 +352,7 @@ const DesktopNav: React.FC = () => {
                                             aria-hidden
                                             className={cn(
                                                 'w-4 h-4 shrink-0 transition-[opacity,transform,color] duration-150',
-                                                isOpen ? 'opacity-100 translate-x-0.5 text-[#b2f0c8]' : 'opacity-40'
+                                                isOpen ? 'opacity-100 translate-x-0.5 text-[#9cf2e8]' : 'opacity-40'
                                             )}
                                         />
                                     ) : active ? <ArrowUpRight aria-hidden className="w-4 h-4 shrink-0" /> : null}
@@ -367,7 +370,7 @@ const DesktopNav: React.FC = () => {
                     onMouseEnter={keep}
                     onMouseLeave={hide}
                     className={cn(
-                        'absolute left-full -mt-3 z-50 rounded-r-[24px] bg-[#123a27] text-white overflow-hidden',
+                        'absolute left-full -mt-3 z-50 rounded-r-[24px] bg-[#0f302c] text-white overflow-hidden',
                         'shadow-[28px_24px_60px_-28px_rgba(11,38,25,0.65)]',
                         'transition-[opacity,transform,top] motion-reduce:transition-none',
                         settled ? 'duration-150' : 'duration-200',
@@ -402,8 +405,8 @@ const Flyout: React.FC<{ section: Section; animate: boolean }> = ({ section, ani
                         role="menuitem"
                         className={({ isActive }) => cn(
                             'group flex items-center gap-3 h-11 rounded-xl px-3 text-[15px] transition-colors duration-150',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b2f0c8]/60',
-                            isActive ? 'bg-white/[0.09] text-[#b2f0c8] font-bold' : 'text-white/80 font-semibold hover:bg-white/[0.06] hover:text-white'
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60',
+                            isActive ? 'bg-white/[0.09] text-[#9cf2e8] font-bold' : 'text-white/80 font-semibold hover:bg-white/[0.06] hover:text-white'
                         )}
                     >
                         {({ isActive }) => (
@@ -412,7 +415,7 @@ const Flyout: React.FC<{ section: Section; animate: boolean }> = ({ section, ani
                                     aria-hidden
                                     className={cn(
                                         'w-1.5 h-1.5 rounded-full shrink-0 transition-colors',
-                                        isActive ? 'bg-[#b2f0c8]' : 'bg-white/25 group-hover:bg-white/60'
+                                        isActive ? 'bg-[#9cf2e8]' : 'bg-white/25 group-hover:bg-white/60'
                                     )}
                                 />
                                 <span className="flex-1 truncate">{sub.label}</span>
@@ -428,7 +431,7 @@ const Flyout: React.FC<{ section: Section; animate: boolean }> = ({ section, ani
             <div className="px-5 pt-4">
                 <Link
                     to={section.action.to}
-                    className="flex items-center justify-center gap-2 h-11 rounded-xl bg-[#b2f0c8] hover:bg-white active:scale-[0.98] text-[#0b2619] text-[14px] font-bold transition-[background-color,transform] duration-150"
+                    className="flex items-center justify-center gap-2 h-11 rounded-xl bg-[#9cf2e8] hover:bg-white active:scale-[0.98] text-[#00201d] text-[14px] font-bold transition-[background-color,transform] duration-150"
                 >
                     <Plus className="w-4 h-4" />
                     {section.action.label}
@@ -454,7 +457,7 @@ const FlyoutHeader: React.FC<{ section: Section }> = ({ section }) => {
         const parts = [
             { k: 'draft', label: 'taslak', dot: 'bg-[#f5a524]' },
             { k: 'pending', label: 'incelemede', dot: 'bg-[#7cb7ff]' },
-            { k: 'published', label: 'yayında', dot: 'bg-[#b2f0c8]' },
+            { k: 'published', label: 'yayında', dot: 'bg-[#9cf2e8]' },
         ].map(p => ({ ...p, n: n(p.k) })).filter(p => p.n > 0);
         meta = parts.length ? (
             <div className="flex flex-wrap gap-x-3 gap-y-1">
@@ -489,7 +492,7 @@ const FlyoutHeader: React.FC<{ section: Section }> = ({ section }) => {
                 </span>
                 <span>
                     <span className="block text-[11.5px] text-white/50">Ödenecek bakiye</span>
-                    <span className="block text-[17px] font-bold tabular-nums tracking-tight text-[#b2f0c8]">{lira(stats.balance)}</span>
+                    <span className="block text-[17px] font-bold tabular-nums tracking-tight text-[#9cf2e8]">{lira(stats.balance)}</span>
                 </span>
             </div>
         );
@@ -535,7 +538,7 @@ const MonthCard: React.FC = () => {
                     <span className="block mt-0.5 text-[12px] text-white/55">
                         {stats.monthlySales || 0} satış
                         {stats.monthlyChange != null && (
-                            <span className={stats.monthlyChange >= 0 ? 'text-[#b2f0c8] font-semibold' : 'text-[#ff9b8f] font-semibold'}>
+                            <span className={stats.monthlyChange >= 0 ? 'text-[#9cf2e8] font-semibold' : 'text-[#ff9b8f] font-semibold'}>
                                 {' '}· {stats.monthlyChange > 0 ? '+' : ''}{stats.monthlyChange}%
                             </span>
                         )}
@@ -565,15 +568,15 @@ const MobileNav: React.FC = () => {
                     const isOpen = expanded === s.id;
                     const Icon = s.icon;
                     const icon = Icon
-                        ? <Icon className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#0b2619]' : 'text-white/45')} />
-                        : <LayoutGrid className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#0b2619]' : 'text-white/45')} />;
+                        ? <Icon className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#00201d]' : 'text-white/45')} />
+                        : <LayoutGrid className={cn('w-[19px] h-[19px] shrink-0', active ? 'text-[#00201d]' : 'text-white/45')} />;
                     const link = (
                         <Link
                             to={firstPage(s)}
                             aria-current={active ? 'page' : undefined}
                             className={cn(
                                 'flex items-center gap-3 flex-1 min-w-0 h-[50px] px-4 rounded-xl text-[17px] tracking-[-0.01em]',
-                                active ? 'bg-[#b2f0c8] text-[#0b2619] font-bold' : 'text-white/80 font-semibold'
+                                active ? 'bg-[#9cf2e8] text-[#00201d] font-bold' : 'text-white/80 font-semibold'
                             )}
                         >
                             {icon}
@@ -604,7 +607,7 @@ const MobileNav: React.FC = () => {
                                                 to={sub.to}
                                                 className={({ isActive }) => cn(
                                                     'flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-[15px]',
-                                                    isActive ? 'bg-[#b2f0c8]/15 text-[#b2f0c8] font-bold' : 'text-white/70 font-medium'
+                                                    isActive ? 'bg-[#9cf2e8]/15 text-[#9cf2e8] font-bold' : 'text-white/70 font-medium'
                                                 )}
                                             >
                                                 {sub.label}
@@ -616,7 +619,7 @@ const MobileNav: React.FC = () => {
                                         <li>
                                             <Link
                                                 to={s.action.to}
-                                                className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2.5 text-[15px] font-bold text-[#b2f0c8]"
+                                                className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2.5 text-[15px] font-bold text-[#9cf2e8]"
                                             >
                                                 <Plus className="w-4 h-4" /> {s.action.label}
                                             </Link>
@@ -645,9 +648,9 @@ const UserFooter: React.FC = () => {
             className="shrink-0 mx-3 mb-3 rounded-xl px-3 py-2.5 flex items-center gap-2.5 hover:bg-white/[0.05] transition-colors"
         >
             {user?.profile_image ? (
-                <img src={user.profile_image} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-[#b2f0c8]/40" />
+                <img src={user.profile_image} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-[#9cf2e8]/40" />
             ) : (
-                <span className="w-8 h-8 rounded-full bg-[#b2f0c8] text-[#0b2619] text-[12px] font-bold flex items-center justify-center">
+                <span className="w-8 h-8 rounded-full bg-[#9cf2e8] text-[#00201d] text-[12px] font-bold flex items-center justify-center">
                     {initials}
                 </span>
             )}
@@ -673,7 +676,7 @@ export const StatusDot: React.FC<{ tone: 'draft' | 'review' | 'live' }> = ({ ton
         aria-hidden
         className={cn(
             'w-1.5 h-1.5 rounded-full shrink-0',
-            tone === 'live' && 'bg-[#1a9d5c]',
+            tone === 'live' && 'bg-[#0f9f8f]',
             tone === 'review' && 'bg-[#2f7fc1]',
             tone === 'draft' && 'bg-[#d08a1c]'
         )}

@@ -29,17 +29,17 @@ export default {
          * her ekranda tek yerden yönetilir.
          */
         brand: {
-          50: "#F0FBF4",
-          100: "#DDF6E6",
+          50: "#EEFBF3",
+          100: "#D7F5E2",
           200: "#B2F0C8", // logo rengi
-          300: "#86E2A8",
-          400: "#4FC97F",
-          500: "#26AD62",
-          600: "#1A8A4E",
-          700: "#12613B",
-          800: "#0F4A2E",
-          900: "#0B3522",
-          950: "#0B2619",
+          300: "#7EDFA2",
+          400: "#45C878",
+          500: "#22A95A",
+          600: "#1B8A49",
+          700: "#1B7A43", // ana eylem rengi
+          800: "#16613A",
+          900: "#134D30",
+          950: "#0A2A1A",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

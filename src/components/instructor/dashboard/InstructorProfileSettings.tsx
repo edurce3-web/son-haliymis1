@@ -221,12 +221,12 @@ export const InstructorProfileSettings: React.FC = () => {
                 className="grid lg:grid-cols-[300px_1fr] gap-6 items-start"
             >
                 {/* Önizleme: öğrencinin gördüğü kart */}
-                <aside className="lg:sticky lg:top-8 rounded-2xl bg-[#f5f7f6] p-6 text-center">
+                <aside className="lg:sticky lg:top-8 rounded-2xl bg-[#f4f6f6] p-6 text-center">
                     <div className="relative w-28 h-28 mx-auto">
                         {photo ? (
                             <img src={photo} alt="" className="w-28 h-28 rounded-full object-cover ring-1 ring-[#e3e6e5]" />
                         ) : (
-                            <span className="w-28 h-28 rounded-full bg-[#b2f0c8] text-[#0b2619] text-[36px] font-extrabold flex items-center justify-center">
+                            <span className="w-28 h-28 rounded-full bg-[#9cf2e8] text-[#00201d] text-[36px] font-extrabold flex items-center justify-center">
                                 {(formData.first_name[0] || '') + (formData.last_name[0] || '') || '?'}
                             </span>
                         )}
@@ -235,7 +235,7 @@ export const InstructorProfileSettings: React.FC = () => {
                             onClick={() => fileInputRef.current?.click()}
                             disabled={photoBusy}
                             aria-label="Fotoğraf yükle"
-                            className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-[#0b2619] text-[#b2f0c8] flex items-center justify-center ring-4 ring-white hover:bg-[#10331f] transition-colors disabled:opacity-60"
+                            className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-[#00201d] text-[#9cf2e8] flex items-center justify-center ring-4 ring-white hover:bg-[#03302b] transition-colors disabled:opacity-60"
                         >
                             {photoBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
                         </button>
@@ -248,8 +248,8 @@ export const InstructorProfileSettings: React.FC = () => {
                         className="hidden"
                     />
 
-                    <p className="mt-4 text-[19px] font-extrabold tracking-tight text-[#0b2619] text-balance">{fullName || 'Adın'}</p>
-                    <p className="mt-0.5 text-[13.5px] font-semibold text-[#4a5f55] text-balance">{formData.title || 'Unvanın'}</p>
+                    <p className="mt-4 text-[19px] font-extrabold tracking-tight text-[#00201d] text-balance">{fullName || 'Adın'}</p>
+                    <p className="mt-0.5 text-[13.5px] font-semibold text-[#4a6360] text-balance">{formData.title || 'Unvanın'}</p>
 
                     <div className="mt-5 pt-4 border-t-2 border-white flex flex-col items-center gap-1">
                         <button type="button" onClick={() => fileInputRef.current?.click()} disabled={photoBusy} className={cn(btn.ghost, btn.sm)}>
@@ -260,7 +260,7 @@ export const InstructorProfileSettings: React.FC = () => {
                                 Fotoğrafı kaldır
                             </button>
                         )}
-                        <p className="text-[12px] text-[#5e7268] mt-1">JPEG, PNG ya da WebP · en fazla 10 MB</p>
+                        <p className="text-[12px] text-[#5f7774] mt-1">JPEG, PNG ya da WebP · en fazla 10 MB</p>
                     </div>
                 </aside>
 
@@ -312,7 +312,7 @@ export const InstructorProfileSettings: React.FC = () => {
                                                     type="button"
                                                     onClick={() => removeExpertise(exp)}
                                                     aria-label={`${exp} alanını kaldır`}
-                                                    className="inline-flex items-center gap-1.5 h-8 pl-3 pr-2 rounded-full bg-[#e2f6e9] hover:bg-[#fff3f1] text-[13px] font-bold text-[#0b2619] hover:text-[#b42318] transition-colors"
+                                                    className="inline-flex items-center gap-1.5 h-8 pl-3 pr-2 rounded-full bg-[#e3f6f2] hover:bg-[#fff3f1] text-[13px] font-bold text-[#00201d] hover:text-[#b42318] transition-colors"
                                                 >
                                                     {exp} <X className="w-3.5 h-3.5" />
                                                 </button>
@@ -336,7 +336,7 @@ export const InstructorProfileSettings: React.FC = () => {
                                 <div key={l.name}>
                                     <label htmlFor={`pf-${l.name}`} className={label}>{l.label}</label>
                                     <div className="relative">
-                                        <l.icon aria-hidden className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5e7268]" />
+                                        <l.icon aria-hidden className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5f7774]" />
                                         <input id={`pf-${l.name}`} type="text" inputMode="url" name={l.name} value={l.val} onChange={handleChange} placeholder={l.ph} className={cn(field, 'h-11 pl-10')} />
                                     </div>
                                 </div>

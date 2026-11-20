@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
  * giriş yapmış kullanıcı başvuru formuna, misafir önce girişe gidiyor.
  */
 
-const INK = '#0b2619';
+const INK = '#111827';
 const MINT = '#b2f0c8';
 
 const lira = (n: number) => `₺${Math.round(n).toLocaleString('tr-TR')}`;
@@ -83,7 +83,7 @@ const FAQ = [
 ];
 
 const Eyebrow: React.FC<{ children: React.ReactNode; dark?: boolean }> = ({ children, dark }) => (
-  <p className={cn('text-[12.5px] font-bold uppercase tracking-[0.18em]', dark ? 'text-[#b2f0c8]' : 'text-[#12613b]')}>{children}</p>
+  <p className={cn('text-[12.5px] font-bold uppercase tracking-[0.18em]', dark ? 'text-white' : 'text-[#1B7A43]')}>{children}</p>
 );
 
 const BecomeInstructor: React.FC = () => {
@@ -98,19 +98,19 @@ const BecomeInstructor: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="bg-white text-[#0b2619]">
+    <div className="bg-white text-[#111827]">
       {/* ── Kahraman ───────────────────────────────────────────────── */}
       <section className="relative overflow-hidden" style={{ background: INK }}>
         <div aria-hidden className="pointer-events-none absolute -top-48 -right-40 w-[640px] h-[640px] rounded-full bg-[#b2f0c8]/10 blur-3xl" />
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24 grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] gap-12 lg:gap-16 items-center">
           <div className="min-w-0">
-            <p className="inline-flex items-center gap-2 h-8 pl-2.5 pr-3.5 rounded-full bg-white/[0.08] text-[13px] font-bold text-[#b2f0c8]">
+            <p className="inline-flex items-center gap-2 h-8 pl-2.5 pr-3.5 rounded-full bg-white/[0.08] text-[13px] font-bold text-white">
               <span className="w-2 h-2 rounded-full bg-[#b2f0c8]" />
               Edurce eğitmenliği
             </p>
             <h1 className="mt-5 text-[40px] sm:text-[54px] lg:text-[62px] leading-[1.03] font-extrabold tracking-[-0.045em] text-white text-balance">
               Bildiğini öğret,{' '}
-              <span className="inline-block px-3 -mx-0.5 rounded-2xl bg-[#b2f0c8] text-[#0b2619] -rotate-[1.5deg]">yüksek komisyonla</span>{' '}
+              <span className="inline-block px-3 -mx-0.5 rounded-2xl bg-[#b2f0c8] text-[#111827] -rotate-[1.5deg]">yüksek komisyonla</span>{' '}
               kazan.
             </h1>
             <p className="mt-6 text-[17px] sm:text-[18px] leading-relaxed text-white/70 max-w-[52ch]">
@@ -120,7 +120,7 @@ const BecomeInstructor: React.FC = () => {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 to={cta.to}
-                className="group inline-flex items-center gap-2 h-[52px] px-7 rounded-2xl bg-[#b2f0c8] text-[#0b2619] text-[15.5px] font-bold hover:bg-white active:scale-[0.98] transition-[background-color,transform]"
+                className="group inline-flex items-center gap-2 h-[52px] px-7 rounded-2xl bg-[#b2f0c8] text-[#111827] text-[15.5px] font-bold hover:bg-white active:scale-[0.98] transition-[background-color,transform]"
               >
                 {cta.label}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -135,7 +135,7 @@ const BecomeInstructor: React.FC = () => {
             <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-2.5">
               {FACTS.map(f => (
                 <li key={f} className="inline-flex items-center gap-2 text-[14px] font-semibold text-white/85">
-                  <span className="w-5 h-5 rounded-full bg-[#b2f0c8] text-[#0b2619] flex items-center justify-center">
+                  <span className="w-5 h-5 rounded-full bg-[#b2f0c8] text-[#111827] flex items-center justify-center">
                     <Check className="w-3 h-3" strokeWidth={3} />
                   </span>
                   {f}
@@ -152,7 +152,7 @@ const BecomeInstructor: React.FC = () => {
       <Calculator ctaTo={cta.to} ctaLabel={cta.label} />
 
       {/* ── Neden Edurce ───────────────────────────────────────────── */}
-      <section className="bg-[#f5f7f6]">
+      <section className="bg-[#F5F6F8]">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
           <div className="max-w-2xl">
             <Eyebrow>Neden Edurce?</Eyebrow>
@@ -166,14 +166,14 @@ const BecomeInstructor: React.FC = () => {
                 key={title}
                 className={cn(
                   'rounded-[24px] p-6 sm:p-7',
-                  i === 0 ? 'bg-[#0b2619] text-white' : 'bg-white'
+                  i === 0 ? 'bg-[#1B7A43] text-white' : 'bg-white'
                 )}
               >
-                <span className={cn('w-12 h-12 rounded-2xl flex items-center justify-center', i === 0 ? 'bg-[#b2f0c8] text-[#0b2619]' : 'bg-[#e2f6e9] text-[#12613b]')}>
+                <span className={cn('w-12 h-12 rounded-2xl flex items-center justify-center', i === 0 ? 'bg-[#b2f0c8] text-[#111827]' : 'bg-[#E3F8EB] text-[#1B7A43]')}>
                   <Icon className="w-[22px] h-[22px]" />
                 </span>
                 <h3 className="mt-5 text-[18px] font-extrabold tracking-[-0.01em]">{title}</h3>
-                <p className={cn('mt-2 text-[14.5px] leading-[1.7]', i === 0 ? 'text-white/70' : 'text-[#4a5f55]')}>{body}</p>
+                <p className={cn('mt-2 text-[14.5px] leading-[1.7]', i === 0 ? 'text-white/70' : 'text-[#4B5563]')}>{body}</p>
               </div>
             ))}
           </div>
@@ -187,17 +187,17 @@ const BecomeInstructor: React.FC = () => {
           <h2 className="mt-3 text-[30px] sm:text-[40px] leading-[1.08] font-extrabold tracking-[-0.035em] text-balance">
             İhtiyacın olan her şey tek panelde.
           </h2>
-          <p className="mt-4 text-[16px] leading-relaxed text-[#4a5f55] max-w-[46ch]">
+          <p className="mt-4 text-[16px] leading-relaxed text-[#4B5563] max-w-[46ch]">
             Kursunu hazırlamaktan kazancını takip etmeye kadar her adım aynı yerde. Taslağına
             istediğin yerden başlar, istediğin zaman devam edersin.
           </p>
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
           {TOOLS.map(({ icon: Icon, title, body }) => (
-            <div key={title} className="rounded-[24px] bg-[#f5f7f6] p-6">
-              <Icon className="w-6 h-6 text-[#12613b]" />
+            <div key={title} className="rounded-[24px] bg-[#F5F6F8] p-6">
+              <Icon className="w-6 h-6 text-[#1B7A43]" />
               <h3 className="mt-4 text-[17px] font-extrabold tracking-[-0.01em]">{title}</h3>
-              <p className="mt-1.5 text-[14.5px] leading-[1.7] text-[#4a5f55]">{body}</p>
+              <p className="mt-1.5 text-[14.5px] leading-[1.7] text-[#4B5563]">{body}</p>
             </div>
           ))}
           <div className="sm:col-span-2 rounded-[24px] bg-[#b2f0c8] p-6 sm:p-7 grid sm:grid-cols-2 gap-6">
@@ -215,7 +215,7 @@ const BecomeInstructor: React.FC = () => {
               <h3 className="text-[16px] font-extrabold">İhtiyacın olmayanlar</h3>
               <ul className="mt-3 space-y-2">
                 {NO_NEED.map(t => (
-                  <li key={t} className="flex gap-2.5 text-[14.5px] leading-snug text-[#0b2619]/75">
+                  <li key={t} className="flex gap-2.5 text-[14.5px] leading-snug text-[#111827]/75">
                     <X className="w-4 h-4 mt-0.5 shrink-0" strokeWidth={2.6} /> {t}
                   </li>
                 ))}
@@ -226,7 +226,7 @@ const BecomeInstructor: React.FC = () => {
       </section>
 
       {/* ── Dört adım + başvuru kartı ──────────────────────────────── */}
-      <section id="basvuru" className="scroll-mt-24 bg-[#f5f7f6]">
+      <section id="basvuru" className="scroll-mt-24 bg-[#F5F6F8]">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-16 lg:py-24 grid lg:grid-cols-[minmax(0,1fr)_420px] gap-10 lg:gap-14 items-start">
           <div>
             <Eyebrow>Nasıl başlarım?</Eyebrow>
@@ -236,20 +236,20 @@ const BecomeInstructor: React.FC = () => {
             <ol className="mt-9 space-y-3">
               {STEPS.map((s, i) => (
                 <li key={s.title} className="flex gap-5 rounded-[22px] bg-white p-5 sm:p-6">
-                  <span className="shrink-0 w-11 h-11 rounded-2xl bg-[#0b2619] text-[#b2f0c8] text-[17px] font-extrabold tabular-nums flex items-center justify-center">
+                  <span className="shrink-0 w-11 h-11 rounded-2xl bg-[#1B7A43] text-white text-[17px] font-extrabold tabular-nums flex items-center justify-center">
                     {i + 1}
                   </span>
                   <div>
                     <h3 className="text-[17px] font-extrabold tracking-[-0.01em]">{s.title}</h3>
-                    <p className="mt-1 text-[14.5px] leading-[1.7] text-[#4a5f55]">{s.body}</p>
+                    <p className="mt-1 text-[14.5px] leading-[1.7] text-[#4B5563]">{s.body}</p>
                   </div>
                 </li>
               ))}
             </ol>
           </div>
 
-          <aside className="lg:sticky lg:top-28 rounded-[28px] bg-[#0b2619] text-white p-7 sm:p-8">
-            <p className="text-[13px] font-bold uppercase tracking-[0.16em] text-[#b2f0c8]">Eğitmen hesabı</p>
+          <aside className="lg:sticky lg:top-28 rounded-[28px] bg-[#1B7A43] text-white p-7 sm:p-8">
+            <p className="text-[13px] font-bold uppercase tracking-[0.16em] text-white">Eğitmen hesabı</p>
             <h3 className="mt-3 text-[26px] font-extrabold tracking-[-0.02em] leading-tight">
               Birkaç dakikada eğitmen ol.
             </h3>
@@ -266,14 +266,14 @@ const BecomeInstructor: React.FC = () => {
             </ul>
             <Link
               to={cta.to}
-              className="mt-8 flex items-center justify-center gap-2 h-[52px] rounded-2xl bg-[#b2f0c8] text-[#0b2619] text-[15.5px] font-bold hover:bg-white active:scale-[0.98] transition-[background-color,transform]"
+              className="mt-8 flex items-center justify-center gap-2 h-[52px] rounded-2xl bg-[#b2f0c8] text-[#111827] text-[15.5px] font-bold hover:bg-white active:scale-[0.98] transition-[background-color,transform]"
             >
               {cta.label} <ArrowRight className="w-4 h-4" />
             </Link>
             {!isAuthenticated && (
               <p className="mt-4 text-center text-[13.5px] text-white/60">
                 Hesabın yok mu?{' '}
-                <Link to="/register" className="font-bold text-[#b2f0c8] hover:underline underline-offset-4">Ücretsiz kaydol</Link>
+                <Link to="/register" className="font-bold text-white hover:underline underline-offset-4">Ücretsiz kaydol</Link>
               </p>
             )}
           </aside>
@@ -289,9 +289,9 @@ const BecomeInstructor: React.FC = () => {
         <div className="mt-10 space-y-3">
           {FAQ.map(item => <Faq key={item.q} {...item} />)}
         </div>
-        <p className="mt-8 text-center text-[14.5px] text-[#4a5f55]">
+        <p className="mt-8 text-center text-[14.5px] text-[#4B5563]">
           Başka bir sorun mu var?{' '}
-          <Link to="/help" className="font-bold text-[#12613b] hover:underline underline-offset-4">Yardım merkezine bak</Link>
+          <Link to="/help" className="font-bold text-[#1B7A43] hover:underline underline-offset-4">Yardım merkezine bak</Link>
         </p>
       </section>
 
@@ -301,12 +301,12 @@ const BecomeInstructor: React.FC = () => {
           <h2 className="text-[30px] sm:text-[44px] leading-[1.05] font-extrabold tracking-[-0.04em] text-balance">
             İlk kursun, ilk adımın.
           </h2>
-          <p className="mt-4 text-[16.5px] text-[#0b2619]/70 max-w-[46ch] mx-auto">
+          <p className="mt-4 text-[16.5px] text-[#111827]/70 max-w-[46ch] mx-auto">
             Başlamak ücretsiz. Bildiğini anlat, her satıştan yüksek komisyonla kazan.
           </p>
           <Link
             to={cta.to}
-            className="mt-8 inline-flex items-center gap-2 h-[52px] px-8 rounded-2xl bg-[#0b2619] text-[#b2f0c8] text-[15.5px] font-bold hover:bg-[#123a27] active:scale-[0.98] transition-[background-color,transform]"
+            className="mt-8 inline-flex items-center gap-2 h-[52px] px-8 rounded-2xl bg-[#1B7A43] text-white text-[15.5px] font-bold hover:bg-[#16613A] active:scale-[0.98] transition-[background-color,transform]"
           >
             {cta.label} <ArrowRight className="w-4 h-4" />
           </Link>
@@ -323,8 +323,8 @@ const PanelPreview: React.FC = () => {
     <div aria-hidden className="relative hidden sm:block">
       <div className="rounded-[28px] bg-white p-6 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.6)] rotate-[1.5deg]">
         <div className="flex items-center justify-between">
-          <p className="text-[13px] font-bold text-[#4a5f55]">Bu ayki kazancın</p>
-          <span className="h-6 px-2.5 rounded-full bg-[#e2f6e9] text-[#12613b] text-[11.5px] font-bold inline-flex items-center">Örnek görünüm</span>
+          <p className="text-[13px] font-bold text-[#4B5563]">Bu ayki kazancın</p>
+          <span className="h-6 px-2.5 rounded-full bg-[#E3F8EB] text-[#1B7A43] text-[11.5px] font-bold inline-flex items-center">Örnek görünüm</span>
         </div>
         <p className="mt-1 text-[34px] font-extrabold tracking-[-0.03em] tabular-nums" style={{ color: INK }}>₺12.480</p>
         <div className="mt-5 h-[120px] flex items-end gap-1.5">
@@ -338,8 +338,8 @@ const PanelPreview: React.FC = () => {
         </div>
         <div className="mt-5 grid grid-cols-3 gap-2">
           {[['Satış', '86'], ['Yeni öğrenci', '74'], ['Puan', '4,8']].map(([k, v]) => (
-            <div key={k} className="rounded-2xl bg-[#f5f7f6] px-3 py-2.5">
-              <p className="text-[11.5px] text-[#6a7f74]">{k}</p>
+            <div key={k} className="rounded-2xl bg-[#F5F6F8] px-3 py-2.5">
+              <p className="text-[11.5px] text-[#6B7280]">{k}</p>
               <p className="text-[17px] font-extrabold tabular-nums" style={{ color: INK }}>{v}</p>
             </div>
           ))}
@@ -347,11 +347,11 @@ const PanelPreview: React.FC = () => {
       </div>
 
       <div className="absolute -left-6 -bottom-7 rounded-2xl bg-[#b2f0c8] px-4 py-3 shadow-[0_24px_40px_-24px_rgba(0,0,0,0.6)] -rotate-[2deg] flex items-center gap-3">
-        <span className="w-9 h-9 rounded-xl bg-[#0b2619] text-[#b2f0c8] flex items-center justify-center">
+        <span className="w-9 h-9 rounded-xl bg-[#1B7A43] text-white flex items-center justify-center">
           <Wallet className="w-[18px] h-[18px]" />
         </span>
         <span>
-          <span className="block text-[12px] font-bold text-[#0b2619]/70">Yeni satış</span>
+          <span className="block text-[12px] font-bold text-[#111827]/70">Yeni satış</span>
           <span className="block text-[14.5px] font-extrabold" style={{ color: INK }}>Kuponla geldi, tamamı senin</span>
         </span>
       </div>
@@ -372,11 +372,11 @@ const Calculator: React.FC<{ ctaTo: string; ctaLabel: string }> = ({ ctaTo, ctaL
         <h2 className="mt-3 text-[30px] sm:text-[40px] leading-[1.08] font-extrabold tracking-[-0.035em] text-balance">
           Kursunun satış potansiyelini hesapla.
         </h2>
-        <p className="mt-3 text-[16px] text-[#4a5f55]">İki değeri kaydır; aylık ve yıllık satış tutarını anında gör.</p>
+        <p className="mt-3 text-[16px] text-[#4B5563]">İki değeri kaydır; aylık ve yıllık satış tutarını anında gör.</p>
       </div>
 
       <div className="mt-10 grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-4">
-        <div className="rounded-[28px] bg-[#f5f7f6] p-6 sm:p-9 space-y-9">
+        <div className="rounded-[28px] bg-[#F5F6F8] p-6 sm:p-9 space-y-9">
           <Slider
             id="calc-students" label="Ayda kaç öğrenci kaydolur?" value={students} min={10} max={1000} step={10}
             onChange={setStudents} display={`${students.toLocaleString('tr-TR')} öğrenci`} ends={['10', '1.000']}
@@ -385,27 +385,27 @@ const Calculator: React.FC<{ ctaTo: string; ctaLabel: string }> = ({ ctaTo, ctaL
             id="calc-price" label="Kursunun fiyatı" value={price} min={99} max={2999} step={50}
             onChange={setPrice} display={lira(price)} ends={['₺99', '₺2.999']}
           />
-          <p className="text-[13px] text-[#6a7f74] leading-relaxed">
+          <p className="text-[13px] text-[#6B7280] leading-relaxed">
             Tahmindir; gerçek satışlar kursun konusuna, kalitesine ve tanıtımına göre değişir.
           </p>
         </div>
 
-        <div className="rounded-[28px] bg-[#0b2619] text-white p-6 sm:p-9 flex flex-col">
+        <div className="rounded-[28px] bg-[#1B7A43] text-white p-6 sm:p-9 flex flex-col">
           <p className="text-[14px] font-semibold text-white/60">Aylık satış tutarı</p>
-          <p className="mt-1 text-[42px] sm:text-[52px] font-extrabold tracking-[-0.04em] tabular-nums text-[#b2f0c8] leading-none">{lira(monthly)}</p>
+          <p className="mt-1 text-[42px] sm:text-[52px] font-extrabold tracking-[-0.04em] tabular-nums text-white leading-none">{lira(monthly)}</p>
           <div className="mt-6 rounded-2xl bg-white/[0.07] px-5 py-4 flex items-center justify-between gap-4">
             <span className="text-[14px] text-white/70">Yıllık</span>
             <span className="text-[20px] font-extrabold tabular-nums">{lira(monthly * 12)}</span>
           </div>
           <ul className="mt-6 space-y-2.5 text-[14.5px] text-white/80">
-            <li className="flex gap-2.5"><Check className="w-4 h-4 mt-0.5 shrink-0 text-[#b2f0c8]" strokeWidth={2.6} /> Bunun büyük kısmı senin: yüksek komisyon</li>
-            <li className="flex gap-2.5"><Check className="w-4 h-4 mt-0.5 shrink-0 text-[#b2f0c8]" strokeWidth={2.6} /> Kendi kuponunla gelen satışın tamamı senin</li>
+            <li className="flex gap-2.5"><Check className="w-4 h-4 mt-0.5 shrink-0 text-white" strokeWidth={2.6} /> Bunun büyük kısmı senin: yüksek komisyon</li>
+            <li className="flex gap-2.5"><Check className="w-4 h-4 mt-0.5 shrink-0 text-white" strokeWidth={2.6} /> Kendi kuponunla gelen satışın tamamı senin</li>
           </ul>
           <Link
             to={ctaTo}
             className="mt-auto pt-8"
           >
-            <span className="flex items-center justify-center gap-2 h-[52px] rounded-2xl bg-[#b2f0c8] text-[#0b2619] text-[15px] font-bold hover:bg-white transition-colors">
+            <span className="flex items-center justify-center gap-2 h-[52px] rounded-2xl bg-[#b2f0c8] text-[#111827] text-[15px] font-bold hover:bg-white transition-colors">
               {ctaLabel} <ArrowRight className="w-4 h-4" />
             </span>
           </Link>
@@ -435,9 +435,9 @@ const Slider: React.FC<{
         value={value}
         onChange={e => onChange(Number(e.target.value))}
         className="edu-range mt-4 w-full"
-        style={{ background: `linear-gradient(to right, ${INK} ${pct}%, #dfe7e2 ${pct}%)` }}
+        style={{ background: `linear-gradient(to right, ${INK} ${pct}%, #E5E7EB ${pct}%)` }}
       />
-      <div className="mt-2 flex justify-between text-[12.5px] text-[#6a7f74] tabular-nums">
+      <div className="mt-2 flex justify-between text-[12.5px] text-[#6B7280] tabular-nums">
         <span>{ends[0]}</span><span>{ends[1]}</span>
       </div>
       <style>{`
@@ -453,18 +453,18 @@ const Slider: React.FC<{
 const Faq: React.FC<{ q: string; a: string }> = ({ q, a }) => {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-[20px] bg-[#f5f7f6]">
+    <div className="rounded-[20px] bg-[#F5F6F8]">
       <button
         type="button"
         aria-expanded={open}
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between gap-4 text-left px-6 py-5 rounded-[20px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12613b]/40"
+        className="w-full flex items-center justify-between gap-4 text-left px-6 py-5 rounded-[20px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/40"
       >
         <span className="text-[16px] font-bold">{q}</span>
-        <ChevronDown className={cn('w-5 h-5 shrink-0 text-[#12613b] transition-transform duration-200', open && 'rotate-180')} />
+        <ChevronDown className={cn('w-5 h-5 shrink-0 text-[#1B7A43] transition-transform duration-200', open && 'rotate-180')} />
       </button>
       {open && (
-        <p className="px-6 pb-5 -mt-1 text-[15px] leading-[1.75] text-[#4a5f55] animate-in fade-in duration-200">{a}</p>
+        <p className="px-6 pb-5 -mt-1 text-[15px] leading-[1.75] text-[#4B5563] animate-in fade-in duration-200">{a}</p>
       )}
     </div>
   );

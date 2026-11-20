@@ -63,7 +63,7 @@ export const CategoryMegaMenu: React.FC = () => {
                 aria-haspopup="true"
                 className={cn(
                     'relative flex items-center h-10 px-3 text-[14.5px] font-semibold whitespace-nowrap transition-colors',
-                    open ? 'text-brand-700' : 'text-[#0b2619] hover:text-brand-700'
+                    open ? 'text-brand-700' : 'text-[#111827] hover:text-brand-700'
                 )}
             >
                 Tüm Kurslar
