@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { API_BASE_URL } from '@/lib/api';
+import { API_BASE_URL, getCourseImageUrl } from '@/lib/api';
+import { PageBand } from '@/components/layout/PageBand';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -106,114 +107,111 @@ const Favorites = () => {
     }
   };
 
+  const band = (
+    <PageBand
+      breadcrumb={<><Link to="/">Ana sayfa</Link><span className="text-[#9CA3AF]">/</span><span className="text-[#111827]">Favorilerim</span></>}
+      eyebrow="Hesabım"
+      title="Favorilerim"
+      subtitle={isLoading ? undefined : favorites.length > 0 ? `${favorites.length} favori kurs` : 'Beğendiğin kursları burada topla.'}
+    />
+  );
+
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-10">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-48 mb-6"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="h-64 bg-gray-200 rounded-lg"></div>
-            ))}
-          </div>
+      <div className="min-h-screen bg-white">
+        {band}
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="h-72 bg-[#F5F6F8] rounded-[22px] animate-pulse" />
+          ))}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-10">
-      <div className="flex items-center gap-3 mb-8">
-        <Heart className="w-8 h-8 text-pink-500 fill-pink-500" />
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-brand-800 bg-clip-text text-transparent">
-          Favorilerim
-        </h1>
-      </div>
-
-      {favorites.length === 0 ? (
-        <Card className="text-center py-16">
-          <CardContent>
-            <Heart className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Henüz favori kursunuz yok</h3>
-            <p className="text-muted-foreground mb-6">
-              Beğendiğiniz kursları favorilere ekleyerek daha sonra kolayca bulabilirsiniz.
+    <div className="min-h-screen bg-white text-[#111827]">
+      {band}
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-10">
+        {favorites.length === 0 ? (
+          <div className="rounded-[28px] bg-[#F5F6F8] py-16 px-6 text-center">
+            <p className="text-[20px] font-extrabold">Henüz favori kursun yok</p>
+            <p className="mt-2 text-[14.5px] text-[#6B7280] max-w-md mx-auto">
+              Beğendiğin kursları favorilere ekle, sonra kolayca bulursun.
             </p>
-            <Link to="/courses">
-              <Button className="bg-gradient-to-r from-pink-500 to-brand-800 hover:from-pink-600 hover:to-brand-800">
-                <BookOpen className="w-4 h-4 mr-2" />
-                Kursları Keşfet
-              </Button>
+            <Link
+              to="/courses"
+              className="mt-6 inline-flex items-center h-11 px-6 rounded-2xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14.5px] font-bold transition-colors"
+            >
+              Kursları keşfet
             </Link>
-          </CardContent>
-        </Card>
-      ) : (
-        <>
-          <div className="flex justify-between items-center mb-6">
-            <p className="text-muted-foreground">{favorites.length} favori kurs bulundu</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {favorites.map((course) => {
               const id = course.course_id || course.id;
-              const image = course.image_path || course.image_url || '/placeholder.svg';
+              const image = getCourseImageUrl(id, course.image_path || course.image_url);
               const instructor = course.instructor_name ||
                 `${course.instructor_first_name || ''} ${course.instructor_last_name || ''}`.trim();
-              const rating = parseFloat(course.rating || 0).toFixed(1);
+              const rating = Number(course.rating || 0);
               const students = course.student_count || course.students_count || 0;
-              const price = parseFloat(course.price || 0).toFixed(2);
+              const price = Number(course.price || 0);
+              const href = course.slug ? `/course/${course.slug}` : `/course/${id}`;
 
               return (
-                <Card key={id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
+                <article key={id} className="group rounded-[22px] bg-white ring-1 ring-black/[0.06] overflow-hidden flex flex-col transition-shadow hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]">
                   <div className="relative">
-                    <img
-                      src={image}
-                      alt={course.title}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.svg'; }}
-                    />
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="absolute top-2 right-2 bg-white/80 hover:bg-white text-pink-500 hover:text-pink-600"
+                    <Link to={href} className="block aspect-video bg-[#F1F3F5] overflow-hidden">
+                      <img
+                        src={image}
+                        alt=""
+                        className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+                        onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.svg'; }}
+                      />
+                    </Link>
+                    <button
+                      type="button"
                       onClick={() => removeFromFavorites(id)}
+                      aria-label="Favorilerden çıkar"
+                      className="absolute top-2.5 right-2.5 w-9 h-9 rounded-full bg-white/90 hover:bg-white text-[#e5484d] flex items-center justify-center shadow-sm"
                     >
                       <Heart className="w-4 h-4 fill-current" />
-                    </Button>
+                    </button>
                   </div>
 
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                  <div className="p-4 flex-1 flex flex-col">
+                    <Link to={href} className="text-[15px] font-bold leading-snug line-clamp-2 group-hover:text-[#1B7A43] transition-colors">
                       {course.title}
-                    </h3>
-
-                    <p className="text-sm text-muted-foreground mb-2">{instructor}</p>
-
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm font-medium">{rating}</span>
-                      </div>
-                      <span className="text-sm text-muted-foreground">({students} öğrenci)</span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-primary">₺{price}</span>
-                      <Button
-                        size="sm"
+                    </Link>
+                    {instructor && <p className="mt-1 text-[13px] text-[#6B7280] truncate">{instructor}</p>}
+                    <p className="mt-2 flex items-center gap-1.5 text-[12.5px] text-[#6B7280]">
+                      {rating > 0 && (
+                        <>
+                          <Star className="w-3.5 h-3.5 fill-[#f5a524] text-[#f5a524]" />
+                          <span className="font-bold text-[#111827]">{rating.toFixed(1)}</span>
+                          <span>·</span>
+                        </>
+                      )}
+                      <span>{`${students} öğrenci`}</span>
+                    </p>
+                    <div className="mt-auto pt-4 flex items-center justify-between gap-2">
+                      <span className="text-[18px] font-extrabold tabular-nums">{price > 0 ? `₺${price.toLocaleString('tr-TR')}` : 'Ücretsiz'}</span>
+                      <button
+                        type="button"
                         onClick={() => addToCart(course)}
-                        className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+                        className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[13px] font-bold transition-colors"
                       >
-                        <ShoppingCart className="w-4 h-4 mr-1" />
-                        Sepete Ekle
-                      </Button>
+                        <ShoppingCart className="w-4 h-4" />
+                        Sepete ekle
+                      </button>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </article>
               );
             })}
           </div>
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 };

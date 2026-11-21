@@ -234,7 +234,7 @@ const Gamification: React.FC = () => {
                                 </h2>
                                 <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-2.5 mb-5" />
 
-                                <div className="border-t border-slate-200 divide-y divide-slate-100">
+                                <div className="border-t border-slate-200 divide-y-2 divide-white">
                                     {data.history.map((item, i) => (
                                         <div key={i} className="flex items-center justify-between gap-4 py-3">
                                             <div className="min-w-0">

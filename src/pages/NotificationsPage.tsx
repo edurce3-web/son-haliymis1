@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/services/api';
 import { API_BASE_URL } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import { PageBand } from '@/components/layout/PageBand';
 import { notificationMeta } from '@/components/notifications/notificationMeta';
 import { toast } from 'sonner';
 import {
@@ -196,33 +197,25 @@ const NotificationsPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            <div className="max-w-3xl mx-auto px-4 py-8">
+        <div className="min-h-screen bg-white pb-12">
+            <PageBand
+                breadcrumb={<><Link to="/">Ana sayfa</Link><span className="text-[#9CA3AF]">/</span><span className="text-[#111827]">Bildirimler</span></>}
+                eyebrow="Hesabım"
+                title="Bildirimler"
+                subtitle={notifications.length > 0
+                    ? `${notifications.length} bildirim · ${unreadCount} okunmamış`
+                    : 'Satın alma, mesaj ve duyurular burada görünür.'}
+            />
+            <div className="max-w-3xl mx-auto px-4 pt-8">
 
-                <div className="flex flex-wrap items-end justify-between gap-3 mb-5">
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                            Bildirimler
-                            {unreadCount > 0 && (
-                                <span className="text-xs bg-brand-600 text-white font-semibold px-2 py-0.5 rounded-full">
-                                    {unreadCount}
-                                </span>
-                            )}
-                        </h1>
-                        <p className="text-sm text-slate-500 mt-0.5">
-                            {notifications.length > 0
-                                ? `${notifications.length} bildirim · ${unreadCount} okunmamış`
-                                : 'Satın alma, mesaj ve duyurular burada görünür.'}
-                        </p>
-                    </div>
-
+                <div className="flex flex-wrap items-center justify-end gap-3 mb-4">
                     <div className="flex items-center gap-2">
                         {unreadCount > 0 && (
                             <Button
                                 onClick={markAllAsRead}
                                 disabled={busy}
-                                variant="outline"
-                                className="h-9 rounded-xl gap-2 text-sm"
+                                variant="ghost"
+                                className="h-9 rounded-xl gap-2 text-sm bg-[#F1F3F5] hover:bg-[#E9ECEF] font-semibold"
                             >
                                 <CheckCheck className="w-4 h-4" /> Tümünü okundu yap
                             </Button>
@@ -241,7 +234,7 @@ const NotificationsPage = () => {
                 </div>
 
                 {notifications.length > 0 && (
-                    <div className="bg-white border border-slate-200 rounded-2xl p-3 mb-4 space-y-3">
+                    <div className="bg-[#F5F6F8] rounded-[22px] p-3 mb-4 space-y-3">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <input
@@ -249,7 +242,7 @@ const NotificationsPage = () => {
                                 placeholder="Bildirimlerde ara…"
                                 value={query}
                                 onChange={e => setQuery(e.target.value)}
-                                className="w-full h-9 pl-9 pr-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                                className="w-full h-9 pl-9 pr-3 rounded-xl border-0 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                             />
                         </div>
                         <div className="flex flex-wrap gap-1.5">
@@ -282,7 +275,7 @@ const NotificationsPage = () => {
                 {loading ? (
                     <div className="space-y-2">
                         {[...Array(4)].map((_, i) => (
-                            <div key={i} className="bg-white rounded-2xl border border-slate-200 p-4 animate-pulse">
+                            <div key={i} className="bg-[#F5F6F8] rounded-[22px] p-4 animate-pulse">
                                 <div className="flex items-start gap-3">
                                     <div className="w-10 h-10 bg-slate-100 rounded-xl shrink-0" />
                                     <div className="flex-1 space-y-2 pt-1">
@@ -294,7 +287,7 @@ const NotificationsPage = () => {
                         ))}
                     </div>
                 ) : filtered.length === 0 ? (
-                    <div className="bg-white rounded-2xl border border-slate-200 py-16 text-center">
+                    <div className="bg-[#F5F6F8] rounded-[22px] py-16 text-center">
                         <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                             <Bell className="w-7 h-7 text-slate-300" />
                         </div>
@@ -314,7 +307,7 @@ const NotificationsPage = () => {
                                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2 px-1">
                                     {group.label}
                                 </p>
-                                <div className="bg-white border border-slate-200 rounded-2xl divide-y divide-slate-100 overflow-hidden">
+                                <div className="bg-[#F5F6F8] rounded-[22px] divide-y-2 divide-white overflow-hidden">
                                     {group.items.map(n => {
                                         const meta = metaFor(n.type);
                                         const Icon = meta.icon;

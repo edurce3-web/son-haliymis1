@@ -181,7 +181,7 @@ export const CatalogCourseCard: React.FC<Props> = ({
     const subtitle = course.short_description || course.description || '';
 
     return (
-        <article className="group bg-white border border-slate-200 rounded-lg overflow-hidden flex flex-col transition-colors hover:border-brand-300">
+        <article className="group bg-white rounded-2xl overflow-hidden flex flex-col ring-1 ring-black/[0.06] transition-shadow hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]">
             {/* Kapak — 16:9, kartı fazla uzatmıyor */}
             <Link {...linkProps} className="relative block aspect-[16/9] bg-slate-100 overflow-hidden">
                 {course.image && !imgFailed ? (

@@ -56,7 +56,7 @@ const Learning = () => {
     };
 
     if (isLoading) return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="min-h-screen bg-white flex items-center justify-center">
             <div className="flex flex-col items-center gap-4">
                 <div className="w-14 h-14 border-4 border-brand-300 border-t-brand-600 rounded-full animate-spin" />
                 <p className="text-slate-500 text-sm animate-pulse">Kurslar yükleniyor...</p>
@@ -155,7 +155,7 @@ const CourseCard = ({
             "group relative bg-white rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col",
             isGrant
                 ? "border border-amber-200 ring-1 ring-amber-200/60 hover:border-amber-300 hover:shadow-amber-500/10"
-                : "border border-slate-200 hover:border-brand-300 hover:shadow-brand-500/10",
+                : "ring-1 ring-black/[0.06] hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]",
         ].join(" ")}>
             {/* Thumbnail */}
             <div className="relative aspect-video overflow-hidden cursor-pointer shrink-0" onClick={onNavigate}>

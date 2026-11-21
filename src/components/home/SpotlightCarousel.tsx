@@ -115,28 +115,28 @@ export const SpotlightCarousel: React.FC<{ courses: any[] }> = ({ courses }) => 
     if (list.length === 0) return null;
 
     return (
-        <section className="relative w-full overflow-hidden bg-[#0b1220] py-16 lg:py-20 font-jakarta">
+        <section className="relative w-full overflow-hidden bg-[#0b1220] py-8 lg:py-10 font-jakarta">
             <div className="absolute inset-0 pointer-events-none" aria-hidden>
                 <div className="absolute -top-40 -left-32 w-[520px] h-[520px] bg-brand-500/15 rounded-full blur-[150px]" />
                 <div className="absolute -bottom-48 right-[-8rem] w-[560px] h-[560px] bg-emerald-500/10 rounded-full blur-[150px]" />
             </div>
 
             <div className="container relative mx-auto px-4">
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
                     <div className="max-w-2xl">
-                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-400/10 border border-brand-400/25 text-brand-300 text-[11px] font-extrabold uppercase tracking-[0.12em]">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-400/10 text-brand-300 text-[10.5px] font-extrabold uppercase tracking-[0.12em]">
                             <Sparkles className="w-3.5 h-3.5" />
                             Geleceğin becerileri & kariyer yetkinlikleri
                         </span>
 
-                        <h2 className="text-[30px] sm:text-[38px] lg:text-[44px] leading-[1.1] font-extrabold text-white tracking-tight mt-5">
+                        <h2 className="text-[22px] sm:text-[26px] lg:text-[28px] leading-[1.15] font-extrabold text-white tracking-tight mt-3">
                             Yapay Zeka Devriminde{' '}
                             <span className="bg-gradient-to-r from-emerald-300 via-brand-300 to-cyan-300 bg-clip-text text-transparent">
                                 Bir Adım Önde Olun
                             </span>
                         </h2>
 
-                        <p className="text-[14.5px] lg:text-[15.5px] text-slate-400 leading-relaxed mt-4">
+                        <p className="text-[13.5px] text-slate-400 leading-relaxed mt-2 max-w-xl">
                             Geleneksel yöntemlerin ötesine geçin. Sektörün en yeni konularını
                             uygulamalı içerik ve ileri düzey yetkinlik modülleriyle kavrayın.
                         </p>
@@ -158,7 +158,7 @@ export const SpotlightCarousel: React.FC<{ courses: any[] }> = ({ courses }) => 
                             type="button"
                             onClick={() => scroll(-1)}
                             aria-label="Önceki kurslar"
-                            className="w-10 h-10 rounded-full bg-white/5 border border-white/15 text-white flex items-center justify-center hover:bg-white/15 transition-colors"
+                            className="w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors"
                         >
                             <ChevronLeft className="w-5 h-5" />
                         </button>
@@ -166,7 +166,7 @@ export const SpotlightCarousel: React.FC<{ courses: any[] }> = ({ courses }) => 
                             type="button"
                             onClick={() => scroll(1)}
                             aria-label="Sonraki kurslar"
-                            className="w-10 h-10 rounded-full bg-white/5 border border-white/15 text-white flex items-center justify-center hover:bg-white/15 transition-colors"
+                            className="w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors"
                         >
                             <ChevronRight className="w-5 h-5" />
                         </button>
@@ -182,7 +182,7 @@ export const SpotlightCarousel: React.FC<{ courses: any[] }> = ({ courses }) => 
                     onTouchEnd={() => pause(false)}
                     onFocus={() => pause(true)}
                     onBlur={() => pause(false)}
-                    className="flex gap-5 overflow-x-auto pb-2 -mx-1 px-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                    className="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                 >
                     {items.map((course, i) => {
                         const accent = ACCENTS[(i % list.length) % ACCENTS.length];
@@ -203,16 +203,16 @@ export const SpotlightCarousel: React.FC<{ courses: any[] }> = ({ courses }) => 
                                 key={`${course.id}-${i}`}
                                 aria-hidden={duplicate || undefined}
                                 className={cn(
-                                    'group shrink-0 w-[280px] sm:w-[300px] flex flex-col rounded-2xl p-4',
-                                    'bg-slate-800/50 border border-slate-700/60 backdrop-blur-md',
-                                    'transition-all duration-300 hover:-translate-y-1 hover:bg-slate-800/80',
+                                    'group shrink-0 w-[236px] sm:w-[248px] flex flex-col rounded-2xl p-3',
+                                    'bg-white/[0.06]',
+                                    'transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/[0.1]',
                                     accent.ring
                                 )}
                             >
                                 <Link
                                     to={url}
                                     tabIndex={duplicate ? -1 : undefined}
-                                    className="relative block aspect-[16/10] rounded-xl overflow-hidden bg-slate-950"
+                                    className="relative block aspect-video rounded-xl overflow-hidden bg-slate-950"
                                 >
                                     <img
                                         src={img}
@@ -243,28 +243,28 @@ export const SpotlightCarousel: React.FC<{ courses: any[] }> = ({ courses }) => 
                                     )}
                                 </Link>
 
-                                <h3 className="text-[15px] font-bold text-white mt-4 truncate">
+                                <h3 className="text-[14px] font-bold text-white mt-3 truncate">
                                     <Link to={url} tabIndex={duplicate ? -1 : undefined}>{course.title}</Link>
                                 </h3>
 
                                 {course.short_description && (
-                                    <p className="text-[12.5px] leading-[1.6] text-slate-400 mt-1.5 line-clamp-2">
+                                    <p className="text-[12px] leading-[1.5] text-slate-400 mt-1 line-clamp-1">
                                         {course.short_description}
                                     </p>
                                 )}
 
-                                <div className="flex flex-wrap gap-1.5 mt-3">
+                                <div className="flex flex-wrap gap-1 mt-2">
                                     {tags.map(t => (
                                         <span
                                             key={t}
-                                            className="px-2 py-0.5 rounded-md bg-slate-950/60 border border-slate-700/60 text-slate-300 text-[11px]"
+                                            className="px-1.5 py-0.5 rounded-md bg-white/[0.07] text-slate-300 text-[10.5px]"
                                         >
                                             {t}
                                         </span>
                                     ))}
                                 </div>
 
-                                <div className="flex items-center justify-between mt-auto pt-5">
+                                <div className="flex items-center justify-between mt-auto pt-3">
                                     <Link
                                         to={url}
                                         tabIndex={duplicate ? -1 : undefined}
@@ -277,7 +277,7 @@ export const SpotlightCarousel: React.FC<{ courses: any[] }> = ({ courses }) => 
                                         to={url}
                                         tabIndex={-1}
                                         aria-hidden
-                                        className="w-8 h-8 rounded-full bg-slate-950/60 border border-slate-700 text-slate-300 flex items-center justify-center group-hover:text-white transition-colors"
+                                        className="w-7 h-7 rounded-full bg-white/[0.07] text-slate-300 flex items-center justify-center group-hover:text-white transition-colors"
                                     >
                                         <ArrowUpRight className="w-4 h-4" />
                                     </Link>

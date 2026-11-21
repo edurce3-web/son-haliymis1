@@ -137,7 +137,7 @@ const Certificates = () => {
                         {certs.map(cert => (
                             <article
                                 key={cert.certificate_id}
-                                className="border border-slate-200 rounded-xl p-5 flex flex-col transition-colors hover:border-brand-300"
+                                className="bg-[#F5F6F8] rounded-[22px] p-5 flex flex-col transition-colors hover:bg-[#EEFBF3]"
                             >
                                 <p className="font-montserrat text-[10px] font-extrabold uppercase tracking-[0.16em] text-brand-700">
                                     Bitirme sertifikası

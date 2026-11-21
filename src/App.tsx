@@ -7,9 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import AppErrorBoundary from "@/components/AppErrorBoundary";
-import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import Footer from "@/components/layout/Footer";
-import CategoryBar from "@/components/layout/CategoryBar";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -88,11 +86,8 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     <div className="min-h-screen bg-background">
       <ScrollToTop />
       {!hideLayout && <Header />}
-      {/* Kategori sayfalarında alt kategori şeridi — header'ın hemen altında */}
-      {!hideLayout && <CategoryBar />}
       {children}
       {(!hideLayout || isAuthPage) && <Footer />}
-      {!hideLayout && <MobileNavigation />}
     </div>
   );
 };

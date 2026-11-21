@@ -70,7 +70,10 @@ export const Header = () => {
       return false;
     })();
   const [searchQuery, setSearchQuery] = useState('');
-  const [mobileSearch, setMobileSearch] = useState(false);
+  // Telefonda hesap menüsü: üzerine gelme olmadığı için dokununca açılan bir panel
+  const [mobileMenu, setMobileMenu] = useState(false);
+  useEffect(() => { setMobileMenu(false); }, [location.pathname]);
+  const isTouchLayout = () => typeof window !== 'undefined' && window.matchMedia('(max-width: 1023px)').matches;
 
   // State for dynamic data
   const [cartItems, setCartItems] = useState<any[]>([]);
@@ -490,17 +493,6 @@ export const Header = () => {
         </form>
 
         <div className="flex items-center gap-0.5 sm:gap-1 ml-auto">
-          {/* Telefonda arama ayrı bir satırda açılıyor */}
-          <button
-            type="button"
-            onClick={() => setMobileSearch(v => !v)}
-            aria-label="Ara"
-            aria-expanded={mobileSearch}
-            className="md:hidden w-10 h-10 rounded-full flex items-center justify-center text-[#111827] hover:bg-[#F1F3F5]"
-          >
-            {mobileSearch ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
-          </button>
-
           {isAuthenticated && (
             <Link
               to="/home/learning"
@@ -558,8 +550,9 @@ export const Header = () => {
           {isAuthenticated && user ? (
             <HoverPopover content={<UserMenuContent />} width="w-64">
               <button
-                onClick={() => navigate('/home/settings/profile')}
+                onClick={() => (isTouchLayout() ? setMobileMenu(v => !v) : navigate('/home/settings/profile'))}
                 aria-label="Hesap menüsü"
+                aria-expanded={mobileMenu}
                 className="relative ml-1 sm:ml-1.5 w-10 h-10 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-700/40"
               >
                 <Avatar className="w-10 h-10">
@@ -585,34 +578,49 @@ export const Header = () => {
               >
                 Kayıt ol
               </Link>
-              <Link
-                to="/login"
-                aria-label="Giriş yap"
-                className="sm:hidden w-10 h-10 rounded-full flex items-center justify-center text-[#111827] hover:bg-[#F1F3F5]"
+              <button
+                type="button"
+                onClick={() => setMobileMenu(v => !v)}
+                aria-label="Menü"
+                aria-expanded={mobileMenu}
+                className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center text-[#111827] hover:bg-[#F1F3F5]"
               >
-                <User className="w-5 h-5" />
-              </Link>
+                {mobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
             </>
           )}
         </div>
       </div>
 
-      {/* Telefon arama satırı */}
-      {mobileSearch && (
-        <form onSubmit={(e) => { handleSearch(e); setMobileSearch(false); }} role="search" className="md:hidden px-4 pb-3 animate-in fade-in slide-in-from-top-1 duration-150">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#6B7280] pointer-events-none" />
-            <input
-              type="search"
-              autoFocus
-              aria-label="Kurs ara"
-              placeholder="Kurs, konu ya da eğitmen ara…"
-              className="w-full h-11 pl-11 pr-4 rounded-full bg-[#F1F3F5] text-[15px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none focus:bg-white focus:ring-2 focus:ring-brand-700/35"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+      {/* Telefon: arama kutusu her zaman başlığın altında */}
+      <form onSubmit={handleSearch} role="search" className="md:hidden px-4 pb-3">
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#6B7280] pointer-events-none" />
+          <input
+            type="search"
+            aria-label="Kurs ara"
+            placeholder="Kurs, konu ya da eğitmen ara…"
+            className="w-full h-11 pl-11 pr-4 rounded-full bg-[#F1F3F5] text-[15px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none focus:bg-white focus:ring-2 focus:ring-brand-700/35"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+      </form>
+
+      {/* Telefon menüsü */}
+      {mobileMenu && (
+        <>
+          <div aria-hidden onClick={() => setMobileMenu(false)} className="lg:hidden fixed inset-0 top-[116px] md:top-16 z-40 bg-black/25 animate-in fade-in duration-150" />
+          <div className="lg:hidden absolute inset-x-3 top-[calc(100%-4px)] z-50 rounded-[22px] bg-white shadow-[0_24px_60px_-20px_rgba(17,24,39,0.45),0_0_0_1px_rgba(17,24,39,0.05)] max-h-[75vh] overflow-y-auto animate-in fade-in slide-in-from-top-1 duration-150">
+            <div className="p-2 grid grid-cols-2 gap-1.5">
+              <Link to="/courses" className="h-11 px-3 rounded-xl bg-[#F5F6F8] text-[14px] font-bold text-[#111827] flex items-center">Tüm Kurslar</Link>
+              <Link to={isInstructor ? '/instructor' : '/become-instructor'} className="h-11 px-3 rounded-xl bg-[#F5F6F8] text-[14px] font-bold text-[#111827] flex items-center">
+                {isInstructor ? 'Eğitmen Paneli' : 'Eğitmen Ol'}
+              </Link>
+            </div>
+            <UserMenuContent />
           </div>
-        </form>
+        </>
       )}
     </header>
   );

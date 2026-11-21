@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '@/lib/api';
+import { PageBand } from '@/components/layout/PageBand';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -151,23 +152,17 @@ const Cart = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
-      <div className="container mx-auto px-4 max-w-6xl">
-
-        <Link to="/courses" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 mb-6 transition-colors">
-          <ArrowLeft className="w-4 h-4" />
-          Kurslara dön
-        </Link>
-
-        <div className="flex items-baseline gap-3 mb-8">
-          <h1 className="text-2xl font-bold text-slate-900">Sepetim</h1>
-          {cartItems.length > 0 && (
-            <span className="text-sm text-slate-500">{cartItems.length} kurs</span>
-          )}
-        </div>
+    <div className="min-h-screen bg-white pb-12">
+      <PageBand
+        breadcrumb={<><Link to="/courses">Kurslar</Link><span className="text-[#9CA3AF]">/</span><span className="text-[#111827]">Sepetim</span></>}
+        eyebrow="Alışveriş"
+        title="Sepetim"
+        subtitle={cartItems.length > 0 ? `${cartItems.length} kurs` : undefined}
+      />
+      <div className="container mx-auto px-4 max-w-6xl pt-8">
 
         {cartItems.length === 0 ? (
-          <div className="bg-white border border-slate-200 rounded-2xl py-16 text-center">
+          <div className="bg-[#F5F6F8] rounded-[22px] py-16 text-center">
             <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
               <ShoppingCart className="w-6 h-6 text-slate-400" />
             </div>
@@ -187,7 +182,7 @@ const Cart = () => {
               {cartItems.map((item) => (
                 <div
                   key={item.course_id}
-                  className="bg-white border border-slate-200 rounded-2xl p-4 flex gap-4"
+                  className="bg-[#F5F6F8] rounded-[22px] p-4 flex gap-4"
                 >
                   <Link to={`/course/${item.course_id}`} className="shrink-0">
                     <img
@@ -248,7 +243,7 @@ const Cart = () => {
 
             {/* Özet */}
             <div className="lg:col-span-1">
-              <div className="lg:sticky lg:top-24 bg-white border border-slate-200 rounded-2xl p-6">
+              <div className="lg:sticky lg:top-24 bg-[#F5F6F8] rounded-[22px] p-6">
                 <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
                   Sipariş özeti
                 </h2>
@@ -306,7 +301,7 @@ const Cart = () => {
               {recommended.map(rec => (
                 <div
                   key={rec.course_id}
-                  className="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col hover:border-brand-300 hover:shadow-md transition-all"
+                  className="bg-white ring-1 ring-black/[0.06] rounded-2xl overflow-hidden flex flex-col hover:border-brand-300 hover:shadow-md transition-all"
                 >
                   <Link to={`/course/${rec.slug || rec.course_id}`} className="block aspect-video bg-slate-100 overflow-hidden">
                     <img

@@ -37,8 +37,8 @@ interface Props {
 }
 
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-    <div className="py-5 border-b border-slate-200 last:border-0">
-        <h3 className="text-sm font-bold text-slate-900 mb-3">{title}</h3>
+    <div className="py-5 first:pt-0">
+        <h3 className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#9CA3AF] mb-3">{title}</h3>
         {children}
     </div>
 );
@@ -96,11 +96,11 @@ export const CatalogFilters: React.FC<Props> = ({
 
     return (
         <aside className={cn('w-full lg:w-64 xl:w-72 shrink-0', className)}>
-            <div className="lg:sticky lg:top-24">
+            <div className="lg:sticky lg:top-24 lg:rounded-[24px] lg:bg-[#F5F6F8] lg:px-5 lg:py-5">
                 {hasActiveFilters && (
                     <button
                         onClick={onReset}
-                        className="w-full mb-3 flex items-center justify-center gap-1.5 text-xs font-medium text-slate-500 hover:text-red-600 border border-slate-200 rounded-lg py-2 transition-colors"
+                        className="w-full mb-3 flex items-center justify-center gap-1.5 text-[12.5px] font-semibold text-[#6B7280] hover:text-red-600 bg-[#F5F6F8] rounded-xl py-2 transition-colors"
                     >
                         <X className="w-3.5 h-3.5" /> Filtreleri temizle
                     </button>

@@ -25,7 +25,7 @@ const MyBooks = () => {
     const books = data?.books || [];
 
     if (isLoading) return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="min-h-screen bg-white flex items-center justify-center">
             <div className="flex flex-col items-center gap-4">
                 <div className="w-14 h-14 border-4 border-brand-200/30 border-t-brand-600 rounded-full animate-spin" />
                 <p className="text-slate-500 text-sm animate-pulse">Kitaplar yükleniyor...</p>
@@ -73,11 +73,10 @@ const BookCard = ({ book, onRead }: { book: any; onRead: () => void }) => {
     const hasEpub = !!book.epub_file_path;
 
     return (
-        <div className="group relative bg-white border border-slate-200 rounded-3xl overflow-hidden hover:border-brand-200/30 transition-all duration-300 hover:shadow-2xl hover:shadow-brand-600/10 hover:-translate-y-1 flex flex-col">
+        <div className="group relative bg-white ring-1 ring-black/[0.06] rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)] hover:-translate-y-0.5 flex flex-col">
 
             {/* Top gradient accent */}
-            <div className="h-1 bg-gradient-to-r from-brand-600 via-brand-600 to-brand-800" />
-
+            
             {/* Cover */}
             <div className="relative aspect-[3/4] overflow-hidden bg-gradient-to-br from-brand-600/50 to-slate-800/50 cursor-pointer" onClick={onRead}>
                 {book.cover_image_path ? (

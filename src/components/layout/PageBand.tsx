@@ -3,6 +3,8 @@ import React from 'react';
 interface Props {
     /** Ekmek kırıntısı içeriği — bağlantılar ve ayraçlar */
     breadcrumb?: React.ReactNode;
+    /** Başlığın üstündeki küçük etiket */
+    eyebrow?: string;
     title: string;
     subtitle?: string;
     /** Sağ tarafa gelen eylemler (bağlantı, buton) */
@@ -12,41 +14,38 @@ interface Props {
 /**
  * Öğrenci sayfalarının üst bandı.
  *
- * Kurs detay ve profil sayfalarındaki bandın aynısı: markanın açık tonunda
- * bir zemin ve ince ızgara dokusu. Eğitimlerim, Sertifikalarım ve Kitaplarım
- * aynı bileşeni kullanıyor; böylece sayfalar arasında geçerken başlık
- * yüksekliği ve rengi değişmiyor.
+ * Kenarlardan içeri çekilmiş, köşeleri yuvarlak açık gri yüzey; sağ üstte
+ * logonun nane renginde yumuşak bir şekil. Bilgi sayfalarının başlığıyla aynı
+ * dil. Eğitimlerim, Başarılarım, Sertifikalarım, Kitaplarım, Favoriler, Sepet,
+ * Bildirimler ve Ayarlar bu bileşeni kullanıyor; sayfalar arasında geçerken
+ * başlığın yüksekliği ve rengi değişmiyor.
  */
-export const PageBand: React.FC<Props> = ({ breadcrumb, title, subtitle, actions }) => (
-    <div className="relative bg-gradient-to-br from-brand-50 via-brand-100/60 to-white border-b border-brand-100">
-        <div
-            aria-hidden
-            className="absolute inset-0 opacity-40"
-            style={{
-                backgroundImage:
-                    'linear-gradient(to right, rgba(23,93,93,0.06) 1px, transparent 1px),'
-                    + 'linear-gradient(to bottom, rgba(23,93,93,0.06) 1px, transparent 1px)',
-                backgroundSize: '34px 34px',
-            }}
-        />
+export const PageBand: React.FC<Props> = ({ breadcrumb, eyebrow, title, subtitle, actions }) => (
+    <div className="px-3 sm:px-4 pt-3 sm:pt-4">
+        <div className="relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-[#F5F6F8]">
+            <div aria-hidden className="absolute -right-20 -top-24 w-[260px] h-[260px] sm:w-[340px] sm:h-[340px] rounded-[38%] bg-[#B2F0C8] rotate-12" />
 
-        <div className="container relative mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-8 lg:py-10">
-            {breadcrumb && (
-                <nav className="flex items-center gap-2 text-[13px] text-slate-500 mb-4">
-                    {breadcrumb}
-                </nav>
-            )}
+            <div className="relative mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-7 lg:py-9">
+                {breadcrumb && (
+                    <nav className="flex items-center gap-2 text-[13px] font-medium text-[#6B7280] mb-5 [&_a:hover]:text-[#111827]">
+                        {breadcrumb}
+                    </nav>
+                )}
 
-            <div className="flex flex-wrap items-end justify-between gap-4">
-                <div className="min-w-0">
-                    <h1 className="font-montserrat text-[26px] sm:text-[32px] font-extrabold text-slate-900 tracking-[-0.025em] leading-tight">
-                        {title}
-                    </h1>
-                    {subtitle && (
-                        <p className="text-[14.5px] text-slate-600 mt-2">{subtitle}</p>
-                    )}
+                <div className="flex flex-wrap items-end justify-between gap-4">
+                    <div className="min-w-0">
+                        {eyebrow && (
+                            <p className="text-[12.5px] font-bold uppercase tracking-[0.16em] text-[#1B7A43] mb-2">{eyebrow}</p>
+                        )}
+                        <h1 className="font-montserrat text-[28px] sm:text-[36px] font-extrabold text-[#111827] tracking-[-0.03em] leading-[1.08]">
+                            {title}
+                        </h1>
+                        {subtitle && (
+                            <p className="text-[15px] text-[#4B5563] mt-2 max-w-[60ch]">{subtitle}</p>
+                        )}
+                    </div>
+                    {actions && <div className="relative flex flex-wrap gap-2.5 shrink-0">{actions}</div>}
                 </div>
-                {actions && <div className="flex flex-wrap gap-2.5 shrink-0">{actions}</div>}
             </div>
         </div>
     </div>

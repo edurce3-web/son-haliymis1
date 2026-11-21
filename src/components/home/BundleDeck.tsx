@@ -100,14 +100,14 @@ export const BundleDeck: React.FC<{ bundles: Bundle[] }> = ({ bundles }) => {
         : 'Bir Arada Mega Paketler';
 
     return (
-        <section className="w-full bg-[#EEFBF3] py-10 lg:py-12 font-jakarta overflow-hidden">
+        <section className="w-full bg-[#F5F6F8] py-7 lg:py-8 font-jakarta overflow-hidden">
             <div className="container mx-auto px-4">
                 <div className="flex items-end justify-between gap-6 mb-5">
                     <div className="min-w-0">
-                        <h2 className="text-[24px] sm:text-[28px] leading-tight font-extrabold text-[#131b2e] tracking-[-0.02em]">
+                        <h2 className="text-[20px] sm:text-[22px] leading-tight font-extrabold text-[#111827] tracking-[-0.02em]">
                             {heading}
                         </h2>
-                        <p className="text-[14px] text-[#4b5466] mt-1.5">
+                        <p className="text-[13px] text-[#6B7280] mt-1">
                             Birbiri ardına dizilmiş kurslar; tüm seti tek seferde, avantajlı fiyatla al.
                         </p>
                     </div>
@@ -121,7 +121,7 @@ export const BundleDeck: React.FC<{ bundles: Bundle[] }> = ({ bundles }) => {
                                     onClick={() => scroll(d as 1 | -1)}
                                     disabled={d === -1 ? !canLeft : !canRight}
                                     aria-label={d === -1 ? 'Önceki paketler' : 'Sonraki paketler'}
-                                    className="w-10 h-10 rounded-full bg-white ring-1 ring-[#dfe2f5] text-[#131b2e] flex items-center justify-center hover:bg-[#131b2e] hover:text-white disabled:opacity-35 disabled:hover:bg-white disabled:hover:text-[#131b2e] transition-colors"
+                                    className="w-10 h-10 rounded-full bg-white text-[#111827] flex items-center justify-center shadow-[0_1px_2px_rgba(17,24,39,0.08)] hover:bg-[#111827] hover:text-white disabled:opacity-35 disabled:hover:bg-white disabled:hover:text-[#111827] transition-colors"
                                 >
                                     {d === -1 ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
                                 </button>
@@ -133,12 +133,12 @@ export const BundleDeck: React.FC<{ bundles: Bundle[] }> = ({ bundles }) => {
                 {/* Şerit kartlardan biraz geniş: açılan kartlar ve gölge kenarda kesilmesin */}
                 <div
                     ref={railRef}
-                    className="flex gap-5 overflow-x-auto snap-x scroll-pl-4 sm:scroll-pl-8 -mx-4 px-4 sm:-mx-8 sm:px-8 pt-6 pb-10 -mb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                    className="flex gap-4 overflow-x-auto snap-x scroll-pl-4 sm:scroll-pl-8 -mx-4 px-4 sm:-mx-8 sm:px-8 pt-4 pb-8 -mb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                 >
                     {bundles.map(b => (
                         <div
                             key={b.id}
-                            className="relative shrink-0 snap-start w-[86%] sm:w-[340px] lg:w-[calc((100%-2.5rem)/3)] hover:z-10"
+                            className="relative shrink-0 snap-start w-[78%] sm:w-[290px] lg:w-[calc((100%-3rem)/4)] hover:z-10"
                         >
                             <BundleCard bundle={b} />
                         </div>
@@ -160,8 +160,8 @@ const FAN: Record<number, Spot[]> = {
     3: [{ x: -15, y: -6, r: -6, s: 0.92 }, { x: 14, y: -15, r: 5.5, s: 0.9 }, { x: -2, y: -23, r: -1.5, s: 0.87 }],
 };
 
-const CARD_H = 150;
-const DECK_H = CARD_H + 22;
+const CARD_H = 112;
+const DECK_H = CARD_H + 18;
 
 const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
     const navigate = useNavigate();
@@ -196,23 +196,23 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
 
     return (
         <article
-            className="group h-full flex flex-col bg-white rounded-[22px] ring-1 ring-[#E5E7EB] p-4 transition-shadow duration-300 hover:shadow-[0_28px_56px_-28px_rgba(19,27,46,0.42)]"
+            className="group h-full flex flex-col bg-white rounded-[20px] p-3.5 transition-shadow duration-300 shadow-[0_1px_2px_rgba(17,24,39,0.05)] hover:shadow-[0_24px_48px_-26px_rgba(17,24,39,0.4)]"
             onPointerEnter={e => { if (e.pointerType === 'mouse') setFan(true); }}
             onPointerLeave={e => { if (e.pointerType === 'mouse') setFan(false); }}
         >
             <div className="flex items-center justify-between gap-2">
-                <span className="inline-flex items-center h-7 px-3 rounded-full bg-[#131b2e] text-white text-[11.5px] font-extrabold whitespace-nowrap">
+                <span className="inline-flex items-center h-6 px-2.5 rounded-full bg-[#111827] text-white text-[11px] font-extrabold whitespace-nowrap">
                     {togetherLabel(courses.length)} Mega Paket
                 </span>
                 {bundle.savings_percent > 0 && (
-                    <span className="inline-flex items-center h-7 px-2.5 rounded-full bg-[#e2f6ee] text-[#086f57] text-[11.5px] font-extrabold whitespace-nowrap">
+                    <span className="inline-flex items-center h-6 px-2 rounded-full bg-[#EEFBF3] text-[#1B7A43] text-[11px] font-extrabold whitespace-nowrap">
                         {`%${bundle.savings_percent} tasarruf`}
                     </span>
                 )}
             </div>
 
             {/* ── Deste: yükseklik sabit, açılınca alttaki içerik oynamıyor ── */}
-            <div className="relative mt-4" style={{ height: DECK_H }}>
+            <div className="relative mt-3" style={{ height: DECK_H }}>
                 <div
                     aria-hidden
                     onClick={onDeckClick}
@@ -258,7 +258,7 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
 
                     {extra > 0 && (
                         <span
-                            className="absolute z-20 right-2 top-2 h-8 min-w-[2rem] px-2.5 rounded-full bg-[#1B7A43] text-white text-[13px] font-extrabold tabular-nums flex items-center justify-center shadow-[0_8px_18px_-8px_rgba(91,79,245,0.8)]"
+                            className="absolute z-20 right-2 top-2 h-7 min-w-[1.75rem] px-2 rounded-full bg-[#1B7A43] text-white text-[12px] font-extrabold tabular-nums flex items-center justify-center"
                             title={`${extra} kurs daha`}
                         >
                             +{extra}
@@ -271,7 +271,7 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                     id={listId}
                     className={cn(
                         'absolute inset-0 flex-col gap-1 overflow-y-auto overscroll-contain pr-1 animate-in fade-in duration-200',
-                        '[scrollbar-width:thin] [scrollbar-color:#c7cdf5_transparent]',
+                        '[scrollbar-width:thin] [scrollbar-color:#D1D5DB_transparent]',
                         courses.length <= 4 && 'justify-center',
                         list ? 'flex' : 'hidden'
                     )}
@@ -290,19 +290,19 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                                     className="w-12 h-[27px] rounded-md object-cover shrink-0 bg-[#EEFBF3]"
                                 />
                                 <span className="min-w-0 flex-1">
-                                    <span className="block text-[12.5px] leading-tight font-bold text-[#131b2e] truncate">{c.title}</span>
-                                    {meta && <span className="block text-[10.5px] leading-tight text-[#5b6472] truncate mt-0.5">{meta}</span>}
+                                    <span className="block text-[12.5px] leading-tight font-bold text-[#111827] truncate">{c.title}</span>
+                                    {meta && <span className="block text-[10.5px] leading-tight text-[#6B7280] truncate mt-0.5">{meta}</span>}
                                 </span>
-                                <span className="text-[11px] text-[#5b6472] line-through tabular-nums shrink-0 pr-1.5">{lira(c.price)}</span>
+                                <span className="text-[11px] text-[#6B7280] line-through tabular-nums shrink-0 pr-1.5">{lira(c.price)}</span>
                             </>
                         );
-                        const rowClass = 'shrink-0 flex items-center gap-2.5 h-[38px] rounded-xl bg-[#f6f7ff] pl-1';
+                        const rowClass = 'shrink-0 flex items-center gap-2 h-[34px] rounded-xl bg-[#F5F6F8] pl-1';
                         return (
                             <li key={c.id}>
                                 {c.slug ? (
                                     <Link
                                         to={`/course/${c.slug}`}
-                                        className={cn(rowClass, 'hover:bg-[#eceeff] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/50')}
+                                        className={cn(rowClass, 'hover:bg-[#EEFBF3] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/50')}
                                     >
                                         {row}
                                     </Link>
@@ -320,46 +320,43 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                 aria-expanded={list}
                 aria-controls={listId}
                 onClick={() => setList(v => !v)}
-                className="relative z-20 self-center mt-3 inline-flex items-center gap-1.5 h-7 pl-3.5 pr-2.5 rounded-full bg-white ring-1 ring-[#d6d9e8] text-[11.5px] font-bold text-[#131b2e] hover:ring-[#131b2e]/40 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/50"
+                className="relative z-20 self-center mt-2 inline-flex items-center gap-1 h-6 pl-3 pr-2 rounded-full bg-[#F5F6F8] text-[11px] font-bold text-[#111827] hover:bg-[#EEFBF3] transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/50"
             >
                 {list ? 'Kartlara dön' : `İçindeki ${courses.length} kursu gör`}
                 <ChevronDown className={cn('w-3.5 h-3.5 transition-transform duration-200', list && 'rotate-180')} />
             </button>
 
-            <h3 className="text-[16px] font-extrabold text-[#131b2e] mt-4 leading-snug text-balance transition-colors duration-200 group-hover:text-[#1B7A43]">
+            <h3 className="text-[14.5px] font-extrabold text-[#111827] mt-3 leading-snug line-clamp-2 transition-colors duration-200 group-hover:text-[#1B7A43]">
                 {bundle.title}
             </h3>
-            {bundle.description && (
-                <p className="text-[12.5px] text-[#4b5466] leading-relaxed mt-1 line-clamp-2">{bundle.description}</p>
-            )}
 
-            <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] font-semibold text-[#4b5466]">
+            <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] font-semibold text-[#6B7280]">
                 {bundle.total_hours > 0 && (
                     <span className="inline-flex items-center gap-1.5">
-                        <MonitorPlay className="w-3.5 h-3.5 text-[#1b5fa8]" />
+                        <MonitorPlay className="w-3.5 h-3.5 text-[#6B7280]" />
                         {`${bundle.total_hours} saat video`}
                     </span>
                 )}
                 <span className="inline-flex items-center gap-1.5">
-                    <Award className="w-3.5 h-3.5 text-[#7429b8]" />
+                    <Award className="w-3.5 h-3.5 text-[#6B7280]" />
                     {`${courses.length} ayrı sertifika`}
                 </span>
             </p>
 
-            <div className="mt-auto pt-4">
-                <div className="border-t border-[#eef0f6] pt-3.5 flex items-end justify-between gap-3">
+            <div className="mt-auto pt-3">
+                <div className="pt-3 flex items-end justify-between gap-2 border-t border-[#F1F3F5]">
                     <div className="min-w-0">
-                        <p className="text-[11.5px] text-[#5b6472]">
+                        <p className="text-[11px] text-[#6B7280]">
                             <span className="line-through tabular-nums">{lira(bundle.list_total)}</span> yerine
                         </p>
-                        <p className="text-[22px] leading-none font-extrabold text-[#131b2e] tabular-nums mt-1">
+                        <p className="text-[19px] leading-none font-extrabold text-[#111827] tabular-nums mt-1">
                             {lira(bundle.price)}
                         </p>
                     </div>
                     <button
                         type="button"
                         onClick={buy}
-                        className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-[#131b2e] hover:bg-[#1B7A43] active:scale-[0.98] text-white text-[13.5px] font-bold whitespace-nowrap transition-[background-color,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/50 focus-visible:ring-offset-2"
+                        className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-[#1B7A43] hover:bg-[#16613A] active:scale-[0.98] text-white text-[13px] font-bold whitespace-nowrap transition-[background-color,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/50 focus-visible:ring-offset-2"
                     >
                         Paketi al
                         <ArrowRight className="w-4 h-4" />
@@ -376,7 +373,7 @@ const CourseFace: React.FC<{ course: BundleCourse; label: string; lifted?: boole
 }) => (
     <div
         className={cn(
-            'h-full flex flex-col rounded-[14px] bg-white ring-2 ring-inset ring-[#c3c9f6] overflow-hidden transition-shadow duration-300',
+            'h-full flex flex-col rounded-[12px] bg-white ring-1 ring-inset ring-[#E5E7EB] overflow-hidden transition-shadow duration-300',
             strong
                 ? 'shadow-[0_18px_34px_-14px_rgba(19,27,46,0.5)]'
                 : lifted
@@ -384,7 +381,7 @@ const CourseFace: React.FC<{ course: BundleCourse; label: string; lifted?: boole
                     : ''
         )}
     >
-        <div className="relative h-[90px] shrink-0 bg-[#EEFBF3] m-[2px] mb-0 rounded-t-[12px] overflow-hidden">
+        <div className="relative h-[64px] shrink-0 bg-[#F1F3F5] m-[2px] mb-0 rounded-t-[10px] overflow-hidden">
             <img
                 src={imageOf(course)}
                 alt=""
@@ -393,19 +390,19 @@ const CourseFace: React.FC<{ course: BundleCourse; label: string; lifted?: boole
                 onError={e => { (e.target as HTMLImageElement).src = '/placeholder.svg'; }}
                 className="w-full h-full object-cover"
             />
-            <span className="absolute top-2 left-2 px-2 py-[3px] rounded-md bg-[#131b2e]/90 text-white text-[9.5px] font-extrabold uppercase tracking-[0.04em]">
+            <span className="absolute top-1.5 left-1.5 px-1.5 py-[2px] rounded-md bg-[#111827]/85 text-white text-[9px] font-extrabold uppercase tracking-[0.04em]">
                 {label}
             </span>
         </div>
-        <div className="flex-1 min-h-0 flex items-center gap-3 px-3.5">
+        <div className="flex-1 min-h-0 flex items-center gap-2 px-3">
             <div className="min-w-0 flex-1">
-                <p className="text-[13.5px] leading-tight font-bold text-[#131b2e] truncate">{course.title}</p>
+                <p className="text-[12.5px] leading-tight font-bold text-[#111827] truncate">{course.title}</p>
                 {course.instructor_name && (
-                    <p className="text-[11.5px] leading-tight text-[#5b6472] truncate mt-1">{course.instructor_name}</p>
+                    <p className="text-[10.5px] leading-tight text-[#6B7280] truncate mt-0.5">{course.instructor_name}</p>
                 )}
             </div>
             {Number(course.rating) > 0 && (
-                <span className="flex items-center gap-1 text-[12.5px] font-extrabold text-[#c77700] shrink-0 tabular-nums">
+                <span className="flex items-center gap-1 text-[11.5px] font-extrabold text-[#c77700] shrink-0 tabular-nums">
                     <Star className="w-3.5 h-3.5 fill-[#fea619] text-[#fea619]" />
                     {Number(course.rating).toFixed(1)}
                 </span>
