@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, Star } from 'lucide-react';
-import { API_BASE_URL, getCourseImageUrl } from '@/lib/api';
+import { ArrowRight } from 'lucide-react';
+import { API_BASE_URL } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { CATEGORY_TREE } from '@/data/categoryTree';
 import BundleDeck from '@/components/home/BundleDeck';
@@ -50,11 +50,6 @@ const LEVEL_STEPS = [
     { level: 'İleri', title: 'Ustalaş', text: 'İleri teknikler ve gerçek iş problemleriyle uzmanlaş.' },
 ];
 
-const TABS = [
-    { sort: 'popular', label: 'En çok tercih edilenler' },
-    { sort: 'newest', label: 'Yeni çıkanlar' },
-    { sort: 'rating', label: 'En yüksek puanlılar' },
-];
 
 const norm = (s: string) => s.toLocaleLowerCase('tr-TR').replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
 const lira = (n?: number) => (Number(n) > 0 ? `₺${Number(n).toLocaleString('tr-TR')}` : 'Ücretsiz');
@@ -77,12 +72,11 @@ function usePublicBundles() {
 export const CategoryShowcase: React.FC<{
     categorySlug: string;
     categoryName: string;
-    subcategorySlug?: string;
     subcategoryName?: string;
     facets?: CatalogFacets | null;
+    instructors?: Array<{ id: number; name: string; count: number }>;
     onLevel: (level: string) => void;
-}> = ({ categorySlug, categoryName, subcategorySlug, subcategoryName, facets, onLevel }) => {
-    const [tab, setTab] = useState(TABS[0].sort);
+}> = ({ categorySlug, categoryName, subcategoryName, facets, instructors = [], onLevel }) => {
     const { data: bundles = [] } = usePublicBundles();
 
     const scopeName = subcategoryName || categoryName;
@@ -97,73 +91,37 @@ export const CategoryShowcase: React.FC<{
     const related = bundles.filter(b => (b.courses || []).some(c => c.category_name && names.has(norm(c.category_name))));
     const shownBundles = related.length > 0 ? related : bundles;
 
-    const { data: rail, isLoading } = useQuery<ShowcaseCourse[]>({
-        queryKey: ['showcase-rail', categorySlug, subcategorySlug, tab],
-        queryFn: async () => {
-            const p = new URLSearchParams({ category: categorySlug, sort: tab, limit: '10' });
-            if (subcategorySlug) p.set('subcategory', subcategorySlug);
-            const r = await fetch(`${API_BASE_URL}/catalog?${p}`);
-            if (!r.ok) return [];
-            const d = await r.json();
-            return d.courses || [];
-        },
-        staleTime: 60 * 1000,
-    });
-
-    const instructors = useMemo(() => {
-        const map = new Map<number, { id: number; name: string; count: number; rating: number }>();
-        for (const c of rail || []) {
-            if (!c.instructor_id || !c.instructor_name?.trim()) continue;
-            const cur = map.get(c.instructor_id) || { id: c.instructor_id, name: c.instructor_name.trim(), count: 0, rating: 0 };
-            cur.count += 1;
-            cur.rating = Math.max(cur.rating, Number(c.rating) || 0);
-            map.set(c.instructor_id, cur);
-        }
-        return [...map.values()].sort((a, b) => b.count - a.count).slice(0, 6);
-    }, [rail]);
-
     const levelCount = (lvl: string) => facets?.levels?.find(l => l.level === lvl)?.count ?? 0;
     const anyLevel = LEVEL_STEPS.some(s => levelCount(s.level) > 0);
 
     return (
-        <div className="space-y-10 mb-12">
-            {/* Seviye yolu */}
+        <div className="space-y-6 mb-8">
+            {/* Seviye yolu: tek ince satır */}
             {anyLevel && (
-                <section>
-                    <SectionHead title={`${scopeName}: seviyene göre başla`} sub="Nerede olduğunu seç, sana uygun kursları gösterelim." />
-                    <ol className="mt-5 grid md:grid-cols-3 gap-3">
-                        {LEVEL_STEPS.map((s, i) => {
-                            const n = levelCount(s.level);
-                            return (
-                                <li key={s.level}>
-                                    <button
-                                        type="button"
-                                        disabled={n === 0}
-                                        onClick={() => onLevel(s.level)}
-                                        className={cn(
-                                            'group relative w-full h-full text-left rounded-[24px] p-5 sm:p-6 transition-colors',
-                                            i === 0 ? 'bg-[#B2F0C8] hover:bg-[#9BE8B6]' : 'bg-[#F5F6F8] hover:bg-[#EEFBF3]',
-                                            n === 0 && 'opacity-50 cursor-not-allowed hover:bg-[#F5F6F8]'
-                                        )}
-                                    >
-                                        <span className="flex items-center justify-between gap-3">
-                                            <span className="text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#134D30]">
-                                                {`${i + 1}. adım · ${s.level}`}
-                                            </span>
-                                            <span className="h-7 px-2.5 inline-flex items-center rounded-full bg-white text-[12.5px] font-bold tabular-nums">
-                                                {`${n} kurs`}
-                                            </span>
-                                        </span>
-                                        <span className="block mt-4 text-[20px] font-extrabold tracking-[-0.015em]">{s.title}</span>
-                                        <span className="block mt-1.5 text-[14px] leading-relaxed text-[#374151]">{s.text}</span>
-                                        <span className="mt-4 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#1B7A43]">
-                                            Kursları göster <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-                                        </span>
-                                    </button>
-                                </li>
-                            );
-                        })}
-                    </ol>
+                <section aria-label="Seviyene göre başla" className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {LEVEL_STEPS.map((s, i) => {
+                        const n = levelCount(s.level);
+                        return (
+                            <button
+                                key={s.level}
+                                type="button"
+                                disabled={n === 0}
+                                onClick={() => onLevel(s.level)}
+                                className={cn(
+                                    'group flex items-center gap-3 rounded-2xl px-4 py-3 text-left transition-colors',
+                                    i === 0 ? 'bg-[#B2F0C8] hover:bg-[#9BE8B6]' : 'bg-[#F5F6F8] hover:bg-[#EEFBF3]',
+                                    n === 0 && 'opacity-50 cursor-not-allowed'
+                                )}
+                            >
+                                <span className="w-8 h-8 shrink-0 rounded-full bg-white text-[13px] font-extrabold flex items-center justify-center tabular-nums">{i + 1}</span>
+                                <span className="min-w-0 flex-1">
+                                    <span className="block text-[14px] font-extrabold leading-tight">{`${s.title} · ${s.level}`}</span>
+                                    <span className="block text-[12.5px] text-[#4B5563]">{`${n} kurs`}</span>
+                                </span>
+                                <ArrowRight className="w-4 h-4 text-[#1B7A43] shrink-0 transition-transform group-hover:translate-x-0.5" />
+                            </button>
+                        );
+                    })}
                 </section>
             )}
 
@@ -179,59 +137,23 @@ export const CategoryShowcase: React.FC<{
                 />
             )}
 
-            {/* Sekmeli raf */}
-            <section>
-                <div className="flex flex-wrap items-end justify-between gap-4">
-                    <SectionHead title={`${scopeName} kursları`} sub="Başlamak için öne çıkanlar" />
-                    <div role="tablist" className="flex gap-1 p-1 rounded-2xl bg-[#F5F6F8] overflow-x-auto max-w-full [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
-                        {TABS.map(t => (
-                            <button
-                                key={t.sort}
-                                role="tab"
-                                aria-selected={tab === t.sort}
-                                onClick={() => setTab(t.sort)}
-                                className={cn(
-                                    'shrink-0 h-9 px-4 rounded-xl text-[13.5px] font-bold transition-colors',
-                                    tab === t.sort ? 'bg-white text-[#111827] shadow-[0_1px_2px_rgba(17,24,39,0.08)]' : 'text-[#6B7280] hover:text-[#111827]'
-                                )}
-                            >
-                                {t.label}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-                <div className="mt-5 flex gap-4 overflow-x-auto snap-x pb-2 -mx-1 px-1 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
-                    {isLoading && Array.from({ length: 4 }).map((_, i) => (
-                        <div key={i} className="shrink-0 w-[250px] h-[250px] rounded-[20px] bg-[#F5F6F8] animate-pulse" />
-                    ))}
-                    {(rail || []).map(c => <RailCard key={c.id ?? c.course_id} course={c} />)}
-                    {!isLoading && (rail || []).length === 0 && (
-                        <p className="text-[14px] text-[#6B7280] py-6">Bu alanda henüz kurs yok.</p>
-                    )}
-                </div>
-            </section>
-
-            {/* Eğitmenler */}
+            {/* Eğitmenler: küçük çipler */}
             {instructors.length > 0 && (
-                <section>
-                    <SectionHead title={`${scopeName} eğitmenleri`} sub="Bu alanda kurs veren eğitmenler" />
-                    <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                        {instructors.map(ins => (
-                            <Link
-                                key={ins.id}
-                                to={`/instructors/${ins.id}`}
-                                className="rounded-[20px] bg-[#F5F6F8] hover:bg-[#EEFBF3] p-4 transition-colors"
-                            >
-                                <span className="w-11 h-11 rounded-full bg-[#B2F0C8] text-[#134D30] text-[15px] font-extrabold flex items-center justify-center">
-                                    {ins.name.split(/\s+/).map(p => p[0]).slice(0, 2).join('').toLocaleUpperCase('tr-TR')}
-                                </span>
-                                <span className="block mt-3 text-[14px] font-bold truncate">{ins.name}</span>
-                                <span className="block mt-0.5 text-[12.5px] text-[#6B7280]">
-                                    {`${ins.count} kurs`}{ins.rating > 0 ? ` · ${ins.rating.toFixed(1)} puan` : ''}
-                                </span>
-                            </Link>
-                        ))}
-                    </div>
+                <section className="flex items-center gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+                    <span className="shrink-0 text-[12px] font-bold uppercase tracking-[0.14em] text-[#9CA3AF] mr-1">Eğitmenler</span>
+                    {instructors.map(ins => (
+                        <Link
+                            key={ins.id}
+                            to={`/instructors/${ins.id}`}
+                            className="shrink-0 h-10 pl-1 pr-3.5 inline-flex items-center gap-2 rounded-full bg-[#F5F6F8] hover:bg-[#EEFBF3] transition-colors"
+                        >
+                            <span className="w-8 h-8 rounded-full bg-[#B2F0C8] text-[#134D30] text-[11.5px] font-extrabold flex items-center justify-center">
+                                {ins.name.split(/\s+/).map(p => p[0]).slice(0, 2).join('').toLocaleUpperCase('tr-TR')}
+                            </span>
+                            <span className="text-[13px] font-bold whitespace-nowrap">{ins.name}</span>
+                            <span className="text-[12px] text-[#9CA3AF] tabular-nums">{ins.count}</span>
+                        </Link>
+                    ))}
                 </section>
             )}
         </div>
@@ -264,16 +186,16 @@ export const SearchShowcase: React.FC<{ query: string }> = ({ query }) => {
     if (!topics.length && !matched.length) return null;
 
     return (
-        <div className="space-y-8 mb-10">
+        <div className="space-y-5 mb-8">
             {topics.length > 0 && (
                 <section>
-                    <SectionHead title="İlgili konular" sub="Aramanla eşleşen kategoriler; doğrudan oraya git." />
-                    <div className="mt-4 flex flex-wrap gap-2">
+                    <div className="flex items-center gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+                        <span className="shrink-0 text-[12px] font-bold uppercase tracking-[0.14em] text-[#9CA3AF] mr-1">İlgili konular</span>
                         {topics.map(t => (
                             <Link
                                 key={t.to}
                                 to={t.to}
-                                className="h-10 px-4 inline-flex items-center gap-2 rounded-2xl bg-[#F5F6F8] hover:bg-[#EEFBF3] hover:text-[#1B7A43] text-[14px] font-bold transition-colors"
+                                className="shrink-0 h-9 px-3.5 inline-flex items-center gap-2 rounded-full bg-[#F5F6F8] hover:bg-[#EEFBF3] hover:text-[#1B7A43] text-[13px] font-bold whitespace-nowrap transition-colors"
                             >
                                 {t.name}
                                 {t.parent && <span className="text-[12px] font-medium text-[#9CA3AF]">{t.parent}</span>}
@@ -302,38 +224,3 @@ const SectionHead: React.FC<{ title: string; sub?: string }> = ({ title, sub }) 
         {sub && <p className="mt-1 text-[14px] text-[#6B7280]">{sub}</p>}
     </div>
 );
-
-const RailCard: React.FC<{ course: ShowcaseCourse }> = ({ course }) => {
-    const id = course.course_id ?? course.id;
-    const img = getCourseImageUrl(id, course.image || course.image_path || course.thumbnail);
-    const href = `/course/${course.slug || id}`;
-    const rating = Number(course.rating) || 0;
-    return (
-        <Link to={href} className="group shrink-0 snap-start w-[250px] rounded-[20px] bg-white ring-1 ring-black/[0.06] overflow-hidden hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)] transition-shadow">
-            <span className="block aspect-video bg-[#F1F3F5] overflow-hidden">
-                <img
-                    src={img}
-                    alt=""
-                    loading="lazy"
-                    onError={e => { (e.target as HTMLImageElement).src = '/placeholder.svg'; }}
-                    className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
-                />
-            </span>
-            <span className="block p-3.5">
-                <span className="block text-[14px] font-bold leading-snug line-clamp-2 min-h-[2.6em] group-hover:text-[#1B7A43] transition-colors">{course.title}</span>
-                {course.instructor_name && <span className="block mt-1 text-[12.5px] text-[#6B7280] truncate">{course.instructor_name}</span>}
-                <span className="mt-2 flex items-center justify-between gap-2">
-                    <span className="flex items-center gap-1 text-[12.5px] text-[#6B7280]">
-                        {rating > 0 ? (
-                            <>
-                                <Star className="w-3.5 h-3.5 fill-[#f5a524] text-[#f5a524]" />
-                                <b className="text-[#111827]">{rating.toFixed(1)}</b>
-                            </>
-                        ) : course.level || ''}
-                    </span>
-                    <span className="text-[15px] font-extrabold tabular-nums">{lira(course.price)}</span>
-                </span>
-            </span>
-        </Link>
-    );
-};

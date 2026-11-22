@@ -4,11 +4,12 @@ import { API_BASE_URL } from '@/lib/api';
 import { useSeo } from '@/hooks/useSeo';
 import { cn } from '@/lib/utils';
 import {
-    Search, SlidersHorizontal, X, BookOpen, ChevronRight,
+    Search, SlidersHorizontal, X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CatalogFilters, { type CatalogFacets, type FilterState, type FacetCategory } from './CatalogFilters';
-import CatalogCourseCard, { type CatalogCourse } from './CatalogCourseCard';
+import { type CatalogCourse } from './CatalogCourseCard';
+import { ShelfCourseCard } from '@/components/home/ShelfCourseCard';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
 import { useOwnedCourses } from '@/hooks/useOwnedCourses';
 import { CATEGORY_TREE } from '@/data/categoryTree';
@@ -39,11 +40,11 @@ interface CatalogResponse {
 
 const SORT_OPTIONS = [
     { value: 'relevance', label: 'En ilgili' },
-    { value: 'popular', label: 'En popüler' },
+    { value: 'popular', label: 'Popüler' },
     { value: 'rating', label: 'En yüksek puan' },
     { value: 'newest', label: 'En yeni' },
-    { value: 'price_asc', label: 'Fiyat: düşük → yüksek' },
-    { value: 'price_desc', label: 'Fiyat: yüksek → düşük' },
+    { value: 'price_asc', label: 'Ucuzdan pahalıya' },
+    { value: 'price_desc', label: 'Pahalıdan ucuza' },
 ];
 
 interface Props {
@@ -197,24 +198,48 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
         || (query ? null : (!data?.category ? 'Yazılımdan tasarıma, mühendislikten iş dünyasına; alanında uzman eğitmenlerden Türkçe online kurslar.' : null));
     const eyebrow = data?.subcategory ? data.category?.name : data?.category ? 'Kategori' : query ? 'Arama' : 'Katalog';
 
+    // Bu sayfadaki kursların eğitmenleri — vitrinde küçük bir satır
+    const instructors = (() => {
+        const map = new Map<number, { id: number; name: string; count: number }>();
+        for (const c of courses as any[]) {
+            if (!c.instructor_id || !String(c.instructor_name || '').trim()) continue;
+            const cur = map.get(c.instructor_id) || { id: c.instructor_id, name: String(c.instructor_name).trim(), count: 0 };
+            cur.count += 1;
+            map.set(c.instructor_id, cur);
+        }
+        return [...map.values()].sort((a, b) => b.count - a.count).slice(0, 8);
+    })();
+
+    const currentSort = data?.sort || sort || (query ? 'relevance' : 'popular');
+    const sortTabs = SORT_OPTIONS.filter(o => o.value !== 'relevance' || query);
+    const applyFilters = (changes: Partial<FilterState>) => updateParams({
+        level: changes.levels !== undefined
+            ? (changes.levels.length ? changes.levels.join(',') : null)
+            : searchParams.get('level'),
+        minRating: changes.minRating !== undefined
+            ? (changes.minRating ? String(changes.minRating) : null)
+            : searchParams.get('minRating'),
+        free: changes.freeOnly !== undefined
+            ? (changes.freeOnly ? '1' : null)
+            : searchParams.get('free'),
+    });
+
     return (
-        <div className="min-h-screen bg-white text-[#111827]">
-            {/* Başlık */}
-            <div className="px-3 sm:px-4 pt-3 sm:pt-4">
-                <header className="relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-[#F5F6F8]">
-                    <div aria-hidden className="absolute -right-24 -top-28 w-[300px] h-[300px] sm:w-[420px] sm:h-[420px] rounded-[38%] bg-[#B2F0C8] rotate-12" />
-                    <div className="relative max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 pt-7 pb-7 lg:pt-9 lg:pb-9">
+        <div className="min-h-screen bg-white text-[#111827] font-jakarta">
+            {/* Başlık: sıkı, tek blok */}
+            <div className="px-3 sm:px-4 pt-3">
+                <header className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] bg-[#F5F6F8]">
+                    <div aria-hidden className="absolute -right-16 -top-24 w-[220px] h-[220px] sm:w-[300px] sm:h-[300px] rounded-[38%] bg-[#B2F0C8] rotate-12" />
+                    <div className="relative max-w-[1400px] mx-auto px-5 sm:px-8 py-5 lg:py-6">
                         {data?.seo?.breadcrumbs && data.seo.breadcrumbs.length > 1 && (
-                            <nav aria-label="Kırıntı navigasyonu" className="mb-6">
-                                <ol className="flex items-center gap-1.5 text-[13px] font-medium text-[#6B7280] flex-wrap">
+                            <nav aria-label="Kırıntı navigasyonu" className="mb-3">
+                                <ol className="flex items-center gap-1.5 text-[12.5px] font-medium text-[#6B7280] flex-wrap">
                                     {data.seo.breadcrumbs.map((b, i) => {
                                         const last = i === data.seo.breadcrumbs.length - 1;
                                         const path = b.url.replace(/^https?:\/\/[^/]+/, '') || '/';
                                         return (
                                             <li key={b.url} className="flex items-center gap-1.5">
-                                                {last ? (
-                                                    <span className="text-[#111827]">{b.name}</span>
-                                                ) : (
+                                                {last ? <span className="text-[#111827]">{b.name}</span> : (
                                                     <>
                                                         <Link to={path} className="hover:text-[#111827] transition-colors">{b.name}</Link>
                                                         <span className="text-[#9CA3AF]">/</span>
@@ -227,20 +252,20 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                             </nav>
                         )}
 
-                        {eyebrow && <p className="text-[12.5px] font-bold uppercase tracking-[0.16em] text-[#1B7A43]">{eyebrow}</p>}
-                        <h1 className="mt-2 font-montserrat text-[30px] sm:text-[40px] lg:text-[46px] font-extrabold tracking-[-0.035em] leading-[1.05] max-w-[22ch]">
-                            {loading && !data ? 'Yükleniyor…' : heading}
-                        </h1>
+                        <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
+                            <h1 className="text-[26px] sm:text-[32px] font-extrabold tracking-[-0.03em] leading-[1.1] max-w-[24ch]">
+                                {loading && !data ? 'Yükleniyor…' : heading}
+                            </h1>
+                            {pagination && (
+                                <span className="mb-1 h-7 px-2.5 inline-flex items-center rounded-full bg-white text-[12.5px] font-bold">
+                                    {`${pagination.total} kurs`}
+                                </span>
+                            )}
+                        </div>
                         {description && (
-                            <p className="mt-3 text-[15.5px] sm:text-[16.5px] leading-[1.6] text-[#4B5563] max-w-[60ch]">{description}</p>
-                        )}
-                        {pagination && (
-                            <p className="mt-4 inline-flex items-center h-8 px-3 rounded-full bg-white text-[13px] font-bold">
-                                {`${pagination.total} kurs`}
-                            </p>
+                            <p className="mt-1.5 text-[14px] leading-[1.55] text-[#4B5563] max-w-[70ch] line-clamp-2">{description}</p>
                         )}
 
-                        {/* Arama sayfasında aramayı buradan daralt */}
                         {!data?.category && (
                             <form
                                 role="search"
@@ -249,10 +274,10 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                                     const q = String(new FormData(e.currentTarget).get('q') || '').trim();
                                     updateParams({ q: q || null, page: null });
                                 }}
-                                className="mt-5 max-w-xl"
+                                className="mt-3.5 max-w-lg"
                             >
-                                <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-white shadow-[0_10px_30px_-20px_rgba(17,24,39,0.4)] focus-within:ring-2 focus-within:ring-[#1B7A43]/40">
-                                    <Search aria-hidden className="ml-3 w-[18px] h-[18px] text-[#9CA3AF] shrink-0" />
+                                <div className="flex items-center gap-2 p-1 rounded-xl bg-white focus-within:ring-2 focus-within:ring-[#1B7A43]/40">
+                                    <Search aria-hidden className="ml-2.5 w-4 h-4 text-[#9CA3AF] shrink-0" />
                                     <input
                                         key={query}
                                         name="q"
@@ -260,24 +285,22 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                                         defaultValue={query}
                                         aria-label="Kurs ara"
                                         placeholder="Kurs, konu ya da eğitmen ara…"
-                                        className="min-w-0 flex-1 h-11 bg-transparent text-[15px] placeholder:text-[#9CA3AF] border-0 outline-none"
+                                        className="min-w-0 flex-1 h-9 bg-transparent text-[14px] placeholder:text-[#9CA3AF] border-0 outline-none"
                                     />
-                                    <button type="submit" className="h-11 px-5 rounded-xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14px] font-bold transition-colors">
+                                    <button type="submit" className="h-9 px-4 rounded-lg bg-[#1B7A43] hover:bg-[#16613A] text-white text-[13px] font-bold transition-colors">
                                         Ara
                                     </button>
                                 </div>
                             </form>
                         )}
 
-                        {/* Kategori sayfasında alt kategoriler */}
+                        {/* Alt kategoriler: tek satır, kayar */}
                         {activeCat && activeCat.subcategories.length > 0 && (
-                            <div className="mt-6 -mx-5 sm:mx-0 px-5 sm:px-0 flex gap-2 overflow-x-auto sm:flex-wrap [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+                            <ChipRow>
                                 <Link
                                     to={`/courses/${activeCat.slug}`}
-                                    className={cn(
-                                        'shrink-0 h-9 px-4 inline-flex items-center rounded-full text-[13.5px] font-bold transition-colors',
-                                        !data?.subcategory ? 'bg-[#1B7A43] text-white' : 'bg-white text-[#374151] hover:bg-[#EEFBF3] hover:text-[#1B7A43]'
-                                    )}
+                                    className={cn('shrink-0 h-8 px-3.5 inline-flex items-center rounded-full text-[13px] font-bold transition-colors',
+                                        !data?.subcategory ? 'bg-[#1B7A43] text-white' : 'bg-white text-[#374151] hover:text-[#1B7A43]')}
                                 >
                                     Tümü
                                 </Link>
@@ -287,262 +310,202 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                                         <Link
                                             key={sub.slug}
                                             to={`/courses/${activeCat.slug}/${sub.slug}`}
-                                            className={cn(
-                                                'shrink-0 h-9 px-4 inline-flex items-center rounded-full text-[13.5px] font-semibold transition-colors',
-                                                on ? 'bg-[#1B7A43] text-white font-bold' : 'bg-white text-[#374151] hover:bg-[#EEFBF3] hover:text-[#1B7A43]'
-                                            )}
+                                            className={cn('shrink-0 h-8 px-3.5 inline-flex items-center rounded-full text-[13px] font-semibold whitespace-nowrap transition-colors',
+                                                on ? 'bg-[#1B7A43] text-white font-bold' : 'bg-white text-[#374151] hover:text-[#1B7A43]')}
                                         >
                                             {sub.name}
                                         </Link>
                                     );
                                 })}
-                            </div>
+                            </ChipRow>
                         )}
                     </div>
                 </header>
             </div>
 
-            <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 lg:py-10">
-                {/* Vitrin: yalnızca ilk sayfada ve filtre yokken */}
+            <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pt-6 pb-12">
                 {showShowcase && data?.category && (
                     <CategoryShowcase
                         categorySlug={data.category.slug}
                         categoryName={data.category.name}
-                        subcategorySlug={data.subcategory?.slug}
                         subcategoryName={data.subcategory?.name}
                         facets={facets}
-                        onLevel={lvl => {
-                            updateParams({ level: lvl });
-                            requestAnimationFrame(() => document.getElementById('catalog-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
-                        }}
+                        instructors={instructors}
+                        onLevel={lvl => updateParams({ level: lvl })}
                     />
                 )}
                 {showShowcase && !data?.category && query && <SearchShowcase query={query} />}
 
-                {showShowcase && (
-                    <h2 id="catalog-results" className="scroll-mt-28 mb-5 text-[22px] sm:text-[24px] font-extrabold tracking-[-0.02em]">
-                        {data?.category ? `Tüm ${data.subcategory?.name || data.category.name} kursları` : query ? 'Tüm sonuçlar' : 'Tüm kurslar'}
-                    </h2>
-                )}
-                <div id={showShowcase ? undefined : 'catalog-results'} className="flex flex-col lg:flex-row gap-8 scroll-mt-28">
-
-                    {/* Sol: filtreler */}
-                    <div className="hidden lg:block">
-                        <CatalogFilters
-                            facets={facets}
-                            navCategories={navCategories}
-                            activeCategory={data?.category ? { name: data.category.name, slug: data.category.slug } : null}
-                            allCoursesHref={allCoursesHref}
-                            filters={filters}
-                            onChange={changes => updateParams({
-                                level: changes.levels !== undefined
-                                    ? (changes.levels.length ? changes.levels.join(',') : null)
-                                    : searchParams.get('level'),
-                                minRating: changes.minRating !== undefined
-                                    ? (changes.minRating ? String(changes.minRating) : null)
-                                    : searchParams.get('minRating'),
-                                free: changes.freeOnly !== undefined
-                                    ? (changes.freeOnly ? '1' : null)
-                                    : searchParams.get('free'),
-                            })}
-                            onReset={resetFilters}
-                            categoryHref={categoryHref}
-                        />
-                    </div>
-
-                    {/* Sağ: sonuçlar */}
-                    <div className="flex-1 min-w-0">
-                        {/* Araç çubuğu */}
-                        <div className="flex items-center justify-between gap-3 mb-5">
-                            <Button
-                                variant="ghost"
-                                onClick={() => setShowMobileFilters(true)}
-                                className="lg:hidden h-10 rounded-xl gap-2 bg-[#F1F3F5] hover:bg-[#E9ECEF] text-[#111827] font-bold"
-                            >
-                                <SlidersHorizontal className="w-4 h-4" />
-                                Filtrele
-                                {activeFilterCount > 0 && (
-                                    <span className="bg-[#1B7A43] text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                                        {activeFilterCount}
-                                    </span>
-                                )}
-                            </Button>
-
-                            <div className="ml-auto flex items-center gap-2">
-                                <label htmlFor="sort" className="text-[13.5px] text-[#6B7280] hidden sm:inline">
-                                    Sırala:
-                                </label>
-                                <select
-                                    id="sort"
-                                    value={data?.sort || sort || (query ? 'relevance' : 'popular')}
-                                    onChange={e => updateParams({ sort: e.target.value })}
-                                    className="h-10 px-3 pr-8 rounded-xl border-0 bg-[#F1F3F5] text-[14px] font-semibold focus:outline-none focus:ring-2 focus:ring-[#1B7A43]/30 cursor-pointer"
-                                >
-                                    {SORT_OPTIONS
-                                        // Arama yokken "en ilgili" anlamsız
-                                        .filter(o => o.value !== 'relevance' || query)
-                                        .map(o => (
-                                            <option key={o.value} value={o.value}>{o.label}</option>
-                                        ))}
-                                </select>
-                            </div>
-                        </div>
-
-                        {/* Seçili filtre etiketleri */}
+                {/* Araç çubuğu: filtre düğmesi + sıralama sekmeleri */}
+                <div id="catalog-results" className="scroll-mt-28 flex flex-wrap items-center gap-2 mb-4">
+                    <button
+                        type="button"
+                        onClick={() => setShowMobileFilters(true)}
+                        className={cn(
+                            'h-10 px-4 rounded-xl inline-flex items-center gap-2 text-[14px] font-bold transition-colors',
+                            activeFilterCount > 0 ? 'bg-[#1B7A43] text-white hover:bg-[#16613A]' : 'bg-[#F1F3F5] text-[#111827] hover:bg-[#E9ECEF]'
+                        )}
+                    >
+                        <SlidersHorizontal className="w-4 h-4" />
+                        Filtrele
                         {activeFilterCount > 0 && (
-                            <div className="flex flex-wrap gap-2 mb-5">
-                                {filters.levels.map(l => (
-                                    <button
-                                        key={l}
-                                        onClick={() => updateParams({
-                                            level: filters.levels.filter(x => x !== l).join(',') || null,
-                                        })}
-                                        className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold bg-[#EEFBF3] text-[#1B7A43] rounded-full pl-3 pr-2 py-1.5 hover:bg-[#D7F5E2]"
-                                    >
-                                        {l} <X className="w-3 h-3" />
-                                    </button>
-                                ))}
-                                {filters.minRating > 0 && (
-                                    <button
-                                        onClick={() => updateParams({ minRating: null })}
-                                        className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold bg-[#EEFBF3] text-[#1B7A43] rounded-full pl-3 pr-2 py-1.5 hover:bg-[#D7F5E2]"
-                                    >
-                                        {filters.minRating} puan ve üzeri <X className="w-3 h-3" />
-                                    </button>
-                                )}
-                                {filters.freeOnly && (
-                                    <button
-                                        onClick={() => updateParams({ free: null })}
-                                        className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold bg-[#EEFBF3] text-[#1B7A43] rounded-full pl-3 pr-2 py-1.5 hover:bg-[#D7F5E2]"
-                                    >
-                                        Ücretsiz <X className="w-3 h-3" />
-                                    </button>
-                                )}
-                            </div>
+                            <span className="min-w-[20px] h-5 px-1 rounded-full bg-white text-[#1B7A43] text-[11px] font-extrabold flex items-center justify-center">
+                                {activeFilterCount}
+                            </span>
                         )}
+                    </button>
 
-                        {loading ? (
-                            <div className="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {Array.from({ length: 6 }).map((_, i) => (
-                                    <div key={i} className="bg-[#F5F6F8] rounded-2xl overflow-hidden animate-pulse">
-                                        <div className="aspect-[16/9] bg-[#E9ECEF]" />
-                                        <div className="p-3 space-y-2">
-                                            <div className="h-2 bg-slate-100 rounded w-1/3" />
-                                            <div className="h-3.5 bg-slate-100 rounded w-4/5" />
-                                            <div className="h-2.5 bg-slate-50 rounded w-full" />
-                                            <div className="h-2.5 bg-slate-50 rounded w-2/3" />
-                                            <div className="h-8 bg-slate-100 rounded-md mt-3" />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : courses.length === 0 ? (
-                            <div className="bg-[#F5F6F8] rounded-[28px] py-20 text-center px-6">
-                                <h2 className="text-[20px] font-extrabold text-[#111827] mb-2">
-                                    {query ? `"${query}" için sonuç yok` : 'Burada henüz kurs yok'}
-                                </h2>
-                                <p className="text-[14.5px] text-[#6B7280] max-w-md mx-auto mb-6">
-                                    {activeFilterCount > 0
-                                        ? 'Filtreleri gevşetmeyi dene; sonuçlar genişleyebilir.'
-                                        : query
-                                            ? 'Farklı bir kelime deneyebilir ya da kategorilere göz atabilirsin.'
-                                            : 'Bu bölüme yakında yeni kurslar eklenecek.'}
-                                </p>
-                                <div className="flex flex-wrap gap-3 justify-center">
-                                    {activeFilterCount > 0 && (
-                                        <Button variant="ghost" onClick={resetFilters} className="rounded-xl bg-white hover:bg-white/70 font-bold">
-                                            Filtreleri temizle
-                                        </Button>
-                                    )}
-                                    <Link to="/courses">
-                                        <Button className="rounded-xl bg-[#1B7A43] hover:bg-[#16613A] font-bold">
-                                            Tüm kurslara göz at
-                                        </Button>
-                                    </Link>
-                                </div>
-                            </div>
-                        ) : (
-                            <>
-                                <div className="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {courses.map(course => {
-                                        const id = course.course_id ?? course.id;
-                                        return (
-                                            <CatalogCourseCard
-                                                key={course.id}
-                                                course={course}
-                                                highlight={query}
-                                                owned={ownedIds.has(id)}
-                                                progress={progressById.get(id) ?? 0}
-                                                inCart={cartIds.has(id)}
-                                            />
-                                        );
-                                    })}
-                                </div>
+                    {filters.levels.map(l => (
+                        <button key={l} onClick={() => updateParams({ level: filters.levels.filter(x => x !== l).join(',') || null })}
+                            className="h-8 inline-flex items-center gap-1.5 text-[12.5px] font-semibold bg-[#EEFBF3] text-[#1B7A43] rounded-full pl-3 pr-2 hover:bg-[#D7F5E2]">
+                            {l} <X className="w-3 h-3" />
+                        </button>
+                    ))}
+                    {filters.minRating > 0 && (
+                        <button onClick={() => updateParams({ minRating: null })}
+                            className="h-8 inline-flex items-center gap-1.5 text-[12.5px] font-semibold bg-[#EEFBF3] text-[#1B7A43] rounded-full pl-3 pr-2 hover:bg-[#D7F5E2]">
+                            {`${filters.minRating}+ puan`} <X className="w-3 h-3" />
+                        </button>
+                    )}
+                    {filters.freeOnly && (
+                        <button onClick={() => updateParams({ free: null })}
+                            className="h-8 inline-flex items-center gap-1.5 text-[12.5px] font-semibold bg-[#EEFBF3] text-[#1B7A43] rounded-full pl-3 pr-2 hover:bg-[#D7F5E2]">
+                            Ücretsiz <X className="w-3 h-3" />
+                        </button>
+                    )}
 
-                                {pagination && pagination.totalPages > 1 && (
-                                    <Pagination
-                                        page={pagination.page}
-                                        totalPages={pagination.totalPages}
-                                        onChange={p => updateParams({ page: p > 1 ? String(p) : null }, false)}
-                                    />
+                    <div role="tablist" aria-label="Sırala" className="ml-auto flex gap-0.5 p-1 rounded-xl bg-[#F5F6F8] overflow-x-auto max-w-full [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+                        {sortTabs.map(o => (
+                            <button
+                                key={o.value}
+                                role="tab"
+                                aria-selected={currentSort === o.value}
+                                onClick={() => updateParams({ sort: o.value })}
+                                className={cn(
+                                    'shrink-0 h-8 px-3 rounded-lg text-[13px] font-bold whitespace-nowrap transition-colors',
+                                    currentSort === o.value ? 'bg-white text-[#111827] shadow-[0_1px_2px_rgba(17,24,39,0.08)]' : 'text-[#6B7280] hover:text-[#111827]'
                                 )}
-                            </>
-                        )}
+                            >
+                                {o.label}
+                            </button>
+                        ))}
                     </div>
                 </div>
+
+                {loading ? (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+                        {Array.from({ length: 10 }).map((_, i) => (
+                            <div key={i} className="rounded-2xl overflow-hidden animate-pulse">
+                                <div className="aspect-video bg-[#F1F3F5] rounded-2xl" />
+                                <div className="h-3.5 bg-[#F1F3F5] rounded w-4/5 mt-3" />
+                                <div className="h-3 bg-[#F5F6F8] rounded w-2/5 mt-2" />
+                                <div className="h-4 bg-[#F1F3F5] rounded w-1/3 mt-3" />
+                            </div>
+                        ))}
+                    </div>
+                ) : courses.length === 0 ? (
+                    <div className="bg-[#F5F6F8] rounded-[24px] py-14 text-center px-6">
+                        <h2 className="text-[18px] font-extrabold mb-1.5">
+                            {query ? `"${query}" için sonuç yok` : 'Burada henüz kurs yok'}
+                        </h2>
+                        <p className="text-[14px] text-[#6B7280] max-w-md mx-auto mb-5">
+                            {activeFilterCount > 0
+                                ? 'Filtreleri gevşetmeyi dene; sonuçlar genişleyebilir.'
+                                : query ? 'Farklı bir kelime deneyebilir ya da kategorilere göz atabilirsin.' : 'Bu bölüme yakında yeni kurslar eklenecek.'}
+                        </p>
+                        <div className="flex flex-wrap gap-2 justify-center">
+                            {activeFilterCount > 0 && (
+                                <button onClick={resetFilters} className="h-10 px-5 rounded-xl bg-white text-[14px] font-bold">Filtreleri temizle</button>
+                            )}
+                            <Link to="/courses" className="h-10 px-5 inline-flex items-center rounded-xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14px] font-bold">
+                                Tüm kurslara göz at
+                            </Link>
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-3 gap-y-5 sm:gap-x-4">
+                            {courses.map(course => {
+                                const id = course.course_id ?? course.id;
+                                const owned = ownedIds.has(id);
+                                return (
+                                    <ShelfCourseCard
+                                        key={course.id}
+                                        course={{ ...course, id, progress: progressById.get(id) ?? 0, image: course.image }}
+                                        owned={owned}
+                                        compact
+                                    />
+                                );
+                            })}
+                        </div>
+
+                        {pagination && pagination.totalPages > 1 && (
+                            <Pagination
+                                page={pagination.page}
+                                totalPages={pagination.totalPages}
+                                onChange={p => updateParams({ page: p > 1 ? String(p) : null }, false)}
+                            />
+                        )}
+                    </>
+                )}
             </div>
 
-            {/* Mobil filtre çekmecesi */}
+            {/* Filtre penceresi: ekranın ortasında */}
             {showMobileFilters && (
-                <div className="lg:hidden fixed inset-0 z-50 flex">
-                    <div
-                        className="absolute inset-0 bg-black/40"
-                        onClick={() => setShowMobileFilters(false)}
-                    />
-                    <div className="relative ml-auto w-[88%] max-w-sm bg-white h-full overflow-y-auto p-5 rounded-l-[24px]">
-                        <div className="flex items-center justify-between mb-2">
-                            <h2 className="text-base font-bold text-slate-900">Filtreler</h2>
-                            <button
-                                onClick={() => setShowMobileFilters(false)}
-                                className="p-2 -mr-2 text-slate-400 hover:text-slate-700"
-                                aria-label="Kapat"
-                            >
+                <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center sm:p-4" role="dialog" aria-modal="true" aria-label="Filtreler">
+                    <div className="absolute inset-0 bg-black/40 animate-in fade-in duration-150" onClick={() => setShowMobileFilters(false)} />
+                    <div className="relative w-full sm:max-w-[640px] max-h-[88vh] flex flex-col bg-white rounded-t-[28px] sm:rounded-[28px] shadow-[0_40px_90px_-30px_rgba(17,24,39,0.6)] animate-in fade-in zoom-in-95 duration-200">
+                        <div className="flex items-center justify-between px-6 pt-5 pb-3">
+                            <h2 className="text-[19px] font-extrabold">Filtrele</h2>
+                            <button onClick={() => setShowMobileFilters(false)} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#F1F3F5]" aria-label="Kapat">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
-                        <CatalogFilters
-                            facets={facets}
-                            navCategories={navCategories}
-                            activeCategory={data?.category ? { name: data.category.name, slug: data.category.slug } : null}
-                            allCoursesHref={allCoursesHref}
-                            filters={filters}
-                            onChange={changes => updateParams({
-                                level: changes.levels !== undefined
-                                    ? (changes.levels.length ? changes.levels.join(',') : null)
-                                    : searchParams.get('level'),
-                                minRating: changes.minRating !== undefined
-                                    ? (changes.minRating ? String(changes.minRating) : null)
-                                    : searchParams.get('minRating'),
-                                free: changes.freeOnly !== undefined
-                                    ? (changes.freeOnly ? '1' : null)
-                                    : searchParams.get('free'),
-                            })}
-                            onReset={resetFilters}
-                            categoryHref={categoryHref}
-                            className="w-full"
-                        />
-                        <Button
-                            onClick={() => setShowMobileFilters(false)}
-                            className="w-full mt-6 h-11 rounded-xl bg-[#1B7A43] hover:bg-[#16613A] font-bold"
-                        >
-                            {pagination?.total ?? 0} kursu göster
-                        </Button>
+                        <div className="flex-1 overflow-y-auto px-6 pb-2">
+                            <CatalogFilters
+                                facets={facets}
+                                navCategories={navCategories}
+                                activeCategory={data?.category ? { name: data.category.name, slug: data.category.slug } : null}
+                                allCoursesHref={allCoursesHref}
+                                filters={filters}
+                                onChange={applyFilters}
+                                onReset={resetFilters}
+                                categoryHref={categoryHref}
+                                className="w-full"
+                                layout="modal"
+                            />
+                        </div>
+                        <div className="flex items-center gap-3 px-6 py-4">
+                            <button
+                                onClick={resetFilters}
+                                disabled={activeFilterCount === 0}
+                                className="h-11 px-5 rounded-xl text-[14px] font-bold text-[#374151] hover:bg-[#F1F3F5] disabled:opacity-40"
+                            >
+                                Temizle
+                            </button>
+                            <button
+                                onClick={() => setShowMobileFilters(false)}
+                                className="flex-1 h-11 rounded-xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14.5px] font-bold"
+                            >
+                                {loading ? 'Yükleniyor…' : `${pagination?.total ?? 0} kursu göster`}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
         </div>
     );
 };
+
+/** Tek satır, yana kayan çip dizisi; kenarlarda yumuşak geçiş. */
+const ChipRow: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+    <div className="relative mt-3.5 -mx-5 sm:mx-0">
+        <div className="flex gap-1.5 overflow-x-auto px-5 sm:px-0 pr-10 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+            {children}
+        </div>
+        <span aria-hidden className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#F5F6F8] to-transparent" />
+    </div>
+);
 
 /** Sayfa numaraları — çok sayfada "1 … 4 5 6 … 20" biçimine düşer. */
 const Pagination: React.FC<{
