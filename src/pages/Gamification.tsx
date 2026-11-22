@@ -3,14 +3,26 @@ import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { API_BASE_URL } from '@/lib/api';
 import { PageBand } from '@/components/layout/PageBand';
-import { cn, formatPrice } from '@/lib/utils';
-import { ChevronRight, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Check, Copy, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+
+/*
+ * Edurce Kredi.
+ *
+ * Oranlar sunucudan geliyor (creditService.js). Kabaca 10 kredi = 1 ₺:
+ * alışverişte her 10 ₺ için 3 kredi, ücretli bir kursu bitirince kurs
+ * fiyatına göre en fazla 50 kredi. Kuponların en az sepet tutarı var.
+ *
+ * Yazı tipi Plus Jakarta Sans; rakamlar tabular. Önceki hâlde Montserrat ve
+ * eş aralıklı kod yazısı vardı, sayfa sert duruyordu.
+ */
 
 interface CouponTier {
     key: string;
     credits: number;
     discount: number;
+    minOrder?: number;
     affordable: boolean;
 }
 
@@ -29,6 +41,7 @@ interface Overview {
     lifetimeEarned: number;
     purchaseRate: number;
     completeReward: number;
+    completePer10?: number;
     couponTiers: CouponTier[];
     coupons: Coupon[];
     history: Array<{
@@ -46,12 +59,15 @@ const REASON_LABELS: Record<string, string> = {
     redeem: 'Kupona çevrildi',
 };
 
+const lira = (n: number) => `${Math.round(n).toLocaleString('tr-TR')} ₺`;
+const num = (n: number) => n.toLocaleString('tr-TR');
 const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
 
 const Gamification: React.FC = () => {
     const queryClient = useQueryClient();
     const [redeeming, setRedeeming] = useState<string | null>(null);
+    const [copied, setCopied] = useState<string | null>(null);
 
     const { data, isLoading } = useQuery<Overview>({
         queryKey: ['credit-overview'],
@@ -77,7 +93,6 @@ const Gamification: React.FC = () => {
             });
             const result = await res.json();
             if (!res.ok) throw new Error(result.error || 'Kupon oluşturulamadı');
-
             toast.success('Kupon oluşturuldu', { description: result.code });
             queryClient.invalidateQueries({ queryKey: ['credit-overview'] });
         } catch (error: any) {
@@ -87,245 +102,219 @@ const Gamification: React.FC = () => {
         }
     };
 
+    const copy = (code: string) => {
+        navigator.clipboard?.writeText(code);
+        setCopied(code);
+        setTimeout(() => setCopied(c => (c === code ? null : c)), 1600);
+    };
+
+    const band = (
+        <PageBand
+            breadcrumb={<><Link to="/">Ana sayfa</Link><span className="text-[#9CA3AF]">/</span><span className="text-[#111827]">Edurce Kredi</span></>}
+            eyebrow="Hesabım"
+            title="Edurce Kredi"
+            subtitle="Kurs aldıkça ve bitirdikçe kredi biriktir, indirim kuponuna çevir."
+        />
+    );
+
     if (isLoading || !data) {
         return (
-            <div className="min-h-screen bg-white flex items-center justify-center">
-                <Loader2 className="w-6 h-6 animate-spin text-slate-300" />
+            <div className="min-h-screen bg-white font-jakarta">
+                {band}
+                <div className="flex justify-center py-24">
+                    <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
+                </div>
             </div>
         );
     }
 
     const activeCoupons = data.coupons.filter(c => !c.used && !c.expired);
     const pastCoupons = data.coupons.filter(c => c.used || c.expired);
+    const tiers = [...data.couponTiers].sort((a, b) => a.credits - b.credits);
+    const next = tiers.find(t => t.credits > data.balance);
+    const prevCredits = next ? (tiers.filter(t => t.credits <= data.balance).pop()?.credits ?? 0) : 0;
+    const progress = next ? Math.min(100, ((data.balance - prevCredits) / (next.credits - prevCredits)) * 100) : 100;
 
     return (
-        <div className="min-h-screen bg-white">
-            <PageBand
-                breadcrumb={
-                    <>
-                        <Link to="/" className="hover:text-brand-800 transition-colors">Ana sayfa</Link>
-                        <ChevronRight className="w-3 h-3 text-slate-300" />
-                        <Link to="/home/learning" className="hover:text-brand-800 transition-colors">Eğitimlerim</Link>
-                        <ChevronRight className="w-3 h-3 text-slate-300" />
-                        <span className="text-slate-700">Edurce Kredi</span>
-                    </>
-                }
-                title="Edurce Kredi"
-                subtitle="Kurs aldıkça ve tamamladıkça kredi kazan, indirim kuponuna çevir."
-            />
+        <div className="min-h-screen bg-white text-[#111827] font-jakarta pb-16">
+            {band}
 
-            <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-10">
-                <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
-
-                    <div className="lg:col-span-8 min-w-0">
-                        {/* Bakiye */}
-                        <div className="flex flex-wrap items-end gap-x-10 gap-y-4 pb-7 border-b border-slate-200">
+            <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-10 pt-8 grid lg:grid-cols-[minmax(0,1fr)_360px] gap-6 lg:gap-8 items-start">
+                <div className="min-w-0 space-y-6">
+                    {/* Bakiye */}
+                    <section className="rounded-[28px] bg-[#B2F0C8] p-6 sm:p-8">
+                        <div className="flex flex-wrap items-end justify-between gap-6">
                             <div>
-                                <p className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.16em] text-brand-700">
-                                    Bakiye
+                                <p className="text-[13px] font-semibold text-[#134D30]">Bakiyen</p>
+                                <p className="mt-1 text-[48px] sm:text-[56px] font-extrabold leading-none tracking-[-0.03em] tabular-nums">
+                                    {num(data.balance)}
+                                    <span className="ml-2 text-[18px] font-bold tracking-normal text-[#134D30]">kredi</span>
                                 </p>
-                                <p className="font-montserrat text-[40px] font-extrabold text-slate-900 tabular-nums leading-none mt-2">
-                                    {data.balance.toLocaleString('tr-TR')}
-                                </p>
-                                <p className="text-[13px] text-slate-500 mt-1.5">kredi</p>
                             </div>
-                            <div>
-                                <p className="font-montserrat text-[24px] font-extrabold text-slate-900 tabular-nums leading-none">
-                                    {data.lifetimeEarned.toLocaleString('tr-TR')}
-                                </p>
-                                <p className="text-[13px] text-slate-500 mt-1.5">Bugüne kadar kazanılan</p>
-                            </div>
-                            <div>
-                                <p className="font-montserrat text-[24px] font-extrabold text-slate-900 tabular-nums leading-none">
-                                    {activeCoupons.length}
-                                </p>
-                                <p className="text-[13px] text-slate-500 mt-1.5">Kullanılabilir kupon</p>
+                            <div className="flex gap-3">
+                                <div className="rounded-2xl bg-white/60 px-4 py-3 min-w-[120px]">
+                                    <p className="text-[12px] text-[#134D30]">Bugüne kadar</p>
+                                    <p className="mt-0.5 text-[20px] font-extrabold tabular-nums">{num(data.lifetimeEarned)}</p>
+                                </div>
+                                <div className="rounded-2xl bg-white/60 px-4 py-3 min-w-[120px]">
+                                    <p className="text-[12px] text-[#134D30]">Hazır kupon</p>
+                                    <p className="mt-0.5 text-[20px] font-extrabold tabular-nums">{activeCoupons.length}</p>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Nasıl kazanılır */}
-                        <section className="mt-9">
-                            <h2 className="font-montserrat text-[20px] font-extrabold text-slate-900 tracking-[-0.02em]">
-                                Nasıl kazanılır
-                            </h2>
-                            <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-2.5 mb-5" />
-
-                            <div className="grid sm:grid-cols-2 gap-3">
-                                <div className="rounded-xl border border-brand-100 bg-brand-50/50 p-5">
-                                    <p className="font-montserrat text-[26px] font-extrabold text-brand-800 tabular-nums leading-none">
-                                        {data.purchaseRate} kredi
-                                    </p>
-                                    <p className="text-[14.5px] font-semibold text-slate-900 mt-2.5">
-                                        Her 10 ₺ alışverişte
-                                    </p>
-                                    <p className="text-[13.5px] text-slate-600 leading-relaxed mt-1">
-                                        Satın aldığın her kurs bakiyene kredi ekler.
-                                    </p>
-                                </div>
-
-                                <div className="rounded-xl border border-brand-100 bg-brand-50/50 p-5">
-                                    <p className="font-montserrat text-[26px] font-extrabold text-brand-800 tabular-nums leading-none">
-                                        {data.completeReward} kredi
-                                    </p>
-                                    <p className="text-[14.5px] font-semibold text-slate-900 mt-2.5">
-                                        Tamamlanan her kurs
-                                    </p>
-                                    <p className="text-[13.5px] text-slate-600 leading-relaxed mt-1">
-                                        Bir kursu %100 bitirdiğinde bir kez verilir.
-                                    </p>
-                                </div>
+                        <div className="mt-7">
+                            <div className="flex items-baseline justify-between gap-4 text-[13.5px]">
+                                <span className="font-semibold">
+                                    {next ? `${lira(next.discount)} kupona ${num(next.credits - data.balance)} kredi kaldı` : 'En büyük kupona yetecek kredin var'}
+                                </span>
+                                {next && <span className="tabular-nums text-[#134D30]">{`${num(data.balance)} / ${num(next.credits)}`}</span>}
                             </div>
-                        </section>
+                            <div className="mt-2.5 h-2.5 rounded-full bg-white/60 overflow-hidden">
+                                <div className="h-full rounded-full bg-[#1B7A43] transition-[width] duration-700" style={{ width: `${progress}%` }} />
+                            </div>
+                        </div>
+                    </section>
 
-                        {/* Kupona çevir */}
-                        <section className="mt-10 pt-8 border-t border-slate-200">
-                            <h2 className="font-montserrat text-[20px] font-extrabold text-slate-900 tracking-[-0.02em]">
-                                Kupona çevir
-                            </h2>
-                            <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-2.5" />
-                            <p className="text-[14px] text-slate-500 mt-2.5 mb-5">
-                                Oluşturduğun kupon 90 gün geçerlidir ve ödeme adımında kullanılır.
-                            </p>
+                    {/* Nasıl kazanılır */}
+                    <section>
+                        <h2 className="text-[20px] font-extrabold tracking-[-0.015em]">Nasıl kazanılır?</h2>
+                        <div className="mt-4 grid sm:grid-cols-2 gap-3">
+                            <div className="rounded-[22px] bg-[#F5F6F8] p-5">
+                                <p className="text-[28px] font-extrabold tracking-[-0.02em] tabular-nums">
+                                    {`${data.purchaseRate} kredi`}
+                                </p>
+                                <p className="mt-1.5 text-[15px] font-bold">Her 10 ₺'lik alışverişte</p>
+                                <p className="mt-1 text-[13.5px] leading-relaxed text-[#6B7280]">Satın aldığın kursun tutarına göre bakiyene eklenir.</p>
+                            </div>
+                            <div className="rounded-[22px] bg-[#F5F6F8] p-5">
+                                <p className="text-[28px] font-extrabold tracking-[-0.02em] tabular-nums">
+                                    {`En fazla ${data.completeReward} kredi`}
+                                </p>
+                                <p className="mt-1.5 text-[15px] font-bold">Ücretli bir kursu bitirince</p>
+                                <p className="mt-1 text-[13.5px] leading-relaxed text-[#6B7280]">
+                                    {`Kurs fiyatının her 10 ₺'si için ${data.completePer10 ?? 1} kredi, kurs başına bir kez. Ücretsiz kurslar kredi kazandırmaz.`}
+                                </p>
+                            </div>
+                        </div>
+                    </section>
 
-                            <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-                                {data.couponTiers.map(tier => (
-                                    <div
-                                        key={tier.key}
-                                        className={cn(
-                                            'rounded-xl border p-4 flex flex-col transition-colors',
-                                            tier.affordable
-                                                ? 'border-slate-200 hover:border-brand-300'
-                                                : 'border-slate-200 bg-slate-50/60'
+                    {/* Kupona çevir */}
+                    <section>
+                        <div className="flex flex-wrap items-baseline justify-between gap-2">
+                            <h2 className="text-[20px] font-extrabold tracking-[-0.015em]">Kupona çevir</h2>
+                            <p className="text-[13px] text-[#6B7280]">Kuponlar 90 gün geçerli.</p>
+                        </div>
+                        <div className="mt-4 grid sm:grid-cols-2 gap-3">
+                            {tiers.map(tier => {
+                                const missing = Math.max(0, tier.credits - data.balance);
+                                const pct = Math.min(100, (data.balance / tier.credits) * 100);
+                                return (
+                                    <div key={tier.key} className={cn('rounded-[22px] p-5 flex flex-col', tier.affordable ? 'bg-[#EEFBF3]' : 'bg-[#F5F6F8]')}>
+                                        <div className="flex items-start justify-between gap-3">
+                                            <div>
+                                                <p className="text-[30px] font-extrabold leading-none tracking-[-0.02em] tabular-nums">{lira(tier.discount)}</p>
+                                                <p className="mt-2 text-[13px] text-[#6B7280]">
+                                                    {tier.minOrder ? `En az ${lira(tier.minOrder)} alışverişte` : 'İndirim kuponu'}
+                                                </p>
+                                            </div>
+                                            <span className="shrink-0 h-7 px-2.5 inline-flex items-center rounded-full bg-white text-[12.5px] font-bold tabular-nums">
+                                                {`${num(tier.credits)} kredi`}
+                                            </span>
+                                        </div>
+                                        {!tier.affordable && (
+                                            <div className="mt-4 h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
+                                                <div className="h-full rounded-full bg-[#1B7A43]/60" style={{ width: `${pct}%` }} />
+                                            </div>
                                         )}
-                                    >
-                                        <p className="font-montserrat text-[24px] font-extrabold text-slate-900 leading-none">
-                                            {formatPrice(tier.discount)}
-                                        </p>
-                                        <p className="text-[13px] text-slate-500 mt-2">
-                                            {tier.credits.toLocaleString('tr-TR')} kredi
-                                        </p>
-
                                         <button
                                             onClick={() => redeem(tier)}
                                             disabled={!tier.affordable || redeeming === tier.key}
                                             className={cn(
-                                                'h-9 mt-4 rounded-md text-[13px] font-semibold transition-colors',
-                                                tier.affordable
-                                                    ? 'bg-brand-700 hover:bg-brand-800 text-white'
-                                                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                                                'h-10 mt-4 rounded-xl text-[13.5px] font-bold transition-colors',
+                                                tier.affordable ? 'bg-[#1B7A43] hover:bg-[#16613A] text-white' : 'bg-white text-[#9CA3AF] cursor-not-allowed'
                                             )}
                                         >
                                             {redeeming === tier.key
                                                 ? 'Oluşturuluyor…'
-                                                : tier.affordable
-                                                    ? 'Kupon al'
-                                                    : `${(tier.credits - data.balance).toLocaleString('tr-TR')} kredi eksik`}
+                                                : tier.affordable ? 'Kupona çevir' : `${num(missing)} kredi eksik`}
                                         </button>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </section>
+
+                    {/* Hareketler */}
+                    {data.history.length > 0 && (
+                        <section>
+                            <h2 className="text-[20px] font-extrabold tracking-[-0.015em]">Hareketler</h2>
+                            <div className="mt-4 rounded-[22px] bg-[#F5F6F8] p-2">
+                                {data.history.map((item, i) => (
+                                    <div key={i} className="flex items-center justify-between gap-4 rounded-2xl px-4 py-3 hover:bg-white transition-colors">
+                                        <div className="min-w-0">
+                                            <p className="text-[14.5px] font-semibold truncate">
+                                                {item.description || REASON_LABELS[item.reason] || item.reason}
+                                            </p>
+                                            <p className="text-[12.5px] text-[#9CA3AF] mt-0.5">{formatDate(item.date)}</p>
+                                        </div>
+                                        <span className={cn('text-[15px] font-extrabold tabular-nums shrink-0', item.amount > 0 ? 'text-[#1B7A43]' : 'text-[#6B7280]')}>
+                                            {`${item.amount > 0 ? '+' : ''}${num(item.amount)}`}
+                                        </span>
                                     </div>
                                 ))}
                             </div>
                         </section>
-
-                        {/* Hareketler */}
-                        {data.history.length > 0 && (
-                            <section className="mt-10 pt-8 border-t border-slate-200">
-                                <h2 className="font-montserrat text-[20px] font-extrabold text-slate-900 tracking-[-0.02em]">
-                                    Hareketler
-                                </h2>
-                                <span className="block w-9 h-[3px] rounded-full bg-brand-700 mt-2.5 mb-5" />
-
-                                <div className="border-t border-slate-200 divide-y-2 divide-white">
-                                    {data.history.map((item, i) => (
-                                        <div key={i} className="flex items-center justify-between gap-4 py-3">
-                                            <div className="min-w-0">
-                                                <p className="text-[14.5px] text-slate-900 truncate">
-                                                    {item.description || REASON_LABELS[item.reason] || item.reason}
-                                                </p>
-                                                <p className="text-[12.5px] text-slate-400 mt-0.5">
-                                                    {formatDate(item.date)}
-                                                </p>
-                                            </div>
-                                            <span className={cn(
-                                                'text-[14.5px] font-semibold tabular-nums shrink-0',
-                                                item.amount > 0 ? 'text-brand-800' : 'text-slate-500'
-                                            )}>
-                                                {item.amount > 0 ? '+' : ''}{item.amount.toLocaleString('tr-TR')}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
-                        )}
-                    </div>
-
-                    {/* ── Sağ ray: kuponlar ──────────────────────────────── */}
-                    <aside className="lg:col-span-4">
-                        <div className="lg:sticky lg:top-20 space-y-8">
-                            <div>
-                                <p className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400 mb-3">
-                                    Kuponlarım
-                                </p>
-
-                                {activeCoupons.length > 0 ? (
-                                    <div className="space-y-2">
-                                        {activeCoupons.map(coupon => (
-                                            <div
-                                                key={coupon.code}
-                                                className="rounded-xl border border-brand-200 bg-brand-50/50 p-4"
-                                            >
-                                                <div className="flex items-baseline justify-between gap-3">
-                                                    <span className="font-mono text-[15px] font-bold tracking-wider text-brand-900">
-                                                        {coupon.code}
-                                                    </span>
-                                                    <span className="font-montserrat text-[17px] font-extrabold text-slate-900">
-                                                        {formatPrice(coupon.discount)}
-                                                    </span>
-                                                </div>
-                                                <p className="text-[12.5px] text-slate-500 mt-2">
-                                                    Son kullanım: {formatDate(coupon.expiresAt)}
-                                                </p>
-                                                <button
-                                                    onClick={() => {
-                                                        navigator.clipboard?.writeText(coupon.code);
-                                                        toast.success('Kod kopyalandı');
-                                                    }}
-                                                    className="text-[12.5px] font-semibold text-brand-700 hover:text-brand-900 hover:underline mt-2"
-                                                >
-                                                    Kodu kopyala
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className="text-[14px] text-slate-500">
-                                        Henüz kuponun yok. Yeterli kredi biriktiğinde buradan oluşturabilirsin.
-                                    </p>
-                                )}
-                            </div>
-
-                            {pastCoupons.length > 0 && (
-                                <div>
-                                    <p className="font-montserrat text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400 mb-3">
-                                        Geçmiş kuponlar
-                                    </p>
-                                    <div className="space-y-1.5">
-                                        {pastCoupons.map(coupon => (
-                                            <div
-                                                key={coupon.code}
-                                                className="flex items-center justify-between gap-3 text-[13px] text-slate-400"
-                                            >
-                                                <span className="font-mono line-through truncate">{coupon.code}</span>
-                                                <span className="shrink-0">
-                                                    {coupon.used ? 'Kullanıldı' : 'Süresi doldu'}
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </aside>
+                    )}
                 </div>
+
+                {/* Sağ: kuponlar */}
+                <aside className="lg:sticky lg:top-24 space-y-6">
+                    <section className="rounded-[28px] bg-[#F5F6F8] p-5">
+                        <h2 className="text-[17px] font-extrabold">Kuponlarım</h2>
+                        {activeCoupons.length > 0 ? (
+                            <div className="mt-4 space-y-2.5">
+                                {activeCoupons.map(coupon => (
+                                    <div key={coupon.code} className="relative rounded-[18px] bg-white p-4 overflow-hidden">
+                                        <span aria-hidden className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#B2F0C8]" />
+                                        <div className="flex items-baseline justify-between gap-3">
+                                            <span className="text-[22px] font-extrabold tabular-nums">{lira(coupon.discount)}</span>
+                                            <span className="text-[12px] text-[#6B7280]">{`${formatDate(coupon.expiresAt)} tarihine kadar`}</span>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => copy(coupon.code)}
+                                            className="mt-3 w-full h-10 px-3 rounded-xl bg-[#F5F6F8] hover:bg-[#EEFBF3] flex items-center justify-between gap-2 transition-colors"
+                                        >
+                                            <span translate="no" className="text-[14.5px] font-bold tracking-[0.08em]">{coupon.code}</span>
+                                            <span className="inline-flex items-center gap-1 text-[12.5px] font-bold text-[#1B7A43]">
+                                                {copied === coupon.code ? <><Check className="w-3.5 h-3.5" /> Kopyalandı</> : <><Copy className="w-3.5 h-3.5" /> Kopyala</>}
+                                            </span>
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="mt-2 text-[14px] leading-relaxed text-[#6B7280]">
+                                Henüz kuponun yok. Yeterli kredi biriktiğinde soldan oluşturabilirsin.
+                            </p>
+                        )}
+                    </section>
+
+                    {pastCoupons.length > 0 && (
+                        <section className="px-1">
+                            <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#9CA3AF] mb-2.5">Geçmiş kuponlar</p>
+                            <div className="space-y-1.5">
+                                {pastCoupons.map(coupon => (
+                                    <div key={coupon.code} className="flex items-center justify-between gap-3 text-[13px] text-[#9CA3AF]">
+                                        <span translate="no" className="line-through truncate tracking-[0.06em]">{coupon.code}</span>
+                                        <span className="shrink-0">{coupon.used ? 'Kullanıldı' : 'Süresi doldu'}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+                </aside>
             </div>
         </div>
     );

@@ -61,7 +61,14 @@ const EASE_OUT = 'cubic-bezier(0.23,1,0.32,1)';
  * Satın alma ödeme sayfasına gidiyor; fiyat orada sunucudan yeniden
  * hesaplanıyor.
  */
-export const BundleDeck: React.FC<{ bundles: Bundle[] }> = ({ bundles }) => {
+export const BundleDeck: React.FC<{
+    bundles: Bundle[];
+    /** Başlığı ve alt başlığı değiştir (kategori, arama sayfaları) */
+    title?: string;
+    subtitle?: string;
+    /** Sayfa içine gömülü: tam genişlik zemin yerine yuvarlak kutu */
+    embedded?: boolean;
+}> = ({ bundles, title, subtitle, embedded }) => {
     const railRef = useRef<HTMLDivElement>(null);
     const [canLeft, setCanLeft] = useState(false);
     const [canRight, setCanRight] = useState(false);
@@ -95,20 +102,20 @@ export const BundleDeck: React.FC<{ bundles: Bundle[] }> = ({ bundles }) => {
     if (!bundles || bundles.length === 0) return null;
 
     const counts = new Set(bundles.map(b => (b.courses || []).length));
-    const heading = counts.size === 1
+    const heading = title || (counts.size === 1
         ? `${togetherLabel([...counts][0])} Mega Paketler`
-        : 'Bir Arada Mega Paketler';
+        : 'Bir Arada Mega Paketler');
 
     return (
-        <section className="w-full bg-[#F5F6F8] py-7 lg:py-8 font-jakarta overflow-hidden">
-            <div className="container mx-auto px-4">
+        <section className={embedded ? 'w-full rounded-[28px] bg-[#F5F6F8] py-6 font-jakarta overflow-hidden' : 'w-full bg-[#F5F6F8] py-7 lg:py-8 font-jakarta overflow-hidden'}>
+            <div className={embedded ? 'px-4 sm:px-6' : 'container mx-auto px-4'}>
                 <div className="flex items-end justify-between gap-6 mb-5">
                     <div className="min-w-0">
                         <h2 className="text-[20px] sm:text-[22px] leading-tight font-extrabold text-[#111827] tracking-[-0.02em]">
                             {heading}
                         </h2>
                         <p className="text-[13px] text-[#6B7280] mt-1">
-                            Birbiri ardına dizilmiş kurslar; tüm seti tek seferde, avantajlı fiyatla al.
+                            {subtitle || 'Birbiri ardına dizilmiş kurslar; tüm seti tek seferde, avantajlı fiyatla al.'}
                         </p>
                     </div>
 

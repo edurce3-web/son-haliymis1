@@ -37,7 +37,7 @@ export const PageBand: React.FC<Props> = ({ breadcrumb, eyebrow, title, subtitle
                         {eyebrow && (
                             <p className="text-[12.5px] font-bold uppercase tracking-[0.16em] text-[#1B7A43] mb-2">{eyebrow}</p>
                         )}
-                        <h1 className="font-montserrat text-[28px] sm:text-[36px] font-extrabold text-[#111827] tracking-[-0.03em] leading-[1.08]">
+                        <h1 className="font-jakarta text-[28px] sm:text-[36px] font-extrabold text-[#111827] tracking-[-0.03em] leading-[1.08]">
                             {title}
                         </h1>
                         {subtitle && (

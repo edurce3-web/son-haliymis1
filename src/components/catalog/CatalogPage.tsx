@@ -12,6 +12,7 @@ import CatalogCourseCard, { type CatalogCourse } from './CatalogCourseCard';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
 import { useOwnedCourses } from '@/hooks/useOwnedCourses';
 import { CATEGORY_TREE } from '@/data/categoryTree';
+import { CategoryShowcase, SearchShowcase } from './CatalogShowcase';
 
 interface CategoryRef {
     category_id: number;
@@ -168,6 +169,8 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
     const activeFilterCount =
         filters.levels.length + (filters.minRating ? 1 : 0) + (filters.freeOnly ? 1 : 0);
 
+    const showShowcase = Boolean(data) && page === 1 && activeFilterCount === 0 && (Boolean(data?.category) || Boolean(query));
+
     if (notFound) {
         return (
             <div className="min-h-[70vh] bg-white flex items-center justify-center px-4">
@@ -300,7 +303,28 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
             </div>
 
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 lg:py-10">
-                <div className="flex flex-col lg:flex-row gap-8">
+                {/* Vitrin: yalnızca ilk sayfada ve filtre yokken */}
+                {showShowcase && data?.category && (
+                    <CategoryShowcase
+                        categorySlug={data.category.slug}
+                        categoryName={data.category.name}
+                        subcategorySlug={data.subcategory?.slug}
+                        subcategoryName={data.subcategory?.name}
+                        facets={facets}
+                        onLevel={lvl => {
+                            updateParams({ level: lvl });
+                            requestAnimationFrame(() => document.getElementById('catalog-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+                        }}
+                    />
+                )}
+                {showShowcase && !data?.category && query && <SearchShowcase query={query} />}
+
+                {showShowcase && (
+                    <h2 id="catalog-results" className="scroll-mt-28 mb-5 text-[22px] sm:text-[24px] font-extrabold tracking-[-0.02em]">
+                        {data?.category ? `Tüm ${data.subcategory?.name || data.category.name} kursları` : query ? 'Tüm sonuçlar' : 'Tüm kurslar'}
+                    </h2>
+                )}
+                <div id={showShowcase ? undefined : 'catalog-results'} className="flex flex-col lg:flex-row gap-8 scroll-mt-28">
 
                     {/* Sol: filtreler */}
                     <div className="hidden lg:block">
