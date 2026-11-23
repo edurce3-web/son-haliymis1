@@ -100,7 +100,7 @@ const PurchaseHistorySettings: React.FC = () => {
             </div>
 
             {purchases.length === 0 ? (
-                <div className="bg-white border border-slate-200 rounded-2xl py-16 text-center">
+                <div className="bg-[#F5F6F8] rounded-2xl py-16 text-center">
                     <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
                         <ShoppingBag className="w-5 h-5 text-slate-400" />
                     </div>
@@ -119,11 +119,11 @@ const PurchaseHistorySettings: React.FC = () => {
                             value={query}
                             onChange={e => setQuery(e.target.value)}
                             placeholder="Kurs veya eğitmen ara"
-                            className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                            className="w-full h-9 pl-9 pr-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 bg-[#F5F6F8]"
                         />
                     </div>
 
-                    <div className="bg-white border border-slate-200 rounded-2xl divide-y divide-slate-100 overflow-hidden">
+                    <div className="bg-[#F5F6F8] rounded-2xl overflow-hidden">
                         {filtered.map(p => (
                             <div key={p.id} className="flex items-center gap-4 p-4">
                                 <Link to={`/course/${p.course_id}`} className="shrink-0">

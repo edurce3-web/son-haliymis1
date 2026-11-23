@@ -128,7 +128,7 @@ export const BundleDeck: React.FC<{
                                     onClick={() => scroll(d as 1 | -1)}
                                     disabled={d === -1 ? !canLeft : !canRight}
                                     aria-label={d === -1 ? 'Önceki paketler' : 'Sonraki paketler'}
-                                    className="w-10 h-10 rounded-full bg-white text-[#111827] flex items-center justify-center shadow-[0_1px_2px_rgba(17,24,39,0.08)] hover:bg-[#111827] hover:text-white disabled:opacity-35 disabled:hover:bg-white disabled:hover:text-[#111827] transition-colors"
+                                    className="w-10 h-10 rounded-full bg-white text-[#111827] flex items-center justify-center  hover:bg-[#111827] hover:text-white disabled:opacity-35 disabled:hover:bg-white disabled:hover:text-[#111827] transition-colors"
                                 >
                                     {d === -1 ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
                                 </button>
@@ -203,7 +203,7 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
 
     return (
         <article
-            className="group h-full flex flex-col bg-white rounded-[20px] p-3.5 transition-shadow duration-300 shadow-[0_1px_2px_rgba(17,24,39,0.05)] hover:shadow-[0_24px_48px_-26px_rgba(17,24,39,0.4)]"
+            className="group h-full flex flex-col bg-white rounded-[20px] p-3.5 transition-shadow duration-300  hover:shadow-[0_24px_48px_-26px_rgba(17,24,39,0.4)]"
             onPointerEnter={e => { if (e.pointerType === 'mouse') setFan(true); }}
             onPointerLeave={e => { if (e.pointerType === 'mouse') setFan(false); }}
         >
@@ -351,7 +351,7 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
             </p>
 
             <div className="mt-auto pt-3">
-                <div className="pt-3 flex items-end justify-between gap-2 border-t border-[#F1F3F5]">
+                <div className="pt-3 flex items-end justify-between gap-2">
                     <div className="min-w-0">
                         <p className="text-[11px] text-[#6B7280]">
                             <span className="line-through tabular-nums">{lira(bundle.list_total)}</span> yerine
@@ -380,7 +380,7 @@ const CourseFace: React.FC<{ course: BundleCourse; label: string; lifted?: boole
 }) => (
     <div
         className={cn(
-            'h-full flex flex-col rounded-[12px] bg-white ring-1 ring-inset ring-[#E5E7EB] overflow-hidden transition-shadow duration-300',
+            'h-full flex flex-col rounded-[12px] bg-white overflow-hidden transition-shadow duration-300',
             strong
                 ? 'shadow-[0_18px_34px_-14px_rgba(19,27,46,0.5)]'
                 : lifted

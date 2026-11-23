@@ -89,7 +89,7 @@ const ReportQueue: React.FC = () => {
                                 </p>
 
                                 {report.resolution && (
-                                    <p className="text-[12.5px] text-slate-600 mt-2 border-l-2 border-slate-200 pl-2.5">
+                                    <p className="text-[12.5px] text-slate-600 mt-2 pl-2.5">
                                         {report.resolution}
                                     </p>
                                 )}
@@ -122,7 +122,7 @@ const ReportQueue: React.FC = () => {
                                                     href={link}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="h-9 px-3.5 leading-9 rounded-md border border-slate-300 text-[13px] font-semibold text-slate-700 hover:border-slate-400"
+                                                    className="h-9 px-3.5 leading-9 rounded-md text-[13px] font-semibold text-slate-700 bg-[#F5F6F8]"
                                                 >
                                                     İçeriği aç
                                                 </a>

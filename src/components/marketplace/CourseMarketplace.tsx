@@ -291,7 +291,7 @@ export const CourseMarketplace: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-3 border-t">
+        <div className="flex items-center justify-between pt-3">
           <div className="flex items-center space-x-2">
             {course.original_price && course.original_price > course.price && (
               <span className="text-sm text-gray-500 line-through">
@@ -461,7 +461,7 @@ export const CourseMarketplace: React.FC = () => {
                   key={term}
                   variant="outline"
                   size="sm"
-                  className="text-white border-white/30 hover:bg-white/10"
+                  className="text-white hover:bg-white/10"
                   onClick={() => setSearchQuery(term)}
                 >
                   {term}
@@ -473,7 +473,7 @@ export const CourseMarketplace: React.FC = () => {
       </div>
 
       {/* Categories */}
-      <div className="bg-white border-b">
+      <div className="bg-white">
         <div className="container mx-auto px-4 py-6">
           <ScrollArea className="w-full whitespace-nowrap">
             <div className="flex space-x-4">
@@ -504,7 +504,7 @@ export const CourseMarketplace: React.FC = () => {
           {/* Course Grid */}
           <div className="flex-1">
             {/* Toolbar */}
-            <div className="flex items-center justify-between mb-6 bg-white p-4 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between mb-6 bg-white p-4 rounded-lg ">
               <div className="flex items-center space-x-4">
                 <span className="text-sm text-gray-600">
                   {totalCourses.toLocaleString()} kurs bulundu
@@ -535,7 +535,7 @@ export const CourseMarketplace: React.FC = () => {
                   </SelectContent>
                 </Select>
 
-                <div className="flex items-center border rounded-lg">
+                <div className="flex items-center rounded-lg bg-[#F5F6F8]">
                   <Button
                     variant={viewMode === 'grid' ? 'default' : 'ghost'}
                     size="sm"

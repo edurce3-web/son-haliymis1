@@ -66,7 +66,7 @@ export const CategoryBar: React.FC = () => {
     };
 
     return (
-        <div className="hidden md:block bg-white border-b border-slate-200">
+        <div className="hidden md:block bg-white">
             <div className="container px-4">
                 <div className="relative flex items-stretch h-12">
 

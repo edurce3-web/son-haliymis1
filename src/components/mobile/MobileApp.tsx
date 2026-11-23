@@ -179,7 +179,7 @@ export const MobileApp: React.FC = () => {
   };
 
   const MobileHeader: React.FC = () => (
-    <div className="bg-white border-b px-4 py-3 flex items-center justify-between sticky top-0 z-50">
+    <div className="bg-white px-4 py-3 flex items-center justify-between sticky top-0 z-50">
       <div className="flex items-center space-x-3">
         <Button
           variant="ghost"
@@ -217,7 +217,7 @@ export const MobileApp: React.FC = () => {
   );
 
   const MobileNavigation: React.FC = () => (
-    <div className="bg-white border-t px-4 py-2 flex justify-around sticky bottom-0 z-50">
+    <div className="bg-white px-4 py-2 flex justify-around sticky bottom-0 z-50">
       {[
         { id: 'home', icon: Home, label: 'Ana Sayfa' },
         { id: 'courses', icon: BookOpen, label: 'Kurslarım' },
@@ -526,7 +526,7 @@ export const MobileApp: React.FC = () => {
             </div>
             
             {isOffline && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <div className="bg-yellow-50 rounded-lg p-3">
                 <div className="flex items-center space-x-2">
                   <WifiOff className="w-4 h-4 text-yellow-600" />
                   <span className="text-sm text-yellow-800">

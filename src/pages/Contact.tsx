@@ -90,8 +90,8 @@ const Contact: React.FC = () => {
     };
 
     const inputClass =
-        'w-full h-12 px-4 rounded-2xl bg-white text-[15px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none ' +
-        'ring-1 ring-inset ring-black/[0.06] hover:ring-black/[0.12] focus:ring-2 focus:ring-[#1B7A43]/50 transition-shadow';
+        'w-full h-12 px-4 rounded-2xl bg-white text-[15px] text-[#111827] placeholder:text-[#9CA3AF] outline-none' +
+        'focus:ring-2 focus:ring-[#1B7A43]/50 transition-shadow';
     const labelClass = 'block text-[13.5px] font-bold text-[#111827] mb-1.5';
 
     return (
@@ -215,7 +215,7 @@ const Contact: React.FC = () => {
                                 id="message" required rows={7} maxLength={5000} value={form.message}
                                 onChange={e => set('message', e.target.value)}
                                 placeholder="Sorunu olabildiğince açık anlat. Bir kursla ilgiliyse kursun adını, hata alıyorsan hatanın tam metnini yazman çözümü hızlandırır."
-                                className="w-full p-4 rounded-2xl bg-white text-[15px] leading-[1.7] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none ring-1 ring-inset ring-black/[0.06] hover:ring-black/[0.12] focus:ring-2 focus:ring-[#1B7A43]/50 transition-shadow resize-y"
+                                className="w-full p-4 rounded-2xl bg-white text-[15px] leading-[1.7] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:ring-2 focus:ring-[#1B7A43]/50 transition-shadow resize-y"
                             />
                             <p className="mt-1.5 text-[12.5px] text-[#9CA3AF] text-right tabular-nums">{`${form.message.length} / 5000`}</p>
                         </div>

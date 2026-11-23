@@ -48,7 +48,7 @@ const ChartTooltip = ({ active, payload }: any) => {
     if (!active || !payload?.length) return null;
     const d = payload[0].payload as Bucket;
     return (
-        <div className="rounded-lg border border-[#e3e6e5] bg-white p-3 shadow-lg text-[13px] min-w-[190px]">
+        <div className="rounded-lg bg-[#F5F6F8] p-3 shadow-lg text-[13px] min-w-[190px]">
             <p className="font-semibold text-[#00201d] mb-2">{d.fullLabel}</p>
             <div className="flex justify-between gap-6">
                 <span className="text-[#4a6360]">Brüt satış</span>
@@ -58,7 +58,7 @@ const ChartTooltip = ({ active, payload }: any) => {
                 <span className="text-[#4a6360]">Vergi (%20)</span>
                 <span className="text-[#00201d]">−{money(d.tax)}</span>
             </div>
-            <div className="flex justify-between gap-6 mt-1.5 pt-1.5 border-t-2 border-white">
+            <div className="flex justify-between gap-6 mt-1.5 pt-1.5">
                 <span className="text-[#1d3a37] font-medium">Net kazancın</span>
                 <span className="text-[#005c55] font-semibold">{money(d.instructor)}</span>
             </div>

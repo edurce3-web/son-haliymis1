@@ -421,7 +421,7 @@ const InstructorApplication = () => {
                   onChange={handleInputChange}
                   placeholder="Adınız ve soyadınız"
                   required
-                  className={errors.fullName ? 'border-red-500' : ''}
+                  className={errors.fullName ? '' : ''}
                 />
               </div>
 
@@ -438,7 +438,7 @@ const InstructorApplication = () => {
                   onChange={handleInputChange}
                   placeholder="ornek@email.com"
                   required
-                  className={errors.email ? 'border-red-500' : ''}
+                  className={errors.email ? '' : ''}
                 />
               </div>
 
@@ -475,7 +475,7 @@ const InstructorApplication = () => {
             </p>
             <div className="flex flex-col items-center space-y-6">
               <div className="relative">
-                <div className="w-32 h-32 rounded-full border-4 border-primary/20 overflow-hidden bg-gray-100 flex items-center justify-center">
+                <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
                   {imagePreview ? (
                     <img
                       src={imagePreview}
@@ -551,7 +551,7 @@ const InstructorApplication = () => {
                   placeholder="Örn: Yazılım Mühendisi · Grafik Tasarımcı · Matematik Öğretmeni"
                   maxLength={40}
                   required
-                  className={errors.title ? 'border-red-500' : ''}
+                  className={errors.title ? '' : ''}
                 />
               </div>
 
@@ -570,7 +570,7 @@ const InstructorApplication = () => {
                   placeholder="Kendinizi kısaca tanıtın: ne iş yapıyorsunuz, kaç yıldır bu alandasınız, hangi konuları anlatacaksınız?"
                   rows={6}
                   required
-                  className={errors.bio ? 'border-red-500' : ''}
+                  className={errors.bio ? '' : ''}
                 />
               </div>
 
@@ -674,7 +674,7 @@ const InstructorApplication = () => {
             </button>
             <button
               onClick={() => navigate('/')}
-              className="flex-1 h-11 rounded-lg border border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-700 text-[15px] font-semibold transition-colors"
+              className="flex-1 h-11 rounded-lg hover:text-brand-800 text-slate-700 text-[15px] font-semibold transition-colors bg-[#F5F6F8]"
             >
               Ana sayfa
             </button>
@@ -687,7 +687,7 @@ const InstructorApplication = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Üst bant — platformun diğer sayfalarındaki açık yeşil zemin */}
-      <div className="relative border-b border-brand-100 bg-gradient-to-br from-brand-50 via-brand-100/60 to-white">
+      <div className="relative bg-gradient-to-br from-brand-50 via-brand-100/60 to-white">
         <div
           aria-hidden
           className="absolute inset-0 opacity-40"
@@ -765,12 +765,12 @@ const InstructorApplication = () => {
         </div>
 
         {/* Form */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <div className="rounded-2xl bg-[#F5F6F8] p-6 sm:p-8">
             <form onSubmit={handleSubmit}>
               {renderStepContent()}
 
               {/* Navigation Buttons */}
-              <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
+              <div className="flex items-center justify-between mt-8 pt-6">
                 <Button
                   type="button"
                   variant="outline"

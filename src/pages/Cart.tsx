@@ -257,7 +257,7 @@ const Cart = () => {
                   ))}
                 </div>
 
-                <div className="border-t border-slate-100 mt-4 pt-4 flex justify-between items-baseline">
+                <div className="mt-4 pt-4 flex justify-between items-baseline">
                   <span className="font-semibold text-slate-900">Toplam</span>
                   <span className="text-2xl font-bold text-slate-900">
                     {formatPrice(total)}
@@ -275,7 +275,7 @@ const Cart = () => {
                   Kupon kodunu ödeme sayfasında girebilirsiniz.
                 </p>
 
-                <div className="flex items-start gap-2 mt-5 pt-5 border-t border-slate-100">
+                <div className="flex items-start gap-2 mt-5 pt-5">
                   <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                   <p className="text-xs text-slate-500 leading-relaxed">
                     Güvenli ödeme · Satın aldığın kurslara ömür boyu erişim
@@ -301,7 +301,7 @@ const Cart = () => {
               {recommended.map(rec => (
                 <div
                   key={rec.course_id}
-                  className="bg-white ring-1 ring-black/[0.06] rounded-2xl overflow-hidden flex flex-col hover:border-brand-300 hover:shadow-md transition-all"
+                  className="bg-white rounded-2xl overflow-hidden flex flex-col hover:shadow-md transition-all"
                 >
                   <Link to={`/course/${rec.slug || rec.course_id}`} className="block aspect-video bg-slate-100 overflow-hidden">
                     <img
@@ -327,7 +327,7 @@ const Cart = () => {
                     </Link>
                     <p className="text-xs text-slate-500 mt-1 truncate">{rec.instructor_name}</p>
 
-                    <div className="flex items-center justify-between gap-3 mt-4 pt-3 border-t border-slate-100">
+                    <div className="flex items-center justify-between gap-3 mt-4 pt-3">
                       <span className="font-bold text-slate-900">{formatPrice(rec.price)}</span>
                       <button
                         onClick={() => addRecommended(rec.course_id)}

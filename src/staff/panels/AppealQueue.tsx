@@ -72,7 +72,7 @@ const AppealQueue: React.FC = () => {
                                 </p>
 
                                 {appeal.decision_note && (
-                                    <p className="text-[12.5px] text-slate-600 mt-3 border-l-2 border-slate-200 pl-2.5">
+                                    <p className="text-[12.5px] text-slate-600 mt-3 pl-2.5">
                                         {appeal.decision_note}
                                     </p>
                                 )}

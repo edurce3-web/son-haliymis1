@@ -167,7 +167,7 @@ const ProfileSettings: React.FC = () => {
 
     const fullName = `${formData.first_name} ${formData.last_name}`.trim();
     const inputClass =
-        'w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-slate-50/60 text-sm focus:bg-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition-colors';
+        'w-full h-11 px-3.5 rounded-xl bg-slate-50/60 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/15 transition-colors';
 
     return (
         <div className="space-y-6 max-w-2xl">
@@ -176,7 +176,7 @@ const ProfileSettings: React.FC = () => {
             </div>
 
             {/* Fotoğraf */}
-            <section className="bg-white border border-slate-200 rounded-2xl p-6">
+            <section className="bg-[#F5F6F8] rounded-2xl p-6">
                 <div className="flex flex-wrap items-center gap-6">
                     <UserAvatar src={formData.profile_image} name={fullName} size={88} />
 
@@ -214,7 +214,7 @@ const ProfileSettings: React.FC = () => {
             </section>
 
             {/* Bilgiler */}
-            <section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-5">
+            <section className="bg-[#F5F6F8] rounded-2xl p-6 space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                         <label htmlFor="first_name" className="text-sm font-medium text-slate-700">Ad</label>
@@ -237,7 +237,7 @@ const ProfileSettings: React.FC = () => {
                     <textarea
                         id="bio" name="bio" rows={4}
                         placeholder="Kendinden kısaca bahset…"
-                        className="w-full p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 text-sm focus:bg-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition-colors resize-none"
+                        className="w-full p-3.5 rounded-xl bg-slate-50/60 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/15 transition-colors resize-none"
                         value={formData.bio}
                         onChange={handleChange}
                     />

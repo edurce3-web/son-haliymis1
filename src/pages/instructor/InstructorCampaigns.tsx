@@ -297,7 +297,7 @@ const InstructorCampaigns = () => {
 
           <TabsContent value="analytics" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="border-0 shadow-course">
+              <Card className="shadow-course">
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <BarChart3 className="w-5 h-5" />
@@ -330,7 +330,7 @@ const InstructorCampaigns = () => {
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-course">
+              <Card className="shadow-course">
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <TrendingUp className="w-5 h-5" />
@@ -367,14 +367,14 @@ const InstructorCampaigns = () => {
               </Card>
             </div>
 
-            <Card className="border-0 shadow-course">
+            <Card className="shadow-course">
               <CardHeader>
                 <CardTitle>Kampanya Geçmişi</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {campaigns.filter(c => c.status === "completed").map((campaign) => (
-                    <div key={campaign.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={campaign.id} className="flex items-center justify-between p-4 rounded-lg bg-[#F5F6F8]">
                       <div className="flex items-center space-x-4">
                         <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center">
                           <Gift className="w-6 h-6 text-success" />

@@ -51,7 +51,7 @@ export const LanguagePicker: React.FC<{ className?: string }> = ({ className }) 
                 onClick={() => setOpen(o => !o)}
                 className={cn(
                     'inline-flex items-center gap-2.5 h-11 pl-1.5 pr-4 rounded-full bg-white text-[14px] font-bold text-[#111827]',
-                    'shadow-[0_1px_2px_rgba(17,24,39,0.06)] hover:shadow-[0_6px_18px_-10px_rgba(17,24,39,0.35)] transition-shadow',
+                    ' hover:shadow-[0_6px_18px_-10px_rgba(17,24,39,0.35)] transition-shadow',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/45'
                 )}
             >

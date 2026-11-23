@@ -107,7 +107,7 @@ export function InstructorReviews() {
                     {reviews.length === 0 ? (
                         <Empty title="Bu filtreye uyan yorum yok" text="Başka bir puan seç ya da aramayı temizle." />
                     ) : (
-                        <Panel as="section" className="divide-y-2 divide-white">
+                        <Panel as="section" className="">
                             {reviews.map(r => {
                                 const name = `${r.first_name || ''} ${r.last_name || ''}`.trim() || 'Öğrenci';
                                 return (

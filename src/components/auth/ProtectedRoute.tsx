@@ -59,7 +59,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             </a>
             <a
               href="/register"
-              className="flex-1 h-11 leading-[42px] rounded-lg border border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-700 text-[15px] font-semibold transition-colors"
+              className="flex-1 h-11 leading-[42px] rounded-lg hover:text-brand-800 text-slate-700 text-[15px] font-semibold transition-colors bg-[#F5F6F8]"
             >
               Hesap oluştur
             </a>

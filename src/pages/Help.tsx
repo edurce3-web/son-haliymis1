@@ -385,7 +385,7 @@ const Help: React.FC = () => {
                         value={query}
                         onChange={e => setQuery(e.target.value)}
                         placeholder="Konu ara: iade, sertifika, video, kredi…"
-                        className="w-full h-14 px-5 rounded-2xl bg-white text-[16px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none shadow-[0_10px_30px_-18px_rgba(17,24,39,0.35)] focus:ring-2 focus:ring-[#1B7A43]/45 transition-shadow"
+                        className="w-full h-14 px-5 rounded-2xl bg-white text-[16px] text-[#111827] placeholder:text-[#9CA3AF] outline-none shadow-[0_10px_30px_-18px_rgba(17,24,39,0.35)] focus:ring-2 focus:ring-[#1B7A43]/45 transition-shadow"
                     />
                     {query && (
                         <p className="text-[13.5px] text-[#4B5563] mt-3">

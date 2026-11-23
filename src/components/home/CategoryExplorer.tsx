@@ -70,7 +70,7 @@ export const CategoryExplorer: React.FC<{
                             onClick={() => setActive(cat.slug)}
                             onMouseEnter={() => setActive(cat.slug)}
                             className={cn(
-                                'shrink-0 px-4 py-2 rounded-full text-[13px] font-semibold transition-all whitespace-nowrap shadow-sm',
+                                'shrink-0 px-4 py-2 rounded-full text-[13px] font-semibold transition-all whitespace-nowrap ',
                                 isActive
                                     ? 'bg-[#1B7A43] text-white'
                                     : 'bg-white text-[#3e4947] hover:text-[#131b2e] hover:bg-[#EEFBF3]'
@@ -83,16 +83,16 @@ export const CategoryExplorer: React.FC<{
             </div>
 
             {shown && (
-                <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 lg:p-7 shadow-[0_1px_3px_rgba(15,23,42,0.05)]">
+                <div className="bg-[#F5F6F8] rounded-2xl p-5 sm:p-6 lg:p-7 ">
                     <div className="flex flex-wrap items-center justify-between gap-3 pb-5">
                         <div className="flex items-center gap-2.5 min-w-0">
-                            <span className="w-9 h-9 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-center shrink-0">
+                            <span className="w-9 h-9 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
                                 <CategoryIcon name={shown.icon} />
                             </span>
                             <h3 className="text-[15.5px] font-bold text-slate-900 truncate">
                                 {shown.name} alt başlıkları
                             </h3>
-                            <span className="shrink-0 text-[11px] font-semibold text-slate-600 bg-slate-100 border border-slate-200 rounded-full px-2.5 py-1 whitespace-nowrap">
+                            <span className="shrink-0 text-[11px] font-semibold text-slate-600 bg-slate-100 rounded-full px-2.5 py-1 whitespace-nowrap">
                                 {shown.subcategories.length} uzmanlık alanı · {shown.count} kurs
                             </span>
                         </div>
@@ -119,7 +119,7 @@ export const CategoryExplorer: React.FC<{
                                     </span>
                                 </span>
                                 {sub.count > 0 && (
-                                    <span className="shrink-0 text-[11px] font-semibold text-slate-500 bg-white border border-slate-200 rounded px-1.5 py-0.5 tabular-nums">
+                                    <span className="shrink-0 text-[11px] font-semibold text-slate-500 bg-[#F5F6F8] rounded px-1.5 py-0.5 tabular-nums">
                                         {sub.count} kurs
                                     </span>
                                 )}

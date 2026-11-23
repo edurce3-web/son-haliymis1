@@ -50,15 +50,15 @@ export const InstructorSalesHistory: React.FC = () => {
 
     return (
         <div className='space-y-6 animate-in fade-in duration-500'>
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-zinc-100">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6">
                 <div className="space-y-1">
                     <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">Satış Geçmişi</h1>
                     <p className="text-zinc-500 text-sm">Satılan tüm kurslarınızın detaylı ve filtrelenebilir listesi.</p>
                 </div>
             </div>
 
-            <Card className='border border-zinc-200 shadow-sm rounded-xl overflow-hidden bg-white'>
-                <CardHeader className="border-b border-zinc-100 pb-4 bg-zinc-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <Card className=' rounded-xl overflow-hidden bg-[#F5F6F8]'>
+                <CardHeader className="pb-4 bg-zinc-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <CardTitle className="text-lg font-semibold text-zinc-900 tracking-tight">Tüm Satışlar</CardTitle>
                         <CardDescription className="text-zinc-500">Öğrenci ve tutar bazlı satış detayları</CardDescription>
@@ -67,7 +67,7 @@ export const InstructorSalesHistory: React.FC = () => {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                         <Input
                             placeholder="Kurs veya öğrenci ara..."
-                            className="pl-9 bg-white border-zinc-200"
+                            className="pl-9 bg-white"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />

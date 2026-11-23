@@ -161,7 +161,7 @@ const Group: React.FC<{ title: string; note: string; items: Course[]; empty: str
         {items.length === 0 ? (
             <p className="rounded-2xl bg-[#ecfbf8] px-5 py-6 text-[14px] text-[#4a6360]">{empty}</p>
         ) : (
-            <Panel className="divide-y-2 divide-white overflow-hidden">
+            <Panel className="overflow-hidden">
                 {items.map(c => <Row key={c.id} course={c} />)}
             </Panel>
         )}

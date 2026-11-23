@@ -128,7 +128,7 @@ const InstructorPayoutSettings: React.FC = () => {
                     { l: 'Bugüne kadar ödenen', v: formatPrice(totalPaid) },
                     { l: 'Sonraki ödeme', v: next || '—' },
                 ].map((x, i) => (
-                    <div key={x.l} className={cn('px-6 py-5', i > 0 && 'border-t sm:border-t-0 sm:border-l border-white/[0.08]')}>
+                    <div key={x.l} className={cn('px-6 py-5', i > 0 && '')}>
                         <p className="text-[12.5px] text-[#a9cfc9]">{x.l}</p>
                         <p className={cn('mt-1.5 text-[26px] leading-none font-extrabold tracking-[-0.02em] tabular-nums', x.mint ? 'text-[#9cf2e8]' : 'text-white')}>
                             {x.v}
@@ -167,7 +167,7 @@ const InstructorPayoutSettings: React.FC = () => {
                             placeholder="TR00 0000 0000 0000 0000 0000 00"
                             aria-invalid={ibanBad}
                             aria-describedby="p-iban-hint"
-                            className={cn(field, 'h-11 tabular-nums tracking-[0.04em]', ibanBad && 'ring-[#e0a33a] hover:ring-[#e0a33a]')}
+                            className={cn(field, 'h-11 tabular-nums tracking-[0.04em]', ibanBad && '')}
                         />
                         <p id="p-iban-hint" className={cn('mt-1.5', ibanBad ? 'text-[12.5px] font-semibold text-[#8a5a0b]' : hint)}>
                             {ibanBad ? 'IBAN "TR" ile başlamalı ve toplam 26 karakter olmalı.' : 'Boşlukları sen yazma, kendiliğinden ekleniyor.'}
@@ -197,7 +197,7 @@ const InstructorPayoutSettings: React.FC = () => {
                         </select>
                         <p className={cn(hint, 'mt-1.5')}>Bakiyen bu gün hesabına aktarılır.</p>
                     </div>
-                    <div className="md:col-span-2 flex justify-end pt-2 border-t-2 border-white -mx-5 sm:-mx-6 px-5 sm:px-6 mt-1">
+                    <div className="md:col-span-2 flex justify-end pt-2 -mx-5 sm:-mx-6 px-5 sm:px-6 mt-1">
                         <button type="submit" disabled={saving} className={cn(btn.primary, btn.lg, 'mt-4 min-w-[160px]')}>
                             {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Kaydediliyor</> : 'Bilgileri kaydet'}
                         </button>
@@ -215,14 +215,14 @@ const InstructorPayoutSettings: React.FC = () => {
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-[560px] text-[13.5px]">
                             <thead>
-                                <tr className="text-left text-[12.5px] text-[#4a6360] border-b-2 border-white">
+                                <tr className="text-left text-[12.5px] text-[#4a6360]">
                                     <th scope="col" className="font-bold px-5 sm:px-6 py-3">Tarih</th>
                                     <th scope="col" className="font-bold px-3 py-3">Dönem</th>
                                     <th scope="col" className="font-bold px-3 py-3">Durum</th>
                                     <th scope="col" className="font-bold px-5 sm:px-6 py-3 text-right">Tutar</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-[#f0f1f1]">
+                            <tbody className="">
                                 {payouts.map(p => {
                                     const m = statusMeta[p.status] || statusMeta.pending;
                                     return (

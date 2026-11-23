@@ -89,7 +89,7 @@ export const CategoryMegaMenu: React.FC = () => {
                     {/* Sol sütun: kategoriler */}
                     <div className={cn(
                         'w-[248px] py-2 max-h-[70vh] overflow-y-auto bg-slate-50/70',
-                        hovered && 'border-r border-slate-200'
+                        hovered && ''
                     )}>
                         {categories.length === 0 && (
                             <p className="px-4 py-6 text-sm text-slate-400 text-center">

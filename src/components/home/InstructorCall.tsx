@@ -21,7 +21,7 @@ const LINES = [
 export const InstructorCall: React.FC = () => (
     <section className="relative overflow-hidden bg-[#b2f0c8] text-[#111827]">
         {/* Büyük, soluk "%" yerine marka işareti: köşede dev bir halka */}
-        <div aria-hidden className="absolute -right-40 -bottom-56 w-[620px] h-[620px] rounded-full border-[70px] border-[#111827]/[0.05]" />
+        <div aria-hidden className="absolute -right-40 -bottom-56 w-[620px] h-[620px] rounded-full" />
         <div aria-hidden className="absolute -left-24 -top-32 w-[360px] h-[360px] rounded-full bg-white/30 blur-[90px]" />
 
         <div className="container relative px-4 py-16 lg:py-24">
@@ -96,13 +96,13 @@ export const InstructorCall: React.FC = () => (
                                 {LINES.map(l => (
                                     <div key={l.k} className="flex items-baseline gap-2 py-2.5 text-[15px]">
                                         <dt className="text-[#374151]">{l.k}</dt>
-                                        <span aria-hidden className="flex-1 border-b-2 border-dotted border-[#c9d6d3] translate-y-[-4px]" />
+                                        <span aria-hidden className="flex-1 translate-y-[-4px]" />
                                         <dd className="font-extrabold tabular-nums">{l.v}</dd>
                                     </div>
                                 ))}
                             </dl>
 
-                            <div className="mt-4 pt-5 border-t-2 border-dashed border-[#c9d6d3]">
+                            <div className="mt-4 pt-5 bg-[#F5F6F8]">
                                 <p className="text-[13px] font-bold text-[#4B5563]">Satıştan payın</p>
                                 <p className="mt-2 inline-flex items-center rounded-xl bg-[#1B7A43] px-4 py-2.5 text-[22px] font-extrabold tracking-tight text-white">
                                     Yüksek komisyon

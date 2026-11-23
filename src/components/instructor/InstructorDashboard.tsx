@@ -223,7 +223,7 @@ export const InstructorDashboard: React.FC = () => {
           <select
             value={selectedTimeRange}
             onChange={(e) => setSelectedTimeRange(e.target.value)}
-            className="px-3 py-2 border rounded-lg"
+            className="px-3 py-2 rounded-lg bg-[#F5F6F8]"
           >
             <option value="7d">Son 7 Gün</option>
             <option value="30d">Son 30 Gün</option>
@@ -484,7 +484,7 @@ export const InstructorDashboard: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-4 border-t flex items-center justify-between">
+                    <div className="mt-4 pt-4 flex items-center justify-between">
                       <Button variant="outline" size="sm">
                         <Edit className="w-3 h-3 mr-1" />
                         Düzenle
@@ -508,7 +508,7 @@ export const InstructorDashboard: React.FC = () => {
             <select
               value={selectedCourse || ''}
               onChange={(e) => setSelectedCourse(e.target.value ? Number(e.target.value) : null)}
-              className="px-3 py-2 border rounded-lg"
+              className="px-3 py-2 rounded-lg bg-[#F5F6F8]"
             >
               <option value="">Tüm Kurslar</option>
               {courseAnalytics?.items?.map((course: CourseAnalytics) => (

@@ -285,7 +285,7 @@ export const NotificationSystem: React.FC = () => {
 
     return (
       <Card className={`transition-all hover:shadow-md ${
-        !notification.read ? 'border-l-4 border-l-blue-500 bg-blue-50/30' : ''
+        !notification.read ? ' bg-blue-50/30' : ''
       }`}>
         <CardContent className="p-4">
           <div className="flex items-start space-x-3">
@@ -465,7 +465,7 @@ export const NotificationSystem: React.FC = () => {
             </div>
           </div>
           
-          <div className="border-t pt-4">
+          <div className="pt-4">
             <h4 className="font-medium mb-4">Sessiz Saatler</h4>
             <div className="grid grid-cols-2 gap-4">
               <div>

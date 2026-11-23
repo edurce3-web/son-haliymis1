@@ -53,7 +53,7 @@ const MessageViewer: React.FC = () => {
                     {loading ? <Loading /> : items.length === 0 ? (
                         <Empty text="Yazışma bulunamadı." />
                     ) : (
-                        <Card className="divide-y divide-slate-100 max-h-[70vh] overflow-y-auto">
+                        <Card className="max-h-[70vh] overflow-y-auto">
                             {items.map(m => {
                                 const isActive = active?.a === m.sender_id && active?.b === m.receiver_id;
                                 return (
@@ -113,7 +113,7 @@ const Thread: React.FC<{ a: number; b: number; title: string }> = ({ a, b, title
 
     return (
         <Card className="p-0 overflow-hidden">
-            <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
+            <div className="px-4 py-3 bg-slate-50">
                 <p className="text-[13.5px] font-semibold text-slate-900">{title}</p>
                 <p className="text-[11.5px] text-slate-500 mt-0.5">
                     Bu yazışmayı açtığınız kayda geçti.

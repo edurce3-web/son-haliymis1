@@ -59,7 +59,7 @@ const ContinueCard: React.FC<{ course: any }> = ({ course }) => {
     );
 
     return (
-        <div className="flex items-center justify-between gap-3 bg-white px-3 py-2.5 rounded-xl shadow-sm">
+        <div className="flex items-center justify-between gap-3 bg-white px-3 py-2.5 rounded-xl ">
 
             <div className="flex items-center gap-3 flex-1 min-w-0">
                 <button

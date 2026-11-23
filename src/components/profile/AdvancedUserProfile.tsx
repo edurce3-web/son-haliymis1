@@ -182,11 +182,11 @@ export const AdvancedUserProfile: React.FC = () => {
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
-      case 'common': return 'bg-gray-100 text-gray-800 border-gray-300';
-      case 'rare': return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'epic': return 'bg-brand-100 text-brand-800 border-brand-300';
-      case 'legendary': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      default: return 'bg-gray-100 text-gray-800 border-gray-300';
+      case 'common': return 'bg-gray-100 text-gray-800';
+      case 'rare': return 'bg-blue-100 text-blue-800';
+      case 'epic': return 'bg-brand-100 text-brand-800';
+      case 'legendary': return 'bg-yellow-100 text-yellow-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -222,7 +222,7 @@ export const AdvancedUserProfile: React.FC = () => {
           <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
             {/* Avatar */}
             <div className="relative">
-              <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
+              <Avatar className="w-24 h-24 shadow-lg bg-[#F5F6F8]">
                 <AvatarImage src={profile?.avatar_url} />
                 <AvatarFallback className="text-2xl">
                   {profile?.full_name?.charAt(0) || profile?.username?.charAt(0)}
@@ -394,7 +394,7 @@ export const AdvancedUserProfile: React.FC = () => {
         <TabsContent value="achievements" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {achievements?.items?.map((achievement: Achievement) => (
-              <Card key={achievement.achievement_id} className={`relative overflow-hidden ${achievement.unlocked_at ? 'border-2' : 'opacity-60'}`}>
+              <Card key={achievement.achievement_id} className={`relative overflow-hidden ${achievement.unlocked_at ? '' : 'opacity-60'}`}>
                 <div className={`absolute top-0 right-0 w-16 h-16 ${getRarityColor(achievement.rarity)} opacity-20 transform rotate-45 translate-x-8 -translate-y-8`}></div>
                 <CardContent className="p-4">
                   <div className="flex items-start space-x-3">
@@ -494,7 +494,7 @@ export const AdvancedUserProfile: React.FC = () => {
                 <div>
                   <Label>Profil Görünürlüğü</Label>
                   <select 
-                    className="w-full mt-1 p-2 border rounded-md"
+                    className="w-full mt-1 p-2 rounded-md bg-[#F5F6F8]"
                     value={settings?.privacy_profile}
                     onChange={(e) => handleSettingChange('privacy_profile', e.target.value)}
                   >
@@ -506,7 +506,7 @@ export const AdvancedUserProfile: React.FC = () => {
                 <div>
                   <Label>Kurs Listesi</Label>
                   <select 
-                    className="w-full mt-1 p-2 border rounded-md"
+                    className="w-full mt-1 p-2 rounded-md bg-[#F5F6F8]"
                     value={settings?.privacy_courses}
                     onChange={(e) => handleSettingChange('privacy_courses', e.target.value)}
                   >
@@ -539,7 +539,7 @@ export const AdvancedUserProfile: React.FC = () => {
                 <div>
                   <Label>Video Kalitesi</Label>
                   <select 
-                    className="w-full mt-1 p-2 border rounded-md"
+                    className="w-full mt-1 p-2 rounded-md bg-[#F5F6F8]"
                     value={settings?.video_quality}
                     onChange={(e) => handleSettingChange('video_quality', e.target.value)}
                   >
@@ -562,7 +562,7 @@ export const AdvancedUserProfile: React.FC = () => {
                 <div>
                   <Label>Tema</Label>
                   <select 
-                    className="w-full mt-1 p-2 border rounded-md"
+                    className="w-full mt-1 p-2 rounded-md bg-[#F5F6F8]"
                     value={settings?.theme}
                     onChange={(e) => handleSettingChange('theme', e.target.value)}
                   >
@@ -574,7 +574,7 @@ export const AdvancedUserProfile: React.FC = () => {
                 <div>
                   <Label>Dil</Label>
                   <select 
-                    className="w-full mt-1 p-2 border rounded-md"
+                    className="w-full mt-1 p-2 rounded-md bg-[#F5F6F8]"
                     value={settings?.language}
                     onChange={(e) => handleSettingChange('language', e.target.value)}
                   >
@@ -596,7 +596,7 @@ export const AdvancedUserProfile: React.FC = () => {
               <CardTitle>Güvenlik Ayarları</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="p-4 bg-yellow-50 rounded-lg">
                 <p className="text-sm text-yellow-800">
                   Güvenlik ayarları henüz geliştirme aşamasındadır. İki faktörlü kimlik doğrulama ve şifre değiştirme özellikleri yakında eklenecektir.
                 </p>

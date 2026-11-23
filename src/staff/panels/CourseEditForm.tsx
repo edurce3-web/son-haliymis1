@@ -59,7 +59,7 @@ const CourseEditForm: React.FC<{
     };
 
     return (
-        <div className="rounded-md border border-slate-300 bg-white p-4 space-y-4">
+        <div className="rounded-md bg-[#F5F6F8] p-4 space-y-4">
             <p className="text-[13px] font-semibold text-slate-800">Kursu düzenle</p>
             {error && <ErrorBox message={error} />}
 

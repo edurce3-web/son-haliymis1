@@ -106,7 +106,7 @@ const Announcements: React.FC = () => {
                     </div>
 
                     {confirming ? (
-                        <div className="rounded-md border border-amber-300 bg-amber-50 p-3.5">
+                        <div className="rounded-md bg-amber-50 p-3.5">
                             <p className="text-[13px] text-amber-900 leading-relaxed">
                                 Bu duyuru <strong>{AUDIENCES.find(a => a.value === audience)?.label.toLowerCase()}</strong>{' '}
                                 grubuna gönderilecek. Gönderim geri alınamaz.

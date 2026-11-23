@@ -270,7 +270,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-white">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
@@ -488,7 +488,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b">
+                      <tr className="">
                         <th className="text-left p-2">Kurs</th>
                         <th className="text-left p-2">Öğrenci</th>
                         <th className="text-left p-2">Gelir</th>
@@ -498,7 +498,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
                     </thead>
                     <tbody>
                       {courses?.slice(0, 5).map((course: Course) => (
-                        <tr key={course.course_id} className="border-b">
+                        <tr key={course.course_id} className="">
                           <td className="p-2">{course.title}</td>
                           <td className="p-2">{course.students}</td>
                           <td className="p-2">₺{course.revenue}</td>

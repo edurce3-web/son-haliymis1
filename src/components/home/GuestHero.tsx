@@ -97,7 +97,7 @@ export const GuestHero: React.FC<{
                                 value={term}
                                 onChange={e => setTerm(e.target.value)}
                                 placeholder="Ne öğrenmek istiyorsun?"
-                                className="min-w-0 flex-1 h-12 bg-transparent text-[16px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none"
+                                className="min-w-0 flex-1 h-12 bg-transparent text-[16px] text-[#111827] placeholder:text-[#9CA3AF] outline-none"
                             />
                             <button
                                 type="submit"

@@ -419,7 +419,7 @@ export const PaymentSystem: React.FC = () => {
                   {availableCoupons.slice(0, 3).map((coupon: Coupon) => (
                     <div
                       key={coupon.coupon_id}
-                      className="flex items-center justify-between p-2 border rounded cursor-pointer hover:bg-gray-50"
+                      className="flex items-center justify-between p-2 rounded cursor-pointer hover:bg-gray-50 bg-[#F5F6F8]"
                       onClick={() => applyCouponMutation.mutate(coupon.code)}
                     >
                       <div>
@@ -533,18 +533,18 @@ export const PaymentSystem: React.FC = () => {
             {paymentMethodOptions.map((method) => (
               <div
                 key={method.id}
-                className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                className={`p-4 rounded-lg cursor-pointer transition-colors ${
                   selectedPaymentMethod === method.id 
-                    ? 'border-blue-500 bg-blue-50' 
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? ' bg-blue-50' 
+                    : ''
                 }`}
                 onClick={() => setSelectedPaymentMethod(method.id)}
               >
                 <div className="flex items-center space-x-3">
-                  <div className={`w-4 h-4 rounded-full border-2 ${
+                  <div className={`w-4 h-4 rounded-full ${
                     selectedPaymentMethod === method.id 
-                      ? 'border-blue-500 bg-blue-500' 
-                      : 'border-gray-300'
+                      ? ' bg-blue-500' 
+                      : ''
                   }`}>
                     {selectedPaymentMethod === method.id && (
                       <div className="w-full h-full rounded-full bg-white scale-50"></div>
@@ -561,7 +561,7 @@ export const PaymentSystem: React.FC = () => {
 
             {/* Card Details */}
             {selectedPaymentMethod === 'card' && (
-              <div className="mt-4 p-4 border rounded-lg space-y-4">
+              <div className="mt-4 p-4 rounded-lg space-y-4 bg-[#F5F6F8]">
                 <Input
                   placeholder="Kart Numarası"
                   value={cardDetails.number}
@@ -716,7 +716,7 @@ export const PaymentSystem: React.FC = () => {
         </div>
 
         {/* Step Content */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg  p-6">
           {currentStep === 'cart' && <CartStep />}
           {currentStep === 'checkout' && <CheckoutStep />}
           {currentStep === 'success' && <SuccessStep />}

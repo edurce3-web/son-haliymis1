@@ -143,7 +143,7 @@ const NotificationSettings: React.FC = () => {
                 </p>
             </div>
 
-            <section className="bg-white border border-slate-200 rounded-2xl divide-y divide-slate-100 overflow-hidden">
+            <section className="bg-[#F5F6F8] rounded-2xl overflow-hidden">
                 {visible.map(opt => (
                     <div key={opt.key} className="flex items-start justify-between gap-4 p-5">
                         <div className="flex gap-3 min-w-0">

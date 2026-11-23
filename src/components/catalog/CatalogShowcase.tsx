@@ -103,7 +103,7 @@ const BundleTile: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
     };
 
     return (
-        <article className="snap-start shrink-0 w-[300px] sm:w-[340px] flex gap-3 rounded-2xl bg-white p-3 shadow-[0_1px_2px_rgba(10,42,26,0.06)]">
+        <article className="snap-start shrink-0 w-[300px] sm:w-[340px] flex gap-3 rounded-2xl bg-white p-3 ">
             {/* Üst üste kapaklar: paketin kaç kurstan oluştuğu bir bakışta */}
             <div className="relative w-[84px] h-[84px] shrink-0">
                 {courses.slice(0, 3).map((c, i) => (
@@ -113,7 +113,7 @@ const BundleTile: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                         alt=""
                         loading="lazy"
                         onError={e => { (e.target as HTMLImageElement).src = '/placeholder.svg'; }}
-                        className="absolute w-[68px] h-[68px] rounded-xl object-cover ring-2 ring-white bg-[#F1F3F5]"
+                        className="absolute w-[68px] h-[68px] rounded-xl object-cover bg-[#F1F3F5]"
                         style={{ left: i * 8, top: i * 8, zIndex: 3 - i }}
                     />
                 ))}

@@ -452,7 +452,7 @@ export default function InteractiveVideoPlayer({
 
       {/* Interactive Sidebar */}
       {showSidebar && (
-        <div className="w-80 bg-white border rounded-lg">
+        <div className="w-80 bg-[#F5F6F8] rounded-lg">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="notes">Notlar</TabsTrigger>
@@ -461,7 +461,7 @@ export default function InteractiveVideoPlayer({
             </TabsList>
 
             <TabsContent value="notes" className="h-[calc(100%-40px)] flex flex-col">
-              <div className="p-4 border-b">
+              <div className="p-4">
                 <Textarea
                   placeholder="Yeni not ekle..."
                   value={newNote}
@@ -498,7 +498,7 @@ export default function InteractiveVideoPlayer({
             </TabsContent>
 
             <TabsContent value="comments" className="h-[calc(100%-40px)] flex flex-col">
-              <div className="p-4 border-b">
+              <div className="p-4">
                 <Textarea
                   placeholder="Yorum yaz..."
                   value={newComment}

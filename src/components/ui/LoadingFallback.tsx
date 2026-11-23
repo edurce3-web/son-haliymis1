@@ -87,7 +87,7 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
 
   if (type === 'card') {
     return (
-      <Card className="w-full border-red-200 bg-red-50">
+      <Card className="w-full bg-red-50">
         <CardContent className="flex items-center justify-between py-4">
           <div className="flex items-center space-x-2">
             <AlertCircle className="w-5 h-5 text-red-500" />
@@ -104,7 +104,7 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
   }
 
   return (
-    <div className="flex items-center justify-between p-4 bg-red-50 border border-red-200 rounded-lg">
+    <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg">
       <div className="flex items-center space-x-2">
         <AlertCircle className="w-5 h-5 text-red-500" />
         <span className="text-sm text-red-700">{error}</span>

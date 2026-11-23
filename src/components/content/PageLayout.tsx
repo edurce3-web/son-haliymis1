@@ -314,7 +314,7 @@ export const Table: React.FC<{
                     ))}
                 </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="">
                 {rows.map((r, i) => (
                     <tr
                         key={i}

@@ -178,7 +178,7 @@ export const MobileCourseCard: React.FC<MobileCourseCardProps> = memo(({
           to={`/instructors/${course.instructor_id}`}
           className="flex items-center space-x-2 text-xs text-muted-foreground hover:text-primary transition-all duration-200 group/instructor"
         >
-          <Avatar className="w-6 h-6 ring-2 ring-transparent group-hover/instructor:ring-primary/20 transition-all duration-200">
+          <Avatar className="w-6 h-6 transition-all duration-200">
             <AvatarImage src="" />
             <AvatarFallback className="text-xs bg-gradient-to-br from-primary/20 to-primary/10">
               {course.instructor_name?.split(' ').map(n => n[0]).join('') || 'IN'}

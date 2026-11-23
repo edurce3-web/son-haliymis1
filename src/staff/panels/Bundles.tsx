@@ -115,7 +115,7 @@ const Bundles: React.FC = () => {
                                     ))}
                                 </ol>
 
-                                <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-3 border-t border-slate-100">
+                                <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-3">
                                     <p className="text-[13px] text-slate-600">
                                         <span className="line-through text-slate-400 mr-2">{lira(b.list_total)}</span>
                                         <span className="font-bold text-slate-900">{lira(b.price)}</span>
@@ -249,7 +249,7 @@ const BundleForm: React.FC<{
                         Satışta (ana sayfada görünsün)
                     </label>
 
-                    <div className="rounded-lg bg-slate-50 border border-slate-200 p-3 text-[13px] text-slate-600">
+                    <div className="rounded-lg bg-slate-50 p-3 text-[13px] text-slate-600">
                         Kursların toplamı: <b className="text-slate-900">{lira(listTotal)}</b>
                         {savings > 0 && (
                             <span className="ml-2 text-emerald-700 font-semibold">→ %{savings} tasarruf</span>
@@ -264,7 +264,7 @@ const BundleForm: React.FC<{
                     {courses.length === 0 ? (
                         <p className="text-[13px] text-slate-400 mb-3">Aşağıdan en az {MIN} kurs ekle.</p>
                     ) : (
-                        <ol className="divide-y divide-slate-200 border border-slate-200 rounded-lg mb-3">
+                        <ol className="rounded-lg mb-3 bg-[#F5F6F8]">
                             {courses.map((c, i) => (
                                 <li key={c.id} className="flex items-center gap-2 px-3 py-2">
                                     <span className="text-[12px] font-bold text-slate-500 w-4">{i + 1}</span>
@@ -284,7 +284,7 @@ const BundleForm: React.FC<{
                         placeholder="Yayındaki kurslarda ara…"
                         className={inputClass}
                     />
-                    <div className="mt-2 max-h-60 overflow-y-auto divide-y divide-slate-100">
+                    <div className="mt-2 max-h-60 overflow-y-auto">
                         {isFetching && <p className="text-[12.5px] text-slate-400 py-2">Aranıyor…</p>}
                         {(search?.items || []).map((row: any) => {
                             const added = courses.some(c => c.id === row.course_id);
@@ -313,7 +313,7 @@ const BundleForm: React.FC<{
                 <p className="text-[13px] text-red-600 mt-3">{(save.error as Error).message}</p>
             )}
 
-            <div className="flex items-center justify-end gap-2 mt-5 pt-4 border-t border-slate-100">
+            <div className="flex items-center justify-end gap-2 mt-5 pt-4">
                 {problem && <span className="text-[12.5px] text-slate-500 mr-auto">{problem}</span>}
                 <Button onClick={onCancel}>Vazgeç</Button>
                 <Button

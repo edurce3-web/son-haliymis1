@@ -168,7 +168,7 @@ const CourseDetail = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
               <div className="space-y-4">
-                <Badge className="bg-white/20 text-white border-white/30">
+                <Badge className="bg-white/20 text-white">
                   {course.category}
                 </Badge>
 
@@ -214,7 +214,7 @@ const CourseDetail = () => {
 
             {/* Purchase Card */}
             <div className="lg:col-span-1">
-              <Card className="bg-white shadow-xl border-0">
+              <Card className="bg-white shadow-xl">
                 <CardContent className="p-6">
                   <div className="relative mb-4">
                     <img
@@ -227,7 +227,7 @@ const CourseDetail = () => {
                     />
                     {/* Preview overlay */}
                     <div className="absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center">
-                      <Button size="lg" className="bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30">
+                      <Button size="lg" className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30">
                         <Play className="w-5 h-5 mr-2" />
                         Önizleme
                       </Button>
@@ -365,7 +365,7 @@ const CourseDetail = () => {
                       {course.books && course.books.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {course.books.map((book: any) => (
-                            <div key={book.id} className="border rounded-lg p-4 hover:shadow-course transition-all duration-300">
+                            <div key={book.id} className="rounded-lg p-4 hover:shadow-course transition-all duration-300 bg-[#F5F6F8]">
                               <div className="flex space-x-4">
                                 <div className="relative">
                                   <img
@@ -450,7 +450,7 @@ const CourseDetail = () => {
                               date: "1 hafta önce"
                             }
                           ].map((review, index) => (
-                            <div key={index} className="border-b pb-4">
+                            <div key={index} className="pb-4">
                               <div className="flex items-center space-x-2 mb-2">
                                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-semibold">
                                   {review.name.charAt(0)}
@@ -488,7 +488,7 @@ const CourseDetail = () => {
                 <h3 className="text-xl font-semibold mb-4">Benzer Kurslar</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {similar.map((c) => (
-                    <div key={c.id} className="border rounded-lg p-4">
+                    <div key={c.id} className="rounded-lg p-4 bg-[#F5F6F8]">
                       <div className="font-semibold line-clamp-2 mb-1">
                         <a href={`/course/${c.id}`}>{c.title}</a>
                       </div>
@@ -507,7 +507,7 @@ const CourseDetail = () => {
                 <h3 className="text-xl font-semibold mb-4">Bu kursu alanlar bunları da aldı</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {alsoBought.map((c) => (
-                    <div key={c.id} className="border rounded-lg p-4">
+                    <div key={c.id} className="rounded-lg p-4 bg-[#F5F6F8]">
                       <div className="font-semibold line-clamp-2 mb-1">
                         <a href={`/course/${c.id}`}>{c.title}</a>
                       </div>

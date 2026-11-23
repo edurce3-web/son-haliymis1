@@ -107,7 +107,7 @@ export const HomeHero: React.FC<{
                             <Link
                                 key={s}
                                 to={`/search?q=${encodeURIComponent(s)}`}
-                                className="text-xs text-brand-100 hover:text-white border border-white/15 hover:border-white/40 rounded-full px-3 py-1 transition-colors"
+                                className="text-xs text-brand-100 hover:text-white rounded-full px-3 py-1 transition-colors bg-[#F5F6F8]"
                             >
                                 {s}
                             </Link>

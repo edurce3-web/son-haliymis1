@@ -72,7 +72,7 @@ const AuditLog: React.FC = () => {
             {error && <ErrorBox message={error} />}
             {loading ? <Loading /> : items.length === 0 ? <Empty text="Kayıt yok." /> : (
                 <>
-                    <Card className="divide-y divide-slate-100">
+                    <Card className="">
                         {items.map(entry => (
                             <div key={entry.id} className="px-4 py-3">
                                 <div className="flex items-start gap-3">

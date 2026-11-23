@@ -167,7 +167,7 @@ export function InstructorMessages() {
                                     key={s.user_id}
                                     type="button"
                                     onClick={() => { setSelectedUserId(s.user_id); setShowNewMessage(false); }}
-                                    className="inline-flex items-center gap-2 h-10 pl-1.5 pr-3.5 rounded-full bg-[#f5f6f6] ring-1 ring-inset ring-[#dadfdd] hover:bg-[#9cf2e8]/50 hover:ring-[#9cdcd3] text-[13.5px] font-semibold text-[#00201d] transition-colors"
+                                    className="inline-flex items-center gap-2 h-10 pl-1.5 pr-3.5 rounded-full bg-[#f5f6f6] hover:bg-[#9cf2e8]/50 text-[13.5px] font-semibold text-[#00201d] transition-colors"
                                 >
                                     <Initials name={`${s.first_name || ''} ${s.last_name || ''}`} size={28} />
                                     {s.first_name} {s.last_name}
@@ -180,8 +180,8 @@ export function InstructorMessages() {
 
             <Panel className="grid lg:grid-cols-[320px_1fr] overflow-hidden h-[calc(100dvh-230px)] min-h-[520px]">
                 {/* Konuşmalar */}
-                <div className={cn('flex flex-col min-h-0 lg:border-r-2 border-white', selectedUserId && 'hidden lg:flex')}>
-                    <div className="p-3 border-b-2 border-white">
+                <div className={cn('flex flex-col min-h-0', selectedUserId && 'hidden lg:flex')}>
+                    <div className="p-3">
                         <SearchBox value={search} onChange={setSearch} placeholder="Kişi ara" />
                     </div>
                     <div className="flex-1 overflow-y-auto p-2">
@@ -245,7 +245,7 @@ export function InstructorMessages() {
                         </div>
                     ) : (
                         <>
-                            <div className="h-16 shrink-0 px-3 sm:px-5 border-b-2 border-white flex items-center gap-3">
+                            <div className="h-16 shrink-0 px-3 sm:px-5 flex items-center gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setSelectedUserId(null)}
@@ -276,7 +276,7 @@ export function InstructorMessages() {
                                                         'rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed whitespace-pre-wrap break-words',
                                                         isMe
                                                             ? 'bg-[#9cf2e8] text-[#00201d] rounded-br-md'
-                                                            : 'bg-white text-[#00201d] ring-1 ring-[#e3e6e5] rounded-bl-md'
+                                                            : 'bg-white text-[#00201d] rounded-bl-md'
                                                     )}>
                                                         {m.message_content}
                                                     </div>
@@ -298,7 +298,7 @@ export function InstructorMessages() {
                             </div>
 
                             <form
-                                className="shrink-0 p-3 sm:p-4 border-t-2 border-white flex gap-2.5 items-end"
+                                className="shrink-0 p-3 sm:p-4 flex gap-2.5 items-end"
                                 onSubmit={e => { e.preventDefault(); handleSend(); }}
                             >
                                 <label htmlFor="msg-input" className="sr-only">Mesajın</label>

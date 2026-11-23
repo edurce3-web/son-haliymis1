@@ -160,7 +160,7 @@ const ShelfEditor: React.FC<{ slot: string }> = ({ slot }) => {
                 </div>
 
                 {picking && (
-                    <div className="mb-5 p-4 rounded-lg bg-slate-50 border border-slate-200">
+                    <div className="mb-5 p-4 rounded-lg bg-slate-50">
                         <input
                             autoFocus
                             value={term}
@@ -175,7 +175,7 @@ const ShelfEditor: React.FC<{ slot: string }> = ({ slot }) => {
                             </p>
                         )}
 
-                        <div className="mt-3 max-h-72 overflow-y-auto divide-y divide-slate-200">
+                        <div className="mt-3 max-h-72 overflow-y-auto">
                             {searching && <p className="text-[13px] text-slate-400 py-3">Aranıyor…</p>}
 
                             {(search?.items || []).map((row: SearchRow) => {
@@ -218,7 +218,7 @@ const ShelfEditor: React.FC<{ slot: string }> = ({ slot }) => {
                 {items.length === 0 ? (
                     <Empty text="Bu şeritte henüz kurs yok. 'Kurs ekle' ile seç." />
                 ) : (
-                    <ol className="divide-y divide-slate-200">
+                    <ol className="">
                         {items.map((item, index) => (
                             <li key={item.id} className="flex items-center gap-3 py-3">
                                 <span className="w-7 h-7 rounded-md bg-slate-100 text-slate-600 text-[12px] font-bold flex items-center justify-center shrink-0 tabular-nums">

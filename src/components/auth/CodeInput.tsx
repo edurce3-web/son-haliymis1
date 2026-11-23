@@ -67,11 +67,11 @@ export const CodeInput: React.FC<CodeInputProps> = ({
                         <div
                             key={i}
                             className={cn(
-                                'flex-1 h-14 rounded-xl border-2 flex items-center justify-center',
+                                'flex-1 h-14 rounded-xl flex items-center justify-center bg-[#F5F6F8]',
                                 'text-[22px] font-bold text-slate-900 tabular-nums transition-all duration-150',
-                                filled && 'border-brand-600 bg-brand-50/60',
-                                !filled && active && 'border-brand-400 bg-white shadow-[0_0_0_4px_rgba(23,93,93,0.08)]',
-                                !filled && !active && 'border-slate-200 bg-slate-50/60'
+                                filled && 'bg-brand-50/60',
+                                !filled && active && 'bg-white shadow-[0_0_0_4px_rgba(23,93,93,0.08)]',
+                                !filled && !active && 'bg-slate-50/60'
                             )}
                         >
                             {digits[i] ? (

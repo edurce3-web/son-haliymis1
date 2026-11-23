@@ -162,7 +162,7 @@ export const ImageCropDialog: React.FC<Props> = ({
             <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onCancel} />
 
             <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-                <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+                <div className="flex items-center justify-between px-5 py-4">
                     <h2 className="font-bold text-slate-900">{title}</h2>
                     <button
                         onClick={onCancel}
@@ -180,7 +180,7 @@ export const ImageCropDialog: React.FC<Props> = ({
 
                     {/* Görüntü alanı — daire maskesi, gerçek çıktı kare */}
                     <div
-                        className="relative mx-auto rounded-full overflow-hidden bg-slate-100 cursor-grab active:cursor-grabbing touch-none select-none ring-1 ring-slate-200"
+                        className="relative mx-auto rounded-full overflow-hidden bg-slate-100 cursor-grab active:cursor-grabbing touch-none select-none"
                         style={{ width: VIEWPORT, height: VIEWPORT }}
                         onPointerDown={onPointerDown}
                         onPointerMove={onPointerMove}
@@ -232,7 +232,7 @@ export const ImageCropDialog: React.FC<Props> = ({
                     </div>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-slate-100 bg-slate-50/60">
+                <div className="flex items-center justify-end gap-2 px-5 py-4 bg-slate-50/60">
                     <Button variant="ghost" onClick={onCancel} className="rounded-lg">
                         Vazgeç
                     </Button>

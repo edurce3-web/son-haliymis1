@@ -253,7 +253,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         >
           {title && (
             <div className="absolute top-4 left-4 z-20">
-              <Badge className="bg-black/70 text-white border-0 backdrop-blur-sm">
+              <Badge className="bg-black/70 text-white backdrop-blur-sm">
                 {title}
               </Badge>
             </div>
@@ -386,7 +386,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     <select
                       value={selectedQuality}
                       onChange={(e) => handleQualityChange(e.target.value)}
-                      className="bg-transparent text-white text-sm border border-white/30 rounded px-2 py-1 hover:bg-white/10 transition-colors"
+                      className="bg-transparent text-white text-sm rounded px-2 py-1 hover:bg-white/10 transition-colors"
                       aria-label="Video kalitesi"
                     >
                       {qualities.map((quality) => (
@@ -401,7 +401,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   <select
                     value={playbackRate}
                     onChange={(e) => handlePlaybackRateChange(Number(e.target.value))}
-                    className="bg-transparent text-white text-sm border border-white/30 rounded px-2 py-1 hover:bg-white/10 transition-colors"
+                    className="bg-transparent text-white text-sm rounded px-2 py-1 hover:bg-white/10 transition-colors"
                     aria-label="Oynatma hızı"
                   >
                     <option value={0.5} className="bg-black">0.5x</option>
@@ -468,7 +468,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     }
                   }}
                   variant="outline"
-                  className="text-white border-white/30 hover:bg-white/10"
+                  className="text-white hover:bg-white/10"
                 >
                   <RotateCcw className="w-4 h-4 mr-2" />
                   Tekrar Dene

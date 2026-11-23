@@ -578,7 +578,7 @@ export const EnhancedVideoPlayer: React.FC<VideoPlayerProps> = ({
                   <ScrollArea className="h-64">
                     <div className="space-y-3">
                       {notes.items.map((note: VideoNote) => (
-                        <div key={note.note_id} className="border rounded-lg p-3">
+                        <div key={note.note_id} className="rounded-lg p-3 bg-[#F5F6F8]">
                           <div className="flex items-start justify-between mb-2">
                             <Button
                               variant="ghost"
@@ -656,7 +656,7 @@ export const EnhancedVideoPlayer: React.FC<VideoPlayerProps> = ({
                   <ScrollArea className="h-64">
                     <div className="space-y-3">
                       {bookmarks.items.map((bookmark: VideoBookmark) => (
-                        <div key={bookmark.bookmark_id} className="border rounded-lg p-3">
+                        <div key={bookmark.bookmark_id} className="rounded-lg p-3 bg-[#F5F6F8]">
                           <div className="flex items-start justify-between mb-2">
                             <div className="flex-1">
                               <h4 className="font-medium text-sm">{bookmark.title}</h4>

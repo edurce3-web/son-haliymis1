@@ -207,7 +207,7 @@ const StaffPortal: React.FC = () => {
             <div className="flex min-h-screen">
                 {/* Yan gezinti */}
                 <aside className="w-60 shrink-0 bg-slate-900 text-slate-300 flex flex-col">
-                    <div className="px-5 py-5 border-b border-slate-800">
+                    <div className="px-5 py-5">
                         <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">
                             Edurce
                         </p>
@@ -247,7 +247,7 @@ const StaffPortal: React.FC = () => {
                         ))}
                     </nav>
 
-                    <div className="px-5 py-4 border-t border-slate-800">
+                    <div className="px-5 py-4">
                         <p className="text-[13px] font-semibold text-white truncate">{staff.name}</p>
                         <p className="text-[11.5px] text-slate-500 truncate">{staff.roleLabel}</p>
                         <button

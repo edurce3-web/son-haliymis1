@@ -162,7 +162,7 @@ const Register = () => {
     }
   };
 
-  const inputClass = "h-11 rounded-xl border-slate-200 bg-slate-50/60 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition-colors text-sm";
+  const inputClass = "h-11 rounded-xl bg-slate-50/60 focus:bg-white focus:ring-2 focus:ring-brand-500/15 transition-colors text-sm";
 
   const stepMeta: Record<Step, { title: string; subtitle: string }> = {
     details: { title: "Hesap oluştur", subtitle: "Başlamak için bilgilerini gir." },
@@ -248,7 +248,7 @@ const Register = () => {
                     type="checkbox"
                     checked={formData.acceptTerms}
                     onChange={handleInputChange}
-                    className="w-4 h-4 mt-0.5 rounded border-slate-300 text-brand-700 focus:ring-brand-500/30"
+                    className="w-4 h-4 mt-0.5 rounded text-brand-700 focus:ring-brand-500/30"
                   />
                   <Label htmlFor="acceptTerms" className="text-xs text-slate-500 cursor-pointer font-normal leading-relaxed">
                     <Link to="/terms" className="text-brand-700 hover:text-brand-800 hover:underline">Kullanım Koşulları</Link>
@@ -359,7 +359,7 @@ const Register = () => {
                   </div>
 
                   <div className={`overflow-hidden transition-all duration-300 ease-in-out ${formData.password.length > 0 ? "max-h-[180px] opacity-100 mt-2" : "max-h-0 opacity-0 mt-0"}`}>
-                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <div className="bg-slate-50 p-3 rounded-xl">
                       <p className="text-[11px] font-semibold text-slate-500 mb-2 uppercase tracking-wide">Şifre kuralları:</p>
                       <div className="flex items-center gap-2 text-xs mb-1.5">
                         {hasMinLength ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> : <Circle className="w-3.5 h-3.5 text-slate-300" />}

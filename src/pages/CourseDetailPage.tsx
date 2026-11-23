@@ -613,7 +613,7 @@ export const CourseDetailPage = () => {
    * hâline getirildi; bileşenin içinde durum yok, hepsi sayfadan geliyor.
    */
   const PurchaseBox = () => (
-    <div className="bg-white border border-slate-200 rounded-xl p-4 border-t-[3px] border-t-brand-700 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.25)]">
+    <div className="bg-[#F5F6F8] rounded-xl p-4 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.25)]">
       <div className="flex items-baseline gap-2 flex-wrap">
         <span className="font-montserrat text-[28px] font-extrabold text-slate-900 tracking-[-0.03em] leading-none">
           {appliedCoupon
@@ -640,7 +640,7 @@ export const CourseDetailPage = () => {
           variant="outline"
           onClick={handleEnroll}
           disabled={enrollMutation.isPending}
-          className="w-full h-11 rounded-md border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-800 text-[14.5px] font-semibold"
+          className="w-full h-11 rounded-md hover:text-brand-800 text-slate-800 text-[14.5px] font-semibold"
         >
           Hemen satın al
         </Button>
@@ -688,7 +688,7 @@ export const CourseDetailPage = () => {
         simgesiyle. Seviye ve dil künyeye, ders sayısı müfredat başlığına
         taşındığı için burada onay işaretli ikinci bir liste kalmadı.
       */}
-      <ul className="mt-4 pt-4 border-t border-slate-100 space-y-3">
+      <ul className="mt-4 pt-4 space-y-3">
         {courseBenefits.map(item => (
           <li key={item.text} className="flex items-start gap-2.5 text-[13px] text-slate-700">
             <FeatureIcon kind={item.icon} />
@@ -757,7 +757,7 @@ export const CourseDetailPage = () => {
         ızgarası başlıyor; açık zeminde band ile içerik birbirine karışıyor ve
         sayfanın nerede başladığı belirsiz kalıyordu.
       */}
-      <section className="relative overflow-hidden bg-[#0F172A] text-slate-100 border-b border-slate-800">
+      <section className="relative overflow-hidden bg-[#0F172A] text-slate-100">
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <div className="absolute -top-32 left-1/4 w-[430px] h-[430px] bg-brand-600/20 rounded-full blur-[130px]" />
           <div className="absolute bottom-0 right-1/3 w-[370px] h-[370px] bg-brand-400/10 rounded-full blur-[120px]" />
@@ -799,21 +799,21 @@ export const CourseDetailPage = () => {
               {/* Etiketler — hepsi gerçek veriden; karşılığı yoksa basılmıyor */}
               <div className="flex flex-wrap items-center gap-2 mt-4">
                 {course.is_featured && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/15 text-amber-300 border border-amber-400/30 text-[11px] font-bold uppercase tracking-wider">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/15 text-amber-300 text-[11px] font-bold uppercase tracking-wider">
                     <Zap className="w-3.5 h-3.5 fill-amber-300" />
                     Öne çıkan
                   </span>
                 )}
 
                 {course.updated_at && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/15 text-brand-300 border border-brand-500/30 text-[11px] font-semibold">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/15 text-brand-300 text-[11px] font-semibold">
                     <Sparkles className="w-3.5 h-3.5" />
                     Güncel: {new Date(course.updated_at).toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' })}
                   </span>
                 )}
 
                 {previewLessons.length > 0 && (
-                  <span className="px-2.5 py-1 rounded-md bg-slate-800 text-slate-200 border border-slate-700/80 text-[11px] font-medium">
+                  <span className="px-2.5 py-1 rounded-md bg-slate-800 text-slate-200 text-[11px] font-medium">
                     {previewLessons.length} ders ücretsiz izlenebilir
                   </span>
                 )}
@@ -832,7 +832,7 @@ export const CourseDetailPage = () => {
               {/* Puan, öğrenci ve eğitmen */}
               <div className="flex flex-wrap items-center gap-y-3 gap-x-4 text-[13px] sm:text-[13.5px] text-slate-200 mt-5">
                 {reviewsCount > 0 && (
-                  <span className="flex items-center gap-2 bg-slate-800/90 border border-slate-700 rounded-lg px-3 py-1.5">
+                  <span className="flex items-center gap-2 bg-slate-800/90 rounded-lg px-3 py-1.5">
                     <span className="font-extrabold text-amber-400 tabular-nums">
                       {Number(course.rating || 0).toFixed(1).replace('.', ',')}
                     </span>
@@ -861,7 +861,7 @@ export const CourseDetailPage = () => {
                 <span className="flex items-center gap-2">
                   <span className="text-slate-400">Hazırlayan:</span>
                   <InstructorLink className="inline-flex items-center gap-1.5 group">
-                    <Avatar className="w-6 h-6 ring-1 ring-slate-700 shrink-0">
+                    <Avatar className="w-6 h-6 shrink-0">
                       <AvatarImage src={instructorAvatar} alt={instructorFullName} />
                       <AvatarFallback className="bg-brand-700 text-white text-[10px] font-bold">
                         {instructorFullName.charAt(0)}
@@ -875,7 +875,7 @@ export const CourseDetailPage = () => {
               </div>
 
               {/* Künye şeridi — dil, seviye, süre */}
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[12.5px] text-slate-300 mt-5 pt-4 border-t border-slate-800">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[12.5px] text-slate-300 mt-5 pt-4">
                 <span className="flex items-center gap-1.5">
                   <Globe className="w-4 h-4 text-brand-400 shrink-0" />
                   {languageLabel}
@@ -901,7 +901,7 @@ export const CourseDetailPage = () => {
 
             {/* ── Sağ: tanıtım oynatıcısı ──────────────────────────────── */}
             <div className="lg:col-span-6 w-full">
-              <div className="relative aspect-video bg-slate-950 rounded-2xl overflow-hidden group ring-1 ring-slate-700/70 shadow-[0_30px_70px_-30px_rgba(0,0,0,0.8)]">
+              <div className="relative aspect-video bg-slate-950 rounded-2xl overflow-hidden group shadow-[0_30px_70px_-30px_rgba(0,0,0,0.8)]">
 
               {isVideoPlaying && (previewLesson || course.preview_video) ? (
                 <>
@@ -1006,7 +1006,7 @@ export const CourseDetailPage = () => {
         Kazanımlar bölümü kursta madde yoksa basılmıyor; sekmesi de o zaman
         listeden düşüyor, hiçbir yere gitmeyen sekme bırakmamak için.
       */}
-      <div className="sticky top-16 z-30 bg-white/95 backdrop-blur border-b border-slate-200">
+      <div className="sticky top-16 z-30 bg-white/95 backdrop-blur">
         <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px]">
           <nav
             aria-label="Kurs bölümleri"
@@ -1019,10 +1019,10 @@ export const CourseDetailPage = () => {
                   key={sec.id}
                   href={`#${sec.id}`}
                   className={cn(
-                    'shrink-0 px-4 py-3.5 text-[13.5px] font-semibold border-b-2 -mb-px transition-colors whitespace-nowrap',
+                    'shrink-0 px-4 py-3.5 text-[13.5px] font-semibold -mb-px transition-colors whitespace-nowrap',
                     activeSection === sec.id
-                      ? 'border-brand-700 text-brand-800'
-                      : 'border-transparent text-slate-500 hover:text-slate-900'
+                      ? 'text-brand-800'
+                      : 'text-slate-500 hover:text-slate-900'
                   )}
                 >
                   {sec.label}
@@ -1054,9 +1054,9 @@ export const CourseDetailPage = () => {
               ].map(item => (
                 <div
                   key={item.label}
-                  className="flex flex-col sm:flex-row items-center sm:items-start gap-3 p-4 bg-white border border-slate-200 rounded-2xl shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
+                  className="flex flex-col sm:flex-row items-center sm:items-start gap-3 p-4 bg-[#F5F6F8] rounded-2xl "
                 >
-                  <span className="w-10 h-10 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-center shrink-0">
+                  <span className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
                     <FeatureIcon kind={item.icon} bare />
                   </span>
                   <span className="text-center sm:text-left min-w-0">
@@ -1085,7 +1085,7 @@ export const CourseDetailPage = () => {
             {/* ── Kazanımlar ──────────────────────────────────────────── */}
             {learnItems.length > 0 && (
               <section id="genel-bakis" className="scroll-mt-32 mt-8">
-                <div className="relative overflow-hidden rounded-3xl border border-brand-200/70 bg-gradient-to-br from-brand-50/70 via-white to-brand-50/40 p-6 sm:p-8 shadow-sm">
+                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-50/70 via-white to-brand-50/40 p-6 sm:p-8 ">
                   <div className="flex items-start justify-between gap-4 mb-6">
                     <div className="min-w-0">
                       <span className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-brand-700">
@@ -1104,7 +1104,7 @@ export const CourseDetailPage = () => {
                     {learnItems.map((item: string, i: number) => (
                       <div
                         key={i}
-                        className="flex items-start gap-3.5 bg-white/85 p-3.5 rounded-xl border border-brand-100"
+                        className="flex items-start gap-3.5 bg-white/85 p-3.5 rounded-xl"
                       >
                         <span className="w-5 h-5 rounded-full bg-brand-600 text-white flex items-center justify-center shrink-0 mt-0.5">
                           <Check className="w-3.5 h-3.5 stroke-[3]" />
@@ -1131,14 +1131,14 @@ export const CourseDetailPage = () => {
                   </h2>
                 </div>
 
-                <p className="text-[12.5px] sm:text-[13px] font-semibold text-slate-600 bg-slate-100 border border-slate-200 rounded-lg px-3 py-1.5 shrink-0">
+                <p className="text-[12.5px] sm:text-[13px] font-semibold text-slate-600 bg-slate-100 rounded-lg px-3 py-1.5 shrink-0">
                   <span className="font-bold text-slate-900">{course.sections?.length || 0}</span> bölüm ·{' '}
                   <span className="font-bold text-slate-900">{totalLessons}</span> ders ·{' '}
                   <span className="font-bold text-slate-900">{totalDurationLabel}</span> toplam süre
                 </p>
               </div>
 
-              <div className="mt-5 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-[0_1px_2px_rgba(15,23,42,0.04)] divide-y divide-slate-100">
+              <div className="mt-5 bg-[#F5F6F8] rounded-2xl overflow-hidden ">
                 {course.sections?.map((section: any, idx: number) => {
                   const lessons: any[] = section.lessons || [];
                   const isOpen = openSections.includes(idx);
@@ -1191,7 +1191,7 @@ export const CourseDetailPage = () => {
                       </button>
 
                       {/* Kapalı bölümün dersleri DOM'da kalıyor, yalnızca gizleniyor */}
-                      <div className={cn('divide-y divide-slate-100 bg-white', !isOpen && 'hidden')}>
+                      <div className={cn('bg-white', !isOpen && 'hidden')}>
                         {lessons.map((lesson: any, lessonIdx: number) => {
                           const isPreview = Boolean(lesson.preview || lesson.is_free);
                           const lessonId = lesson.id ?? lesson.lesson_id ?? lessonIdx;
@@ -1233,7 +1233,7 @@ export const CourseDetailPage = () => {
 
                               <div className="flex items-center gap-2.5 shrink-0">
                                 {isPreview && (
-                                  <span className="hidden sm:inline px-2 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-200 text-[11px] font-bold">
+                                  <span className="hidden sm:inline px-2 py-0.5 rounded bg-brand-50 text-brand-700 text-[11px] font-bold">
                                     Ücretsiz önizleme
                                   </span>
                                 )}
@@ -1267,7 +1267,7 @@ export const CourseDetailPage = () => {
 
             {/* ── Kurs hakkında ───────────────────────────────────────── */}
             {course.description && (
-              <section id="hakkinda" className="scroll-mt-32 mt-10 pt-8 border-t border-slate-200">
+              <section id="hakkinda" className="scroll-mt-32 mt-10 pt-8">
                 <SectionTitle hint="Eğitmenin kendi anlatımıyla kursun kapsamı">Kurs hakkında</SectionTitle>
                 <div
                   className={cn(
@@ -1294,7 +1294,7 @@ export const CourseDetailPage = () => {
 
             {/* ── İlgili kurslar ──────────────────────────────────────── */}
             {suggestions?.relatedCourses?.length > 0 && (
-              <section className="mt-10 pt-8 border-t border-slate-200">
+              <section className="mt-10 pt-8">
                 <div className="flex flex-wrap items-baseline justify-between gap-3">
                   <SectionTitle
                     className="mb-0"
@@ -1330,13 +1330,13 @@ export const CourseDetailPage = () => {
             )}
 
             {/* ── Eğitmen ─────────────────────────────────────────────── */}
-            <section id="egitmen" className="scroll-mt-32 mt-10 pt-8 border-t border-slate-200">
+            <section id="egitmen" className="scroll-mt-32 mt-10 pt-8">
               <SectionTitle>Eğitmen</SectionTitle>
 
-              <div className="rounded-xl border border-brand-100 bg-brand-50/40 p-4 sm:p-6">
+              <div className="rounded-xl bg-brand-50/40 p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
                   <InstructorLink className="shrink-0">
-                    <Avatar className="w-16 h-16 ring-2 ring-white shadow-sm">
+                    <Avatar className="w-16 h-16 ">
                       <AvatarImage src={instructorAvatar} alt={instructorFullName} className="object-cover" />
                       <AvatarFallback className="bg-brand-100 text-brand-800 font-bold text-[20px]">
                         {instructorFullName.charAt(0)}
@@ -1425,7 +1425,7 @@ export const CourseDetailPage = () => {
                           {instructorExpertiseArray.map((exp: string, idx: number) => (
                             <span
                               key={idx}
-                              className="inline-block text-[12.5px] font-medium text-brand-900 bg-white border border-brand-200 rounded-full px-3 py-1"
+                              className="inline-block text-[12.5px] font-medium text-brand-900 bg-[#F5F6F8] rounded-full px-3 py-1"
                             >
                               {exp}
                             </span>
@@ -1443,7 +1443,7 @@ export const CourseDetailPage = () => {
                   gezinirken kapak görselinden çok başlık ve fiyat karşılaştırılıyor.
                 */}
                 {suggestions?.instructorCourses?.length > 0 && (
-                  <div className="mt-6 pt-5 border-t border-brand-100">
+                  <div className="mt-6 pt-5">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-700/70 mb-3">
                       Eğitmenin diğer kursları
                     </p>
@@ -1466,7 +1466,7 @@ export const CourseDetailPage = () => {
             </section>
 
             {/* ── Değerlendirmeler ────────────────────────────────────── */}
-            <section id="degerlendirmeler" className="scroll-mt-32 mt-10 pt-8 border-t border-slate-200">
+            <section id="degerlendirmeler" className="scroll-mt-32 mt-10 pt-8">
               <SectionTitle>Değerlendirmeler</SectionTitle>
 
               {topReviews.length > 0 ? (
@@ -1479,7 +1479,7 @@ export const CourseDetailPage = () => {
                     puanın az sayıda uç yorumdan mı yoksa geneli memnun bir
                     kitleden mi geldiği görünüyor.
                   */}
-                  <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 rounded-xl border border-slate-200 bg-slate-50/60 p-5 sm:p-6">
+                  <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 rounded-xl bg-slate-50/60 p-5 sm:p-6">
                     <div className="flex sm:flex-col items-center sm:items-start gap-4 sm:gap-1 shrink-0">
                       <span className="font-montserrat text-[44px] font-extrabold text-slate-900 tabular-nums leading-none">
                         {Number(course.rating || 0).toFixed(1).replace('.', ',')}
@@ -1522,7 +1522,7 @@ export const CourseDetailPage = () => {
                   {reviewsList.length > topReviews.length && (
                     <button
                       onClick={() => setReviewsOpen(true)}
-                      className="h-11 px-6 mt-4 rounded-lg border border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-700 text-[14px] font-semibold transition-colors"
+                      className="h-11 px-6 mt-4 rounded-lg hover:text-brand-800 text-slate-700 text-[14px] font-semibold transition-colors bg-[#F5F6F8]"
                     >
                       {reviewsList.length} değerlendirmenin tümünü gör
                     </button>
@@ -1556,7 +1556,7 @@ export const CourseDetailPage = () => {
       */}
       <div
         className={cn(
-          'lg:hidden fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur transition-transform duration-300',
+          'lg:hidden fixed inset-x-0 bottom-0 z-40 bg-white/95 backdrop-blur transition-transform duration-300',
           showMobileBar ? 'translate-y-0' : 'translate-y-full'
         )}
       >
@@ -1573,7 +1573,7 @@ export const CourseDetailPage = () => {
             variant="outline"
             onClick={handleEnroll}
             disabled={enrollMutation.isPending}
-            className="h-10 px-4 rounded-md border-slate-300 text-slate-800 text-[13.5px] font-semibold shrink-0"
+            className="h-10 px-4 rounded-md text-slate-800 text-[13.5px] font-semibold shrink-0"
           >
             Hemen al
           </Button>
@@ -1589,7 +1589,7 @@ export const CourseDetailPage = () => {
       {/* Tüm değerlendirmeler penceresi */}
       <Dialog open={reviewsOpen} onOpenChange={setReviewsOpen}>
         <DialogContent className="max-w-2xl w-[calc(100vw-2rem)] p-0 gap-0 rounded-xl overflow-hidden">
-          <DialogHeader className="px-4 sm:px-6 py-4 border-b border-slate-200 text-left">
+          <DialogHeader className="px-4 sm:px-6 py-4 text-left">
             <DialogTitle className="font-montserrat text-[17px] font-extrabold text-slate-900 tracking-[-0.02em]">
               Değerlendirmeler
             </DialogTitle>
@@ -1600,7 +1600,7 @@ export const CourseDetailPage = () => {
               </p>
             )}
           </DialogHeader>
-          <div className="max-h-[70vh] overflow-y-auto px-4 sm:px-6 divide-y divide-slate-200">
+          <div className="max-h-[70vh] overflow-y-auto px-4 sm:px-6">
             {reviewsList.map((review: any) => (
               <ReviewItem key={review.review_id} review={review} />
             ))}
@@ -1650,7 +1650,7 @@ const StarRating: React.FC<{ rating: number; size?: number }> = ({ rating, size 
 const ReviewItem: React.FC<{ review: any }> = ({ review }) => (
   <article className="py-4">
     <div className="flex items-center gap-3">
-      <Avatar className="w-8 h-8 ring-1 ring-slate-200">
+      <Avatar className="w-8 h-8">
         <AvatarFallback className="bg-slate-100 text-slate-600 font-semibold text-[13px]">
           {review.reviewer_name?.charAt(0)}
         </AvatarFallback>
@@ -1697,7 +1697,7 @@ const CourseListRow: React.FC<{ course: any }> = ({ course }) => {
       to={`/course/${course.slug || id}`}
       target="_blank"
       rel="noopener"
-      className="group flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-2.5 transition-colors hover:border-brand-400 hover:shadow-sm"
+      className="group flex items-center gap-3 rounded-lg bg-[#F5F6F8] p-2.5 transition-colors hover:shadow-sm"
     >
       <span className="w-14 h-14 shrink-0 rounded-md bg-slate-100 overflow-hidden">
         <img
@@ -1714,7 +1714,7 @@ const CourseListRow: React.FC<{ course: any }> = ({ course }) => {
         </span>
         <span className="flex flex-wrap items-center gap-1.5 mt-1.5">
           {reviewCount > 0 && (
-            <span className="inline-flex items-center gap-1 rounded bg-amber-50 border border-amber-200 px-1.5 py-0.5">
+            <span className="inline-flex items-center gap-1 rounded bg-amber-50 px-1.5 py-0.5">
               <span className="text-[11.5px] font-bold text-amber-700 tabular-nums">
                 {rating.toFixed(1)}
               </span>
@@ -1724,7 +1724,7 @@ const CourseListRow: React.FC<{ course: any }> = ({ course }) => {
           {chips.map(chip => (
             <span
               key={chip}
-              className="text-[11.5px] text-slate-500 border border-slate-200 rounded px-1.5 py-0.5"
+              className="text-[11.5px] text-slate-500 rounded px-1.5 py-0.5 bg-[#F5F6F8]"
             >
               {chip}
             </span>
@@ -1732,7 +1732,7 @@ const CourseListRow: React.FC<{ course: any }> = ({ course }) => {
         </span>
       </span>
 
-      <span className="shrink-0 pl-3 border-l border-slate-100 text-right">
+      <span className="shrink-0 pl-3 text-right">
         <span className="block text-[15px] font-bold text-slate-900 whitespace-nowrap">
           {price > 0 ? formatPrice(price) : 'Ücretsiz'}
         </span>
@@ -1866,9 +1866,9 @@ const FeatureIcon: React.FC<{ kind: string; bare?: boolean }> = ({ kind, bare })
  * için sabit yükseklikte durması ve uzun yorumların kırpılması gerekiyor.
  */
 const ReviewCard: React.FC<{ review: any }> = ({ review }) => (
-  <article className="rounded-xl border border-slate-200 p-4 flex flex-col transition-colors hover:border-brand-300">
+  <article className="rounded-xl p-4 flex flex-col transition-colors bg-[#F5F6F8]">
     <div className="flex items-center gap-3">
-      <Avatar className="w-9 h-9 ring-1 ring-slate-200">
+      <Avatar className="w-9 h-9">
         <AvatarFallback className="bg-brand-50 text-brand-800 font-bold text-[13px]">
           {review.reviewer_name?.charAt(0)}
         </AvatarFallback>

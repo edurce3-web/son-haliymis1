@@ -211,8 +211,8 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
             görünüyordu. Artık detay yandaki panelde. */}
         <div
           className={cn(
-            "w-full bg-white rounded-xl border flex flex-col overflow-hidden transition-shadow duration-200",
-            isHovered ? "border-slate-200 shadow-lg" : "border-slate-100 shadow-sm"
+            "w-full bg-[#F5F6F8] rounded-xl flex flex-col overflow-hidden transition-shadow duration-200",
+            isHovered ? "shadow-lg" : ""
           )}
         >
           {/* Card Header: Image */}
@@ -292,14 +292,14 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
             style={panelPos.side === "right" ? { left: -16 } : { right: -16 }}
             aria-hidden
           />
-          <div className="relative bg-white rounded-xl border border-slate-200 shadow-[0_24px_60px_-15px_rgba(15,23,42,0.25)] animate-in fade-in zoom-in-95 duration-150">
+          <div className="relative bg-[#F5F6F8] rounded-xl shadow-[0_24px_60px_-15px_rgba(15,23,42,0.25)] animate-in fade-in zoom-in-95 duration-150">
             {/* Panelin kartla bağını gösteren küçük ok */}
             <span
               className={cn(
-                "absolute top-8 w-3 h-3 bg-white border-slate-200 rotate-45",
+                "absolute top-8 w-3 h-3 bg-white rotate-45",
                 panelPos.side === "right"
-                  ? "-left-[7px] border-l border-b"
-                  : "-right-[7px] border-r border-t"
+                  ? "-left-[7px]"
+                  : "-right-[7px]"
               )}
             />
 
@@ -387,10 +387,10 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
                     onClick={toggleFav}
                     aria-label={favorited ? "Favorilerden çıkar" : "Favorilere ekle"}
                     className={cn(
-                      "w-11 h-11 shrink-0 flex items-center justify-center rounded-lg border transition-colors",
+                      "w-11 h-11 shrink-0 flex items-center justify-center rounded-lg transition-colors bg-[#F5F6F8]",
                       favorited
-                        ? "border-rose-200 bg-rose-50"
-                        : "border-slate-200 bg-white hover:border-slate-300"
+                        ? "bg-rose-50"
+                        : "bg-white"
                     )}
                   >
                     <Heart className={cn("w-[18px] h-[18px]", favorited ? "fill-rose-500 text-rose-500" : "text-slate-600")} />

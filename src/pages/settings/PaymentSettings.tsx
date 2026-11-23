@@ -10,7 +10,7 @@ const PaymentSettings: React.FC = () => {
             </div>
 
             {/* Eklenmiş herhangi bir ödeme yöntemi yok (Mock Tasarım) */}
-            <div className="bg-slate-50 border border-slate-200 border-dashed rounded-3xl p-10 flex flex-col items-center justify-center text-center">
+            <div className="bg-slate-50 rounded-3xl p-10 flex flex-col items-center justify-center text-center">
                 <div className="w-16 h-16 bg-slate-200 rounded-full flex items-center justify-center text-slate-400 mb-4">
                     <CreditCard className="w-8 h-8" />
                 </div>

@@ -309,7 +309,7 @@ export default function MessagesPage() {
                                     placeholder="Konuşma ara…"
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
-                                    className="w-full h-10 pl-10 pr-3 rounded-xl bg-white text-[14px] placeholder:text-[#9CA3AF] border-0 outline-none focus:ring-2 focus:ring-[#1B7A43]/40"
+                                    className="w-full h-10 pl-10 pr-3 rounded-xl bg-white text-[14px] placeholder:text-[#9CA3AF] outline-none focus:ring-2 focus:ring-[#1B7A43]/40"
                                 />
                             </div>
                         </div>
@@ -331,13 +331,13 @@ export default function MessagesPage() {
                                         onClick={() => openConversation(c.other_user_id)}
                                         className={cn(
                                             'w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-left transition-colors',
-                                            selectedUserId === c.other_user_id ? 'bg-white shadow-[0_1px_2px_rgba(17,24,39,0.06)]' : 'hover:bg-white/70'
+                                            selectedUserId === c.other_user_id ? 'bg-white ' : 'hover:bg-white/70'
                                         )}
                                     >
                                         <div className="relative shrink-0">
                                             <UserAvatar src={c.profile_image} name={`${c.first_name} ${c.last_name}`} size={40} />
                                             {Number(c.unread_count) > 0 && (
-                                                <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 bg-[#1B7A43] rounded-full text-[10px] text-white font-bold flex items-center justify-center ring-2 ring-[#F5F6F8]">
+                                                <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 bg-[#1B7A43] rounded-full text-[10px] text-white font-bold flex items-center justify-center">
                                                     {c.unread_count}
                                                 </span>
                                             )}
@@ -396,7 +396,7 @@ export default function MessagesPage() {
                                                 value={contactQuery}
                                                 onChange={e => setContactQuery(e.target.value)}
                                                 placeholder="İsim yaz ya da listeden seç…"
-                                                className="flex-1 min-w-0 h-9 bg-transparent text-[15px] placeholder:text-[#9CA3AF] border-0 outline-none"
+                                                className="flex-1 min-w-0 h-9 bg-transparent text-[15px] placeholder:text-[#9CA3AF] outline-none"
                                             />
                                         )}
                                     </div>
@@ -457,7 +457,7 @@ export default function MessagesPage() {
                                             value={messageText}
                                             onChange={e => setMessageText(e.target.value)}
                                             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendCompose(); } }}
-                                            className="flex-1 min-h-[40px] max-h-[140px] border-0 shadow-none focus-visible:ring-0 text-[14px] resize-none"
+                                            className="flex-1 min-h-[40px] max-h-[140px] shadow-none focus-visible:ring-0 text-[14px] resize-none"
                                             rows={1}
                                         />
                                         <Button
@@ -553,7 +553,7 @@ export default function MessagesPage() {
                                             value={messageText}
                                             onChange={e => setMessageText(e.target.value)}
                                             onKeyDown={handleKeyDown}
-                                            className="flex-1 min-h-[40px] max-h-[140px] border-0 shadow-none focus-visible:ring-0 text-[14px] resize-none"
+                                            className="flex-1 min-h-[40px] max-h-[140px] shadow-none focus-visible:ring-0 text-[14px] resize-none"
                                             rows={1}
                                         />
                                         <Button

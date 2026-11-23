@@ -525,7 +525,7 @@ export const EnhancedCourseDetail: React.FC = () => {
                   <CardContent>
                     <div className="space-y-4">
                       {sections?.map((section: Section) => (
-                        <div key={section.section_id} className="border rounded-lg">
+                        <div key={section.section_id} className="rounded-lg bg-[#F5F6F8]">
                           <button
                             className="w-full p-4 text-left flex items-center justify-between hover:bg-gray-50"
                             onClick={() => toggleSection(section.section_id)}
@@ -544,9 +544,9 @@ export const EnhancedCourseDetail: React.FC = () => {
                           </button>
                           
                           {expandedSections.has(section.section_id) && (
-                            <div className="border-t">
+                            <div className="">
                               {section.lessons.map((lesson: Lesson) => (
-                                <div key={lesson.lesson_id} className="p-4 border-b last:border-b-0 flex items-center justify-between hover:bg-gray-50">
+                                <div key={lesson.lesson_id} className="p-4 flex items-center justify-between hover:bg-gray-50">
                                   <div className="flex items-center space-x-3">
                                     {lesson.is_completed ? (
                                       <CheckCircle className="w-5 h-5 text-green-600" />
@@ -686,7 +686,7 @@ export const EnhancedCourseDetail: React.FC = () => {
                   <div className="space-y-4">
                     {/* Mock related courses */}
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="flex space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                      <div key={i} className="flex space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer bg-[#F5F6F8]">
                         <img 
                           src={`https://via.placeholder.com/80x60?text=Course${i}`}
                           alt={`Related Course ${i}`}

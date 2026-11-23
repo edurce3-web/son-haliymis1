@@ -158,7 +158,7 @@ const InstructorSettings = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <Card className="border-0 shadow-course">
+            <Card className="shadow-course">
               <CardContent className="p-6">
                 <div className="text-center mb-6">
                   <div className="relative inline-block">

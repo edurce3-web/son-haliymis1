@@ -216,7 +216,7 @@ const StudentLink: React.FC<{ compact?: boolean; className?: string }> = ({ comp
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40',
             compact
                 ? 'h-9 px-2.5 text-[13px] text-white hover:bg-white/10'
-                : 'h-9 px-3.5 text-[13.5px] text-[#00201d] bg-white shadow-[0_1px_2px_rgba(0,32,29,0.08)] hover:bg-[#ecfbf8]',
+                : 'h-9 px-3.5 text-[13.5px] text-[#00201d] bg-white  hover:bg-[#ecfbf8]',
             className
         )}
     >
@@ -648,7 +648,7 @@ const UserFooter: React.FC = () => {
             className="shrink-0 mx-3 mb-3 rounded-xl px-3 py-2.5 flex items-center gap-2.5 hover:bg-white/[0.05] transition-colors"
         >
             {user?.profile_image ? (
-                <img src={user.profile_image} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-[#9cf2e8]/40" />
+                <img src={user.profile_image} alt="" className="w-8 h-8 rounded-full object-cover" />
             ) : (
                 <span className="w-8 h-8 rounded-full bg-[#9cf2e8] text-[#00201d] text-[12px] font-bold flex items-center justify-center">
                     {initials}

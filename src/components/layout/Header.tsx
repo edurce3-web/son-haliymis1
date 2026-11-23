@@ -31,7 +31,7 @@ const HoverPopover = ({ children, content, width = 'w-80' }: { children: React.R
       {children}
       {open && (
         <div className={`absolute right-0 top-full pt-1.5 z-[100]`}>
-          <div className={`${width} bg-white rounded-2xl shadow-2xl border border-slate-100 animate-in fade-in slide-in-from-top-2 duration-150 overflow-hidden`} onMouseEnter={enter} onMouseLeave={leave}>
+          <div className={`${width} bg-[#F5F6F8] rounded-2xl shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150 overflow-hidden`} onMouseEnter={enter} onMouseLeave={leave}>
             {content}
           </div>
         </div>
@@ -215,7 +215,7 @@ export const Header = () => {
   // ─── Cart Popover Content ───
   const CartPopoverContent = () => (
     <div>
-      <div className="p-3 bg-brand-50 rounded-t-2xl border-b flex items-center justify-between">
+      <div className="p-3 bg-brand-50 rounded-t-2xl flex items-center justify-between">
         <p className="font-bold text-slate-800 text-sm">Sepetim ({cartCount})</p>
         {cartCount > 0 && <span className="text-xs font-bold text-brand-700">₺{cartTotal.toFixed(2)}</span>}
       </div>
@@ -250,7 +250,7 @@ export const Header = () => {
         )}
       </div>
       {cartItems.length > 0 && (
-        <div className="p-3 border-t bg-slate-50/50 rounded-b-2xl space-y-2">
+        <div className="p-3 bg-slate-50/50 rounded-b-2xl space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-slate-600">Toplam:</span>
             <span className="font-bold text-slate-900">₺{cartTotal.toFixed(2)}</span>
@@ -277,7 +277,7 @@ export const Header = () => {
         ) : (
           favorites.slice(0, 5).map((fav) => (
             <div key={fav.course_id}
-              className="flex gap-3 p-4 hover:bg-slate-50 transition-colors cursor-pointer border-b border-slate-100 last:border-0 relative group"
+              className="flex gap-3 p-4 hover:bg-slate-50 transition-colors cursor-pointer relative group"
               onClick={() => navigate(`/course/${fav.course_id}`)}>
               {/* Thumbnail */}
               <div className="w-16 h-16 bg-slate-100 rounded-lg flex-shrink-0 overflow-hidden">
@@ -297,7 +297,7 @@ export const Header = () => {
                 {/* Add to cart button */}
                 <button
                   onClick={(e) => handleAddToCart(fav.course_id, e)}
-                  className="mt-2 w-full py-1.5 text-xs font-bold text-brand-700 border border-brand-700 rounded-md hover:bg-brand-700 hover:text-white transition-all text-center"
+                  className="mt-2 w-full py-1.5 text-xs font-bold text-brand-700 rounded-md hover:bg-brand-700 hover:text-white transition-all text-center bg-[#F5F6F8]"
                 >
                   Sepete ekle
                 </button>
@@ -315,7 +315,7 @@ export const Header = () => {
         )}
       </div>
       {favorites.length > 0 && (
-        <div className="p-3 border-t">
+        <div className="p-3">
           <Button onClick={() => navigate('/favorites')} className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-md text-sm h-10 font-bold">
             İstek listesine git
           </Button>
@@ -327,7 +327,7 @@ export const Header = () => {
   // ─── Notifications Popover Content ───
   const NotificationsPopoverContent = () => (
     <div>
-      <div className="p-3 bg-brand-50 rounded-t-2xl border-b flex items-center justify-between">
+      <div className="p-3 bg-brand-50 rounded-t-2xl flex items-center justify-between">
         <p className="font-bold text-slate-800 text-sm">
           Bildirimler {unreadCount > 0 && <span className="ml-1 text-xs bg-red-500 text-white px-1.5 py-0.5 rounded-full">{unreadCount}</span>}
         </p>
@@ -367,8 +367,8 @@ export const Header = () => {
           ))
         )}
       </div>
-      <div className="p-3 border-t bg-slate-50/50 rounded-b-2xl">
-        <Button onClick={() => navigate('/notifications')} variant="outline" className="w-full rounded-xl text-sm h-9 border-brand-200 text-brand-700 hover:bg-brand-50">
+      <div className="p-3 bg-slate-50/50 rounded-b-2xl">
+        <Button onClick={() => navigate('/notifications')} variant="outline" className="w-full rounded-xl text-sm h-9 text-brand-700 hover:bg-brand-50">
           Tüm Bildirimleri Gör
         </Button>
       </div>
@@ -402,7 +402,7 @@ export const Header = () => {
       {isAuthenticated ? (
         <>
           <div className="flex items-center gap-3 p-3 bg-brand-50/70 rounded-xl mb-2">
-            <Avatar className="h-9 w-9 border-2 border-white shadow-sm shrink-0">
+            <Avatar className="h-9 w-9  shrink-0 bg-[#F5F6F8]">
               <AvatarImage src={user?.profile_image || ''} className="object-cover" />
               <AvatarFallback className="bg-brand-700 text-white font-bold text-xs">
                 {user?.first_name?.[0]}{user?.last_name?.[0]}
@@ -429,7 +429,7 @@ export const Header = () => {
             label="Sepetim"
             badge={cartCount > 0 && <span className="text-xs bg-brand-100 text-brand-800 px-1.5 py-0.5 rounded-full font-bold">{cartCount}</span>} />
 
-          <div className="h-px bg-slate-100 my-1.5" />
+          <div className="h-2" />
           <p className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">İletişim &amp; Bildirimler</p>
           <MenuRow onClick={() => navigate('/notifications')}
             label="Bildirimler"
@@ -439,7 +439,7 @@ export const Header = () => {
 
           {isInstructor && (
             <>
-              <div className="h-px bg-slate-100 my-1.5" />
+              <div className="h-2" />
               <MenuRow onClick={() => navigate('/instructor')} tone="primary"
                 label="Eğitmen Paneli" />
               <MenuRow onClick={() => navigate('/instructor/courses/create')}
@@ -447,7 +447,7 @@ export const Header = () => {
             </>
           )}
 
-          <div className="h-px bg-slate-100 my-1.5" />
+          <div className="h-2" />
           <MenuRow onClick={() => navigate('/home/settings/profile')}
             label="Ayarlar" />
           <MenuRow onClick={() => { logout(); navigate('/login'); }} tone="danger"
@@ -469,7 +469,7 @@ export const Header = () => {
   const learningActive = location.pathname.startsWith('/home/learning') || location.pathname === '/learning';
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-xl shadow-[0_1px_0_rgba(11,38,25,0.07)]">
+    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-xl ">
       <div className="mx-auto max-w-[1440px] flex h-16 lg:h-[72px] items-center gap-2 sm:gap-3 lg:gap-5 px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link to="/" className="shrink-0 flex items-center" aria-label="Edurce ana sayfa">
@@ -486,7 +486,7 @@ export const Header = () => {
             type="search"
             aria-label="Kurs ara"
             placeholder="Dilediğin kursu, konuyu ya da eğitmeni ara…"
-            className="w-full h-11 lg:h-12 pl-11 pr-4 rounded-full bg-[#F1F3F5] text-[14.5px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none ring-1 ring-inset ring-transparent hover:bg-[#E9ECEF] focus:bg-white focus:ring-2 focus:ring-brand-700/35 transition-[background-color,box-shadow]"
+            className="w-full h-11 lg:h-12 pl-11 pr-4 rounded-full bg-[#F1F3F5] text-[14.5px] text-[#111827] placeholder:text-[#9CA3AF] outline-none hover:bg-[#E9ECEF] focus:bg-white focus:ring-2 focus:ring-brand-700/35 transition-[background-color,box-shadow]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -524,7 +524,7 @@ export const Header = () => {
               >
                 <Bell className="w-[21px] h-[21px]" strokeWidth={1.9} />
                 {unreadCount > 0 && (
-                  <span aria-hidden className="absolute top-[9px] right-[10px] w-2.5 h-2.5 rounded-full bg-[#e5484d] ring-2 ring-white" />
+                  <span aria-hidden className="absolute top-[9px] right-[10px] w-2.5 h-2.5 rounded-full bg-[#e5484d]" />
                 )}
               </button>
             </HoverPopover>
@@ -539,7 +539,7 @@ export const Header = () => {
             >
               <ShoppingCart className="w-[21px] h-[21px]" strokeWidth={1.9} />
               {cartCount > 0 && (
-                <span className="absolute top-0.5 right-0 min-w-[19px] h-[19px] px-1 rounded-full bg-[#f5a524] text-[#3d2600] text-[11px] font-extrabold tabular-nums flex items-center justify-center ring-2 ring-white">
+                <span className="absolute top-0.5 right-0 min-w-[19px] h-[19px] px-1 rounded-full bg-[#f5a524] text-[#3d2600] text-[11px] font-extrabold tabular-nums flex items-center justify-center">
                   {cartCount > 9 ? '9+' : cartCount}
                 </span>
               )}
@@ -561,7 +561,7 @@ export const Header = () => {
                     {user.first_name?.[0]}{user.last_name?.[0]}
                   </AvatarFallback>
                 </Avatar>
-                <span aria-hidden className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-brand-500 ring-2 ring-white" />
+                <span aria-hidden className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-brand-500" />
               </button>
             </HoverPopover>
           ) : !loading && (
@@ -600,7 +600,7 @@ export const Header = () => {
             type="search"
             aria-label="Kurs ara"
             placeholder="Kurs, konu ya da eğitmen ara…"
-            className="w-full h-11 pl-11 pr-4 rounded-full bg-[#F1F3F5] text-[15px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none focus:bg-white focus:ring-2 focus:ring-brand-700/35"
+            className="w-full h-11 pl-11 pr-4 rounded-full bg-[#F1F3F5] text-[15px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:bg-white focus:ring-2 focus:ring-brand-700/35"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

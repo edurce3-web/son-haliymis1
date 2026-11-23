@@ -98,7 +98,7 @@ export const MobileHeader: React.FC = () => {
   ] : [];
 
   return (
-    <header className="lg:hidden sticky top-0 z-50 bg-background border-b">
+    <header className="lg:hidden sticky top-0 z-50 bg-background">
       <div className="flex items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
@@ -219,9 +219,9 @@ export const MobileHeader: React.FC = () => {
               <div className="flex-1 overflow-y-auto">
                 {/* User Info */}
                 {isAuthenticated && user && (
-                  <div className="px-4 py-3 border-b bg-muted/30">
+                  <div className="px-4 py-3 bg-muted/30">
                     <div className="flex items-center space-x-3">
-                      <Avatar className="ring-2 ring-primary/20">
+                      <Avatar className="">
                         <AvatarImage src={(user as any).profile_image || ''} className="object-cover" />
                         <AvatarFallback className="bg-primary text-primary-foreground">
                           {user.first_name?.[0]}{user.last_name?.[0]}
@@ -262,7 +262,7 @@ export const MobileHeader: React.FC = () => {
                 {/* User Menu Items */}
                 {isAuthenticated && userMenuItems.length > 0 && (
                   <>
-                    <div className="border-t my-2" />
+                    <div className="my-2" />
                     <div className="py-2">
                       {userMenuItems.map((item) => (
                         <Link
@@ -282,7 +282,7 @@ export const MobileHeader: React.FC = () => {
                 )}
 
                 {/* Auth Actions */}
-                <div className="border-t mt-2 pt-2">
+                <div className="mt-2 pt-2">
                   {isAuthenticated ? (
                     <button
                       onClick={handleLogout}

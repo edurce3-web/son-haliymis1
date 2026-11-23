@@ -46,7 +46,7 @@ const SettingsLayout: React.FC = () => {
             />
 
             {/* Sekme şeridi — bandın hemen altında, sayfayla aynı genişlikte */}
-            <div className="border-b border-slate-200 bg-white sticky top-0 z-20">
+            <div className="bg-white sticky top-0 z-20">
                 <div className="container mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px]">
                     <div ref={navRef} className="flex gap-1 overflow-x-auto scrollbar-none">
                         {SETTINGS_TABS.map(tab => {

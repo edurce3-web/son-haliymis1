@@ -307,7 +307,7 @@ export const CertificateSystem: React.FC = () => {
         </div>
 
         {certificate.blockchain_verified && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+          <div className="bg-green-50 rounded-lg p-3 mb-4">
             <div className="flex items-center space-x-2">
               <CheckCircle className="w-4 h-4 text-green-600" />
               <span className="text-sm font-medium text-green-800">Blockchain Doğrulandı</span>
@@ -496,7 +496,7 @@ export const CertificateSystem: React.FC = () => {
                 {templates?.slice(0, 3).map((template: CertificateTemplate) => (
                   <div
                     key={template.template_id}
-                    className="flex items-center space-x-3 p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                    className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer bg-[#F5F6F8]"
                     onClick={() => setSelectedTemplate(template.template_id)}
                   >
                     <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-brand-600 rounded"></div>
@@ -563,7 +563,7 @@ export const CertificateSystem: React.FC = () => {
                 </div>
 
                 {selectedCertificate.blockchain_verified && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="bg-green-50 rounded-lg p-4">
                     <h4 className="font-medium text-green-800 mb-2 flex items-center">
                       <Shield className="w-4 h-4 mr-2" />
                       Blockchain Doğrulaması

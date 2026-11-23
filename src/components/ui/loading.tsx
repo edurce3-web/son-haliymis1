@@ -47,14 +47,14 @@ const LoadingPulse = ({ size = 'md' }: { size: string }) => {
 
   return (
     <div className="relative flex items-center justify-center">
-      <div className={cn(ringSize, 'rounded-full border-4 border-primary/20')} />
+      <div className={cn(ringSize, 'rounded-full bg-[#F5F6F8]')} />
       <div className={cn(
         ringSize,
         'absolute rounded-full border-4 border-primary border-t-transparent animate-spin'
       )} />
       <div className={cn(
         ringSize,
-        'absolute rounded-full border-2 border-primary/40 animate-ping'
+        'absolute rounded-full animate-ping bg-[#F5F6F8]'
       )} />
     </div>
   );
@@ -188,7 +188,7 @@ export const Loading: React.FC<LoadingProps> = ({
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
         <div className="relative">
           <div className="absolute -inset-8 bg-gradient-to-r from-primary/10 to-brand-500/10 rounded-2xl blur-2xl animate-pulse" />
-          <div className="relative bg-background/90 backdrop-blur-sm border border-border/50 rounded-2xl p-8 shadow-2xl">
+          <div className="relative bg-background/90 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
             {content}
           </div>
         </div>

@@ -549,8 +549,8 @@ export const LiveClassRoom: React.FC<LiveClassRoomProps> = ({
 
         {/* Chat Sidebar */}
         {showChat && (
-          <div className="w-80 bg-white border-l flex flex-col">
-            <div className="p-4 border-b">
+          <div className="w-80 bg-white flex flex-col">
+            <div className="p-4">
               <h3 className="font-semibold">Sohbet</h3>
             </div>
             
@@ -578,7 +578,7 @@ export const LiveClassRoom: React.FC<LiveClassRoomProps> = ({
               </div>
             </ScrollArea>
             
-            <div className="p-4 border-t">
+            <div className="p-4">
               <div className="flex space-x-2">
                 <Input
                   value={newMessage}

@@ -149,7 +149,7 @@ const GuestHome: React.FC = () => {
                         {testimonials.slice(0, 6).map(t => (
                             <figure
                                 key={t.id}
-                                className="relative rounded-2xl border border-slate-200 bg-white p-6 flex flex-col hover:border-brand-200 hover:shadow-[0_20px_44px_-28px_rgba(15,23,42,0.25)] transition-all"
+                                className="relative rounded-2xl bg-[#F5F6F8] p-6 flex flex-col hover:shadow-[0_20px_44px_-28px_rgba(15,23,42,0.25)] transition-all"
                             >
                                 <Quote
                                     className="absolute top-5 right-5 w-8 h-8 text-brand-100"
@@ -172,7 +172,7 @@ const GuestHome: React.FC = () => {
                                     {t.comment}
                                 </blockquote>
 
-                                <figcaption className="flex items-center gap-3 mt-5 pt-5 border-t border-slate-100">
+                                <figcaption className="flex items-center gap-3 mt-5 pt-5">
                                     <img
                                         src={t.image}
                                         alt=""

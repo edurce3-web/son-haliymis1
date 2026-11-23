@@ -64,7 +64,7 @@ export const DashboardOverview: React.FC = () => {
                 </div>
 
                 {courses.isLoading ? (
-                    <div className="rounded-2xl bg-[#f4f6f6] divide-y-2 divide-white" aria-hidden>
+                    <div className="rounded-2xl bg-[#f4f6f6]" aria-hidden>
                         {[0, 1].map(i => (
                             <div key={i} className="flex items-center gap-4 p-4">
                                 <div className="w-24 h-[54px] rounded-md bg-[#eceeed] animate-pulse" />
@@ -90,7 +90,7 @@ export const DashboardOverview: React.FC = () => {
                         </Link>
                     </div>
                 ) : (
-                    <ul className="rounded-2xl bg-[#f4f6f6] divide-y-2 divide-white overflow-hidden">
+                    <ul className="rounded-2xl bg-[#f4f6f6] overflow-hidden">
                         {inProgress.slice(0, 2).map(c => <DeskRow key={c.id} course={c} />)}
                     </ul>
                 )}
@@ -172,7 +172,7 @@ export const DashboardOverview: React.FC = () => {
                             Cevap bekleyen soru yok.
                         </p>
                     ) : (
-                        <ul className="divide-y-2 divide-white border-y border-[#eceeed]">
+                        <ul className="bg-[#F5F6F8]">
                             {questions.questions.filter(q => !q.is_answered).slice(0, 3).map(q => (
                                 <li key={q.question_id}>
                                     <Link
@@ -250,7 +250,7 @@ const DeskRow: React.FC<{ course: WorkspaceCourse }> = ({ course }) => {
 const Figure: React.FC<{ label: string; value: string; note: string; to: string }> = ({ label, value, note, to }) => (
     <Link
         to={to}
-        className="group px-5 py-4 border-[#eceeed] [&:nth-child(odd)]:border-r lg:border-r lg:last:border-r-0 [&:nth-child(-n+2)]:border-b lg:[&:nth-child(-n+2)]:border-b-0 hover:bg-[#f7f8f8] transition-colors"
+        className="group px-5 py-4 hover:bg-[#f7f8f8] transition-colors"
     >
         <p className="text-[12.5px] font-medium text-[#5f7774]">{label}</p>
         <p className="text-[22px] font-bold tracking-tight tabular-nums mt-1 leading-none">{value}</p>

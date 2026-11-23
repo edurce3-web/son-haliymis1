@@ -344,7 +344,7 @@ export const EnhancedDashboard: React.FC = () => {
               <CardContent>
                 <div className="space-y-4">
                   {mockCourses.map((course) => (
-                    <div key={course.course_id} className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                    <div key={course.course_id} className="flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 cursor-pointer bg-[#F5F6F8]"
                          onClick={() => navigate(`/course/${course.course_id}/learn`)}>
                       <img 
                         src={course.image_url} 

@@ -31,7 +31,7 @@ export const CourseCarousel = ({ children, title, subtitle }: CourseCarouselProp
                 {/* Left arrow */}
                 <button
                     onClick={() => scroll('left')}
-                    className="absolute -left-5 top-20 z-[100] w-12 h-12 bg-white shadow-xl shadow-black/10 rounded-full flex items-center justify-center border border-slate-100 opacity-0 group-hover/carousel:opacity-100 transition-all duration-200 hover:bg-slate-50 hover:scale-110"
+                    className="absolute -left-5 top-20 z-[100] w-12 h-12 bg-[#F5F6F8] shadow-xl shadow-black/10 rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all duration-200 hover:bg-slate-50 hover:scale-110"
                 >
                     <ChevronLeft className="w-5 h-5 text-slate-700" />
                 </button>
@@ -39,7 +39,7 @@ export const CourseCarousel = ({ children, title, subtitle }: CourseCarouselProp
                 {/* Right arrow */}
                 <button
                     onClick={() => scroll('right')}
-                    className="absolute -right-5 top-20 z-[100] w-12 h-12 bg-white shadow-xl shadow-black/10 rounded-full flex items-center justify-center border border-slate-100 opacity-0 group-hover/carousel:opacity-100 transition-all duration-200 hover:bg-slate-50 hover:scale-110"
+                    className="absolute -right-5 top-20 z-[100] w-12 h-12 bg-[#F5F6F8] shadow-xl shadow-black/10 rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all duration-200 hover:bg-slate-50 hover:scale-110"
                 >
                     <ChevronRight className="w-5 h-5 text-slate-700" />
                 </button>

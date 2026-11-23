@@ -44,7 +44,7 @@ export const PlaceholderSection: React.FC<PlaceholderSectionProps> = () => {
         <div className="max-w-3xl">
             <PageHead title="Yardım" sub="Panelde en çok sorulanlar" />
 
-            <Panel as="section" className="divide-y-2 divide-white overflow-hidden">
+            <Panel as="section" className="overflow-hidden">
                 {FAQ.map((f, i) => {
                     const isOpen = open === i;
                     return (
@@ -77,7 +77,7 @@ export const PlaceholderSection: React.FC<PlaceholderSectionProps> = () => {
                     <p className="mt-1 text-[14px] text-[#1d4a45]">Bize yaz, sorunun ne olduğunu birlikte çözelim.</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                    <Link to="/help" className={cn(btn.outline, btn.md, 'ring-[#00201d]/15')}>Yardım merkezi</Link>
+                    <Link to="/help" className={cn(btn.outline, btn.md, '')}>Yardım merkezi</Link>
                     <Link to="/contact" className={cn(btn.dark, btn.md)}>Bize yaz</Link>
                 </div>
             </section>

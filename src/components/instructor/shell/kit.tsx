@@ -22,11 +22,11 @@ const base =
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45 focus-visible:ring-offset-2';
 
 export const btn = {
-    primary: cn(base, 'bg-[#9cf2e8] text-[#00201d] hover:bg-[#86e9dd] shadow-[0_1px_2px_rgba(0,64,58,0.18)]'),
+    primary: cn(base, 'bg-[#9cf2e8] text-[#00201d] hover:bg-[#86e9dd] '),
     dark: cn(base, 'bg-[#00201d] text-[#9cf2e8] hover:bg-[#03302b]'),
-    outline: cn(base, 'bg-white text-[#00201d] shadow-[0_1px_2px_rgba(0,32,29,0.1)] ring-1 ring-inset ring-[#00201d]/[0.06] hover:bg-[#ecfbf8]'),
+    outline: cn(base, 'bg-white text-[#00201d]  hover:bg-[#ecfbf8]'),
     ghost: cn(base, 'text-[#1d4a45] hover:bg-[#e8faf6] hover:text-[#00201d]'),
-    danger: cn(base, 'bg-white text-[#b42318] ring-1 ring-inset ring-[#f3c9c4] hover:bg-[#fff3f1]'),
+    danger: cn(base, 'bg-white text-[#b42318] hover:bg-[#fff3f1]'),
     md: 'h-10 px-4 text-[13.5px]',
     sm: 'h-8 px-3 text-[12.5px] rounded-lg',
     lg: 'h-11 px-5 text-[14px]',
@@ -35,8 +35,8 @@ export const btn = {
 /** Form alanları için tek sınıf: input, textarea, select. */
 export const field =
     'w-full rounded-xl bg-white px-3.5 text-[14px] text-[#00201d] placeholder:text-[#7c918e] ' +
-    'ring-1 ring-inset ring-[#00201d]/[0.09] border-0 outline-none transition-shadow duration-150 ' +
-    'hover:ring-[#00201d]/[0.16] focus:ring-2 focus:ring-[#005c55]/55 focus-visible:ring-2 focus-visible:ring-[#005c55]/55 ' +
+    'outline-none transition-shadow duration-150' +
+    'focus:ring-2 focus:ring-[#005c55]/55 focus-visible:ring-2 focus-visible:ring-[#005c55]/55' +
     'disabled:bg-[#f3f7f6] disabled:text-[#6b827f]';
 
 export const label = 'block text-[13px] font-bold text-[#00201d] mb-1.5';
@@ -91,7 +91,7 @@ export function Segments<T extends string>({
     className?: string;
 }) {
     return (
-        <div role="tablist" className={cn('inline-flex flex-wrap gap-1 p-1 rounded-2xl bg-white ring-1 ring-[#e3e6e5]', className)}>
+        <div role="tablist" className={cn('inline-flex flex-wrap gap-1 p-1 rounded-2xl bg-white', className)}>
             {items.map(it => {
                 const on = it.value === value;
                 return (

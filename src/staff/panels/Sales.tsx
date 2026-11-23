@@ -90,7 +90,7 @@ const Sales: React.FC = () => {
                     <h2 className="text-[13px] font-bold uppercase tracking-[0.1em] text-slate-500 mb-3">
                         En çok kazandıran kurslar
                     </h2>
-                    <Card className="divide-y divide-slate-100">
+                    <Card className="">
                         {data.top.map((t: any, i: number) => (
                             <div key={t.course_id} className="px-4 py-2.5 flex items-center gap-3">
                                 <span className="text-[12px] text-slate-400 tabular-nums w-5">{i + 1}</span>
@@ -114,7 +114,7 @@ const Sales: React.FC = () => {
                 {loading ? <Loading /> : data.items.length === 0 ? (
                     <Empty text="Bu durumda satış yok." />
                 ) : (
-                    <Card className="divide-y divide-slate-100">
+                    <Card className="">
                         {data.items.map((s: any) => (
                             <div key={s.order_item_id} className="px-4 py-3 flex items-start gap-4">
                                 <div className="min-w-0 flex-1">

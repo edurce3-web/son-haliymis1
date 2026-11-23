@@ -143,12 +143,12 @@ export const CourseHoverPanel: React.FC<{
                 style={pos.side === 'right' ? { left: -16 } : { right: -16 }}
             />
 
-            <div className="relative bg-white rounded-xl border border-[#D7F5E2] shadow-[0_24px_60px_-15px_rgba(19,27,46,0.32)] animate-in fade-in zoom-in-95 duration-150">
+            <div className="relative bg-[#F5F6F8] rounded-xl shadow-[0_24px_60px_-15px_rgba(19,27,46,0.32)] animate-in fade-in zoom-in-95 duration-150">
                 <span
                     aria-hidden
                     className={cn(
-                        'absolute top-8 w-3 h-3 bg-white border-[#D7F5E2] rotate-45',
-                        pos.side === 'right' ? '-left-[7px] border-l border-b' : '-right-[7px] border-r border-t'
+                        'absolute top-8 w-3 h-3 bg-white rotate-45',
+                        pos.side === 'right' ? '-left-[7px]' : '-right-[7px]'
                     )}
                 />
 

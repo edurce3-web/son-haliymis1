@@ -530,7 +530,7 @@ export const StudentLearningDashboard: React.FC = () => {
                   </SelectContent>
                 </Select>
 
-                <div className="flex items-center border rounded-lg">
+                <div className="flex items-center rounded-lg bg-[#F5F6F8]">
                   <Button
                     variant={viewMode === 'grid' ? 'default' : 'ghost'}
                     size="sm"
@@ -621,7 +621,7 @@ export const StudentLearningDashboard: React.FC = () => {
               <CardContent>
                 <div className="space-y-4">
                   {courses.map((course) => (
-                    <div key={course.course_id} className="flex items-center space-x-4 p-4 border rounded-lg">
+                    <div key={course.course_id} className="flex items-center space-x-4 p-4 rounded-lg bg-[#F5F6F8]">
                       <img
                         src={course.image_url}
                         alt={course.title}
@@ -661,7 +661,7 @@ export const StudentLearningDashboard: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {stats.achievements.map((achievement) => (
-                <Card key={achievement.achievement_id} className={`${getRarityColor(achievement.rarity)} border-2`}>
+                <Card key={achievement.achievement_id} className={`${getRarityColor(achievement.rarity)} bg-[#F5F6F8]`}>
                   <CardContent className="p-6 text-center">
                     <div className="text-4xl mb-4">{achievement.icon}</div>
                     <h3 className="font-bold text-lg mb-2">{achievement.title}</h3>

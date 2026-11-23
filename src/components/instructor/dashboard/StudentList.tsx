@@ -55,14 +55,14 @@ export const StudentList: React.FC = () => {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left min-w-[640px]">
                             <thead>
-                                <tr className="border-b-2 border-white text-[12.5px] font-bold text-[#4a6360]">
+                                <tr className="text-[12.5px] font-bold text-[#4a6360]">
                                     <th scope="col" className="px-5 sm:px-6 py-3.5 font-bold">Öğrenci</th>
                                     <th scope="col" className="px-4 py-3.5 font-bold text-right">Kurs</th>
                                     <th scope="col" className="px-4 py-3.5 font-bold w-[30%]">İlerleme</th>
                                     <th scope="col" className="px-5 sm:px-6 py-3.5 font-bold text-right">Son etkinlik</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-[#f0f1f1]">
+                            <tbody className="">
                                 {students.map(s => {
                                     const p = Math.max(0, Math.min(100, Number(s.progress) || 0));
                                     return (

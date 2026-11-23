@@ -119,7 +119,7 @@ const NotesTab: React.FC<{ courseId: number; lessonId: number | null }> = ({ cou
                     value={draft}
                     onChange={e => setDraft(e.target.value)}
                     onKeyDown={e => { if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); if (draft.trim()) addMutation.mutate(); } }}
-                    className="bg-slate-900 border-white/10 text-slate-200 min-h-[100px] rounded-xl resize-none focus-visible:ring-brand-500 placeholder:text-slate-600"
+                    className="bg-slate-900 text-slate-200 min-h-[100px] rounded-xl resize-none focus-visible:ring-brand-500 placeholder:text-slate-600"
                 />
                 <div className="flex justify-between items-center">
                     <span className="text-[10px] text-slate-600">Ctrl+Enter ile kaydet</span>
@@ -136,11 +136,11 @@ const NotesTab: React.FC<{ courseId: number; lessonId: number | null }> = ({ cou
             ) : (
                 <div className="space-y-3">
                     {notes.map((n: any) => (
-                        <div key={n.note_id} className="bg-slate-800/40 border border-white/5 rounded-xl p-4 group">
+                        <div key={n.note_id} className="bg-slate-800/40 rounded-xl p-4 group">
                             {editingId === n.note_id ? (
                                 <div className="space-y-2">
                                     <Textarea value={editText} onChange={e => setEditText(e.target.value)}
-                                        className="bg-slate-900 border-white/10 text-slate-200 min-h-[80px] rounded-xl resize-none text-sm" />
+                                        className="bg-slate-900 text-slate-200 min-h-[80px] rounded-xl resize-none text-sm" />
                                     <div className="flex gap-2 justify-end">
                                         <button onClick={() => setEditingId(null)} className="text-[11px] text-slate-500 hover:text-slate-300">İptal</button>
                                         <button onClick={() => updateMutation.mutate(n.note_id)} className="text-[11px] text-brand-400 hover:text-brand-300 font-bold">Kaydet</button>
@@ -201,7 +201,7 @@ const AnnouncementsTab: React.FC<{ courseId: number }> = ({ courseId }) => {
         <div className="space-y-3">
             <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2"><Megaphone className="w-5 h-5 text-brand-400" /> Duyurular</h3>
             {anns.map((a: any) => (
-                <div key={a.announcement_id} className="bg-slate-800/40 border border-white/5 rounded-xl overflow-hidden">
+                <div key={a.announcement_id} className="bg-slate-800/40 rounded-xl overflow-hidden">
                     <button onClick={() => setExpanded(expanded === a.announcement_id ? null : a.announcement_id)}
                         className="w-full text-left p-4 flex items-center gap-3 hover:bg-slate-800/60 transition-colors">
                         <div className="w-8 h-8 rounded-lg bg-brand-500/20 flex items-center justify-center shrink-0">
@@ -213,7 +213,7 @@ const AnnouncementsTab: React.FC<{ courseId: number }> = ({ courseId }) => {
                         </div>
                     </button>
                     {expanded === a.announcement_id && (
-                        <div className="px-4 pb-4 border-t border-white/5 pt-3">
+                        <div className="px-4 pb-4 pt-3">
                             <p className="text-sm text-slate-400 leading-relaxed whitespace-pre-wrap">{a.content}</p>
                         </div>
                     )}
@@ -492,10 +492,10 @@ const CoursePlayer = () => {
 
     if (error || !content) return (
         <div className="h-screen flex items-center justify-center bg-slate-950 text-rose-400 font-medium">
-            <div className="bg-slate-900/50 p-8 rounded-3xl border border-rose-500/20 backdrop-blur-md flex flex-col items-center gap-4">
+            <div className="bg-slate-900/50 p-8 rounded-3xl backdrop-blur-md flex flex-col items-center gap-4">
                 <X className="w-12 h-12 text-rose-500" />
                 <p>{(error as any)?.message || 'Kursa erişilemedi'}</p>
-                <Button variant="outline" onClick={() => navigate('/learning')} className="mt-4 border-slate-700 text-slate-300 hover:bg-slate-800 rounded-full">
+                <Button variant="outline" onClick={() => navigate('/learning')} className="mt-4 text-slate-300 hover:bg-slate-800 rounded-full">
                     Öğrenim Sayfasına Dön
                 </Button>
             </div>
@@ -549,7 +549,7 @@ const CoursePlayer = () => {
         <div className="flex flex-col min-h-screen bg-slate-950 text-slate-50 font-sans selection:bg-brand-500/30">
 
             {/* Minimalist Top Navigation */}
-            <header className="h-16 shrink-0 flex items-center justify-between px-6 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/5 sticky top-0">
+            <header className="h-16 shrink-0 flex items-center justify-between px-6 z-50 bg-slate-950/80 backdrop-blur-xl sticky top-0">
                 <div className="flex items-center gap-6">
                     <Button
                         variant="ghost"
@@ -569,7 +569,7 @@ const CoursePlayer = () => {
 
                 <div className="flex items-center gap-6">
                     {/* Modern Circular Progress */}
-                    <div className="hidden sm:flex items-center gap-4 bg-white/5 pl-4 pr-1.5 py-1.5 rounded-full border border-white/5">
+                    <div className="hidden sm:flex items-center gap-4 bg-white/5 pl-4 pr-1.5 py-1.5 rounded-full">
                         <div className="flex flex-col items-end">
                             <span className="text-[10px] text-slate-400 font-medium">İlerleme</span>
                             <span className="text-xs font-bold text-slate-200">{completedCount} / {totalCount}</span>
@@ -593,12 +593,12 @@ const CoursePlayer = () => {
                                 <Button
                                     size="sm"
                                     variant="outline"
-                                    className="hidden md:flex bg-white/5 border-white/5 hover:bg-white/10 text-white rounded-full font-medium px-5"
+                                    className="hidden md:flex bg-white/5 hover:bg-white/10 text-white rounded-full font-medium px-5"
                                 >
                                     <Star className="w-3.5 h-3.5 mr-2" /> Değerlendir
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="bg-slate-900 border-white/10 text-white sm:max-w-[425px]">
+                            <DialogContent className="bg-slate-900 text-white sm:max-w-[425px]">
                                 <DialogHeader>
                                     <DialogTitle className="text-xl">Kursu Değerlendir</DialogTitle>
                                 </DialogHeader>
@@ -626,7 +626,7 @@ const CoursePlayer = () => {
                                         <span className="text-sm text-slate-400">Düşünceleriniz (İsteğe Bağlı)</span>
                                         <Textarea
                                             placeholder="Kurs hakkında ne düşünüyorsunuz?"
-                                            className="bg-slate-950 border-white/10 min-h-[100px] text-slate-200 resize-none focus-visible:ring-brand-500"
+                                            className="bg-slate-950 min-h-[100px] text-slate-200 resize-none focus-visible:ring-brand-500"
                                             value={reviewComment}
                                             onChange={(e) => setReviewComment(e.target.value)}
                                         />
@@ -648,7 +648,7 @@ const CoursePlayer = () => {
                             <Button
                                 size="sm"
                                 onClick={() => navigate('/home/certificates')}
-                                className="hidden md:flex bg-emerald-500 hover:bg-emerald-600 text-white rounded-full font-medium px-5 shadow-lg shadow-emerald-500/20 border-0"
+                                className="hidden md:flex bg-emerald-500 hover:bg-emerald-600 text-white rounded-full font-medium px-5 shadow-lg shadow-emerald-500/20"
                             >
                                 <Award className="w-3.5 h-3.5 mr-2" /> Sertifikayı Gör
                             </Button>
@@ -657,7 +657,7 @@ const CoursePlayer = () => {
                                 size="sm"
                                 onClick={handleClaimCertificate}
                                 disabled={isClaimingCertificate}
-                                className="hidden md:flex bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white rounded-full font-medium px-5 shadow-lg shadow-brand-500/20 border-0 disabled:opacity-50"
+                                className="hidden md:flex bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white rounded-full font-medium px-5 shadow-lg shadow-brand-500/20 disabled:opacity-50"
                             >
                                 {isClaimingCertificate ? (
                                     <Loader2 className="w-3.5 h-3.5 animate-spin mr-2" />
@@ -691,7 +691,7 @@ const CoursePlayer = () => {
                     isSidebarOpen ? "lg:mr-0" : "mr-0"
                 )}>
                     {/* Cinematic Video Container */}
-                    <div className="w-full bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/10 relative group shrink-0 aspect-video">
+                    <div className="w-full bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl relative group shrink-0 aspect-video">
                         {activeLesson && videoSrc ? (
                             <HLSVideoPlayer
                                 key={activeLesson.lesson_id}
@@ -702,7 +702,7 @@ const CoursePlayer = () => {
                                 title={activeLesson.title}
                             />
                         ) : (
-                            <div className="absolute inset-0 flex items-center justify-center flex-col gap-6 text-white bg-gradient-to-br from-slate-900 via-brand-950 to-slate-900 border border-white/5 rounded-3xl">
+                            <div className="absolute inset-0 flex items-center justify-center flex-col gap-6 text-white bg-gradient-to-br from-slate-900 via-brand-950 to-slate-900 rounded-3xl">
                                 <div className="relative">
                                     <div className="w-24 h-24 rounded-full bg-brand-500/20 flex items-center justify-center animate-pulse"></div>
                                     <MonitorPlay className="w-10 h-10 text-brand-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
@@ -726,7 +726,7 @@ const CoursePlayer = () => {
                             <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                                 <div className="space-y-3 flex-1">
                                     <div className="flex items-center gap-3">
-                                        <Badge variant="outline" className="bg-brand-500/10 text-brand-400 border-brand-500/20 px-3 py-1 rounded-full font-semibold">
+                                        <Badge variant="outline" className="bg-brand-500/10 text-brand-400 px-3 py-1 rounded-full font-semibold">
                                             Ders {activeLesson?.sort_order || '-'}
                                         </Badge>
                                         <span className="text-sm font-medium text-slate-400 flex items-center gap-1.5">
@@ -745,7 +745,7 @@ const CoursePlayer = () => {
                                     className={cn(
                                         "rounded-full h-12 px-8 font-semibold transition-all duration-300 shadow-xl",
                                         activeLesson?.is_completed
-                                            ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30"
+                                            ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
                                             : "bg-white text-slate-900 hover:bg-slate-200"
                                     )}
                                 >
@@ -763,7 +763,7 @@ const CoursePlayer = () => {
                                     {prevLesson ? (
                                         <button
                                             onClick={() => setActiveLessonId(prevLesson.lesson_id)}
-                                            className="group flex items-center gap-3 p-4 rounded-2xl bg-slate-900/40 border border-white/5 hover:border-brand-500/30 hover:bg-slate-900/70 transition-colors text-left"
+                                            className="group flex items-center gap-3 p-4 rounded-2xl bg-slate-900/40 hover:bg-slate-900/70 transition-colors text-left"
                                         >
                                             <ArrowLeft className="w-4 h-4 text-slate-500 group-hover:text-brand-400 shrink-0 transition-colors" />
                                             <div className="min-w-0">
@@ -780,7 +780,7 @@ const CoursePlayer = () => {
                                     {nextLesson && (
                                         <button
                                             onClick={() => setActiveLessonId(nextLesson.lesson_id)}
-                                            className="group flex items-center justify-end gap-3 p-4 rounded-2xl bg-slate-900/40 border border-white/5 hover:border-brand-500/30 hover:bg-slate-900/70 transition-colors text-right"
+                                            className="group flex items-center justify-end gap-3 p-4 rounded-2xl bg-slate-900/40 hover:bg-slate-900/70 transition-colors text-right"
                                         >
                                             <div className="min-w-0">
                                                 <p className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">
@@ -804,7 +804,7 @@ const CoursePlayer = () => {
                                 sanıp destek hattına yazıyor.
                             */}
                             {isStaffGrant && (
-                                <div className="mb-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-5 py-4">
+                                <div className="mb-6 rounded-2xl bg-amber-500/10 px-5 py-4">
                                     <p className="text-[13.5px] font-semibold text-amber-300">
                                         Bu kurs size özel açıldı
                                     </p>
@@ -817,7 +817,7 @@ const CoursePlayer = () => {
 
                             {/* Pill Tabs */}
                             <Tabs defaultValue="overview" className="w-full">
-                                <TabsList className="w-full justify-start h-auto p-1 bg-slate-900/50 backdrop-blur-sm border border-white/5 rounded-2xl mb-6 inline-flex overflow-x-auto no-scrollbar">
+                                <TabsList className="w-full justify-start h-auto p-1 bg-slate-900/50 backdrop-blur-sm rounded-2xl mb-6 inline-flex overflow-x-auto no-scrollbar">
                                     <TabsTrigger value="overview" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Genel Bakış</TabsTrigger>
                                     {!isStaffGrant && (
                                         <TabsTrigger value="qa" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Soru &amp; Cevap</TabsTrigger>
@@ -827,7 +827,7 @@ const CoursePlayer = () => {
                                     <TabsTrigger value="announcements" className="rounded-xl px-6 py-3 font-medium text-sm text-slate-400 data-[state=active]:bg-brand-500 data-[state=active]:text-white transition-all">Duyurular</TabsTrigger>
                                 </TabsList>
 
-                                <div className="bg-slate-900/40 border border-white/5 rounded-3xl p-6 md:p-8 backdrop-blur-md">
+                                <div className="bg-slate-900/40 rounded-3xl p-6 md:p-8 backdrop-blur-md">
                                     <TabsContent value="overview" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
                                         <div className="prose prose-invert max-w-none text-slate-300 leading-relaxed">
                                             {activeLesson?.description ? (
@@ -862,7 +862,7 @@ const CoursePlayer = () => {
                                                     </Button>
                                                 </div>
                                             ) : (
-                                                <div className="bg-slate-800/50 rounded-2xl p-5 border border-white/5 space-y-4">
+                                                <div className="bg-slate-800/50 rounded-2xl p-5 space-y-4">
                                                     <div className="flex items-center justify-between">
                                                         <h4 className="font-bold text-slate-200">Yeni Soru</h4>
                                                         <button onClick={() => setShowQuestionForm(false)} className="text-slate-400 hover:text-white">
@@ -873,13 +873,13 @@ const CoursePlayer = () => {
                                                         placeholder="Sorunuzun başlığı"
                                                         value={questionTitle}
                                                         onChange={(e) => setQuestionTitle(e.target.value)}
-                                                        className="bg-slate-900 border-white/10 text-slate-200 h-11 rounded-xl focus-visible:ring-brand-500"
+                                                        className="bg-slate-900 text-slate-200 h-11 rounded-xl focus-visible:ring-brand-500"
                                                     />
                                                     <Textarea
                                                         placeholder="Sorunuzu detaylı açıklayın..."
                                                         value={questionContent}
                                                         onChange={(e) => setQuestionContent(e.target.value)}
-                                                        className="bg-slate-900 border-white/10 min-h-[100px] text-slate-200 rounded-xl resize-none focus-visible:ring-brand-500"
+                                                        className="bg-slate-900 min-h-[100px] text-slate-200 rounded-xl resize-none focus-visible:ring-brand-500"
                                                     />
                                                     <div className="flex justify-end gap-3">
                                                         <Button variant="ghost" onClick={() => setShowQuestionForm(false)} className="text-slate-400 rounded-full">İptal</Button>
@@ -899,7 +899,7 @@ const CoursePlayer = () => {
                                             {questionsData?.questions?.length > 0 ? (
                                                 <div className="space-y-4">
                                                     {questionsData.questions.map((q: any) => (
-                                                        <div key={q.question_id} className="bg-slate-800/30 rounded-2xl p-5 border border-white/5 space-y-4">
+                                                        <div key={q.question_id} className="bg-slate-800/30 rounded-2xl p-5 space-y-4">
                                                             {/* Soru Başlığı */}
                                                             <div className="flex items-start gap-3">
                                                                 <div className="w-9 h-9 rounded-full bg-brand-500/20 flex items-center justify-center shrink-0 mt-0.5">
@@ -908,7 +908,7 @@ const CoursePlayer = () => {
                                                                 <div className="flex-1 min-w-0">
                                                                     <div className="flex items-center gap-2 mb-1">
                                                                         <span className="text-sm font-bold text-slate-200">{q.first_name} {q.last_name}</span>
-                                                                        {q.is_answered && <Badge className="bg-emerald-500/20 text-emerald-400 border-none text-[10px] px-2">Cevaplandı</Badge>}
+                                                                        {q.is_answered && <Badge className="bg-emerald-500/20 text-emerald-400 text-[10px] px-2">Cevaplandı</Badge>}
                                                                     </div>
                                                                     <h4 className="text-base font-bold text-white mb-1">{q.title}</h4>
                                                                     <p className="text-sm text-slate-400 leading-relaxed">{q.content}</p>
@@ -923,13 +923,13 @@ const CoursePlayer = () => {
 
                                                             {/* Cevaplar */}
                                                             {q.answers?.length > 0 && (
-                                                                <div className="ml-6 pl-6 border-l-2 border-white/5 space-y-3">
+                                                                <div className="ml-6 pl-6 space-y-3">
                                                                     {q.answers.map((a: any) => (
-                                                                        <div key={a.answer_id} className={cn("p-3 rounded-xl", a.is_instructor_answer ? "bg-brand-500/10 border border-brand-500/20" : "bg-slate-900/50")}>
+                                                                        <div key={a.answer_id} className={cn("p-3 rounded-xl", a.is_instructor_answer ? "bg-brand-500/10" : "bg-slate-900/50")}>
                                                                             <div className="flex items-center gap-2 mb-1">
                                                                                 <span className="text-sm font-bold text-slate-200">{a.first_name} {a.last_name}</span>
                                                                                 {a.is_instructor_answer && (
-                                                                                    <Badge className="bg-brand-500/20 text-brand-300 border-none text-[10px] px-2">
+                                                                                    <Badge className="bg-brand-500/20 text-brand-300 text-[10px] px-2">
                                                                                         <BadgeCheck className="w-3 h-3 mr-1" /> Eğitmen
                                                                                     </Badge>
                                                                                 )}
@@ -943,13 +943,13 @@ const CoursePlayer = () => {
 
                                                             {/* Cevap Yaz */}
                                                             {activeQuestionId === q.question_id ? (
-                                                                <div className="ml-6 pl-6 border-l-2 border-brand-500/30">
+                                                                <div className="ml-6 pl-6">
                                                                     <div className="flex gap-2">
                                                                         <Textarea
                                                                             placeholder="Cevabınızı yazın..."
                                                                             value={answerContent}
                                                                             onChange={(e) => setAnswerContent(e.target.value)}
-                                                                            className="bg-slate-900 border-white/10 min-h-[60px] text-slate-200 rounded-xl resize-none text-sm flex-1"
+                                                                            className="bg-slate-900 min-h-[60px] text-slate-200 rounded-xl resize-none text-sm flex-1"
                                                                         />
                                                                     </div>
                                                                     <div className="flex justify-end gap-2 mt-2">
@@ -978,7 +978,7 @@ const CoursePlayer = () => {
                                             ) : (
                                                 !showQuestionForm && (
                                                     <div className="text-center py-12">
-                                                        <div className="w-14 h-14 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4 border border-white/5">
+                                                        <div className="w-14 h-14 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4">
                                                             <MessageSquare className="w-7 h-7 text-brand-400/50" />
                                                         </div>
                                                         <p className="text-slate-500 text-sm">Henüz soru sorulmamış. İlk soruyu siz sorun!</p>
@@ -1011,9 +1011,9 @@ const CoursePlayer = () => {
                                                             download={r.name || true}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="flex items-center gap-4 p-4 bg-slate-800/30 hover:bg-slate-800/60 rounded-xl border border-white/5 hover:border-brand-500/20 transition-all group"
+                                                            className="flex items-center gap-4 p-4 bg-slate-800/30 hover:bg-slate-800/60 rounded-xl transition-all group"
                                                         >
-                                                            <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-slate-300 border border-white/5 group-hover:border-brand-500/30">
+                                                            <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-slate-300">
                                                                 {icon}
                                                             </div>
                                                             <div className="flex-1 min-w-0">
@@ -1030,7 +1030,7 @@ const CoursePlayer = () => {
                                             </div>
                                         ) : (
                                             <div className="text-center py-16">
-                                                <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-6 border border-white/5">
+                                                <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-6">
                                                     <Award className="w-8 h-8 text-emerald-400/50" />
                                                 </div>
                                                 <h3 className="text-lg font-semibold text-slate-200 mb-2">Ek Kaynaklar</h3>
@@ -1052,11 +1052,11 @@ const CoursePlayer = () => {
 
                 {/* Modern Floating Sidebar / Playlist */}
                 <aside className={cn(
-                    "bg-slate-900/80 backdrop-blur-2xl border border-white/10 rounded-3xl transition-all duration-500 flex flex-col overflow-hidden z-40 fixed lg:sticky right-2 md:right-4 lg:right-0 top-20 lg:top-[88px] bottom-4 lg:bottom-auto lg:h-[calc(100vh-112px)] shadow-2xl lg:shadow-none",
-                    isSidebarOpen ? "w-[320px] md:w-[380px] translate-x-0 opacity-100" : "w-0 translate-x-[110%] lg:translate-x-0 lg:w-0 opacity-0 lg:border-none lg:mx-0"
+                    "bg-slate-900/80 backdrop-blur-2xl rounded-3xl transition-all duration-500 flex flex-col overflow-hidden z-40 fixed lg:sticky right-2 md:right-4 lg:right-0 top-20 lg:top-[88px] bottom-4 lg:bottom-auto lg:h-[calc(100vh-112px)] shadow-2xl lg:shadow-none",
+                    isSidebarOpen ? "w-[320px] md:w-[380px] translate-x-0 opacity-100" : "w-0 translate-x-[110%] lg:translate-x-0 lg:w-0 opacity-0 lg:mx-0"
                 )}>
                     {/* Sidebar Header */}
-                    <div className="p-6 shrink-0 border-b border-white/5 bg-gradient-to-b from-slate-800/50 to-transparent">
+                    <div className="p-6 shrink-0 bg-gradient-to-b from-slate-800/50 to-transparent">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="font-bold text-lg text-slate-100 flex items-center gap-2">
                                 <GraduationCap className="w-5 h-5 text-brand-400" />
@@ -1080,11 +1080,11 @@ const CoursePlayer = () => {
                     <ScrollArea className="flex-1 px-4 py-2">
                         <Accordion type="multiple" defaultValue={content.structure.map((_: any, i: number) => `item-${i}`)} className="w-full space-y-3 pb-6">
                             {content.structure.map((section: any, idx: number) => (
-                                <AccordionItem key={section.section_id} value={`item-${idx}`} className="border-none bg-slate-950/40 rounded-2xl overflow-hidden">
+                                <AccordionItem key={section.section_id} value={`item-${idx}`} className="bg-slate-950/40 rounded-2xl overflow-hidden">
                                     <AccordionTrigger className="hover:no-underline px-5 py-4 hover:bg-slate-800/50 transition-colors group">
                                         <div className="flex flex-col items-start gap-1">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <Badge variant="secondary" className="bg-brand-500/10 text-brand-300 border-none px-2 py-0 text-[9px] uppercase tracking-widest rounded-full">
+                                                <Badge variant="secondary" className="bg-brand-500/10 text-brand-300 px-2 py-0 text-[9px] uppercase tracking-widest rounded-full">
                                                     Bölüm {idx + 1}
                                                 </Badge>
                                             </div>
@@ -1114,13 +1114,13 @@ const CoursePlayer = () => {
                                                         className={cn(
                                                             "flex gap-3 p-3 rounded-xl transition-all text-left relative group overflow-hidden",
                                                             isActive
-                                                                ? "bg-brand-500/10 border border-brand-500/20 shadow-inner"
-                                                                : "hover:bg-slate-800/50 border border-transparent"
+                                                                ? "bg-brand-500/10 shadow-inner"
+                                                                : "hover:bg-slate-800/50 bg-[#F5F6F8]"
                                                         )}
                                                     >
                                                         {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-500 rounded-l-xl"></div>}
 
-                                                        <div className="mt-0.5 shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-slate-900 border border-white/5 group-hover:border-brand-500/30 transition-colors">
+                                                        <div className="mt-0.5 shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-slate-900 transition-colors">
                                                             {lesson.is_completed ? (
                                                                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                                                             ) : isActive ? (

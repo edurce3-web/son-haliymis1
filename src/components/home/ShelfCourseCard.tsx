@@ -156,9 +156,9 @@ export const ShelfCourseCard: React.FC<{
                 onMouseEnter={hover.onEnter}
                 onMouseLeave={hover.onLeave}
             >
-            <article className="group relative h-full flex flex-col font-jakarta bg-white rounded-lg overflow-hidden shadow-[0_1px_3px_rgba(19,27,46,0.08)] hover:shadow-[0_20px_40px_-12px_rgba(19,27,46,0.22)] transition-all duration-300">
+            <article className="group relative h-full flex flex-col font-jakarta">
 
-                <Link to={url} className="relative block aspect-video overflow-hidden bg-[#EEFBF3] shrink-0">
+                <Link to={url} className="relative block aspect-video overflow-hidden rounded-2xl bg-[#EEFBF3] shrink-0 transition-shadow duration-300 group-hover:shadow-[0_18px_36px_-16px_rgba(19,27,46,0.35)]">
                     <img
                         src={img}
                         alt={course.title}
@@ -175,7 +175,7 @@ export const ShelfCourseCard: React.FC<{
                     {shown && (
                         <span
                             className={cn(
-                                'absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[11px] leading-[14px] font-extrabold uppercase tracking-wider shadow-sm',
+                                'absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[11px] leading-[14px] font-extrabold uppercase tracking-wider ',
                                 BADGE_TONES[shown.tone]
                             )}
                         >
@@ -189,7 +189,7 @@ export const ShelfCourseCard: React.FC<{
                             aria-label={favorited ? 'İstek listesinden çıkar' : 'İstek listesine ekle'}
                             onClick={e => { stop(e); favMutation.mutate(course.id); }}
                             className={cn(
-                                'absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center shadow-sm transition-opacity',
+                                'absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center  transition-opacity',
                                 favorited
                                     ? 'opacity-100 text-[#ba1a1a]'
                                     : 'opacity-0 group-hover:opacity-100 text-[#3e4947] hover:text-[#ba1a1a]'
@@ -200,7 +200,7 @@ export const ShelfCourseCard: React.FC<{
                     )}
                 </Link>
 
-                <div className="flex flex-col flex-1 p-3">
+                <div className="flex flex-col flex-1 px-1 pt-3">
                     <h3
                         className={cn(
                             'font-bold text-[#1B7A43] line-clamp-2 group-hover:text-[#00443f] transition-colors',

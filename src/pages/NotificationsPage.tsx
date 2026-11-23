@@ -242,7 +242,7 @@ const NotificationsPage = () => {
                                 placeholder="Bildirimlerde ara…"
                                 value={query}
                                 onChange={e => setQuery(e.target.value)}
-                                className="w-full h-9 pl-9 pr-3 rounded-xl border-0 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                                className="w-full h-9 pl-9 pr-3 rounded-xl bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                             />
                         </div>
                         <div className="flex flex-wrap gap-1.5">
@@ -307,7 +307,7 @@ const NotificationsPage = () => {
                                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2 px-1">
                                     {group.label}
                                 </p>
-                                <div className="bg-[#F5F6F8] rounded-[22px] divide-y-2 divide-white overflow-hidden">
+                                <div className="bg-[#F5F6F8] rounded-[22px] overflow-hidden">
                                     {group.items.map(n => {
                                         const meta = metaFor(n.type);
                                         const Icon = meta.icon;

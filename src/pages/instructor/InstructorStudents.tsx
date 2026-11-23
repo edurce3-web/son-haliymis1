@@ -240,7 +240,7 @@ const InstructorStudents = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
               {/* Conversations List */}
               <div className="lg:col-span-1">
-                <Card className="h-full border-0 shadow-course">
+                <Card className="h-full shadow-course">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center space-x-2">
                       <MessageSquare className="w-5 h-5" />
@@ -260,9 +260,9 @@ const InstructorStudents = () => {
                         <div
                           key={conversation.id}
                           onClick={() => setActiveChat(conversation.id)}
-                          className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors border-l-4 ${activeChat === conversation.id
-                            ? "bg-primary/5 border-primary"
-                            : "border-transparent"
+                          className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${activeChat === conversation.id
+                            ? "bg-primary/5"
+                            : ""
                             }`}
                         >
                           <div className="flex items-center space-x-3">
@@ -274,7 +274,7 @@ const InstructorStudents = () => {
                                 </AvatarFallback>
                               </Avatar>
                               {conversation.status === "online" && (
-                                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-success rounded-full border-2 border-white"></div>
+                                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-success rounded-full"></div>
                               )}
                             </div>
 
@@ -312,9 +312,9 @@ const InstructorStudents = () => {
               {/* Chat Area */}
               <div className="lg:col-span-2">
                 {activeChat ? (
-                  <Card className="h-full border-0 shadow-course flex flex-col">
+                  <Card className="h-full shadow-course flex flex-col">
                     {/* Chat Header */}
-                    <CardHeader className="border-b">
+                    <CardHeader className="">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                           <Avatar className="w-10 h-10">
@@ -368,7 +368,7 @@ const InstructorStudents = () => {
                     </CardContent>
 
                     {/* Message Input */}
-                    <div className="border-t p-4">
+                    <div className="p-4">
                       <div className="flex space-x-2">
                         <Textarea
                           placeholder="Mesajınızı yazın..."
@@ -395,7 +395,7 @@ const InstructorStudents = () => {
                     </div>
                   </Card>
                 ) : (
-                  <Card className="h-full border-0 shadow-course flex items-center justify-center">
+                  <Card className="h-full shadow-course flex items-center justify-center">
                     <div className="text-center text-muted-foreground">
                       <MessageSquare className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
                       <h3 className="text-lg font-semibold mb-2">Bir konuşma seçin</h3>
@@ -421,7 +421,7 @@ const InstructorStudents = () => {
             />
 
             {/* Students List */}
-            <Card className="border-0 shadow-course">
+            <Card className="shadow-course">
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle>Öğrenci Listesi</CardTitle>

@@ -55,17 +55,17 @@ export const AddedToCartModal = ({ isOpen, onClose, course }: AddedToCartModalPr
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-3xl p-0 overflow-hidden bg-white border border-slate-200 shadow-2xl rounded-2xl">
+            <DialogContent className="max-w-3xl p-0 overflow-hidden bg-[#F5F6F8] shadow-2xl rounded-2xl">
                 <DialogTitle className="sr-only">Kurs sepete eklendi</DialogTitle>
 
                 <div className="flex flex-col md:flex-row">
                     {/* Eklenen kurs */}
-                    <div className="md:w-[22rem] shrink-0 p-7 md:border-r border-slate-100">
+                    <div className="md:w-[22rem] shrink-0 p-7">
                         <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand-700 mb-4">
                             Sepete eklendi
                         </p>
 
-                        <div className="rounded-lg overflow-hidden border border-slate-200 bg-slate-100 aspect-[16/10] mb-4">
+                        <div className="rounded-lg overflow-hidden bg-slate-100 aspect-[16/10] mb-4">
                             <img
                                 src={getCourseImageUrl(course.id, course.image_path || course.thumbnail)}
                                 alt={course.title}
@@ -91,7 +91,7 @@ export const AddedToCartModal = ({ isOpen, onClose, course }: AddedToCartModalPr
                             <Button
                                 variant="outline"
                                 onClick={onClose}
-                                className="w-full h-11 rounded-lg border-slate-300 hover:border-brand-400 hover:text-brand-800 text-[15px] font-semibold"
+                                className="w-full h-11 rounded-lg hover:text-brand-800 text-[15px] font-semibold"
                             >
                                 Alışverişe devam et
                             </Button>
@@ -127,7 +127,7 @@ export const AddedToCartModal = ({ isOpen, onClose, course }: AddedToCartModalPr
                                         <button
                                             key={recId}
                                             onClick={() => { onClose(); navigate(`/course/${recId}`); }}
-                                            className="w-full flex gap-3.5 p-3 text-left rounded-lg bg-white border border-transparent hover:border-brand-200 hover:shadow-sm transition-all group"
+                                            className="w-full flex gap-3.5 p-3 text-left rounded-lg bg-[#F5F6F8] hover:shadow-sm transition-all group"
                                         >
                                             <div className="w-24 h-16 shrink-0 overflow-hidden bg-slate-100 rounded-md">
                                                 <img

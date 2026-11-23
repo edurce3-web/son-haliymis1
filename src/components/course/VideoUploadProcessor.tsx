@@ -280,10 +280,10 @@ export default function VideoUploadProcessor() {
         <CardContent>
           <div
             {...getRootProps()}
-            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
+            className={` rounded-lg p-8 text-center transition-colors cursor-pointer ${
               isDragActive 
-                ? 'border-primary bg-primary/5' 
-                : 'border-border hover:border-primary/50'
+                ? ' bg-primary/5' 
+                : ''
             }`}
           >
             <input {...getInputProps()} />
@@ -357,7 +357,7 @@ export default function VideoUploadProcessor() {
               <Label htmlFor="compression">Sıkıştırma Seviyesi</Label>
               <select
                 id="compression"
-                className="w-full p-2 border border-border rounded-md mt-1"
+                className="w-full p-2 rounded-md mt-1 bg-[#F5F6F8]"
                 value={settings.compressionLevel}
                 onChange={(e) => 
                   setSettings(prev => ({ ...prev, compressionLevel: e.target.value as any }))
@@ -407,7 +407,7 @@ export default function VideoUploadProcessor() {
           <CardContent>
             <div className="space-y-4">
               {videos.map((video) => (
-                <div key={video.id} className="border rounded-lg p-4">
+                <div key={video.id} className="rounded-lg p-4 bg-[#F5F6F8]">
                   <div className="flex items-start gap-4">
                     {/* Thumbnail */}
                     <div className="w-32 h-18 bg-muted rounded-lg flex items-center justify-center overflow-hidden">

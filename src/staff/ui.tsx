@@ -9,11 +9,11 @@ import React, { useState } from 'react';
  */
 
 export const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-    <div className={`rounded-lg border border-slate-200 bg-white ${className}`}>{children}</div>
+    <div className={`rounded-lg bg-[#F5F6F8] ${className}`}>{children}</div>
 );
 
 export const Empty: React.FC<{ text: string }> = ({ text }) => (
-    <div className="rounded-lg border border-dashed border-slate-300 bg-white py-14 text-center">
+    <div className="rounded-lg bg-[#F5F6F8] py-14 text-center">
         <p className="text-[14px] text-slate-500">{text}</p>
     </div>
 );
@@ -23,7 +23,7 @@ export const Loading: React.FC = () => (
 );
 
 export const ErrorBox: React.FC<{ message: string }> = ({ message }) => (
-    <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+    <div className="rounded-lg bg-red-50 px-4 py-3">
         <p className="text-[13.5px] text-red-700">{message}</p>
     </div>
 );
@@ -52,7 +52,7 @@ export const Button: React.FC<{
     const styles = {
         primary: 'bg-slate-900 text-white hover:bg-slate-800',
         danger: 'bg-red-600 text-white hover:bg-red-700',
-        ghost: 'border border-slate-300 text-slate-700 hover:border-slate-400 hover:text-slate-900',
+        ghost: 'text-slate-700 hover:text-slate-900 bg-[#F5F6F8]',
     }[variant];
     return (
         <button
@@ -79,12 +79,12 @@ export const Field: React.FC<{
 );
 
 export const inputClass =
-    'w-full h-9 px-3 rounded-md border border-slate-300 bg-white text-[13.5px] '
-    + 'focus:outline-none focus:border-slate-500 transition-colors';
+    'w-full h-9 px-3 rounded-md bg-[#F5F6F8] text-[13.5px]'
+    + 'focus:outline-none transition-colors';
 
 export const textareaClass =
-    'w-full p-3 rounded-md border border-slate-300 bg-white text-[13.5px] leading-relaxed '
-    + 'focus:outline-none focus:border-slate-500 transition-colors resize-y';
+    'w-full p-3 rounded-md bg-[#F5F6F8] text-[13.5px] leading-relaxed'
+    + 'focus:outline-none transition-colors resize-y';
 
 /** Basit sekme şeridi — kuyruk durumları arasında geçiş için. */
 export const Tabs: React.FC<{
@@ -130,7 +130,7 @@ export const ReasonBox: React.FC<{
     const tooShort = note.trim().length < minLength;
 
     return (
-        <div className="mt-3 rounded-md border border-slate-300 bg-slate-50 p-3.5">
+        <div className="mt-3 rounded-md bg-slate-50 p-3.5">
             <p className="text-[13px] font-semibold text-slate-800 mb-2">{title}</p>
             <textarea
                 rows={3}

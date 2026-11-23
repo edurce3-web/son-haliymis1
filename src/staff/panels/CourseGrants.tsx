@@ -93,7 +93,7 @@ const CourseGrants: React.FC = () => {
                                         )}
                                     </p>
                                     {g.grant_note && (
-                                        <p className="text-[12.5px] text-slate-600 mt-1.5 border-l-2 border-slate-200 pl-2.5">
+                                        <p className="text-[12.5px] text-slate-600 mt-1.5 pl-2.5">
                                             {g.grant_note}
                                         </p>
                                     )}
@@ -164,7 +164,7 @@ const GrantForm: React.FC<{ onCancel: () => void; onDone: () => void }> = ({ onC
             <div className="space-y-5">
                 <Field label="Kurs" hint="En az 2 karakter yazın.">
                     {course ? (
-                        <div className="flex items-center justify-between gap-3 h-9 px-3 rounded-md border border-slate-300 bg-slate-50">
+                        <div className="flex items-center justify-between gap-3 h-9 px-3 rounded-md bg-slate-50">
                             <span className="text-[13.5px] text-slate-800 truncate">{course.title}</span>
                             <button
                                 onClick={() => { setCourse(null); setCourseQuery(''); }}
@@ -182,7 +182,7 @@ const GrantForm: React.FC<{ onCancel: () => void; onDone: () => void }> = ({ onC
                                 className={inputClass}
                             />
                             {courseResults.length > 0 && (
-                                <div className="mt-1.5 rounded-md border border-slate-200 bg-white max-h-52 overflow-y-auto divide-y divide-slate-100">
+                                <div className="mt-1.5 rounded-md bg-[#F5F6F8] max-h-52 overflow-y-auto">
                                     {courseResults.map(c => (
                                         <button
                                             key={c.course_id}
@@ -203,7 +203,7 @@ const GrantForm: React.FC<{ onCancel: () => void; onDone: () => void }> = ({ onC
 
                 <Field label="Kullanıcı" hint="E-posta veya ad soyad, en az 3 karakter.">
                     {user ? (
-                        <div className="flex items-center justify-between gap-3 h-9 px-3 rounded-md border border-slate-300 bg-slate-50">
+                        <div className="flex items-center justify-between gap-3 h-9 px-3 rounded-md bg-slate-50">
                             <span className="text-[13.5px] text-slate-800 truncate">
                                 {user.name} · {user.email}
                             </span>
@@ -223,7 +223,7 @@ const GrantForm: React.FC<{ onCancel: () => void; onDone: () => void }> = ({ onC
                                 className={inputClass}
                             />
                             {userResults.length > 0 && (
-                                <div className="mt-1.5 rounded-md border border-slate-200 bg-white max-h-52 overflow-y-auto divide-y divide-slate-100">
+                                <div className="mt-1.5 rounded-md bg-[#F5F6F8] max-h-52 overflow-y-auto">
                                     {userResults.map(u => (
                                         <button
                                             key={u.user_id}

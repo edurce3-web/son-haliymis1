@@ -155,7 +155,7 @@ const UserRow: React.FC<{
             </button>
 
             {expanded && (
-                <div className="border-t border-slate-200 p-4 bg-slate-50/60">
+                <div className="p-4 bg-slate-50/60">
                     {error && <div className="mb-3"><ErrorBox message={error} /></div>}
                     {!detail ? <Loading /> : (
                         <>
@@ -164,7 +164,7 @@ const UserRow: React.FC<{
                                     <p className="text-[12px] font-bold uppercase tracking-wider text-slate-500 mb-2">
                                         Yaptırım geçmişi
                                     </p>
-                                    <div className="rounded-md border border-slate-200 bg-white divide-y divide-slate-100">
+                                    <div className="rounded-md bg-[#F5F6F8]">
                                         {detail.sanctions.map((s: any) => (
                                             <div key={s.id} className="px-3 py-2.5">
                                                 <div className="flex items-center gap-2 flex-wrap">

@@ -224,7 +224,7 @@ export const InstructorProfileSettings: React.FC = () => {
                 <aside className="lg:sticky lg:top-8 rounded-2xl bg-[#f4f6f6] p-6 text-center">
                     <div className="relative w-28 h-28 mx-auto">
                         {photo ? (
-                            <img src={photo} alt="" className="w-28 h-28 rounded-full object-cover ring-1 ring-[#e3e6e5]" />
+                            <img src={photo} alt="" className="w-28 h-28 rounded-full object-cover" />
                         ) : (
                             <span className="w-28 h-28 rounded-full bg-[#9cf2e8] text-[#00201d] text-[36px] font-extrabold flex items-center justify-center">
                                 {(formData.first_name[0] || '') + (formData.last_name[0] || '') || '?'}
@@ -235,7 +235,7 @@ export const InstructorProfileSettings: React.FC = () => {
                             onClick={() => fileInputRef.current?.click()}
                             disabled={photoBusy}
                             aria-label="Fotoğraf yükle"
-                            className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-[#00201d] text-[#9cf2e8] flex items-center justify-center ring-4 ring-white hover:bg-[#03302b] transition-colors disabled:opacity-60"
+                            className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-[#00201d] text-[#9cf2e8] flex items-center justify-center hover:bg-[#03302b] transition-colors disabled:opacity-60"
                         >
                             {photoBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
                         </button>
@@ -251,7 +251,7 @@ export const InstructorProfileSettings: React.FC = () => {
                     <p className="mt-4 text-[19px] font-extrabold tracking-tight text-[#00201d] text-balance">{fullName || 'Adın'}</p>
                     <p className="mt-0.5 text-[13.5px] font-semibold text-[#4a6360] text-balance">{formData.title || 'Unvanın'}</p>
 
-                    <div className="mt-5 pt-4 border-t-2 border-white flex flex-col items-center gap-1">
+                    <div className="mt-5 pt-4 flex flex-col items-center gap-1">
                         <button type="button" onClick={() => fileInputRef.current?.click()} disabled={photoBusy} className={cn(btn.ghost, btn.sm)}>
                             {photo ? 'Fotoğrafı değiştir' : 'Fotoğraf yükle'}
                         </button>

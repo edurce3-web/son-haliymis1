@@ -36,7 +36,7 @@ const ForgotPassword = () => {
     const [passwordConfirm, setPasswordConfirm] = useState('');
 
     const inputClass =
-        'h-11 rounded-xl border-slate-200 bg-slate-50/60 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition-colors';
+        'h-11 rounded-xl bg-slate-50/60 focus:bg-white focus:ring-2 focus:ring-brand-500/15 transition-colors';
 
     const post = async (path: string, body: Record<string, string>) => {
         const res = await fetch(`${API_BASE_URL}/auth/${path}`, {
@@ -161,7 +161,7 @@ const ForgotPassword = () => {
 
             <div className="mb-7">
                 <div className="flex items-center gap-3">
-                    <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-brand-50 border border-brand-100 shrink-0">
+                    <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-brand-50 shrink-0">
                         {step === 'email' && <Mail className="w-5 h-5 text-brand-700" />}
                         {step === 'code' && <ShieldCheck className="w-5 h-5 text-brand-700" />}
                         {step === 'password' && <KeyRound className="w-5 h-5 text-brand-700" />}
@@ -288,7 +288,7 @@ const ForgotPassword = () => {
                             onChange={e => setPasswordConfirm(e.target.value)}
                             required
                             autoComplete="new-password"
-                            className={`${inputClass} ${mismatch ? 'border-red-300 focus:border-red-400 focus:ring-red-400/15' : ''}`}
+                            className={`${inputClass} ${mismatch ? ' focus:border-red-400 focus:ring-red-400/15' : ''}`}
                         />
                         {mismatch && <p className="text-xs text-red-600">Şifreler eşleşmiyor.</p>}
                     </div>

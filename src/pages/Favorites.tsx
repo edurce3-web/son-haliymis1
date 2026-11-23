@@ -159,7 +159,7 @@ const Favorites = () => {
               const href = course.slug ? `/course/${course.slug}` : `/course/${id}`;
 
               return (
-                <article key={id} className="group rounded-[22px] bg-white ring-1 ring-black/[0.06] overflow-hidden flex flex-col transition-shadow hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]">
+                <article key={id} className="group rounded-[22px] bg-white overflow-hidden flex flex-col transition-shadow hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]">
                   <div className="relative">
                     <Link to={href} className="block aspect-video bg-[#F1F3F5] overflow-hidden">
                       <img
@@ -173,7 +173,7 @@ const Favorites = () => {
                       type="button"
                       onClick={() => removeFromFavorites(id)}
                       aria-label="Favorilerden çıkar"
-                      className="absolute top-2.5 right-2.5 w-9 h-9 rounded-full bg-white/90 hover:bg-white text-[#e5484d] flex items-center justify-center shadow-sm"
+                      className="absolute top-2.5 right-2.5 w-9 h-9 rounded-full bg-white/90 hover:bg-white text-[#e5484d] flex items-center justify-center "
                     >
                       <Heart className="w-4 h-4 fill-current" />
                     </button>

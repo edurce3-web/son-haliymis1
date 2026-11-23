@@ -57,12 +57,12 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, onMessage, onEmail, 
   };
 
   return (
-    <Card className={`transition-all duration-300 border-white/5 ${expanded ? 'ring-2 ring-brand-500/50 shadow-xl shadow-brand-500/10' : 'hover:border-white/10 hover:shadow-lg'}`}>
+    <Card className={`transition-all duration-300 ${expanded ? ' shadow-xl shadow-brand-500/10' : ' hover:shadow-lg'}`}>
       <div className="cursor-pointer" onClick={handleExpand}>
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-3">
-              <Avatar className="w-12 h-12 ring-2 ring-white/10">
+              <Avatar className="w-12 h-12">
                 <AvatarImage src={student.avatar || ''} />
                 <AvatarFallback className="bg-slate-800 text-slate-300 font-medium">
                   {student.name.charAt(0)}
@@ -78,11 +78,11 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, onMessage, onEmail, 
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4 text-xs">
-            <div className="flex items-center space-x-2 text-slate-300 bg-slate-800/50 p-2 rounded-lg border border-white/5">
+            <div className="flex items-center space-x-2 text-slate-300 bg-slate-800/50 p-2 rounded-lg">
               <BookOpen className="h-4 w-4 text-brand-400" />
               <span className="font-medium">{student.enrolledCourses} Kurs</span>
             </div>
-            <div className="flex items-center space-x-2 text-slate-300 bg-slate-800/50 p-2 rounded-lg border border-white/5">
+            <div className="flex items-center space-x-2 text-slate-300 bg-slate-800/50 p-2 rounded-lg">
               <Clock className="h-4 w-4 text-emerald-400" />
               <span className="font-medium">{student.lastActive}</span>
             </div>
@@ -100,16 +100,16 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, onMessage, onEmail, 
 
       <div className="px-6 pb-6 pt-0 space-y-4">
         {expanded && (
-          <div className="pt-4 border-t border-white/5 space-y-3 animate-in fade-in slide-in-from-top-2">
+          <div className="pt-4 space-y-3 animate-in fade-in slide-in-from-top-2">
             <h4 className="text-sm font-semibold text-slate-200 mb-2">Kurstaki İlerlemeler</h4>
             {isLoadingCourses ? (
               <div className="flex justify-center py-4"><Loader2 className="w-5 h-5 text-brand-500 animate-spin" /></div>
             ) : courses && courses.length > 0 ? (
               <div className="space-y-3">
                 {courses.map(course => (
-                  <div key={course.course_id} className="flex flex-col gap-2 p-3 bg-slate-900/50 rounded-xl border border-white/5">
+                  <div key={course.course_id} className="flex flex-col gap-2 p-3 bg-slate-900/50 rounded-xl">
                     <div className="flex gap-3">
-                      <img src={getCourseImageUrl(course.course_id, course.image_path)} alt={course.title} className="w-12 h-8 object-cover rounded shadow-sm opacity-90" />
+                      <img src={getCourseImageUrl(course.course_id, course.image_path)} alt={course.title} className="w-12 h-8 object-cover rounded  opacity-90" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-slate-200 truncate">{course.title}</p>
                         <p className="text-[10px] text-slate-500 mt-0.5">{course.completed_lessons} / {course.total_lessons} ders</p>
@@ -129,10 +129,10 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, onMessage, onEmail, 
         )}
 
         <div className="flex space-x-2 pt-2">
-          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); onMessage?.(student.id); }} className="flex-1 bg-white/5 border-white/10 hover:bg-white/10 hover:text-white h-9 rounded-xl text-xs">
+          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); onMessage?.(student.id); }} className="flex-1 bg-white/5 hover:bg-white/10 hover:text-white h-9 rounded-xl text-xs">
             <MessageCircle className="h-3.5 w-3.5 mr-1.5" /> Mesaj Gönder
           </Button>
-          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); onEmail?.(student.id); }} className="px-3 bg-white/5 border-white/10 hover:bg-white/10 hover:text-white h-9 rounded-xl">
+          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); onEmail?.(student.id); }} className="px-3 bg-white/5 hover:bg-white/10 hover:text-white h-9 rounded-xl">
             <Mail className="h-3.5 w-3.5" />
           </Button>
         </div>

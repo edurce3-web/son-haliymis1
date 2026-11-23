@@ -6,10 +6,10 @@ import { cn } from '@/lib/utils';
 
 /** Kartlar sırayla bu dört vurgu rengini alıyor (tasarımdaki gibi). */
 const ACCENTS = [
-    { text: 'text-emerald-300', link: 'text-emerald-300', ring: 'hover:border-emerald-400/50', dot: 'bg-emerald-400' },
-    { text: 'text-brand-300', link: 'text-brand-300', ring: 'hover:border-brand-400/50', dot: 'bg-brand-400' },
-    { text: 'text-brand-300', link: 'text-brand-300', ring: 'hover:border-brand-400/50', dot: 'bg-brand-400' },
-    { text: 'text-rose-300', link: 'text-rose-300', ring: 'hover:border-rose-400/50', dot: 'bg-rose-400' },
+    { text: 'text-emerald-300', link: 'text-emerald-300', ring: '', dot: 'bg-emerald-400' },
+    { text: 'text-brand-300', link: 'text-brand-300', ring: '', dot: 'bg-brand-400' },
+    { text: 'text-brand-300', link: 'text-brand-300', ring: '', dot: 'bg-brand-400' },
+    { text: 'text-rose-300', link: 'text-rose-300', ring: '', dot: 'bg-rose-400' },
 ];
 
 const LEVELS: Record<string, string> = {
@@ -227,7 +227,7 @@ export const SpotlightCarousel: React.FC<{ courses: any[] }> = ({ courses }) => 
                                         <span
                                             className={cn(
                                                 'absolute top-2.5 left-2.5 max-w-[80%] truncate px-2.5 py-0.5 rounded-full',
-                                                'bg-slate-950/80 border border-white/10 text-[11px] font-bold backdrop-blur-md',
+                                                'bg-slate-950/80 text-[11px] font-bold backdrop-blur-md',
                                                 accent.text
                                             )}
                                         >

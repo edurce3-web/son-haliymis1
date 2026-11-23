@@ -224,7 +224,7 @@ export default function CoursePreviewTester() {
                 <div>
                   <label className="text-sm font-medium mb-2 block">Kullanıcı Tipi</label>
                   <select
-                    className="w-full p-2 border rounded text-sm"
+                    className="w-full p-2 rounded text-sm bg-[#F5F6F8]"
                     value={settings.userType}
                     onChange={(e) => setSettings(prev => ({ ...prev, userType: e.target.value as any }))}
                   >
@@ -237,7 +237,7 @@ export default function CoursePreviewTester() {
                 <div>
                   <label className="text-sm font-medium mb-2 block">Dil</label>
                   <select
-                    className="w-full p-2 border rounded text-sm"
+                    className="w-full p-2 rounded text-sm bg-[#F5F6F8]"
                     value={settings.language}
                     onChange={(e) => setSettings(prev => ({ ...prev, language: e.target.value }))}
                   >
@@ -461,7 +461,7 @@ export default function CoursePreviewTester() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="border rounded-lg p-4">
+                <div className="rounded-lg p-4 bg-[#F5F6F8]">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                       <span className="text-sm font-medium">AY</span>
@@ -491,7 +491,7 @@ export default function CoursePreviewTester() {
                   </div>
                 </div>
 
-                <div className="border rounded-lg p-4">
+                <div className="rounded-lg p-4 bg-[#F5F6F8]">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                       <span className="text-sm font-medium">MK</span>

@@ -144,7 +144,7 @@ export const ShelfSection: React.FC<{
                             onClick={() => scroll(-1)}
                             disabled={!canLeft}
                             aria-label="Önceki"
-                            className="w-9 h-9 rounded-full bg-white text-[#3e4947] shadow-sm flex items-center justify-center hover:text-[#131b2e] hover:bg-[#EEFBF3] disabled:opacity-35 disabled:hover:bg-white transition-all"
+                            className="w-9 h-9 rounded-full bg-white text-[#3e4947]  flex items-center justify-center hover:text-[#131b2e] hover:bg-[#EEFBF3] disabled:opacity-35 disabled:hover:bg-white transition-all"
                         >
                             <ChevronLeft className="w-5 h-5" />
                         </button>
@@ -153,7 +153,7 @@ export const ShelfSection: React.FC<{
                             onClick={() => scroll(1)}
                             disabled={!canRight}
                             aria-label="Sonraki"
-                            className="w-9 h-9 rounded-full bg-white text-[#3e4947] shadow-sm flex items-center justify-center hover:text-[#131b2e] hover:bg-[#EEFBF3] disabled:opacity-35 disabled:hover:bg-white transition-all"
+                            className="w-9 h-9 rounded-full bg-white text-[#3e4947]  flex items-center justify-center hover:text-[#131b2e] hover:bg-[#EEFBF3] disabled:opacity-35 disabled:hover:bg-white transition-all"
                         >
                             <ChevronRight className="w-5 h-5" />
                         </button>
@@ -176,7 +176,7 @@ export const ShelfSection: React.FC<{
                         ? Array.from({ length: columns * (rows || 1) }).map((_, i) => (
                             <div
                                 key={i}
-                                className={cn(mobileItem, 'bg-white rounded-lg overflow-hidden animate-pulse shadow-[0_1px_3px_rgba(19,27,46,0.08)]')}
+                                className={cn(mobileItem, 'bg-white rounded-lg overflow-hidden animate-pulse ')}
                             >
                                 <div className="aspect-video bg-[#D7F5E2]" />
                                 <div className="p-3 space-y-2">
@@ -211,7 +211,7 @@ export const ShelfSection: React.FC<{
                         ? Array.from({ length: columns }).map((_, i) => (
                             <div
                                 key={i}
-                                className={cn(cardWidth, 'shrink-0 ', 'bg-white rounded-lg overflow-hidden animate-pulse shadow-[0_1px_3px_rgba(19,27,46,0.08)]')}
+                                className={cn(cardWidth, 'shrink-0 ', 'bg-white rounded-lg overflow-hidden animate-pulse ')}
                             >
                                 <div className="aspect-video bg-[#D7F5E2]" />
                                 <div className="p-3 space-y-2">

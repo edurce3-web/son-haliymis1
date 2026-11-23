@@ -181,7 +181,7 @@ export const CatalogCourseCard: React.FC<Props> = ({
     const subtitle = course.short_description || course.description || '';
 
     return (
-        <article className="group bg-white rounded-2xl overflow-hidden flex flex-col ring-1 ring-black/[0.06] transition-shadow hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]">
+        <article className="group bg-white rounded-2xl overflow-hidden flex flex-col transition-shadow hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]">
             {/* Kapak — 16:9, kartı fazla uzatmıyor */}
             <Link {...linkProps} className="relative block aspect-[16/9] bg-slate-100 overflow-hidden">
                 {course.image && !imgFailed ? (
@@ -286,7 +286,7 @@ export const CatalogCourseCard: React.FC<Props> = ({
                                 className={cn(
                                     'h-8 px-3 rounded-md text-[12px] font-semibold flex items-center justify-center gap-1 transition-colors shrink-0',
                                     inCart
-                                        ? 'bg-white border border-brand-600 text-brand-800 hover:bg-brand-50'
+                                        ? 'bg-[#F5F6F8] text-brand-800 hover:bg-brand-50'
                                         : 'bg-brand-700 hover:bg-brand-800 text-white',
                                     adding && 'opacity-70 cursor-wait'
                                 )}

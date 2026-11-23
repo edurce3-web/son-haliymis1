@@ -315,7 +315,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                             onClick={() => setShowMobileFilters(true)}
                             className={cn(
                                 'shrink-0 h-9 pl-3 pr-3.5 rounded-xl inline-flex items-center gap-2 text-[13.5px] font-bold transition-colors',
-                                activeFilterCount > 0 ? 'bg-[#1B7A43] text-white hover:bg-[#16613A]' : 'bg-white text-[#111827] hover:bg-[#EEFBF3] shadow-[0_1px_2px_rgba(17,24,39,0.06)]'
+                                activeFilterCount > 0 ? 'bg-[#1B7A43] text-white hover:bg-[#16613A]' : 'bg-white text-[#111827] hover:bg-[#EEFBF3] '
                             )}
                         >
                             <SlidersHorizontal className="w-4 h-4" />
@@ -327,7 +327,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                             )}
                         </button>
 
-                        <span aria-hidden className="hidden sm:block shrink-0 w-px h-5 bg-[#E5E7EB] mx-1" />
+                        <span aria-hidden className="hidden sm:block shrink-0 w-2" />
 
                         {quickLevels.map(l => {
                             const on = filters.levels.includes(l.level);

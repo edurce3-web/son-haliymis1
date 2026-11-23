@@ -95,9 +95,9 @@ export const CreateCourseInitial: React.FC = () => {
                         placeholder="Örnek: Sıfırdan ileri seviye React ve Next.js"
                         className={cn(
                             'mt-2.5 w-full h-[60px] px-5 rounded-2xl bg-white text-[17px] sm:text-[18px] font-semibold text-[#00201d]',
-                            'placeholder:font-normal placeholder:text-[#93a6a3] border-0 outline-none',
-                            'shadow-[0_1px_2px_rgba(0,32,29,0.06),0_10px_28px_-20px_rgba(0,32,29,0.35)]',
-                            'ring-1 ring-inset ring-[#00201d]/[0.06] focus:ring-2 focus:ring-[#005c55]/55 transition-shadow duration-150'
+                            'placeholder:font-normal placeholder:text-[#93a6a3] outline-none',
+                            '',
+                            'focus:ring-2 focus:ring-[#005c55]/55 transition-shadow duration-150'
                         )}
                         value={title}
                         maxLength={TITLE_MAX}
@@ -190,7 +190,7 @@ const Pick: React.FC<{ on: boolean; onClick: () => void; small?: boolean; childr
             small ? 'h-10 px-4 text-[13.5px]' : 'h-12 px-5 text-[14.5px]',
             on
                 ? 'bg-[#00201d] text-[#9cf2e8] shadow-[0_10px_24px_-14px_rgba(0,32,29,0.8)]'
-                : 'bg-white text-[#1d3a37] shadow-[0_1px_2px_rgba(0,32,29,0.07)] hover:bg-[#ecfbf8] hover:text-[#00201d]'
+                : 'bg-white text-[#1d3a37]  hover:bg-[#ecfbf8] hover:text-[#00201d]'
         )}
     >
         {children}

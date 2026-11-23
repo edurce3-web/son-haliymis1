@@ -82,13 +82,13 @@ const Learning = () => {
                     <>
                         <Link
                             to="/home/gamification"
-                            className="h-10 px-4 leading-10 rounded-lg border border-slate-300 bg-white hover:border-brand-400 hover:text-brand-800 text-slate-700 text-sm font-semibold transition-colors"
+                            className="h-10 px-4 leading-10 rounded-lg bg-[#F5F6F8] hover:text-brand-800 text-slate-700 text-sm font-semibold transition-colors"
                         >
                             Edurce Kredi
                         </Link>
                         <Link
                             to="/home/certificates"
-                            className="h-10 px-4 leading-10 rounded-lg border border-slate-300 bg-white hover:border-brand-400 hover:text-brand-800 text-slate-700 text-sm font-semibold transition-colors"
+                            className="h-10 px-4 leading-10 rounded-lg bg-[#F5F6F8] hover:text-brand-800 text-slate-700 text-sm font-semibold transition-colors"
                         >
                             Sertifikalarım
                         </Link>
@@ -154,8 +154,8 @@ const CourseCard = ({
         <div className={[
             "group relative bg-white rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col",
             isGrant
-                ? "border border-amber-200 ring-1 ring-amber-200/60 hover:border-amber-300 hover:shadow-amber-500/10"
-                : "ring-1 ring-black/[0.06] hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]",
+                ? "hover:shadow-amber-500/10 bg-[#F5F6F8]"
+                : "hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]",
         ].join(" ")}>
             {/* Thumbnail */}
             <div className="relative aspect-video overflow-hidden cursor-pointer shrink-0" onClick={onNavigate}>
@@ -166,7 +166,7 @@ const CourseCard = ({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center border border-slate-200">
+                    <div className="w-12 h-12 rounded-full bg-[#F5F6F8] flex items-center justify-center">
                         <PlayCircle className="w-6 h-6 text-slate-900" />
                     </div>
                 </div>
@@ -193,7 +193,7 @@ const CourseCard = ({
             {/* Content */}
             <div className="p-4 flex flex-col flex-1">
                 {course.category_name && (
-                    <span className="inline-block mb-2 text-[10px] font-bold uppercase tracking-widest text-brand-500 bg-brand-500/10 border border-brand-200 px-2.5 py-1 rounded-full w-fit">
+                    <span className="inline-block mb-2 text-[10px] font-bold uppercase tracking-widest text-brand-500 bg-brand-500/10 px-2.5 py-1 rounded-full w-fit">
                         {course.category_name}
                     </span>
                 )}
@@ -237,7 +237,7 @@ const CourseCard = ({
                             onClick={onNavigate}
                             className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-colors ${
                                 isCompleted
-                                    ? 'bg-white border border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-700'
+                                    ? 'bg-white hover:text-brand-800 text-slate-700'
                                     : 'bg-brand-700 hover:bg-brand-800 text-white'
                             }`}
                         >
@@ -248,7 +248,7 @@ const CourseCard = ({
                             course.certificate_id ? (
                                 <button
                                     onClick={onCertificate}
-                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold rounded-xl transition-colors"
+                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold rounded-xl transition-colors"
                                 >
                                     <Award className="w-3.5 h-3.5" /> Sertifika
                                 </button>
@@ -256,7 +256,7 @@ const CourseCard = ({
                                 <button
                                     disabled={isClaiming === course.course_id}
                                     onClick={onClaim}
-                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl transition-colors disabled:opacity-50"
+                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl transition-colors disabled:opacity-50"
                                 >
                                     {isClaiming === course.course_id
                                         ? <Loader2 className="w-3.5 h-3.5 animate-spin" />

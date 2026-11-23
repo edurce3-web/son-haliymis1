@@ -239,7 +239,7 @@ export const Checkout: React.FC = () => {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex flex-col items-center justify-center text-center px-4">
         <div className="max-w-md w-full py-16 animate-in fade-in zoom-in duration-500">
           <div className="relative mb-8">
-            <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mx-auto ring-8 ring-emerald-50/50">
+            <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mx-auto">
               <CheckCircle2 className="w-12 h-12 text-emerald-500" />
             </div>
             <div className="absolute -top-2 -right-8 w-12 h-12">
@@ -277,7 +277,7 @@ export const Checkout: React.FC = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex flex-col items-center justify-center text-center px-4">
         <div className="max-w-md w-full py-16 animate-in fade-in duration-500">
-          <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-8 ring-8 ring-red-50/50">
+          <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-8">
             <ShieldAlert className="w-12 h-12 text-red-500" />
           </div>
           <h1 className="text-3xl font-bold text-slate-900 mb-3">Ödeme Başarısız</h1>
@@ -309,7 +309,7 @@ export const Checkout: React.FC = () => {
     <div className="min-h-screen bg-slate-50">
 
       {/* Üst bar */}
-      <nav className="h-16 bg-white border-b border-slate-200 sticky top-0 z-40">
+      <nav className="h-16 bg-white sticky top-0 z-40">
         <div className="max-w-5xl mx-auto h-full px-4 flex items-center justify-between">
           <button
             onClick={() => navigate(-1)}
@@ -334,8 +334,8 @@ export const Checkout: React.FC = () => {
           <div className="lg:col-span-7 space-y-6">
 
             {/* Sipariş içeriği */}
-            <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-              <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <section className="bg-[#F5F6F8] rounded-2xl overflow-hidden">
+              <header className="px-6 py-4 flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
                   <ShoppingBag className="w-4 h-4 text-slate-400" />
                   Siparişin
@@ -346,7 +346,7 @@ export const Checkout: React.FC = () => {
               </header>
 
               {isBundle && bundleQuote && (
-                <div className="px-6 py-3 bg-[#EEFBF3] border-b border-slate-100">
+                <div className="px-6 py-3 bg-[#EEFBF3]">
                   <p className="text-[13px] font-bold text-slate-900">{bundleQuote.bundle?.title}</p>
                   <p className="text-[12px] text-slate-500 mt-0.5">
                     Paket fiyatı kurslara liste fiyatları oranında dağıtıldı.
@@ -355,12 +355,12 @@ export const Checkout: React.FC = () => {
                 </div>
               )}
               {isBundle && bundleError && (
-                <div className="px-6 py-4 bg-amber-50 border-b border-amber-100 text-[13px] text-amber-800">
+                <div className="px-6 py-4 bg-amber-50 text-[13px] text-amber-800">
                   {(bundleError as Error).message}
                 </div>
               )}
 
-              <div className="divide-y divide-slate-100">
+              <div className="">
                 {items.length > 0 ? items.map((item: any, idx: number) => (
                   <div key={item.course_id ?? idx} className="flex gap-4 p-4">
                     <img
@@ -395,7 +395,7 @@ export const Checkout: React.FC = () => {
             </section>
 
             {/* Fatura ülkesi */}
-            <section className="bg-white rounded-2xl border border-slate-200 p-6">
+            <section className="bg-[#F5F6F8] rounded-2xl p-6">
               <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2 mb-4">
                 <Globe className="w-4 h-4 text-slate-400" />
                 Fatura bilgisi
@@ -403,7 +403,7 @@ export const Checkout: React.FC = () => {
               <div className="max-w-xs">
                 <Label className="text-xs text-slate-500 mb-1.5 block">Ülke</Label>
                 <Select value={country} onValueChange={setCountry}>
-                  <SelectTrigger className="h-11 rounded-xl border-slate-200">
+                  <SelectTrigger className="h-11 rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">
@@ -415,8 +415,8 @@ export const Checkout: React.FC = () => {
 
             {/* Ödeme ekranı — iframe açıldığında burada gösterilir */}
             {iframeUrl && (
-              <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <section className="bg-[#F5F6F8] rounded-2xl overflow-hidden">
+                <header className="px-6 py-4 flex items-center justify-between">
                   <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
                     <CreditCard className="w-4 h-4 text-slate-400" />
                     Kart bilgileri
@@ -440,7 +440,7 @@ export const Checkout: React.FC = () => {
 
           {/* ============ SAĞ: TOPLAM + ÖDEME + KUPON ============ */}
           <div className="lg:col-span-5">
-            <div className="lg:sticky lg:top-24 bg-white rounded-2xl border border-slate-200 p-6">
+            <div className="lg:sticky lg:top-24 bg-[#F5F6F8] rounded-2xl p-6">
 
               <div className="space-y-2.5 text-sm">
                 <div className="flex justify-between">
@@ -459,7 +459,7 @@ export const Checkout: React.FC = () => {
                 )}
               </div>
 
-              <div className="border-t border-slate-100 mt-4 pt-4 flex justify-between items-baseline">
+              <div className="mt-4 pt-4 flex justify-between items-baseline">
                 <span className="font-semibold text-slate-900">Toplam</span>
                 <div className="text-right">
                   {appliedCoupon && discountAmount > 0 && (
@@ -522,11 +522,11 @@ export const Checkout: React.FC = () => {
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                       onKeyDown={(e) => { if (e.key === 'Enter' && couponCode) handleApplyCoupon(couponCode); }}
-                      className="h-10 rounded-xl border-slate-200 font-mono text-sm tracking-wider flex-1"
+                      className="h-10 rounded-xl font-mono text-sm tracking-wider flex-1"
                     />
                     <Button
                       variant="outline"
-                      className="h-10 px-4 rounded-xl border-slate-200 text-sm font-medium"
+                      className="h-10 px-4 rounded-xl text-sm font-medium"
                       disabled={!couponCode || couponLoading}
                       onClick={() => handleApplyCoupon(couponCode)}
                     >
@@ -543,7 +543,7 @@ export const Checkout: React.FC = () => {
                 kabul etmiş olursunuz.
               </p>
 
-              <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-slate-100 text-slate-400">
+              <div className="flex items-center justify-center gap-4 mt-4 pt-4 text-slate-400">
                 <span className="flex items-center gap-1.5 text-[11px]">
                   <ShieldCheck className="w-3.5 h-3.5" /> SSL korumalı
                 </span>

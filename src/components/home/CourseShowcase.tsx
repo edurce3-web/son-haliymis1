@@ -47,7 +47,7 @@ export const CourseShowcase: React.FC<{
         <section
             className={cn(
                 'w-full py-14 lg:py-16',
-                tone === 'tint' ? 'bg-brand-50/50 border-y border-brand-100/70' : 'bg-white'
+                tone === 'tint' ? 'bg-brand-50/50' : 'bg-white'
             )}
         >
             <div className="container px-4">
@@ -73,7 +73,7 @@ export const CourseShowcase: React.FC<{
 
                     <div className="flex items-center gap-3 shrink-0">
                         {note && (
-                            <span className="hidden lg:inline-block text-[12px] font-semibold text-slate-500 bg-white border border-slate-200 rounded-xl px-3 py-1.5">
+                            <span className="hidden lg:inline-block text-[12px] font-semibold text-slate-500 bg-[#F5F6F8] rounded-xl px-3 py-1.5">
                                 {note}
                             </span>
                         )}
@@ -94,7 +94,7 @@ export const CourseShowcase: React.FC<{
                         ? Array.from({ length: limit }).map((_, i) => (
                             <div
                                 key={i}
-                                className="w-[196px] sm:w-[220px] shrink-0 lg:w-auto bg-white border border-slate-200 rounded-2xl overflow-hidden animate-pulse"
+                                className="w-[196px] sm:w-[220px] shrink-0 lg:w-auto bg-[#F5F6F8] rounded-2xl overflow-hidden animate-pulse"
                             >
                                 <div className="aspect-[16/9] bg-slate-100" />
                                 <div className="p-5 space-y-3">

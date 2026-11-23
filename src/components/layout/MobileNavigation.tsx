@@ -100,7 +100,7 @@ export const MobileNavigation: React.FC = () => {
     <>
       <nav className={cn(
         "lg:hidden fixed bottom-0 left-0 right-0 z-50 transition-all duration-300 h-16",
-        "bg-white border-t border-gray-200",
+        "bg-white",
         isVisible ? "translate-y-0" : "translate-y-full"
       )}>
         <div className="flex h-full items-center justify-around">

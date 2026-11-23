@@ -168,58 +168,70 @@ export const ProfileView: React.FC<{ data: ProfileData }> = ({ data }) => {
         <div className="min-h-screen bg-white text-[#111827] font-jakarta">
             {/* ── Kimlik ───────────────────────────────────────────────── */}
             <div className="px-3 sm:px-4 pt-3">
-                <header className="relative overflow-hidden rounded-[28px] bg-[#F5F6F8]">
-                    <div aria-hidden className="absolute -right-24 -bottom-40 w-[420px] h-[420px] rounded-full bg-[#B2F0C8]/60 hidden lg:block" />
-                    <div className="relative max-w-[1240px] mx-auto px-5 sm:px-8 py-7 sm:py-9 lg:py-11">
-                        <div className="flex flex-col lg:flex-row lg:items-end gap-7 lg:gap-10">
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-7 min-w-0 flex-1">
-                                <ProfilePhoto src={user.image} name={user.name} />
-                                <div className="min-w-0">
-                                    <span className={cn(
-                                        'inline-flex h-7 px-3 items-center rounded-full text-[12px] font-extrabold tracking-[0.04em]',
-                                        isInstructor ? 'bg-[#B2F0C8] text-[#0A2A1A]' : 'bg-white text-[#374151]'
-                                    )}>
-                                        {isInstructor ? 'Edurce eğitmeni' : 'Edurce öğrencisi'}
-                                    </span>
-                                    <h1 className="mt-2.5 text-[30px] sm:text-[42px] font-extrabold tracking-[-0.035em] leading-[1.05] text-[#0A2A1A] break-words">
-                                        {user.name}
-                                    </h1>
-                                    {(title || expertise.length > 0) && (
-                                        <p className="mt-2 text-[15px] sm:text-[16px] leading-[1.5] text-[#4B5563] max-w-[60ch]">
-                                            {title || expertise.slice(0, 4).join(', ')}
-                                        </p>
-                                    )}
-                                    <div className="mt-4 flex flex-wrap items-center gap-2">
-                                        {isInstructor && courses.length > 0 && (
-                                            <a href="#kurslar" className="h-10 px-4 inline-flex items-center rounded-xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[13.5px] font-bold transition-colors">
-                                                {`Kurslarını gör (${courses.length})`}
-                                            </a>
-                                        )}
-                                        {isOwn && (
-                                            <Link to="/home/settings/profile" className="h-10 px-4 inline-flex items-center rounded-xl bg-white hover:bg-[#EEFBF3] text-[13.5px] font-bold transition-colors">
-                                                Profili düzenle
-                                            </Link>
-                                        )}
-                                        <button type="button" onClick={copyLink} className="h-10 px-4 inline-flex items-center rounded-xl bg-white hover:bg-[#EEFBF3] text-[13.5px] font-bold transition-colors">
-                                            Bağlantıyı kopyala
-                                        </button>
+                <header className="relative overflow-hidden rounded-[32px] bg-[#B2F0C8] text-[#0A2A1A]">
+                    {/* Renk lekeleri: çizgi yok, yalnızca ton */}
+                    <div aria-hidden className="absolute -left-32 -top-40 w-[520px] h-[520px] rounded-full bg-[#C9F5D8]" />
+                    <div aria-hidden className="absolute right-[-120px] bottom-[-200px] w-[560px] h-[560px] rounded-full bg-[#9BE8B6]" />
+
+                    <div className="relative max-w-[1240px] mx-auto px-5 sm:px-10 pt-8 sm:pt-12 pb-6 sm:pb-8">
+                        <div className="grid lg:grid-cols-[minmax(0,1fr)_420px] gap-8 lg:gap-14 items-center">
+                            <div className="min-w-0">
+                                <div className="flex items-center gap-4">
+                                    <ProfilePhoto src={user.image} name={user.name} />
+                                    <div className="min-w-0">
+                                        <span className="inline-flex h-7 px-3 items-center rounded-full bg-[#0A2A1A] text-[#B2F0C8] text-[12px] font-extrabold tracking-[0.04em]">
+                                            {isInstructor ? 'Edurce eğitmeni' : 'Edurce öğrencisi'}
+                                        </span>
                                         {joined && (
-                                            <span className="text-[13px] text-[#6B7280] ml-1">{`${joined} tarihinden beri Edurce'de`}</span>
+                                            <p className="mt-2 text-[13px] font-semibold text-[#134D30]">{`${joined} tarihinden beri burada`}</p>
                                         )}
                                     </div>
                                 </div>
+
+                                <h1 className="mt-6 text-[38px] sm:text-[56px] font-extrabold tracking-[-0.045em] leading-[0.98] break-words">
+                                    {user.name}
+                                </h1>
+                                {title && (
+                                    <p className="mt-3 text-[17px] sm:text-[19px] font-semibold leading-[1.4] text-[#134D30] max-w-[44ch]">{title}</p>
+                                )}
+                                {expertise.length > 0 && (
+                                    <div className="mt-4 flex flex-wrap gap-1.5">
+                                        {expertise.slice(0, 6).map(e => (
+                                            <span key={e} className="h-8 px-3 inline-flex items-center rounded-full bg-white/70 text-[13px] font-bold">{e}</span>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <div className="mt-6 flex flex-wrap items-center gap-2">
+                                    {isInstructor && courses.length > 0 && (
+                                        <a href="#kurslar" className="h-12 px-5 inline-flex items-center rounded-2xl bg-[#0A2A1A] hover:bg-[#134D30] text-white text-[14.5px] font-bold transition-colors">
+                                            {`Kurslarını gör (${courses.length})`}
+                                        </a>
+                                    )}
+                                    {isOwn && (
+                                        <Link to="/home/settings/profile" className="h-12 px-5 inline-flex items-center rounded-2xl bg-white hover:bg-[#EEFBF3] text-[14.5px] font-bold transition-colors">
+                                            Profili düzenle
+                                        </Link>
+                                    )}
+                                    <button type="button" onClick={copyLink} className="h-12 px-5 inline-flex items-center rounded-2xl bg-white/60 hover:bg-white text-[14.5px] font-bold transition-colors">
+                                        Bağlantıyı kopyala
+                                    </button>
+                                </div>
                             </div>
 
-                            {/* Ölçüler */}
-                            <dl className={cn('grid gap-2 shrink-0', stats.length === 4 ? 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-2' : 'grid-cols-3')}>
-                                {stats.map(s => (
-                                    <div key={s.label} className={cn('rounded-2xl px-4 py-3.5 min-w-[118px]', s.accent ? 'bg-[#0A2A1A] text-white' : 'bg-white')}>
-                                        <dd className="text-[24px] sm:text-[26px] font-extrabold tracking-[-0.02em] tabular-nums leading-none">{s.value}</dd>
-                                        <dt className={cn('mt-1.5 text-[12.5px] font-semibold', s.accent ? 'text-[#B2F0C8]' : 'text-[#6B7280]')}>{s.label}</dt>
-                                    </div>
-                                ))}
-                            </dl>
+                            {/* Kolaj: kendi kurslarının kapakları */}
+                            <Collage images={(isInstructor ? sorted.map(c => c.image) : learning.courses.map(c => c.image)).slice(0, 3)} name={user.name} />
                         </div>
+
+                        {/* Ölçüler */}
+                        <dl className={cn('mt-8 sm:mt-10 grid gap-2 sm:gap-3', stats.length === 4 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-3')}>
+                            {stats.map(s => (
+                                <div key={s.label} className={cn('rounded-[22px] px-5 py-4 sm:py-5', s.accent ? 'bg-[#0A2A1A] text-white' : 'bg-white/75')}>
+                                    <dd className="text-[28px] sm:text-[36px] font-extrabold tracking-[-0.03em] tabular-nums leading-none">{s.value}</dd>
+                                    <dt className={cn('mt-2 text-[13px] font-bold', s.accent ? 'text-[#B2F0C8]' : 'text-[#134D30]')}>{s.label}</dt>
+                                </div>
+                            ))}
+                        </dl>
                     </div>
                 </header>
             </div>
@@ -310,16 +322,6 @@ export const ProfileView: React.FC<{ data: ProfileData }> = ({ data }) => {
                 {/* ── Yan sütun ────────────────────────────────────────── */}
                 <aside className="lg:pt-1">
                     <div className="lg:sticky lg:top-24 space-y-3">
-                        {expertise.length > 0 && (
-                            <SideCard title="Uzmanlık alanları">
-                                <div className="flex flex-wrap gap-1.5">
-                                    {expertise.map(e => (
-                                        <span key={e} className="h-8 px-3 inline-flex items-center rounded-full bg-white text-[13px] font-semibold">{e}</span>
-                                    ))}
-                                </div>
-                            </SideCard>
-                        )}
-
                         {categories.length > 0 && (
                             <SideCard title="Ders verdiği alanlar">
                                 <div className="flex flex-wrap gap-1.5">
@@ -404,13 +406,52 @@ export const ProfileView: React.FC<{ data: ProfileData }> = ({ data }) => {
 /** Profil fotoğrafı; yoksa ya da yüklenemezse baş harfler. */
 const ProfilePhoto: React.FC<{ src: string | null; name: string }> = ({ src, name }) => {
     const [failed, setFailed] = useState(false);
-    const box = 'w-[104px] h-[104px] sm:w-[136px] sm:h-[136px] shrink-0 rounded-[32px] ring-[6px] ring-white';
+    const box = 'w-[76px] h-[76px] sm:w-[92px] sm:h-[92px] shrink-0 rounded-[26px] shadow-[0_18px_40px_-18px_rgba(10,42,26,0.55)]';
     return src && !failed ? (
         <img src={src} alt={name} onError={() => setFailed(true)} className={cn(box, 'object-cover bg-[#D7F5E2]')} />
     ) : (
-        <span aria-hidden className={cn(box, 'flex items-center justify-center bg-[#B2F0C8] text-[#0A2A1A] text-[36px] sm:text-[46px] font-extrabold tracking-[-0.03em]')}>
+        <span aria-hidden className={cn(box, 'flex items-center justify-center bg-white text-[#0A2A1A] text-[28px] sm:text-[34px] font-extrabold tracking-[-0.03em]')}>
             {getInitials(name)}
         </span>
+    );
+};
+
+
+/** Kurs kapaklarından eğik kolaj; kapak yoksa baş harflerden büyük bir kart. */
+const Collage: React.FC<{ images: string[]; name: string }> = ({ images, name }) => {
+    const pics = images.filter(Boolean);
+    if (pics.length === 0) {
+        return (
+            <div aria-hidden className="hidden lg:flex h-[300px] items-center justify-center rounded-[36px] bg-white/50 text-[140px] font-extrabold tracking-[-0.06em] text-[#0A2A1A]/90">
+                {getInitials(name)}
+            </div>
+        );
+    }
+    const spots = [
+        'left-[4%] top-[14%] w-[62%] -rotate-[7deg] z-10',
+        'right-[2%] top-[0%] w-[58%] rotate-[5deg] z-20',
+        'left-[22%] bottom-[0%] w-[64%] -rotate-[1deg] z-30',
+    ];
+    return (
+        <div aria-hidden className="relative h-[190px] sm:h-[260px] lg:h-[320px]">
+            {pics.map((src, i) => (
+                <div
+                    key={i}
+                    className={cn(
+                        'absolute aspect-video rounded-[22px] overflow-hidden bg-[#D7F5E2] shadow-[0_30px_60px_-24px_rgba(10,42,26,0.55)]',
+                        pics.length === 1 ? 'left-[8%] top-[10%] w-[84%] -rotate-[3deg]' : spots[i]
+                    )}
+                >
+                    <img
+                        src={src}
+                        alt=""
+                        loading="lazy"
+                        onError={e => { (e.target as HTMLImageElement).src = '/placeholder-course.jpg'; }}
+                        className="w-full h-full object-cover"
+                    />
+                </div>
+            ))}
+        </div>
     );
 };
 
@@ -439,8 +480,8 @@ const FeaturedCourse: React.FC<{ course: ProfileCourse; owned: boolean }> = ({ c
     ].filter(Boolean).join('  ·  ');
 
     return (
-        <Link to={url} className="group grid sm:grid-cols-[minmax(0,46%)_1fr] rounded-[24px] bg-[#F5F6F8] overflow-hidden hover:bg-[#EEFBF3] transition-colors">
-            <div className="relative aspect-video sm:aspect-auto sm:min-h-[230px] bg-[#D7F5E2] overflow-hidden">
+        <Link to={url} className="group grid sm:grid-cols-[minmax(0,48%)_1fr] rounded-[28px] bg-[#1B7A43] text-white overflow-hidden hover:bg-[#16613A] transition-colors">
+            <div className="relative aspect-video sm:aspect-auto sm:min-h-[260px] m-2 sm:m-3 rounded-[20px] bg-[#D7F5E2] overflow-hidden">
                 <img
                     src={course.image}
                     alt={course.title}
@@ -451,18 +492,18 @@ const FeaturedCourse: React.FC<{ course: ProfileCourse; owned: boolean }> = ({ c
             </div>
             <div className="p-5 sm:p-7 flex flex-col">
                 {course.categoryName && (
-                    <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-[#1B7A43]">{course.categoryName}</span>
+                    <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-[#B2F0C8]">{course.categoryName}</span>
                 )}
-                <h3 className="mt-1.5 text-[19px] sm:text-[22px] font-extrabold leading-[1.25] tracking-[-0.02em] line-clamp-2">{course.title}</h3>
-                {course.summary && <p className="mt-2 text-[14px] leading-[1.6] text-[#4B5563] line-clamp-3">{course.summary}</p>}
-                {meta && <p className="mt-3 text-[13px] font-semibold text-[#6B7280]">{meta}</p>}
+                <h3 className="mt-2 text-[21px] sm:text-[26px] font-extrabold leading-[1.15] tracking-[-0.025em] line-clamp-2">{course.title}</h3>
+                {course.summary && <p className="mt-2.5 text-[14.5px] leading-[1.6] text-white/80 line-clamp-3">{course.summary}</p>}
+                {meta && <p className="mt-3 text-[13px] font-semibold text-[#B2F0C8]">{meta}</p>}
                 <div className="mt-auto pt-5 flex items-center justify-between gap-3">
                     {!owned ? (
-                        <span className="text-[22px] font-extrabold tabular-nums">
+                        <span className="text-[26px] font-extrabold tabular-nums">
                             {course.price > 0 ? `₺${course.price.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'Ücretsiz'}
                         </span>
-                    ) : <span className="text-[13.5px] font-bold text-[#1B7A43]">Bu kursa sahipsin</span>}
-                    <span className="h-10 px-4 inline-flex items-center rounded-xl bg-[#1B7A43] group-hover:bg-[#16613A] text-white text-[13.5px] font-bold transition-colors">
+                    ) : <span className="text-[13.5px] font-bold text-[#B2F0C8]">Bu kursa sahipsin</span>}
+                    <span className="h-11 px-5 inline-flex items-center rounded-2xl bg-[#B2F0C8] text-[#0A2A1A] text-[14px] font-extrabold">
                         {owned ? 'Derse git' : 'Kursu incele'}
                     </span>
                 </div>

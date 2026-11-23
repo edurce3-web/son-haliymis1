@@ -320,7 +320,7 @@ export default function EnhancedInstructorDashboard() {
 
         <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-3 text-center md:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10">
               <Zap className="w-3.5 h-3.5 text-brand-400 fill-brand-400" />
               <span className="text-[10px] font-bold uppercase tracking-wider text-brand-300">Eğitmen Paneli</span>
             </div>
@@ -335,7 +335,7 @@ export default function EnhancedInstructorDashboard() {
           <div className="flex flex-col sm:flex-row items-center gap-3">
             <Button
               variant="outline"
-              className="h-12 px-6 rounded-xl bg-white/5 border-white/10 hover:bg-white/10 text-white font-bold text-sm backdrop-blur-sm transition-all"
+              className="h-12 px-6 rounded-xl bg-white/5 hover:bg-white/10 text-white font-bold text-sm backdrop-blur-sm transition-all"
               onClick={() => window.location.reload()}
             >
               <RefreshCw className="w-4 h-4 mr-2" />
@@ -353,7 +353,7 @@ export default function EnhancedInstructorDashboard() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-8">
-        <TabsList className="h-12 w-full max-w-3xl mx-auto p-1 bg-white border border-slate-200 rounded-xl shadow-sm">
+        <TabsList className="h-12 w-full max-w-3xl mx-auto p-1 bg-[#F5F6F8] rounded-xl ">
           <TabsTrigger value="overview" className="flex-1 rounded-lg h-10 font-bold text-xs data-[state=active]:bg-slate-900 data-[state=active]:text-white transition-all">Genel Bakış</TabsTrigger>
           <TabsTrigger value="courses" className="flex-1 rounded-lg h-10 font-bold text-xs data-[state=active]:bg-slate-900 data-[state=active]:text-white transition-all">Kurslarım</TabsTrigger>
           <TabsTrigger value="students" className="flex-1 rounded-lg h-10 font-bold text-xs data-[state=active]:bg-slate-900 data-[state=active]:text-white transition-all">Öğrenciler</TabsTrigger>
@@ -364,7 +364,7 @@ export default function EnhancedInstructorDashboard() {
         <TabsContent value="overview" className="space-y-6">
           {/* Overview Stat Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-brand-500 transition-all group">
+            <div className="bg-[#F5F6F8] p-6 rounded-2xl  transition-all group">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center group-hover:bg-brand-600 transition-colors">
                   <Users className="w-5 h-5 text-brand-600 group-hover:text-white transition-colors" />
@@ -380,7 +380,7 @@ export default function EnhancedInstructorDashboard() {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-500 transition-all group">
+            <div className="bg-[#F5F6F8] p-6 rounded-2xl  transition-all group">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-600 transition-colors">
                   <DollarSign className="w-5 h-5 text-emerald-600 group-hover:text-white transition-colors" />
@@ -396,7 +396,7 @@ export default function EnhancedInstructorDashboard() {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-amber-500 transition-all group">
+            <div className="bg-[#F5F6F8] p-6 rounded-2xl  transition-all group">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center group-hover:bg-amber-600 transition-colors">
                   <Star className="w-5 h-5 text-amber-600 group-hover:text-white transition-colors" />
@@ -414,7 +414,7 @@ export default function EnhancedInstructorDashboard() {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-brand-500 transition-all group">
+            <div className="bg-[#F5F6F8] p-6 rounded-2xl  transition-all group">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center group-hover:bg-brand-600 transition-colors">
                   <Activity className="w-5 h-5 text-brand-600 group-hover:text-white transition-colors" />
@@ -429,7 +429,7 @@ export default function EnhancedInstructorDashboard() {
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Revenue Chart */}
-            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+            <div className="bg-[#F5F6F8] p-8 rounded-2xl ">
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <h4 className="text-lg font-bold text-slate-900">Gelir Trendi</h4>
@@ -473,7 +473,7 @@ export default function EnhancedInstructorDashboard() {
             </div>
 
             {/* Course Performance */}
-            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+            <div className="bg-[#F5F6F8] p-8 rounded-2xl ">
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <h4 className="text-lg font-bold text-slate-900">Öğrenci Kayıtları</h4>
@@ -510,7 +510,7 @@ export default function EnhancedInstructorDashboard() {
           </div>
 
           {/* Traffic Sources */}
-          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-700 delay-600">
+          <div className="bg-[#F5F6F8] p-8 rounded-2xl  animate-in fade-in slide-in-from-bottom-4 duration-700 delay-600">
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h4 className="text-lg font-bold text-slate-900">Trafik Kaynakları</h4>
@@ -549,7 +549,7 @@ export default function EnhancedInstructorDashboard() {
 
               <div className="space-y-3">
                 {trafficSourceData.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100/50 hover:border-slate-200 transition-all group">
+                  <div key={index} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 transition-all group">
                     <div className="flex items-center gap-3">
                       <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
                       <div>
@@ -566,7 +566,7 @@ export default function EnhancedInstructorDashboard() {
 
 
         <TabsContent value="courses" className="space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pb-6 border-b-2 border-slate-100 animate-in fade-in slide-in-from-left-4 duration-500">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pb-6 animate-in fade-in slide-in-from-left-4 duration-500">
             <div>
               <h3 className="text-3xl font-black text-slate-900 tracking-tight">Kurs Portfolyosu</h3>
               <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">İçeriklerini Buradan Yönetebilirsin</p>
@@ -577,12 +577,12 @@ export default function EnhancedInstructorDashboard() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <Input
                   placeholder="Hızlıca kurs ara..."
-                  className="pl-12 h-14 rounded-2xl bg-white border-2 border-slate-200 shadow-sm focus:border-brand-600 focus:ring-4 focus:ring-brand-500/20 transition-all font-bold text-slate-700"
+                  className="pl-12 h-14 rounded-2xl bg-[#F5F6F8]  focus:ring-4 focus:ring-brand-500/20 transition-all font-bold text-slate-700"
                   value={courseSearchQuery}
                   onChange={(e) => setCourseSearchQuery(e.target.value)}
                 />
               </div>
-              <Button variant="outline" className="h-14 w-14 rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 p-0 shrink-0">
+              <Button variant="outline" className="h-14 w-14 rounded-2xl bg-[#F5F6F8] hover:bg-slate-50 p-0 shrink-0">
                 <Filter className="w-6 h-6 text-slate-600" />
               </Button>
             </div>
@@ -601,7 +601,7 @@ export default function EnhancedInstructorDashboard() {
                 size="sm"
                 className={cn(
                   "rounded-full px-4 font-semibold text-xs",
-                  courseStatusFilter === tab.id ? "bg-brand-600 hover:bg-brand-700" : "bg-white border-gray-200"
+                  courseStatusFilter === tab.id ? "bg-brand-600 hover:bg-brand-700" : "bg-white"
                 )}
                 onClick={() => setCourseStatusFilter(tab.id as any)}
               >
@@ -628,7 +628,7 @@ export default function EnhancedInstructorDashboard() {
                     return matchesSearch && matchesStatus;
                   })
                   .map((course) => (
-                    <div key={course.id} className="bg-white rounded-[2.5rem] border-2 border-slate-200 shadow-xl shadow-slate-200/40 hover:border-brand-500 transition-all hover:shadow-2xl hover:shadow-brand-500/10 group overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div key={course.id} className="bg-[#F5F6F8] rounded-[2.5rem] shadow-xl shadow-slate-200/40 transition-all hover:shadow-2xl hover:shadow-brand-500/10 group overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                       <div className="flex flex-col lg:flex-row">
                         <div className="relative w-full lg:w-72 h-48 lg:h-auto overflow-hidden">
                           <img
@@ -637,9 +637,9 @@ export default function EnhancedInstructorDashboard() {
                             className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700"
                           />
                           <div className="absolute top-4 left-4 flex flex-col gap-2">
-                            {course.status === 'active' && <Badge className="bg-emerald-500 text-white border-0 text-[10px] font-black px-3 py-1 rounded-lg shadow-lg shadow-emerald-500/30">YAYINDA</Badge>}
-                            {course.status === 'draft' && <Badge className="bg-slate-700 text-white border-0 text-[10px] font-black px-3 py-1 rounded-lg">TASLAK</Badge>}
-                            {course.status === 'pending' && <Badge className="bg-brand-500 text-white border-0 text-[10px] font-black px-3 py-1 rounded-lg shadow-lg shadow-brand-500/30">İNCELEMEDE</Badge>}
+                            {course.status === 'active' && <Badge className="bg-emerald-500 text-white text-[10px] font-black px-3 py-1 rounded-lg shadow-lg shadow-emerald-500/30">YAYINDA</Badge>}
+                            {course.status === 'draft' && <Badge className="bg-slate-700 text-white text-[10px] font-black px-3 py-1 rounded-lg">TASLAK</Badge>}
+                            {course.status === 'pending' && <Badge className="bg-brand-500 text-white text-[10px] font-black px-3 py-1 rounded-lg shadow-lg shadow-brand-500/30">İNCELEMEDE</Badge>}
                           </div>
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
                             <Button
@@ -708,7 +708,7 @@ export default function EnhancedInstructorDashboard() {
                             </div>
                           </div>
 
-                          <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
+                          <div className="mt-8 pt-6 flex items-center justify-between">
                             <div>
                               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Toplam Kazanç</p>
                               <p className="text-3xl font-black text-emerald-600">₺{course.revenue.toLocaleString()}</p>
@@ -717,7 +717,7 @@ export default function EnhancedInstructorDashboard() {
                               <Button className="h-12 rounded-xl bg-slate-900 hover:bg-slate-800 text-white px-6 font-black text-sm transition-all shadow-lg shadow-slate-200">
                                 Analizlere Bak
                               </Button>
-                              <Button variant="outline" className="h-12 rounded-xl border-2 border-slate-200 font-black text-sm hover:bg-slate-50">
+                              <Button variant="outline" className="h-12 rounded-xl font-black text-sm hover:bg-slate-50 bg-[#F5F6F8]">
                                 Paylaş
                               </Button>
                             </div>
@@ -727,7 +727,7 @@ export default function EnhancedInstructorDashboard() {
                     </div>
                   ))
               ) : (
-                <div className="bg-white border-2 border-dashed border-gray-100 rounded-2xl py-20 text-center">
+                <div className="bg-[#F5F6F8] rounded-2xl py-20 text-center">
                   <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
                     <BookOpen className="w-8 h-8 text-gray-300" />
                   </div>
@@ -743,8 +743,8 @@ export default function EnhancedInstructorDashboard() {
 
         {/* Students Tab */}
         <TabsContent value="students" className="space-y-6">
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
+          <div className="bg-[#F5F6F8] p-6 rounded-2xl ">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Öğrenci Yönetimi</h3>
                 <p className="text-sm font-medium text-slate-400 mt-1">Öğrencilerin ilerlemesini takip edin ve iletişime geçin.</p>
@@ -760,8 +760,8 @@ export default function EnhancedInstructorDashboard() {
               </div>
             </div>
 
-            <div className="rounded-xl overflow-hidden border border-slate-100">
-              <div className="hidden lg:grid grid-cols-12 gap-4 px-6 py-3 bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+            <div className="rounded-xl overflow-hidden bg-[#F5F6F8]">
+              <div className="hidden lg:grid grid-cols-12 gap-4 px-6 py-3 bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                 <div className="col-span-4">Öğrenci Bilgileri</div>
                 <div className="col-span-2 text-center">Kurs Sayısı</div>
                 <div className="col-span-3">İlerleme</div>
@@ -774,11 +774,11 @@ export default function EnhancedInstructorDashboard() {
               )}
 
               {!studentsLoading && (
-                <div className="divide-y divide-slate-100">
+                <div className="">
                   {filteredStudents.map((s) => (
                     <div key={s.id} className="grid grid-cols-1 lg:grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-slate-50 transition-colors group">
                       <div className="col-span-4 flex items-center gap-3">
-                        <Avatar className="h-10 w-10 rounded-xl border border-slate-200">
+                        <Avatar className="h-10 w-10 rounded-xl bg-[#F5F6F8]">
                           <AvatarImage src={s.avatar || '/avatar.svg'} alt={s.name} />
                           <AvatarFallback className="bg-brand-50 text-brand-600 font-bold text-xs">{(s.name || '?').slice(0, 2).toUpperCase()}</AvatarFallback>
                         </Avatar>
@@ -801,14 +801,14 @@ export default function EnhancedInstructorDashboard() {
                         </div>
                       </div>
                       <div className="col-span-1 flex justify-center">
-                        <Badge variant="outline" className={`px-2 py-0.5 rounded-lg text-[10px] font-bold ${s.status === 'Aktif' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                          s.status === 'Tamamlandı' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-slate-100 text-slate-600 border-slate-200'
+                        <Badge variant="outline" className={`px-2 py-0.5 rounded-lg text-[10px] font-bold ${s.status === 'Aktif' ? 'bg-emerald-50 text-emerald-600' :
+                          s.status === 'Tamamlandı' ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-600'
                           }`}>
                           {s.status}
                         </Badge>
                       </div>
                       <div className="col-span-2 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button size="icon" className="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-brand-600 hover:border-brand-600 transition-all">
+                        <Button size="icon" className="w-8 h-8 rounded-lg bg-[#F5F6F8] text-slate-400 hover:text-brand-600 transition-all">
                           <Mail className="w-3.5 h-3.5" />
                         </Button>
                         <Button size="icon" className="w-8 h-8 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition-all">
@@ -828,7 +828,7 @@ export default function EnhancedInstructorDashboard() {
         </TabsContent>
 
         <TabsContent value="revenue" className="space-y-8">
-          <div className="pb-6 border-b-2 border-slate-100 animate-in fade-in slide-in-from-left-4 duration-500">
+          <div className="pb-6 animate-in fade-in slide-in-from-left-4 duration-500">
             <h3 className="text-3xl font-black text-slate-900 tracking-tight">Gelir Özeti</h3>
             <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Kazançlarını ve Ödeme Geçmişini Buradan Takip Et</p>
           </div>
@@ -836,7 +836,7 @@ export default function EnhancedInstructorDashboard() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {courses.length > 0 ? (
               courses.map((course) => (
-                <div key={course.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-500 transition-all group overflow-hidden">
+                <div key={course.id} className="bg-[#F5F6F8] rounded-2xl  transition-all group overflow-hidden">
                   <div className="h-32 overflow-hidden relative">
                     <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-slate-900/20" />
@@ -858,7 +858,7 @@ export default function EnhancedInstructorDashboard() {
                       <Button className="flex-1 h-9 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs">
                         Ödeme Talebi
                       </Button>
-                      <Button variant="outline" size="icon" className="h-9 w-9 rounded-lg border-slate-200">
+                      <Button variant="outline" size="icon" className="h-9 w-9 rounded-lg">
                         <BarChart3 className="w-4 h-4 text-slate-400" />
                       </Button>
                     </div>
@@ -866,7 +866,7 @@ export default function EnhancedInstructorDashboard() {
                 </div>
               ))
             ) : (
-              <div className="col-span-full py-12 text-center bg-white rounded-2xl border-2 border-dashed border-slate-100">
+              <div className="col-span-full py-12 text-center bg-[#F5F6F8] rounded-2xl">
                 <p className="text-slate-400 font-bold">Henüz gelir verisi bulunmuyor.</p>
               </div>
             )}
@@ -874,7 +874,7 @@ export default function EnhancedInstructorDashboard() {
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-2 border-b border-slate-100">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-2">
             <div>
               <h3 className="text-xl font-bold text-slate-900">Eğitmen Profili</h3>
               <p className="text-sm font-medium text-slate-400">Profil bilgilerinizi ve bildirim tercihlerinizi güncelleyin.</p>
@@ -883,18 +883,18 @@ export default function EnhancedInstructorDashboard() {
 
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-              <Card className="rounded-2xl border border-slate-200 shadow-sm">
+              <Card className="rounded-2xl  bg-[#F5F6F8]">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-base font-bold">Profil Bilgileri</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="flex items-center gap-6 p-4 rounded-xl bg-slate-50 border border-slate-100">
-                    <Avatar className="w-16 h-16 rounded-xl border-2 border-white shadow-sm">
+                  <div className="flex items-center gap-6 p-4 rounded-xl bg-slate-50">
+                    <Avatar className="w-16 h-16 rounded-xl  bg-[#F5F6F8]">
                       <AvatarImage src="/avatar.svg" alt="avatar" />
                       <AvatarFallback className="bg-slate-900 text-white font-bold">PR</AvatarFallback>
                     </Avatar>
                     <div>
-                      <Button variant="outline" size="sm" className="h-9 px-4 rounded-lg font-bold text-xs border-slate-200 hover:bg-white transition-all">
+                      <Button variant="outline" size="sm" className="h-9 px-4 rounded-lg font-bold text-xs hover:bg-white transition-all">
                         Fotoğraf Değiştir
                       </Button>
                     </div>
@@ -903,22 +903,22 @@ export default function EnhancedInstructorDashboard() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Ad</Label>
-                      <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium" />
+                      <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-10 rounded-xl font-medium" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="lastName" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Soyad</Label>
-                      <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium" />
+                      <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-10 rounded-xl font-medium" />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="title" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Unvan/Pozisyon</Label>
-                    <Input id="title" value={titleValue} onChange={(e) => setTitleValue(e.target.value)} className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium" />
+                    <Input id="title" value={titleValue} onChange={(e) => setTitleValue(e.target.value)} className="h-10 rounded-xl font-medium" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="bio" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Kendinizi Tanıtın</Label>
-                    <Textarea id="bio" rows={4} value={bioValue} onChange={(e) => setBioValue(e.target.value)} className="rounded-xl border-slate-200 focus:border-brand-500 font-medium resize-none" />
+                    <Textarea id="bio" rows={4} value={bioValue} onChange={(e) => setBioValue(e.target.value)} className="rounded-xl font-medium resize-none" />
                   </div>
 
                   {/* Specializations Section */}
@@ -938,12 +938,12 @@ export default function EnhancedInstructorDashboard() {
                             }
                           }
                         }}
-                        className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
+                        className="h-10 rounded-xl font-medium"
                       />
                       <Button
                         type="button"
                         variant="outline"
-                        className="h-10 rounded-xl border-slate-200 font-bold"
+                        className="h-10 rounded-xl font-bold"
                         onClick={() => {
                           if (newSpec.trim()) {
                             setSpecializations([...specializations, newSpec.trim()]);
@@ -956,7 +956,7 @@ export default function EnhancedInstructorDashboard() {
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {specializations.map((spec, index) => (
-                        <Badge key={index} variant="secondary" className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 border-0 flex items-center gap-1">
+                        <Badge key={index} variant="secondary" className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 flex items-center gap-1">
                           {spec}
                           <button
                             onClick={() => setSpecializations(specializations.filter((_, i) => i !== index))}
@@ -979,7 +979,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.youtube}
                           onChange={(e) => setSocialLinks({ ...socialLinks, youtube: e.target.value })}
                           placeholder="https://youtube.com/@kanal"
-                          className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
+                          className="h-10 rounded-xl font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -988,7 +988,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.instagram}
                           onChange={(e) => setSocialLinks({ ...socialLinks, instagram: e.target.value })}
                           placeholder="https://instagram.com/kullanici"
-                          className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
+                          className="h-10 rounded-xl font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -997,7 +997,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.facebook}
                           onChange={(e) => setSocialLinks({ ...socialLinks, facebook: e.target.value })}
                           placeholder="https://facebook.com/sayfa"
-                          className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
+                          className="h-10 rounded-xl font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -1006,7 +1006,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.x}
                           onChange={(e) => setSocialLinks({ ...socialLinks, x: e.target.value })}
                           placeholder="https://x.com/kullanici"
-                          className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
+                          className="h-10 rounded-xl font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -1015,7 +1015,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.website}
                           onChange={(e) => setSocialLinks({ ...socialLinks, website: e.target.value })}
                           placeholder="https://websitesi.com"
-                          className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
+                          className="h-10 rounded-xl font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -1024,13 +1024,13 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.tiktok}
                           onChange={(e) => setSocialLinks({ ...socialLinks, tiktok: e.target.value })}
                           placeholder="https://tiktok.com/@kullanici"
-                          className="h-10 rounded-xl border-slate-200 focus:border-brand-500 font-medium"
+                          className="h-10 rounded-xl font-medium"
                         />
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex justify-end border-t border-slate-100 pt-6">
+                  <div className="flex justify-end pt-6">
                     <Button className="h-10 px-8 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm transition-all active:scale-95">
                       Kayıt Et
                     </Button>
@@ -1040,7 +1040,7 @@ export default function EnhancedInstructorDashboard() {
             </div>
 
             <div className="space-y-6">
-              <Card className="rounded-2xl border border-slate-200 shadow-sm">
+              <Card className="rounded-2xl  bg-[#F5F6F8]">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-base font-bold">Bildirimler</CardTitle>
                 </CardHeader>
@@ -1079,7 +1079,7 @@ export default function EnhancedInstructorDashboard() {
         </TabsContent>
 
         <TabsContent value="campaigns" className="space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-2 border-b border-slate-100">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-2">
             <div>
               <h3 className="text-xl font-bold text-slate-900">Kampanyalar</h3>
               <p className="text-sm font-medium text-slate-400">Satışları artırmak için özel teklifler oluşturun.</p>
@@ -1087,12 +1087,12 @@ export default function EnhancedInstructorDashboard() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="p-6 rounded-2xl border border-slate-200 bg-white hover:border-brand-500 transition-all group">
+            <div className="p-6 rounded-2xl bg-[#F5F6F8] transition-all group">
               <div className="flex items-center justify-between mb-4">
                 <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center">
                   <Gift className="w-5 h-5 text-brand-600" />
                 </div>
-                <Badge className="bg-emerald-500 text-white border-0 text-[10px] font-bold px-2 py-0.5 rounded-lg">AKTİF</Badge>
+                <Badge className="bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg">AKTİF</Badge>
               </div>
               <h3 className="text-base font-bold text-slate-900 mb-1">Yaz İndirimi</h3>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-4">%50 İNDİRİM</p>
@@ -1108,12 +1108,12 @@ export default function EnhancedInstructorDashboard() {
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl border border-slate-200 bg-white hover:border-amber-500 transition-all group">
+            <div className="p-6 rounded-2xl bg-[#F5F6F8] transition-all group">
               <div className="flex items-center justify-between mb-4">
                 <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
                   <Zap className="w-5 h-5 text-amber-600" />
                 </div>
-                <Badge variant="outline" className="text-[10px] font-bold px-2 py-0.5 rounded-lg border-slate-200">BEKLEMEDE</Badge>
+                <Badge variant="outline" className="text-[10px] font-bold px-2 py-0.5 rounded-lg">BEKLEMEDE</Badge>
               </div>
               <h3 className="text-base font-bold text-slate-900 mb-1">Yeni Öğrenci</h3>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-4">%30 İNDİRİM</p>
@@ -1129,7 +1129,7 @@ export default function EnhancedInstructorDashboard() {
               </div>
             </div>
 
-            <div className="md:col-span-2 p-8 text-center border-2 border-dashed border-slate-100 rounded-2xl bg-slate-50/50">
+            <div className="md:col-span-2 p-8 text-center rounded-2xl bg-slate-50/50">
               <p className="text-sm font-bold text-slate-500 mb-4">Mevcut kampanyalarınızı yönetin veya yenisini başlatın.</p>
               <Button className="h-10 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm">
                 <Plus className="w-4 h-4 mr-2" />

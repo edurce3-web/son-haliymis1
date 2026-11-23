@@ -163,7 +163,7 @@ const InstructorFinanceReport: React.FC = () => {
                     {data.byCourse.length === 0 ? (
                         <p className="text-[14px] text-[#4a6360] px-6 py-10 text-center">Henüz satış yok.</p>
                     ) : (
-                        <ul className="divide-y divide-[#f0f1f1]">
+                        <ul className="">
                             {data.byCourse.slice(0, 8).map(c => (
                                 <li key={c.course_id} className="flex items-center gap-3 px-5 py-3">
                                     <img
@@ -199,7 +199,7 @@ const InstructorFinanceReport: React.FC = () => {
                         <div className="overflow-x-auto">
                             <table className="w-full min-w-[600px]">
                                 <thead>
-                                    <tr className="text-left text-[12.5px] text-[#4a6360] border-b-2 border-white">
+                                    <tr className="text-left text-[12.5px] text-[#4a6360]">
                                         <th scope="col" className="font-bold px-5 sm:px-6 py-3">Tarih</th>
                                         <th scope="col" className="font-bold px-3 py-3">Kurs</th>
                                         <th scope="col" className="font-bold px-3 py-3">Öğrenci</th>
@@ -207,7 +207,7 @@ const InstructorFinanceReport: React.FC = () => {
                                         <th scope="col" className="font-bold px-5 sm:px-6 py-3 text-right">Kazancın</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-[#f0f1f1] text-[13.5px]">
+                                <tbody className="text-[13.5px]">
                                     {filteredSales.slice(0, 100).map(s => (
                                         <tr key={s.id} className="hover:bg-[#f7f8f8]">
                                             <td className="px-5 sm:px-6 py-3 text-[#4a6360] whitespace-nowrap tabular-nums">
@@ -231,7 +231,7 @@ const InstructorFinanceReport: React.FC = () => {
                                 </tbody>
                             </table>
                             {filteredSales.length > 100 && (
-                                <p className="text-[12.5px] text-[#5f7774] text-center py-3 border-t border-[#f0f1f1]">
+                                <p className="text-[12.5px] text-[#5f7774] text-center py-3">
                                     Son 100 satış gösteriliyor. Tamamı indirilen dosyada.
                                 </p>
                             )}
@@ -246,7 +246,7 @@ const InstructorFinanceReport: React.FC = () => {
 const Flow: React.FC<{
     label: string; value: string; note: string; dim?: boolean; strong?: boolean; action?: React.ReactNode;
 }> = ({ label, value, note, dim, strong, action }) => (
-    <div className="px-5 sm:px-6 py-5 border-white/[0.08] [&:not(:last-child)]:border-r max-lg:[&:nth-child(2)]:border-r-0 max-lg:[&:nth-child(-n+2)]:border-b">
+    <div className="px-5 sm:px-6 py-5">
         <p className="text-[12.5px] text-[#a9cfc9]">{label}</p>
         <p className={cn(
             'mt-1.5 text-[24px] sm:text-[26px] leading-none font-extrabold tracking-[-0.02em] tabular-nums',

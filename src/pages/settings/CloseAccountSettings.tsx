@@ -14,7 +14,7 @@ const CloseAccountSettings: React.FC = () => {
                 <h1 className="text-2xl font-bold text-red-600">Hesabı Kapat</h1>
             </div>
 
-            <div className="bg-red-50 border border-red-100 rounded-3xl p-6 lg:p-8 space-y-6 relative overflow-hidden">
+            <div className="bg-red-50 rounded-3xl p-6 lg:p-8 space-y-6 relative overflow-hidden">
                 {/* Dekoratif Arka Plan (isteğe bağlı) */}
                 <div className="absolute top-0 right-0 -mt-10 -mr-10 opacity-10 pointer-events-none">
                     <AlertTriangle className="w-64 h-64 text-red-500" />
@@ -30,16 +30,16 @@ const CloseAccountSettings: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="relative z-10 pt-4 border-t border-red-200/50">
+                <div className="relative z-10 pt-4">
                     <p className="text-sm font-semibold text-slate-800">Devam etmek istediğinize tamamen eminseniz kutucuğa işlemi onaylamak için aşağıdaki metni girin:</p>
-                    <div className="bg-slate-100 px-4 py-2 rounded-lg mt-3 inline-block border border-slate-200 shadow-inner">
+                    <div className="bg-slate-100 px-4 py-2 rounded-lg mt-3 inline-block shadow-inner">
                         <code className="text-slate-600 font-bold tracking-tight select-all">Hesabımı Kalıcı Olarak Sil</code>
                     </div>
 
                     <div className="mt-4">
                         <input
                             type="text"
-                            className="w-full h-12 px-4 border border-red-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 placeholder:text-slate-300 font-medium transition-all"
+                            className="w-full h-12 px-4 rounded-xl bg-[#F1F3F5] focus:outline-none focus:ring-2 focus:ring-red-400 placeholder:text-slate-300 font-medium transition-all"
                             placeholder="Hesabımı Kalıcı Olarak Sil"
                             value={confirmText}
                             onChange={(e) => setConfirmText(e.target.value)}

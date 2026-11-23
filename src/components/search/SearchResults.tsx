@@ -163,7 +163,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
       {/* Enhanced Results Header */}
       <div className={cn(
         "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 p-6 rounded-2xl",
-        "bg-gradient-to-r from-background to-muted/30 border border-border/50",
+        "bg-gradient-to-r from-background to-muted/30",
         "transition-all duration-500",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
       )}>
@@ -210,7 +210,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
             className={cn(
               "transition-all duration-200",
               viewMode === 'grid' 
-                ? "bg-background shadow-sm" 
+                ? "bg-background " 
                 : "hover:bg-background/50"
             )}
           >
@@ -224,7 +224,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
             className={cn(
               "transition-all duration-200",
               viewMode === 'list' 
-                ? "bg-background shadow-sm" 
+                ? "bg-background " 
                 : "hover:bg-background/50"
             )}
           >

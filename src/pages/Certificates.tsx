@@ -178,14 +178,14 @@ const Certificates = () => {
                                     <button
                                         onClick={() => handleDownload(cert, 'pdf')}
                                         disabled={!!busy}
-                                        className="h-9 px-3 rounded-md border border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60"
+                                        className="h-9 px-3 rounded-md hover:text-brand-800 text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60 bg-[#F5F6F8]"
                                     >
                                         {busy === `${cert.certificate_id}-pdf` ? '…' : 'PDF'}
                                     </button>
                                     <button
                                         onClick={() => handleDownload(cert, 'png')}
                                         disabled={!!busy}
-                                        className="h-9 px-3 rounded-md border border-slate-300 hover:border-brand-400 hover:text-brand-800 text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60"
+                                        className="h-9 px-3 rounded-md hover:text-brand-800 text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60 bg-[#F5F6F8]"
                                     >
                                         {busy === `${cert.certificate_id}-png` ? '…' : 'PNG'}
                                     </button>
@@ -203,10 +203,10 @@ const Certificates = () => {
                     onClick={closePreview}
                 >
                     <div
-                        className="bg-white rounded-xl overflow-hidden border border-slate-200 shadow-2xl max-w-3xl w-full"
+                        className="bg-[#F5F6F8] rounded-xl overflow-hidden shadow-2xl max-w-3xl w-full"
                         onClick={e => e.stopPropagation()}
                     >
-                        <div className="flex items-center justify-between gap-4 px-5 py-3.5 border-b border-slate-200">
+                        <div className="flex items-center justify-between gap-4 px-5 py-3.5">
                             <h3 className="text-[14.5px] font-semibold text-slate-900 truncate">
                                 {previewCert.course_title}
                             </h3>
@@ -214,14 +214,14 @@ const Certificates = () => {
                                 <button
                                     onClick={() => handleDownload(previewCert, 'pdf')}
                                     disabled={!!busy}
-                                    className="h-9 px-3.5 rounded-md border border-slate-300 hover:border-brand-400 text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60"
+                                    className="h-9 px-3.5 rounded-md text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60 bg-[#F5F6F8]"
                                 >
                                     PDF
                                 </button>
                                 <button
                                     onClick={() => handleDownload(previewCert, 'png')}
                                     disabled={!!busy}
-                                    className="h-9 px-3.5 rounded-md border border-slate-300 hover:border-brand-400 text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60"
+                                    className="h-9 px-3.5 rounded-md text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60 bg-[#F5F6F8]"
                                 >
                                     PNG
                                 </button>
@@ -239,7 +239,7 @@ const Certificates = () => {
                             <img
                                 src={previewUrl}
                                 alt={`${previewCert.course_title} sertifikası`}
-                                className="w-full rounded-lg border border-slate-200"
+                                className="w-full rounded-lg bg-[#F5F6F8]"
                             />
                         </div>
                     </div>

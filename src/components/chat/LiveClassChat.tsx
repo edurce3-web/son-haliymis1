@@ -397,7 +397,7 @@ export const LiveClassChat: React.FC<LiveClassChatProps> = ({
           <CardContent className="flex-1 p-0">
             <div className="flex h-full">
               {/* Chat Messages */}
-              <div className={`flex-1 flex flex-col ${showParticipants ? 'border-r' : ''}`}>
+              <div className={`flex-1 flex flex-col ${showParticipants ? '' : ''}`}>
                 <ScrollArea className="flex-1 px-4">
                   <div className="space-y-3 py-2">
                     {messages.map((message) => (
@@ -410,7 +410,7 @@ export const LiveClassChat: React.FC<LiveClassChatProps> = ({
                         )}
                         
                         {message.reply_to && (
-                          <div className="ml-8 mb-1 p-2 bg-gray-50 rounded text-xs border-l-2 border-gray-300">
+                          <div className="ml-8 mb-1 p-2 bg-gray-50 rounded text-xs">
                             <span className="text-gray-600">Yanıtlanan mesaj...</span>
                           </div>
                         )}
@@ -527,7 +527,7 @@ export const LiveClassChat: React.FC<LiveClassChatProps> = ({
                 </ScrollArea>
 
                 {/* Message Input */}
-                <div className="p-4 border-t">
+                <div className="p-4">
                   {replyTo && (
                     <div className="mb-2 p-2 bg-blue-50 rounded text-sm flex items-center justify-between">
                       <div>
@@ -599,8 +599,8 @@ export const LiveClassChat: React.FC<LiveClassChatProps> = ({
 
               {/* Participants Panel */}
               {showParticipants && (
-                <div className="w-64 border-l">
-                  <div className="p-3 border-b">
+                <div className="w-64">
+                  <div className="p-3">
                     <h4 className="font-medium text-sm">Katılımcılar ({participants.length})</h4>
                   </div>
                   <ScrollArea className="h-64">

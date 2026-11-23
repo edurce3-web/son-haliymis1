@@ -597,7 +597,7 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                             {/* Settings Menu */}
                             {showSettings && (
                                 <div
-                                    className="absolute bottom-12 right-0 bg-gray-900/95 backdrop-blur-xl rounded-xl border border-white/10 shadow-2xl overflow-hidden min-w-[220px] z-50"
+                                    className="absolute bottom-12 right-0 bg-gray-900/95 backdrop-blur-xl rounded-xl shadow-2xl overflow-hidden min-w-[220px] z-50"
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     {settingsTab === 'main' && (
@@ -623,7 +623,7 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                                         <div className="py-1">
                                             <button
                                                 onClick={() => setSettingsTab('main')}
-                                                className="w-full flex items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors border-b border-white/5"
+                                                className="w-full flex items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors"
                                             >
                                                 <span className="text-white/60 text-xs">←</span>
                                                 <span className="text-sm text-white font-bold">Kalite</span>
@@ -669,7 +669,7 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                                         <div className="py-1">
                                             <button
                                                 onClick={() => setSettingsTab('main')}
-                                                className="w-full flex items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors border-b border-white/5"
+                                                className="w-full flex items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors"
                                             >
                                                 <span className="text-white/60 text-xs">←</span>
                                                 <span className="text-sm text-white font-bold">Oynatma Hızı</span>
