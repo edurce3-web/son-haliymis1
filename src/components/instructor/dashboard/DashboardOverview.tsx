@@ -64,13 +64,13 @@ export const DashboardOverview: React.FC = () => {
                 </div>
 
                 {courses.isLoading ? (
-                    <div className="rounded-2xl bg-[#f4f6f6]" aria-hidden>
+                    <div className=" bg-[#f4f6f6]" aria-hidden>
                         {[0, 1].map(i => (
                             <div key={i} className="flex items-center gap-4 p-4">
-                                <div className="w-24 h-[54px] rounded-md bg-[#eceeed] animate-pulse" />
+                                <div className="w-24 h-[54px]  bg-[#eceeed] animate-pulse" />
                                 <div className="flex-1 space-y-2">
-                                    <div className="h-3 rounded bg-[#eceeed] animate-pulse w-1/2" />
-                                    <div className="h-2.5 rounded bg-[#eceeed] animate-pulse w-1/4" />
+                                    <div className="h-3  bg-[#eceeed] animate-pulse w-1/2" />
+                                    <div className="h-2.5  bg-[#eceeed] animate-pulse w-1/4" />
                                 </div>
                             </div>
                         ))}
@@ -78,7 +78,7 @@ export const DashboardOverview: React.FC = () => {
                 ) : list.length === 0 ? (
                     <FirstCourse onStart={() => navigate('/instructor/courses/create')} />
                 ) : inProgress.length === 0 ? (
-                    <div className="rounded-2xl bg-[#f4f6f6] px-5 py-4 flex flex-wrap items-center justify-between gap-3">
+                    <div className=" bg-[#f4f6f6] px-5 py-4 flex flex-wrap items-center justify-between gap-3">
                         <p className="text-[14px] text-[#4a6360]">
                             Bütün kursların yayında; yarım kalan iş yok.
                         </p>
@@ -90,7 +90,7 @@ export const DashboardOverview: React.FC = () => {
                         </Link>
                     </div>
                 ) : (
-                    <ul className="rounded-2xl bg-[#f4f6f6] overflow-hidden">
+                    <ul className=" bg-[#f4f6f6] overflow-hidden">
                         {inProgress.slice(0, 2).map(c => <DeskRow key={c.id} course={c} />)}
                     </ul>
                 )}
@@ -99,9 +99,9 @@ export const DashboardOverview: React.FC = () => {
             {/* ── Hesap özeti: tek defter satırı ─────────────────────── */}
             <section aria-label="Hesap özeti">
                 {dashboard.isLoading ? (
-                    <div className="h-[92px] rounded-2xl bg-[#f4f6f6] animate-pulse" />
+                    <div className="h-[92px]  bg-[#f4f6f6] animate-pulse" />
                 ) : dashboard.isError || !stats ? (
-                    <div className="rounded-2xl bg-[#f4f6f6] px-5 py-4 flex items-center justify-between gap-3">
+                    <div className=" bg-[#f4f6f6] px-5 py-4 flex items-center justify-between gap-3">
                         <p className="text-[14px] text-[#4a6360]">Kazanç ve öğrenci özetini şu an yükleyemedik.</p>
                         <button
                             type="button"
@@ -112,7 +112,7 @@ export const DashboardOverview: React.FC = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 lg:grid-cols-4 rounded-2xl bg-[#f4f6f6] overflow-hidden">
+                    <div className="grid grid-cols-2 lg:grid-cols-4  bg-[#f4f6f6] overflow-hidden">
                         <Figure
                             label="Bu ayki kazancın"
                             value={lira(stats.monthlyRevenue)}
@@ -148,24 +148,24 @@ export const DashboardOverview: React.FC = () => {
 
             {/* ── Grafik ve bekleyenler ──────────────────────────────── */}
             <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
-                <section aria-labelledby="revenue-heading" className="rounded-2xl bg-[#f4f6f6] p-5 sm:p-6 min-w-0">
+                <section aria-labelledby="revenue-heading" className=" bg-[#f4f6f6] p-5 sm:p-6 min-w-0">
                     <h2 id="revenue-heading" className="text-[17px] font-extrabold tracking-tight">Satışların</h2>
                     <p className="text-[13px] text-[#5f7774] mt-0.5 mb-5">Vergi sonrası eline geçen tutar, aylara göre</p>
                     {dashboard.data?.chart ? (
                         <RevenueChart chart={dashboard.data.chart} variant="composed" height={280} />
                     ) : (
-                        <div className="h-[280px] rounded-lg bg-[#f7f8f8]" />
+                        <div className="h-[280px]  bg-[#f7f8f8]" />
                     )}
                 </section>
 
-                <section aria-labelledby="waiting-heading" className="rounded-2xl bg-[#f4f6f6] overflow-hidden">
+                <section aria-labelledby="waiting-heading" className=" bg-[#f4f6f6] overflow-hidden">
                     <div className="px-5 pt-5 pb-3">
                         <h2 id="waiting-heading" className="text-[17px] font-extrabold tracking-tight">Seni bekleyenler</h2>
                     </div>
 
                     {questions.isLoading ? (
                         <div className="px-5 pb-5 space-y-3" aria-hidden>
-                            {[0, 1].map(i => <div key={i} className="h-12 rounded bg-[#eceeed] animate-pulse" />)}
+                            {[0, 1].map(i => <div key={i} className="h-12  bg-[#eceeed] animate-pulse" />)}
                         </div>
                     ) : questions.count === 0 ? (
                         <p className="px-5 pb-4 text-[13.5px] text-[#4a6360]">
@@ -219,7 +219,7 @@ const DeskRow: React.FC<{ course: WorkspaceCourse }> = ({ course }) => {
                     src={course.thumbnail || '/placeholder.svg'}
                     alt=""
                     onError={e => { (e.target as HTMLImageElement).src = '/placeholder.svg'; }}
-                    className="w-20 sm:w-24 aspect-video rounded-md object-cover shrink-0 bg-[#eceeed]"
+                    className="w-20 sm:w-24 aspect-video  object-cover shrink-0 bg-[#eceeed]"
                 />
                 <span className="min-w-0 flex-1">
                     <span className="block text-[14.5px] font-semibold leading-snug truncate">{course.title}</span>
@@ -233,7 +233,7 @@ const DeskRow: React.FC<{ course: WorkspaceCourse }> = ({ course }) => {
                 </span>
                 <span
                     className={cn(
-                        'hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg text-[13px] font-semibold shrink-0 transition-colors',
+                        'hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5  text-[13px] font-semibold shrink-0 transition-colors',
                         st.tone === 'draft'
                             ? 'bg-[#9cf2e8] text-[#00201d] group-hover:bg-[#86e9dd]'
                             : 'bg-[#e8faf6] text-[#00201d] group-hover:bg-[#d9f3ee]'
@@ -261,7 +261,7 @@ const Figure: React.FC<{ label: string; value: string; note: string; to: string 
 const WaitingLink: React.FC<{ to: string; label: string; count: number }> = ({ to, label, count }) => (
     <Link
         to={to}
-        className="flex items-center justify-between h-9 -mx-2 px-2 rounded-lg text-[13.5px] font-medium text-[#00201d] hover:bg-[#f7f8f8] transition-colors"
+        className="flex items-center justify-between h-9 -mx-2 px-2  text-[13.5px] font-medium text-[#00201d] hover:bg-[#f7f8f8] transition-colors"
     >
         {label}
         <span className="flex items-center gap-2">
@@ -280,7 +280,7 @@ const WaitingLink: React.FC<{ to: string; label: string; count: number }> = ({ t
  * Adımlar gerçek akış — kurs oluşturma ekranı da bu sırayla ilerliyor.
  */
 const FirstCourse: React.FC<{ onStart: () => void }> = ({ onStart }) => (
-    <div className="rounded-2xl bg-[#00201d] text-white p-6 sm:p-8">
+    <div className=" bg-[#00201d] text-white p-6 sm:p-8">
         <h3 className="text-[20px] font-bold tracking-tight">İlk kursunu hazırla</h3>
         <p className="text-[14px] text-[#b8e6df] mt-1.5 max-w-[52ch]">
             Kursun taslak olarak kaydedilir; istediğin zaman ara verip buradan devam edebilirsin.
@@ -291,7 +291,7 @@ const FirstCourse: React.FC<{ onStart: () => void }> = ({ onStart }) => (
                 { icon: Clapperboard, t: 'Bölümler ve videolar', d: 'Dersleri bölümlere ayır, videolarını yükle.' },
                 { icon: Send, t: 'İncelemeye gönder', d: 'Ekibimiz kontrol eder, onaylanınca yayına çıkar.' },
             ].map((s, i) => (
-                <li key={s.t} className="rounded-lg bg-white/[0.07] p-4">
+                <li key={s.t} className=" bg-white/[0.07] p-4">
                     <span className="flex items-center gap-2 text-[12px] font-semibold text-[#9cf2e8]">
                         <s.icon className="w-4 h-4" /> {i + 1}. adım
                     </span>
@@ -303,7 +303,7 @@ const FirstCourse: React.FC<{ onStart: () => void }> = ({ onStart }) => (
         <button
             type="button"
             onClick={onStart}
-            className="mt-6 inline-flex items-center gap-2 h-11 px-5 rounded-lg bg-[#9cf2e8] text-[#00201d] text-[14px] font-bold hover:bg-white active:scale-[0.98] transition-[background-color,transform] duration-150"
+            className="mt-6 inline-flex items-center gap-2 h-11 px-5  bg-[#9cf2e8] text-[#00201d] text-[14px] font-bold hover:bg-white active:scale-[0.98] transition-[background-color,transform] duration-150"
         >
             Kursu oluşturmaya başla <ArrowRight className="w-4 h-4" />
         </button>

@@ -423,7 +423,7 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                             setError(null);
                             if (videoRef.current) videoRef.current.load();
                         }}
-                        className="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-sm"
+                        className="px-6 py-2 bg-white/10 hover:bg-white/20  transition-colors text-sm"
                     >
                         Tekrar Dene
                     </button>
@@ -519,7 +519,7 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                         {/* Play/Pause */}
                         <button
                             onClick={(e) => { e.stopPropagation(); togglePlay(); }}
-                            className="w-10 h-10 flex items-center justify-center hover:bg-white/10 rounded-lg transition-colors"
+                            className="w-10 h-10 flex items-center justify-center hover:bg-white/10  transition-colors"
                         >
                             {isPlaying ? (
                                 <Pause className="w-5 h-5 text-white" fill="white" />
@@ -531,14 +531,14 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                         {/* Skip Back/Forward */}
                         <button
                             onClick={(e) => { e.stopPropagation(); skip(-10); }}
-                            className="w-9 h-9 flex items-center justify-center hover:bg-white/10 rounded-lg transition-colors"
+                            className="w-9 h-9 flex items-center justify-center hover:bg-white/10  transition-colors"
                             title="10 saniye geri"
                         >
                             <SkipBack className="w-4 h-4 text-white/80" />
                         </button>
                         <button
                             onClick={(e) => { e.stopPropagation(); skip(10); }}
-                            className="w-9 h-9 flex items-center justify-center hover:bg-white/10 rounded-lg transition-colors"
+                            className="w-9 h-9 flex items-center justify-center hover:bg-white/10  transition-colors"
                             title="10 saniye ileri"
                         >
                             <SkipForward className="w-4 h-4 text-white/80" />
@@ -548,7 +548,7 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                         <div className="flex items-center gap-1 group/vol">
                             <button
                                 onClick={(e) => { e.stopPropagation(); toggleMute(); }}
-                                className="w-9 h-9 flex items-center justify-center hover:bg-white/10 rounded-lg transition-colors"
+                                className="w-9 h-9 flex items-center justify-center hover:bg-white/10  transition-colors"
                             >
                                 {isMuted || volume === 0 ? (
                                     <VolumeX className="w-5 h-5 text-white/80" />
@@ -589,7 +589,7 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                                     setShowSettings(!showSettings);
                                     setSettingsTab('main');
                                 }}
-                                className="w-9 h-9 flex items-center justify-center hover:bg-white/10 rounded-lg transition-colors"
+                                className="w-9 h-9 flex items-center justify-center hover:bg-white/10  transition-colors"
                             >
                                 <Settings className={`w-5 h-5 text-white/80 transition-transform ${showSettings ? 'rotate-90' : ''}`} />
                             </button>
@@ -597,7 +597,7 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                             {/* Settings Menu */}
                             {showSettings && (
                                 <div
-                                    className="absolute bottom-12 right-0 bg-gray-900/95 backdrop-blur-xl rounded-xl shadow-2xl overflow-hidden min-w-[220px] z-50"
+                                    className="absolute bottom-12 right-0 bg-gray-900/95 backdrop-blur-xl  shadow-2xl overflow-hidden min-w-[220px] z-50"
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     {settingsTab === 'main' && (
@@ -652,7 +652,7 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                                                     <div className="flex items-center gap-2">
                                                         <span className="text-sm text-white">{level.label}</span>
                                                         {level.height >= 720 && (
-                                                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gradient-to-r from-brand-500 to-pink-500 text-white font-bold uppercase">
+                                                            <span className="text-[10px] px-1.5 py-0.5  bg-gradient-to-r from-brand-500 to-pink-500 text-white font-bold uppercase">
                                                                 HD
                                                             </span>
                                                         )}
@@ -697,7 +697,7 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                         {/* PiP */}
                         <button
                             onClick={(e) => { e.stopPropagation(); togglePiP(); }}
-                            className="w-9 h-9 flex items-center justify-center hover:bg-white/10 rounded-lg transition-colors"
+                            className="w-9 h-9 flex items-center justify-center hover:bg-white/10  transition-colors"
                             title="Pencere içinde pencere"
                         >
                             <PictureInPicture2 className="w-4 h-4 text-white/80" />
@@ -706,7 +706,7 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
                         {/* Fullscreen */}
                         <button
                             onClick={(e) => { e.stopPropagation(); toggleFullscreen(); }}
-                            className="w-9 h-9 flex items-center justify-center hover:bg-white/10 rounded-lg transition-colors"
+                            className="w-9 h-9 flex items-center justify-center hover:bg-white/10  transition-colors"
                             title={isFullscreen ? 'Tam ekrandan çık' : 'Tam ekran'}
                         >
                             {isFullscreen ? (
@@ -722,7 +722,7 @@ const HLSVideoPlayer: React.FC<HLSVideoPlayerProps> = ({
             {/* Current Quality Badge (sürekli gösterilen) */}
             {qualityLevels.length > 0 && showControls && (
                 <div className="absolute top-4 right-4 z-30 pointer-events-none">
-                    <div className="px-2.5 py-1 rounded-md bg-black/50 backdrop-blur-sm">
+                    <div className="px-2.5 py-1  bg-black/50 backdrop-blur-sm">
                         <span className="text-[10px] text-white/70 font-bold uppercase tracking-wider">
                             {getQualityLabel()}
                         </span>

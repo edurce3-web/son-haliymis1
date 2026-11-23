@@ -344,12 +344,12 @@ export const EnhancedDashboard: React.FC = () => {
               <CardContent>
                 <div className="space-y-4">
                   {mockCourses.map((course) => (
-                    <div key={course.course_id} className="flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 cursor-pointer bg-[#F5F6F8]"
+                    <div key={course.course_id} className="flex items-center space-x-4 p-4  hover:bg-gray-50 cursor-pointer bg-[#F5F6F8]"
                          onClick={() => navigate(`/course/${course.course_id}/learn`)}>
                       <img 
                         src={course.image_url} 
                         alt={course.title}
-                        className="w-16 h-12 object-cover rounded"
+                        className="w-16 h-12 object-cover "
                       />
                       <div className="flex-1">
                         <h3 className="font-semibold text-sm">{course.title}</h3>
@@ -528,7 +528,7 @@ export const EnhancedDashboard: React.FC = () => {
                     { title: "7 Günlük Seri", description: "7 gün üst üste ders çalıştın!", date: "1 hafta önce", icon: "🔥" },
                     { title: "Hızlı Öğrenci", description: "Bir günde 5 ders tamamladın!", date: "2 hafta önce", icon: "⚡" }
                   ].map((achievement, index) => (
-                    <div key={index} className="flex items-start space-x-3 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg">
+                    <div key={index} className="flex items-start space-x-3 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 ">
                       <div className="text-2xl">{achievement.icon}</div>
                       <div className="flex-1">
                         <h4 className="font-semibold text-sm">{achievement.title}</h4>
@@ -585,7 +585,7 @@ export const EnhancedDashboard: React.FC = () => {
                       { type: 'course_enrolled', title: 'Yeni kursa kaydolundu', description: 'Python ile Veri Bilimi', time: '3 gün önce' },
                       { type: 'certificate_earned', title: 'Sertifika kazanıldı', description: 'JavaScript Temelleri', time: '1 hafta önce' }
                     ].map((activity, index) => (
-                      <div key={index} className="flex items-start space-x-3 p-2 hover:bg-gray-50 rounded-lg">
+                      <div key={index} className="flex items-start space-x-3 p-2 hover:bg-gray-50 ">
                         {getActivityIcon(activity.type)}
                         <div className="flex-1">
                           <p className="text-sm font-medium">{activity.title}</p>

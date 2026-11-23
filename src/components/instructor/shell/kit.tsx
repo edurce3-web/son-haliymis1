@@ -16,7 +16,7 @@ export const C = {
 };
 
 const base =
-    'inline-flex items-center justify-center gap-2 rounded-xl font-bold whitespace-nowrap select-none ' +
+    'inline-flex items-center justify-center gap-2  font-bold whitespace-nowrap select-none ' +
     'transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.98] ' +
     'disabled:opacity-50 disabled:pointer-events-none ' +
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45 focus-visible:ring-offset-2';
@@ -28,13 +28,13 @@ export const btn = {
     ghost: cn(base, 'text-[#1d4a45] hover:bg-[#e8faf6] hover:text-[#00201d]'),
     danger: cn(base, 'bg-white text-[#b42318] hover:bg-[#fff3f1]'),
     md: 'h-10 px-4 text-[13.5px]',
-    sm: 'h-8 px-3 text-[12.5px] rounded-lg',
+    sm: 'h-8 px-3 text-[12.5px] ',
     lg: 'h-11 px-5 text-[14px]',
 };
 
 /** Form alanları için tek sınıf: input, textarea, select. */
 export const field =
-    'w-full rounded-xl bg-white px-3.5 text-[14px] text-[#00201d] placeholder:text-[#7c918e] ' +
+    'w-full  bg-white px-3.5 text-[14px] text-[#00201d] placeholder:text-[#7c918e] ' +
     'outline-none transition-shadow duration-150' +
     'focus:ring-2 focus:ring-[#005c55]/55 focus-visible:ring-2 focus-visible:ring-[#005c55]/55' +
     'disabled:bg-[#f3f7f6] disabled:text-[#6b827f]';
@@ -64,7 +64,7 @@ export const Panel: React.FC<React.HTMLAttributes<HTMLDivElement> & { as?: 'div'
     className, as: Tag = 'div', ...rest
 }) => (
     <Tag
-        className={cn('rounded-2xl bg-[#f4f6f6]', className)}
+        className={cn(' bg-[#f4f6f6]', className)}
         {...rest}
     />
 );
@@ -91,7 +91,7 @@ export function Segments<T extends string>({
     className?: string;
 }) {
     return (
-        <div role="tablist" className={cn('inline-flex flex-wrap gap-1 p-1 rounded-2xl bg-white', className)}>
+        <div role="tablist" className={cn('inline-flex flex-wrap gap-1 p-1  bg-white', className)}>
             {items.map(it => {
                 const on = it.value === value;
                 return (
@@ -102,7 +102,7 @@ export function Segments<T extends string>({
                         aria-selected={on}
                         onClick={() => onChange(it.value)}
                         className={cn(
-                            'h-9 px-3.5 rounded-xl text-[13.5px] font-bold inline-flex items-center gap-2',
+                            'h-9 px-3.5  text-[13.5px] font-bold inline-flex items-center gap-2',
                             'transition-[background-color,color] duration-150',
                             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45',
                             on ? 'bg-[#00201d] text-[#9cf2e8]' : 'text-[#1d4a45] hover:bg-[#f3f4f4]'
@@ -146,7 +146,7 @@ export const Empty: React.FC<{
     action?: { label: string; to?: string; onClick?: () => void };
     className?: string;
 }> = ({ title, text, action, className }) => (
-    <div className={cn('rounded-2xl bg-[#ecfbf8] px-6 py-14 text-center', className)}>
+    <div className={cn(' bg-[#ecfbf8] px-6 py-14 text-center', className)}>
         <p className="text-[17px] font-extrabold tracking-tight text-[#00201d]">{title}</p>
         {text && <p className="mt-1.5 text-[14px] text-[#4a6360] max-w-md mx-auto">{text}</p>}
         {action && (action.to ? (

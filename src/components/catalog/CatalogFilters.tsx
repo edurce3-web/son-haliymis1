@@ -65,7 +65,7 @@ const Option: React.FC<{
         onClick={onClick}
         disabled={disabled}
         className={cn(
-            'h-10 px-3.5 inline-flex items-center gap-2 rounded-xl text-[13.5px] font-semibold transition-colors',
+            'h-10 px-3.5 inline-flex items-center gap-2  text-[13.5px] font-semibold transition-colors',
             on ? 'bg-[#1B7A43] text-white' : 'bg-[#F5F6F8] text-[#374151] hover:bg-[#EEFBF3] hover:text-[#1B7A43]',
             disabled && 'opacity-40 cursor-not-allowed hover:bg-[#F5F6F8] hover:text-[#374151]'
         )}
@@ -95,7 +95,7 @@ export const CatalogFilters: React.FC<Props> = ({
     };
 
     const chip = (on: boolean) => cn(
-        'h-10 px-3.5 inline-flex items-center gap-2 rounded-xl text-[13.5px] font-semibold transition-colors',
+        'h-10 px-3.5 inline-flex items-center gap-2  text-[13.5px] font-semibold transition-colors',
         on ? 'bg-[#111827] text-white' : 'bg-[#F5F6F8] text-[#374151] hover:bg-[#EEFBF3] hover:text-[#1B7A43]'
     );
 

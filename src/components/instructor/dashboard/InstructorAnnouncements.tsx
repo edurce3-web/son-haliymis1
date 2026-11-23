@@ -218,7 +218,7 @@ export function InstructorAnnouncements() {
                                         type="button"
                                         onClick={() => setExpandedId(isExp ? null : ann.announcement_id)}
                                         aria-expanded={isExp}
-                                        className="flex-1 min-w-0 text-left rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45"
+                                        className="flex-1 min-w-0 text-left  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45"
                                     >
                                         <span className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12.5px]">
                                             <span className="font-bold text-[#005c55]">{ann.course_title}</span>
@@ -240,7 +240,7 @@ export function InstructorAnnouncements() {
                                             type="button"
                                             aria-label="Duyuruyu sil"
                                             onClick={() => { if (confirm('Bu duyuru silinsin mi? Öğrencilerin artık göremeyecek.')) deleteMutation.mutate(ann.announcement_id); }}
-                                            className={cn(btn.ghost, 'w-8 h-8 p-0 rounded-lg hover:bg-[#fff3f1] hover:text-[#b42318]')}
+                                            className={cn(btn.ghost, 'w-8 h-8 p-0  hover:bg-[#fff3f1] hover:text-[#b42318]')}
                                         >
                                             <Trash2 className="w-3.5 h-3.5" />
                                         </button>

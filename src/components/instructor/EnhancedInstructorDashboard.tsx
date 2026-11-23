@@ -315,7 +315,7 @@ export default function EnhancedInstructorDashboard() {
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-8 space-y-8">
       {/* Balanced Professional Header */}
-      <div className="relative overflow-hidden bg-slate-900 rounded-3xl p-8 md:p-10 text-white shadow-xl group">
+      <div className="relative overflow-hidden bg-slate-900  p-8 md:p-10 text-white shadow-xl group">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand-500/20 to-transparent" />
 
         <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
@@ -335,14 +335,14 @@ export default function EnhancedInstructorDashboard() {
           <div className="flex flex-col sm:flex-row items-center gap-3">
             <Button
               variant="outline"
-              className="h-12 px-6 rounded-xl bg-white/5 hover:bg-white/10 text-white font-bold text-sm backdrop-blur-sm transition-all"
+              className="h-12 px-6  bg-white/5 hover:bg-white/10 text-white font-bold text-sm backdrop-blur-sm transition-all"
               onClick={() => window.location.reload()}
             >
               <RefreshCw className="w-4 h-4 mr-2" />
               Yenile
             </Button>
             <Button
-              className="h-12 px-8 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-lg shadow-brand-900/20 transition-all hover:scale-[1.02]"
+              className="h-12 px-8  bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-lg shadow-brand-900/20 transition-all hover:scale-[1.02]"
               onClick={() => navigate('/instructor/courses/create')}
             >
               <Plus className="w-5 h-5 mr-2" />
@@ -353,20 +353,20 @@ export default function EnhancedInstructorDashboard() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-8">
-        <TabsList className="h-12 w-full max-w-3xl mx-auto p-1 bg-[#F5F6F8] rounded-xl ">
-          <TabsTrigger value="overview" className="flex-1 rounded-lg h-10 font-bold text-xs data-[state=active]:bg-slate-900 data-[state=active]:text-white transition-all">Genel Bakış</TabsTrigger>
-          <TabsTrigger value="courses" className="flex-1 rounded-lg h-10 font-bold text-xs data-[state=active]:bg-slate-900 data-[state=active]:text-white transition-all">Kurslarım</TabsTrigger>
-          <TabsTrigger value="students" className="flex-1 rounded-lg h-10 font-bold text-xs data-[state=active]:bg-slate-900 data-[state=active]:text-white transition-all">Öğrenciler</TabsTrigger>
-          <TabsTrigger value="revenue" className="flex-1 rounded-lg h-10 font-bold text-xs data-[state=active]:bg-slate-900 data-[state=active]:text-white transition-all">Gelir</TabsTrigger>
-          <TabsTrigger value="settings" className="flex-1 rounded-lg h-10 font-bold text-xs data-[state=active]:bg-slate-900 data-[state=active]:text-white transition-all">Eğitmen Profili</TabsTrigger>
+        <TabsList className="h-12 w-full max-w-3xl mx-auto p-1 bg-[#F5F6F8]  ">
+          <TabsTrigger value="overview" className="flex-1  h-10 font-bold text-xs data-[state=active]:bg-slate-900 data-[state=active]:text-white transition-all">Genel Bakış</TabsTrigger>
+          <TabsTrigger value="courses" className="flex-1  h-10 font-bold text-xs data-[state=active]:bg-slate-900 data-[state=active]:text-white transition-all">Kurslarım</TabsTrigger>
+          <TabsTrigger value="students" className="flex-1  h-10 font-bold text-xs data-[state=active]:bg-slate-900 data-[state=active]:text-white transition-all">Öğrenciler</TabsTrigger>
+          <TabsTrigger value="revenue" className="flex-1  h-10 font-bold text-xs data-[state=active]:bg-slate-900 data-[state=active]:text-white transition-all">Gelir</TabsTrigger>
+          <TabsTrigger value="settings" className="flex-1  h-10 font-bold text-xs data-[state=active]:bg-slate-900 data-[state=active]:text-white transition-all">Eğitmen Profili</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
           {/* Overview Stat Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-            <div className="bg-[#F5F6F8] p-6 rounded-2xl  transition-all group">
+            <div className="bg-[#F5F6F8] p-6   transition-all group">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center group-hover:bg-brand-600 transition-colors">
+                <div className="w-10 h-10  bg-brand-50 flex items-center justify-center group-hover:bg-brand-600 transition-colors">
                   <Users className="w-5 h-5 text-brand-600 group-hover:text-white transition-colors" />
                 </div>
                 <div>
@@ -374,15 +374,15 @@ export default function EnhancedInstructorDashboard() {
                   <h3 className="text-2xl font-bold text-slate-900 leading-none">{stats.totalStudents.toLocaleString()}</h3>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 text-emerald-600 font-bold text-xs bg-emerald-50 px-2 py-1 rounded-lg w-fit">
+              <div className="flex items-center gap-1.5 text-emerald-600 font-bold text-xs bg-emerald-50 px-2 py-1  w-fit">
                 <ArrowUp className="w-3 h-3" />
                 %{Math.round((stats.newStudents / stats.totalStudents) * 100)} artış
               </div>
             </div>
 
-            <div className="bg-[#F5F6F8] p-6 rounded-2xl  transition-all group">
+            <div className="bg-[#F5F6F8] p-6   transition-all group">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-600 transition-colors">
+                <div className="w-10 h-10  bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-600 transition-colors">
                   <DollarSign className="w-5 h-5 text-emerald-600 group-hover:text-white transition-colors" />
                 </div>
                 <div>
@@ -390,15 +390,15 @@ export default function EnhancedInstructorDashboard() {
                   <h3 className="text-2xl font-bold text-slate-900 leading-none">₺{stats.totalRevenue.toLocaleString()}</h3>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 text-emerald-600 font-bold text-xs bg-emerald-50 px-2 py-1 rounded-lg w-fit">
+              <div className="flex items-center gap-1.5 text-emerald-600 font-bold text-xs bg-emerald-50 px-2 py-1  w-fit">
                 <ArrowUp className="w-3 h-3" />
                 %12.5 bu ay
               </div>
             </div>
 
-            <div className="bg-[#F5F6F8] p-6 rounded-2xl  transition-all group">
+            <div className="bg-[#F5F6F8] p-6   transition-all group">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center group-hover:bg-amber-600 transition-colors">
+                <div className="w-10 h-10  bg-amber-50 flex items-center justify-center group-hover:bg-amber-600 transition-colors">
                   <Star className="w-5 h-5 text-amber-600 group-hover:text-white transition-colors" />
                 </div>
                 <div>
@@ -409,14 +409,14 @@ export default function EnhancedInstructorDashboard() {
                   </div>
                 </div>
               </div>
-              <div className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg w-fit">
+              <div className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1  w-fit">
                 Son 30 Gün
               </div>
             </div>
 
-            <div className="bg-[#F5F6F8] p-6 rounded-2xl  transition-all group">
+            <div className="bg-[#F5F6F8] p-6   transition-all group">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center group-hover:bg-brand-600 transition-colors">
+                <div className="w-10 h-10  bg-brand-50 flex items-center justify-center group-hover:bg-brand-600 transition-colors">
                   <Activity className="w-5 h-5 text-brand-600 group-hover:text-white transition-colors" />
                 </div>
                 <div>
@@ -429,7 +429,7 @@ export default function EnhancedInstructorDashboard() {
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Revenue Chart */}
-            <div className="bg-[#F5F6F8] p-8 rounded-2xl ">
+            <div className="bg-[#F5F6F8] p-8  ">
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <h4 className="text-lg font-bold text-slate-900">Gelir Trendi</h4>
@@ -462,7 +462,7 @@ export default function EnhancedInstructorDashboard() {
                     tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 600 }}
                   />
                   <Tooltip
-                    contentStyle={{ borderRadius: '0.75rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', padding: '0.75rem' }}
+                    contentStyle={{ borderRadius: 0, border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', padding: '0.75rem' }}
                     itemStyle={{ fontWeight: 700, fontSize: '12px' }}
                     labelStyle={{ fontWeight: 700, fontSize: '12px', marginBottom: '0.25rem' }}
                     formatter={(value) => [`₺${value.toLocaleString()}`, 'Gelir']}
@@ -473,7 +473,7 @@ export default function EnhancedInstructorDashboard() {
             </div>
 
             {/* Course Performance */}
-            <div className="bg-[#F5F6F8] p-8 rounded-2xl ">
+            <div className="bg-[#F5F6F8] p-8  ">
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <h4 className="text-lg font-bold text-slate-900">Öğrenci Kayıtları</h4>
@@ -500,7 +500,7 @@ export default function EnhancedInstructorDashboard() {
                     tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 600 }}
                   />
                   <Tooltip
-                    contentStyle={{ borderRadius: '0.75rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', padding: '0.75rem' }}
+                    contentStyle={{ borderRadius: 0, border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', padding: '0.75rem' }}
                     cursor={{ fill: '#f8fafc' }}
                   />
                   <Bar dataKey="enrollments" fill="#10b981" radius={[4, 4, 0, 0]} name="Kayıt" barSize={32} />
@@ -510,13 +510,13 @@ export default function EnhancedInstructorDashboard() {
           </div>
 
           {/* Traffic Sources */}
-          <div className="bg-[#F5F6F8] p-8 rounded-2xl  animate-in fade-in slide-in-from-bottom-4 duration-700 delay-600">
+          <div className="bg-[#F5F6F8] p-8   animate-in fade-in slide-in-from-bottom-4 duration-700 delay-600">
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h4 className="text-lg font-bold text-slate-900">Trafik Kaynakları</h4>
                 <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Ziyaretçi Kanalları</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center">
+              <div className="w-10 h-10  bg-slate-50 flex items-center justify-center">
                 <PieChart className="w-5 h-5 text-slate-400" />
               </div>
             </div>
@@ -549,7 +549,7 @@ export default function EnhancedInstructorDashboard() {
 
               <div className="space-y-3">
                 {trafficSourceData.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 transition-all group">
+                  <div key={index} className="flex items-center justify-between p-3  bg-slate-50 transition-all group">
                     <div className="flex items-center gap-3">
                       <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
                       <div>
@@ -577,12 +577,12 @@ export default function EnhancedInstructorDashboard() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <Input
                   placeholder="Hızlıca kurs ara..."
-                  className="pl-12 h-14 rounded-2xl bg-[#F5F6F8]  focus:ring-4 focus:ring-brand-500/20 transition-all font-bold text-slate-700"
+                  className="pl-12 h-14  bg-[#F5F6F8]  focus:ring-4 focus:ring-brand-500/20 transition-all font-bold text-slate-700"
                   value={courseSearchQuery}
                   onChange={(e) => setCourseSearchQuery(e.target.value)}
                 />
               </div>
-              <Button variant="outline" className="h-14 w-14 rounded-2xl bg-[#F5F6F8] hover:bg-slate-50 p-0 shrink-0">
+              <Button variant="outline" className="h-14 w-14  bg-[#F5F6F8] hover:bg-slate-50 p-0 shrink-0">
                 <Filter className="w-6 h-6 text-slate-600" />
               </Button>
             </div>
@@ -628,7 +628,7 @@ export default function EnhancedInstructorDashboard() {
                     return matchesSearch && matchesStatus;
                   })
                   .map((course) => (
-                    <div key={course.id} className="bg-[#F5F6F8] rounded-[2.5rem] shadow-xl shadow-slate-200/40 transition-all hover:shadow-2xl hover:shadow-brand-500/10 group overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div key={course.id} className="bg-[#F5F6F8]  shadow-xl shadow-slate-200/40 transition-all hover:shadow-2xl hover:shadow-brand-500/10 group overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                       <div className="flex flex-col lg:flex-row">
                         <div className="relative w-full lg:w-72 h-48 lg:h-auto overflow-hidden">
                           <img
@@ -637,19 +637,19 @@ export default function EnhancedInstructorDashboard() {
                             className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700"
                           />
                           <div className="absolute top-4 left-4 flex flex-col gap-2">
-                            {course.status === 'active' && <Badge className="bg-emerald-500 text-white text-[10px] font-black px-3 py-1 rounded-lg shadow-lg shadow-emerald-500/30">YAYINDA</Badge>}
-                            {course.status === 'draft' && <Badge className="bg-slate-700 text-white text-[10px] font-black px-3 py-1 rounded-lg">TASLAK</Badge>}
-                            {course.status === 'pending' && <Badge className="bg-brand-500 text-white text-[10px] font-black px-3 py-1 rounded-lg shadow-lg shadow-brand-500/30">İNCELEMEDE</Badge>}
+                            {course.status === 'active' && <Badge className="bg-emerald-500 text-white text-[10px] font-black px-3 py-1  shadow-lg shadow-emerald-500/30">YAYINDA</Badge>}
+                            {course.status === 'draft' && <Badge className="bg-slate-700 text-white text-[10px] font-black px-3 py-1 ">TASLAK</Badge>}
+                            {course.status === 'pending' && <Badge className="bg-brand-500 text-white text-[10px] font-black px-3 py-1  shadow-lg shadow-brand-500/30">İNCELEMEDE</Badge>}
                           </div>
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
                             <Button
                               size="icon"
-                              className="w-12 h-12 rounded-2xl bg-white text-brand-600 hover:bg-brand-600 hover:text-white transition-all shadow-xl"
+                              className="w-12 h-12  bg-white text-brand-600 hover:bg-brand-600 hover:text-white transition-all shadow-xl"
                               onClick={() => navigate(`/instructor/courses/edit/${course.id}`)}
                             >
                               <Edit className="w-6 h-6" />
                             </Button>
-                            <Button size="icon" className="w-12 h-12 rounded-2xl bg-white text-slate-800 hover:bg-slate-800 hover:text-white transition-all shadow-xl">
+                            <Button size="icon" className="w-12 h-12  bg-white text-slate-800 hover:bg-slate-800 hover:text-white transition-all shadow-xl">
                               <Eye className="w-6 h-6" />
                             </Button>
                           </div>
@@ -668,7 +668,7 @@ export default function EnhancedInstructorDashboard() {
                                   <span>Güncellendi: {timeAgo(course.lastUpdated)}</span>
                                 </div>
                               </div>
-                              <Button variant="ghost" className="h-10 w-10 rounded-xl hover:bg-slate-100">
+                              <Button variant="ghost" className="h-10 w-10  hover:bg-slate-100">
                                 <MoreHorizontal className="w-6 h-6 text-slate-400" />
                               </Button>
                             </div>
@@ -714,10 +714,10 @@ export default function EnhancedInstructorDashboard() {
                               <p className="text-3xl font-black text-emerald-600">₺{course.revenue.toLocaleString()}</p>
                             </div>
                             <div className="flex gap-3">
-                              <Button className="h-12 rounded-xl bg-slate-900 hover:bg-slate-800 text-white px-6 font-black text-sm transition-all shadow-lg shadow-slate-200">
+                              <Button className="h-12  bg-slate-900 hover:bg-slate-800 text-white px-6 font-black text-sm transition-all shadow-lg shadow-slate-200">
                                 Analizlere Bak
                               </Button>
-                              <Button variant="outline" className="h-12 rounded-xl font-black text-sm hover:bg-slate-50 bg-[#F5F6F8]">
+                              <Button variant="outline" className="h-12  font-black text-sm hover:bg-slate-50 bg-[#F5F6F8]">
                                 Paylaş
                               </Button>
                             </div>
@@ -727,7 +727,7 @@ export default function EnhancedInstructorDashboard() {
                     </div>
                   ))
               ) : (
-                <div className="bg-[#F5F6F8] rounded-2xl py-20 text-center">
+                <div className="bg-[#F5F6F8]  py-20 text-center">
                   <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
                     <BookOpen className="w-8 h-8 text-gray-300" />
                   </div>
@@ -743,7 +743,7 @@ export default function EnhancedInstructorDashboard() {
 
         {/* Students Tab */}
         <TabsContent value="students" className="space-y-6">
-          <div className="bg-[#F5F6F8] p-6 rounded-2xl ">
+          <div className="bg-[#F5F6F8] p-6  ">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Öğrenci Yönetimi</h3>
@@ -753,14 +753,14 @@ export default function EnhancedInstructorDashboard() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
                   placeholder="İsim veya e-posta ara..."
-                  className="pl-9 h-10 w-64 rounded-xl text-sm"
+                  className="pl-9 h-10 w-64  text-sm"
                   value={studentQuery}
                   onChange={(e) => setStudentQuery(e.target.value)}
                 />
               </div>
             </div>
 
-            <div className="rounded-xl overflow-hidden bg-[#F5F6F8]">
+            <div className=" overflow-hidden bg-[#F5F6F8]">
               <div className="hidden lg:grid grid-cols-12 gap-4 px-6 py-3 bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                 <div className="col-span-4">Öğrenci Bilgileri</div>
                 <div className="col-span-2 text-center">Kurs Sayısı</div>
@@ -778,7 +778,7 @@ export default function EnhancedInstructorDashboard() {
                   {filteredStudents.map((s) => (
                     <div key={s.id} className="grid grid-cols-1 lg:grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-slate-50 transition-colors group">
                       <div className="col-span-4 flex items-center gap-3">
-                        <Avatar className="h-10 w-10 rounded-xl bg-[#F5F6F8]">
+                        <Avatar className="h-10 w-10  bg-[#F5F6F8]">
                           <AvatarImage src={s.avatar || '/avatar.svg'} alt={s.name} />
                           <AvatarFallback className="bg-brand-50 text-brand-600 font-bold text-xs">{(s.name || '?').slice(0, 2).toUpperCase()}</AvatarFallback>
                         </Avatar>
@@ -788,7 +788,7 @@ export default function EnhancedInstructorDashboard() {
                         </div>
                       </div>
                       <div className="col-span-2 text-center">
-                        <span className="inline-flex items-center justify-center h-7 px-3 rounded-lg bg-slate-100 text-slate-600 font-bold text-xs">
+                        <span className="inline-flex items-center justify-center h-7 px-3  bg-slate-100 text-slate-600 font-bold text-xs">
                           {s.courseCount}
                         </span>
                       </div>
@@ -801,17 +801,17 @@ export default function EnhancedInstructorDashboard() {
                         </div>
                       </div>
                       <div className="col-span-1 flex justify-center">
-                        <Badge variant="outline" className={`px-2 py-0.5 rounded-lg text-[10px] font-bold ${s.status === 'Aktif' ? 'bg-emerald-50 text-emerald-600' :
+                        <Badge variant="outline" className={`px-2 py-0.5  text-[10px] font-bold ${s.status === 'Aktif' ? 'bg-emerald-50 text-emerald-600' :
                           s.status === 'Tamamlandı' ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-600'
                           }`}>
                           {s.status}
                         </Badge>
                       </div>
                       <div className="col-span-2 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button size="icon" className="w-8 h-8 rounded-lg bg-[#F5F6F8] text-slate-400 hover:text-brand-600 transition-all">
+                        <Button size="icon" className="w-8 h-8  bg-[#F5F6F8] text-slate-400 hover:text-brand-600 transition-all">
                           <Mail className="w-3.5 h-3.5" />
                         </Button>
-                        <Button size="icon" className="w-8 h-8 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition-all">
+                        <Button size="icon" className="w-8 h-8  bg-slate-900 text-white hover:bg-slate-800 transition-all">
                           <MessageSquare className="w-3.5 h-3.5" />
                         </Button>
                       </div>
@@ -836,7 +836,7 @@ export default function EnhancedInstructorDashboard() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {courses.length > 0 ? (
               courses.map((course) => (
-                <div key={course.id} className="bg-[#F5F6F8] rounded-2xl  transition-all group overflow-hidden">
+                <div key={course.id} className="bg-[#F5F6F8]   transition-all group overflow-hidden">
                   <div className="h-32 overflow-hidden relative">
                     <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-slate-900/20" />
@@ -850,15 +850,15 @@ export default function EnhancedInstructorDashboard() {
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">GELİR</p>
                         <h3 className="text-xl font-bold text-slate-900">₺{course.revenue.toLocaleString()}</h3>
                       </div>
-                      <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
+                      <div className="w-10 h-10  bg-emerald-50 flex items-center justify-center">
                         <DollarSign className="w-5 h-5 text-emerald-600" />
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button className="flex-1 h-9 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs">
+                      <Button className="flex-1 h-9  bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs">
                         Ödeme Talebi
                       </Button>
-                      <Button variant="outline" size="icon" className="h-9 w-9 rounded-lg">
+                      <Button variant="outline" size="icon" className="h-9 w-9 ">
                         <BarChart3 className="w-4 h-4 text-slate-400" />
                       </Button>
                     </div>
@@ -866,7 +866,7 @@ export default function EnhancedInstructorDashboard() {
                 </div>
               ))
             ) : (
-              <div className="col-span-full py-12 text-center bg-[#F5F6F8] rounded-2xl">
+              <div className="col-span-full py-12 text-center bg-[#F5F6F8] ">
                 <p className="text-slate-400 font-bold">Henüz gelir verisi bulunmuyor.</p>
               </div>
             )}
@@ -883,18 +883,18 @@ export default function EnhancedInstructorDashboard() {
 
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-              <Card className="rounded-2xl  bg-[#F5F6F8]">
+              <Card className="  bg-[#F5F6F8]">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-base font-bold">Profil Bilgileri</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="flex items-center gap-6 p-4 rounded-xl bg-slate-50">
-                    <Avatar className="w-16 h-16 rounded-xl  bg-[#F5F6F8]">
+                  <div className="flex items-center gap-6 p-4  bg-slate-50">
+                    <Avatar className="w-16 h-16   bg-[#F5F6F8]">
                       <AvatarImage src="/avatar.svg" alt="avatar" />
                       <AvatarFallback className="bg-slate-900 text-white font-bold">PR</AvatarFallback>
                     </Avatar>
                     <div>
-                      <Button variant="outline" size="sm" className="h-9 px-4 rounded-lg font-bold text-xs hover:bg-white transition-all">
+                      <Button variant="outline" size="sm" className="h-9 px-4  font-bold text-xs hover:bg-white transition-all">
                         Fotoğraf Değiştir
                       </Button>
                     </div>
@@ -903,22 +903,22 @@ export default function EnhancedInstructorDashboard() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Ad</Label>
-                      <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-10 rounded-xl font-medium" />
+                      <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-10  font-medium" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="lastName" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Soyad</Label>
-                      <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-10 rounded-xl font-medium" />
+                      <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-10  font-medium" />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="title" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Unvan/Pozisyon</Label>
-                    <Input id="title" value={titleValue} onChange={(e) => setTitleValue(e.target.value)} className="h-10 rounded-xl font-medium" />
+                    <Input id="title" value={titleValue} onChange={(e) => setTitleValue(e.target.value)} className="h-10  font-medium" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="bio" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Kendinizi Tanıtın</Label>
-                    <Textarea id="bio" rows={4} value={bioValue} onChange={(e) => setBioValue(e.target.value)} className="rounded-xl font-medium resize-none" />
+                    <Textarea id="bio" rows={4} value={bioValue} onChange={(e) => setBioValue(e.target.value)} className=" font-medium resize-none" />
                   </div>
 
                   {/* Specializations Section */}
@@ -938,12 +938,12 @@ export default function EnhancedInstructorDashboard() {
                             }
                           }
                         }}
-                        className="h-10 rounded-xl font-medium"
+                        className="h-10  font-medium"
                       />
                       <Button
                         type="button"
                         variant="outline"
-                        className="h-10 rounded-xl font-bold"
+                        className="h-10  font-bold"
                         onClick={() => {
                           if (newSpec.trim()) {
                             setSpecializations([...specializations, newSpec.trim()]);
@@ -979,7 +979,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.youtube}
                           onChange={(e) => setSocialLinks({ ...socialLinks, youtube: e.target.value })}
                           placeholder="https://youtube.com/@kanal"
-                          className="h-10 rounded-xl font-medium"
+                          className="h-10  font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -988,7 +988,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.instagram}
                           onChange={(e) => setSocialLinks({ ...socialLinks, instagram: e.target.value })}
                           placeholder="https://instagram.com/kullanici"
-                          className="h-10 rounded-xl font-medium"
+                          className="h-10  font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -997,7 +997,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.facebook}
                           onChange={(e) => setSocialLinks({ ...socialLinks, facebook: e.target.value })}
                           placeholder="https://facebook.com/sayfa"
-                          className="h-10 rounded-xl font-medium"
+                          className="h-10  font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -1006,7 +1006,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.x}
                           onChange={(e) => setSocialLinks({ ...socialLinks, x: e.target.value })}
                           placeholder="https://x.com/kullanici"
-                          className="h-10 rounded-xl font-medium"
+                          className="h-10  font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -1015,7 +1015,7 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.website}
                           onChange={(e) => setSocialLinks({ ...socialLinks, website: e.target.value })}
                           placeholder="https://websitesi.com"
-                          className="h-10 rounded-xl font-medium"
+                          className="h-10  font-medium"
                         />
                       </div>
                       <div className="space-y-2">
@@ -1024,14 +1024,14 @@ export default function EnhancedInstructorDashboard() {
                           value={socialLinks.tiktok}
                           onChange={(e) => setSocialLinks({ ...socialLinks, tiktok: e.target.value })}
                           placeholder="https://tiktok.com/@kullanici"
-                          className="h-10 rounded-xl font-medium"
+                          className="h-10  font-medium"
                         />
                       </div>
                     </div>
                   </div>
 
                   <div className="flex justify-end pt-6">
-                    <Button className="h-10 px-8 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm transition-all active:scale-95">
+                    <Button className="h-10 px-8  bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm transition-all active:scale-95">
                       Kayıt Et
                     </Button>
                   </div>
@@ -1040,32 +1040,32 @@ export default function EnhancedInstructorDashboard() {
             </div>
 
             <div className="space-y-6">
-              <Card className="rounded-2xl  bg-[#F5F6F8]">
+              <Card className="  bg-[#F5F6F8]">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-base font-bold">Bildirimler</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-all group">
+                  <div className="flex items-center justify-between p-3  hover:bg-slate-50 transition-all group">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center">
+                      <div className="w-8 h-8  bg-brand-50 flex items-center justify-center">
                         <Mail className="w-4 h-4 text-brand-600" />
                       </div>
                       <span className="text-sm font-bold text-slate-800">E-posta</span>
                     </div>
                     <Switch checked={notifEmail} onCheckedChange={setNotifEmail} />
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-all group">
+                  <div className="flex items-center justify-between p-3  hover:bg-slate-50 transition-all group">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+                      <div className="w-8 h-8  bg-emerald-50 flex items-center justify-center">
                         <MessageSquare className="w-4 h-4 text-emerald-600" />
                       </div>
                       <span className="text-sm font-bold text-slate-800">Mesajlar</span>
                     </div>
                     <Switch checked={notifMessages} onCheckedChange={setNotifMessages} />
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-all group">
+                  <div className="flex items-center justify-between p-3  hover:bg-slate-50 transition-all group">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
+                      <div className="w-8 h-8  bg-amber-50 flex items-center justify-center">
                         <Zap className="w-4 h-4 text-amber-600" />
                       </div>
                       <span className="text-sm font-bold text-slate-800">Pazarlama</span>
@@ -1087,12 +1087,12 @@ export default function EnhancedInstructorDashboard() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="p-6 rounded-2xl bg-[#F5F6F8] transition-all group">
+            <div className="p-6  bg-[#F5F6F8] transition-all group">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center">
+                <div className="w-10 h-10  bg-brand-50 flex items-center justify-center">
                   <Gift className="w-5 h-5 text-brand-600" />
                 </div>
-                <Badge className="bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg">AKTİF</Badge>
+                <Badge className="bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 ">AKTİF</Badge>
               </div>
               <h3 className="text-base font-bold text-slate-900 mb-1">Yaz İndirimi</h3>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-4">%50 İNDİRİM</p>
@@ -1108,12 +1108,12 @@ export default function EnhancedInstructorDashboard() {
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#F5F6F8] transition-all group">
+            <div className="p-6  bg-[#F5F6F8] transition-all group">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+                <div className="w-10 h-10  bg-amber-50 flex items-center justify-center">
                   <Zap className="w-5 h-5 text-amber-600" />
                 </div>
-                <Badge variant="outline" className="text-[10px] font-bold px-2 py-0.5 rounded-lg">BEKLEMEDE</Badge>
+                <Badge variant="outline" className="text-[10px] font-bold px-2 py-0.5 ">BEKLEMEDE</Badge>
               </div>
               <h3 className="text-base font-bold text-slate-900 mb-1">Yeni Öğrenci</h3>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-4">%30 İNDİRİM</p>
@@ -1129,9 +1129,9 @@ export default function EnhancedInstructorDashboard() {
               </div>
             </div>
 
-            <div className="md:col-span-2 p-8 text-center rounded-2xl bg-slate-50/50">
+            <div className="md:col-span-2 p-8 text-center  bg-slate-50/50">
               <p className="text-sm font-bold text-slate-500 mb-4">Mevcut kampanyalarınızı yönetin veya yenisini başlatın.</p>
-              <Button className="h-10 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm">
+              <Button className="h-10 px-6  bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm">
                 <Plus className="w-4 h-4 mr-2" />
                 Yeni Kampanya
               </Button>

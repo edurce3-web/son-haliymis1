@@ -180,7 +180,7 @@ const Privacy: React.FC = () => (
                         </P>
                         <P>
                             Oturumunuzu açık tutmak için tarayıcınızın yerel depolamasında
-                            (<code className="text-[13px] bg-slate-100 px-1.5 py-0.5 rounded">localStorage</code>)
+                            (<code className="text-[13px] bg-slate-100 px-1.5 py-0.5 ">localStorage</code>)
                             bir oturum jetonu ve temel profil bilgileriniz saklanır. Bunlar olmadan
                             her sayfa yenilemesinde tekrar giriş yapmanız gerekirdi.
                         </P>

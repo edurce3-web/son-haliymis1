@@ -104,7 +104,7 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
   }
 
   return (
-    <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg">
+    <div className="flex items-center justify-between p-4 bg-red-50 ">
       <div className="flex items-center space-x-2">
         <AlertCircle className="w-5 h-5 text-red-500" />
         <span className="text-sm text-red-700">{error}</span>
@@ -133,7 +133,7 @@ export const NavigationSkeleton: React.FC = () => (
 export const CourseCardSkeleton: React.FC = () => (
   <Card className="w-full">
     <div className="aspect-video">
-      <Skeleton className="w-full h-full rounded-t-lg" />
+      <Skeleton className="w-full h-full " />
     </div>
     <CardContent className="p-4 space-y-3">
       <Skeleton className="h-4 w-3/4" />

@@ -137,7 +137,7 @@ const Certificates = () => {
                         {certs.map(cert => (
                             <article
                                 key={cert.certificate_id}
-                                className="bg-[#F5F6F8] rounded-[22px] p-5 flex flex-col transition-colors hover:bg-[#EEFBF3]"
+                                className="bg-[#F5F6F8]  p-5 flex flex-col transition-colors hover:bg-[#EEFBF3]"
                             >
                                 <p className="font-montserrat text-[10px] font-extrabold uppercase tracking-[0.16em] text-brand-700">
                                     Bitirme sertifikası
@@ -171,21 +171,21 @@ const Certificates = () => {
                                     <button
                                         onClick={() => handlePreview(cert)}
                                         disabled={!!busy}
-                                        className="flex-1 h-9 rounded-md bg-brand-700 hover:bg-brand-800 text-white text-[13px] font-semibold transition-colors disabled:opacity-60"
+                                        className="flex-1 h-9  bg-brand-700 hover:bg-brand-800 text-white text-[13px] font-semibold transition-colors disabled:opacity-60"
                                     >
                                         {busy === `${cert.certificate_id}-preview` ? 'Açılıyor…' : 'Görüntüle'}
                                     </button>
                                     <button
                                         onClick={() => handleDownload(cert, 'pdf')}
                                         disabled={!!busy}
-                                        className="h-9 px-3 rounded-md hover:text-brand-800 text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60 bg-[#F5F6F8]"
+                                        className="h-9 px-3  hover:text-brand-800 text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60 bg-[#F5F6F8]"
                                     >
                                         {busy === `${cert.certificate_id}-pdf` ? '…' : 'PDF'}
                                     </button>
                                     <button
                                         onClick={() => handleDownload(cert, 'png')}
                                         disabled={!!busy}
-                                        className="h-9 px-3 rounded-md hover:text-brand-800 text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60 bg-[#F5F6F8]"
+                                        className="h-9 px-3  hover:text-brand-800 text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60 bg-[#F5F6F8]"
                                     >
                                         {busy === `${cert.certificate_id}-png` ? '…' : 'PNG'}
                                     </button>
@@ -203,7 +203,7 @@ const Certificates = () => {
                     onClick={closePreview}
                 >
                     <div
-                        className="bg-[#F5F6F8] rounded-xl overflow-hidden shadow-2xl max-w-3xl w-full"
+                        className="bg-[#F5F6F8]  overflow-hidden shadow-2xl max-w-3xl w-full"
                         onClick={e => e.stopPropagation()}
                     >
                         <div className="flex items-center justify-between gap-4 px-5 py-3.5">
@@ -214,20 +214,20 @@ const Certificates = () => {
                                 <button
                                     onClick={() => handleDownload(previewCert, 'pdf')}
                                     disabled={!!busy}
-                                    className="h-9 px-3.5 rounded-md text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60 bg-[#F5F6F8]"
+                                    className="h-9 px-3.5  text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60 bg-[#F5F6F8]"
                                 >
                                     PDF
                                 </button>
                                 <button
                                     onClick={() => handleDownload(previewCert, 'png')}
                                     disabled={!!busy}
-                                    className="h-9 px-3.5 rounded-md text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60 bg-[#F5F6F8]"
+                                    className="h-9 px-3.5  text-slate-700 text-[13px] font-semibold transition-colors disabled:opacity-60 bg-[#F5F6F8]"
                                 >
                                     PNG
                                 </button>
                                 <button
                                     onClick={closePreview}
-                                    className="w-9 h-9 rounded-md text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                                    className="w-9 h-9  text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
                                     aria-label="Kapat"
                                 >
                                     ✕
@@ -239,7 +239,7 @@ const Certificates = () => {
                             <img
                                 src={previewUrl}
                                 alt={`${previewCert.course_title} sertifikası`}
-                                className="w-full rounded-lg bg-[#F5F6F8]"
+                                className="w-full  bg-[#F5F6F8]"
                             />
                         </div>
                     </div>

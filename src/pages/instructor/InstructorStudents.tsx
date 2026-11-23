@@ -347,7 +347,7 @@ const InstructorStudents = () => {
                             }`}
                         >
                           <div
-                            className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${message.senderType === "instructor"
+                            className={`max-w-xs lg:max-w-md px-4 py-2  ${message.senderType === "instructor"
                               ? "bg-primary text-primary-foreground"
                               : "bg-muted"
                               }`}

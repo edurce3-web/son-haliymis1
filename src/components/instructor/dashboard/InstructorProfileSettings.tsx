@@ -221,7 +221,7 @@ export const InstructorProfileSettings: React.FC = () => {
                 className="grid lg:grid-cols-[300px_1fr] gap-6 items-start"
             >
                 {/* Önizleme: öğrencinin gördüğü kart */}
-                <aside className="lg:sticky lg:top-8 rounded-2xl bg-[#f4f6f6] p-6 text-center">
+                <aside className="lg:sticky lg:top-8  bg-[#f4f6f6] p-6 text-center">
                     <div className="relative w-28 h-28 mx-auto">
                         {photo ? (
                             <img src={photo} alt="" className="w-28 h-28 rounded-full object-cover" />

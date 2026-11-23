@@ -54,11 +54,11 @@ export const InstructorEarnings: React.FC = () => {
             </div>
 
             <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
-                <Card className=' rounded-xl bg-[#F5F6F8]'>
+                <Card className='  bg-[#F5F6F8]'>
                     <CardContent className='p-6 flex flex-col justify-center h-full'>
                         <div className='flex items-center justify-between space-y-0 pb-2 mb-2'>
                             <p className='text-sm font-medium tracking-tight text-zinc-600'>Toplam Bakiye</p>
-                            <div className="p-2 bg-zinc-50 rounded-md">
+                            <div className="p-2 bg-zinc-50 ">
                                 <Wallet className='w-4 h-4 text-zinc-700' />
                             </div>
                         </div>
@@ -69,11 +69,11 @@ export const InstructorEarnings: React.FC = () => {
                     </CardContent>
                 </Card>
 
-                <Card className=' rounded-xl bg-[#F5F6F8]'>
+                <Card className='  bg-[#F5F6F8]'>
                     <CardContent className='p-6 flex flex-col justify-center h-full'>
                         <div className='flex items-center justify-between space-y-0 pb-2 mb-2'>
                             <p className='text-sm font-medium tracking-tight text-zinc-600'>Bu Ayın Kazancı</p>
-                            <div className="p-2 bg-zinc-50 rounded-md">
+                            <div className="p-2 bg-zinc-50 ">
                                 <TrendingUp className='w-4 h-4 text-zinc-700' />
                             </div>
                         </div>
@@ -84,11 +84,11 @@ export const InstructorEarnings: React.FC = () => {
                     </CardContent>
                 </Card>
 
-                <Card className=' rounded-xl bg-[#F5F6F8]'>
+                <Card className='  bg-[#F5F6F8]'>
                     <CardContent className='p-6 flex flex-col justify-center h-full'>
                         <div className='flex items-center justify-between space-y-0 pb-2 mb-2'>
                             <p className='text-sm font-medium tracking-tight text-zinc-600'>Satılan Kurs</p>
-                            <div className="p-2 bg-zinc-50 rounded-md">
+                            <div className="p-2 bg-zinc-50 ">
                                 <Users className='w-4 h-4 text-zinc-700' />
                             </div>
                         </div>
@@ -100,7 +100,7 @@ export const InstructorEarnings: React.FC = () => {
                 </Card>
             </div>
 
-            <Card className=' rounded-xl overflow-hidden bg-[#F5F6F8]'>
+            <Card className='  overflow-hidden bg-[#F5F6F8]'>
                 <CardHeader className="pb-4 bg-zinc-50/50">
                     <CardTitle className="text-lg font-semibold text-zinc-900 tracking-tight">Son İşlemler</CardTitle>
                     <CardDescription className="text-zinc-500">Hesabınıza yansıyan en son kurs satışları</CardDescription>

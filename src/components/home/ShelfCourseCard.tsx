@@ -158,7 +158,7 @@ export const ShelfCourseCard: React.FC<{
             >
             <article className="group relative h-full flex flex-col font-jakarta">
 
-                <Link to={url} className="relative block aspect-video overflow-hidden rounded-2xl bg-[#EEFBF3] shrink-0 transition-shadow duration-300 group-hover:shadow-[0_18px_36px_-16px_rgba(19,27,46,0.35)]">
+                <Link to={url} className="relative block aspect-video overflow-hidden  bg-[#EEFBF3] shrink-0 transition-shadow duration-300 group-hover:shadow-[0_18px_36px_-16px_rgba(19,27,46,0.35)]">
                     <img
                         src={img}
                         alt={course.title}
@@ -175,7 +175,7 @@ export const ShelfCourseCard: React.FC<{
                     {shown && (
                         <span
                             className={cn(
-                                'absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[11px] leading-[14px] font-extrabold uppercase tracking-wider ',
+                                'absolute top-2.5 left-2.5 px-2 py-0.5  text-[11px] leading-[14px] font-extrabold uppercase tracking-wider ',
                                 BADGE_TONES[shown.tone]
                             )}
                         >
@@ -256,7 +256,7 @@ export const ShelfCourseCard: React.FC<{
 
                             <Link
                                 to={url}
-                                className="mt-3 flex items-center justify-center gap-1.5 h-9 rounded-lg bg-[#EEFBF3] text-[#1B7A43] text-[13px] font-bold hover:bg-[#1B7A43] hover:text-white transition-colors"
+                                className="mt-3 flex items-center justify-center gap-1.5 h-9  bg-[#EEFBF3] text-[#1B7A43] text-[13px] font-bold hover:bg-[#1B7A43] hover:text-white transition-colors"
                             >
                                 <Play className="w-3.5 h-3.5 fill-current" />
                                 {progress > 0 ? 'Devam et' : 'Başla'}
@@ -281,7 +281,7 @@ export const ShelfCourseCard: React.FC<{
                                 disabled={inCart || cartMutation.isPending}
                                 onClick={e => { stop(e); cartMutation.mutate(course.id); }}
                                 className={cn(
-                                    'shrink-0 p-1 rounded-md flex items-center justify-center transition-colors',
+                                    'shrink-0 p-1  flex items-center justify-center transition-colors',
                                     inCart
                                         ? 'text-[#1B7A43] cursor-default'
                                         : 'text-[#6e7977] hover:text-[#1B7A43]'

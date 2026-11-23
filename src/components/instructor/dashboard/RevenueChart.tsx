@@ -48,7 +48,7 @@ const ChartTooltip = ({ active, payload }: any) => {
     if (!active || !payload?.length) return null;
     const d = payload[0].payload as Bucket;
     return (
-        <div className="rounded-lg bg-[#F5F6F8] p-3 shadow-lg text-[13px] min-w-[190px]">
+        <div className=" bg-[#F5F6F8] p-3 shadow-lg text-[13px] min-w-[190px]">
             <p className="font-semibold text-[#00201d] mb-2">{d.fullLabel}</p>
             <div className="flex justify-between gap-6">
                 <span className="text-[#4a6360]">Brüt satış</span>
@@ -120,13 +120,13 @@ export const RevenueChart: React.FC<Props> = ({
         <div className={className}>
             {/* Görünüm kontrolleri */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                <div className="inline-flex bg-[#e3f6f2] rounded-xl p-1">
+                <div className="inline-flex bg-[#e3f6f2]  p-1">
                     {([['month', 'Aylık'], ['year', 'Yıllık']] as const).map(([key, label]) => (
                         <button
                             key={key}
                             onClick={() => setMode(key)}
                             className={cn(
-                                'px-3.5 py-1.5 rounded-lg text-[13px] font-bold transition-colors',
+                                'px-3.5 py-1.5  text-[13px] font-bold transition-colors',
                                 mode === key
                                     ? 'bg-[#00201d] text-[#9cf2e8]'
                                     : 'text-[#4a6360] hover:text-[#00201d]'
@@ -142,7 +142,7 @@ export const RevenueChart: React.FC<Props> = ({
                         <button
                             onClick={() => canPrev && setYear(years[yearIndex - 1])}
                             disabled={!canPrev}
-                            className="p-1.5 rounded-md text-[#5f7774] hover:bg-[#e8faf6] hover:text-[#00201d] disabled:opacity-30 disabled:hover:bg-transparent"
+                            className="p-1.5  text-[#5f7774] hover:bg-[#e8faf6] hover:text-[#00201d] disabled:opacity-30 disabled:hover:bg-transparent"
                             aria-label="Önceki yıl"
                         >
                             <ChevronLeft className="w-4 h-4" />
@@ -153,7 +153,7 @@ export const RevenueChart: React.FC<Props> = ({
                         <button
                             onClick={() => canNext && setYear(years[yearIndex + 1])}
                             disabled={!canNext}
-                            className="p-1.5 rounded-md text-[#5f7774] hover:bg-[#e8faf6] hover:text-[#00201d] disabled:opacity-30 disabled:hover:bg-transparent"
+                            className="p-1.5  text-[#5f7774] hover:bg-[#e8faf6] hover:text-[#00201d] disabled:opacity-30 disabled:hover:bg-transparent"
                             aria-label="Sonraki yıl"
                         >
                             <ChevronRight className="w-4 h-4" />

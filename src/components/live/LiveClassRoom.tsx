@@ -485,7 +485,7 @@ export const LiveClassRoom: React.FC<LiveClassRoomProps> = ({
             />
             
             {/* Local Video (Picture in Picture) */}
-            <div className="absolute top-4 right-4 w-48 h-36 bg-gray-800 rounded-lg overflow-hidden">
+            <div className="absolute top-4 right-4 w-48 h-36 bg-gray-800  overflow-hidden">
               <video
                 ref={localVideoRef}
                 autoPlay

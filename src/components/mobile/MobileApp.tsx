@@ -248,7 +248,7 @@ export const MobileApp: React.FC = () => {
             <img
               src={course.thumbnail || '/placeholder.svg'}
               alt={course.title}
-              className="w-16 h-16 object-cover rounded-lg"
+              className="w-16 h-16 object-cover "
             />
             {course.downloaded && (
               <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
@@ -407,7 +407,7 @@ export const MobileApp: React.FC = () => {
     if (!showInstallPrompt) return null;
 
     return (
-      <div className="fixed bottom-20 left-4 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg z-40">
+      <div className="fixed bottom-20 left-4 right-4 bg-blue-600 text-white p-4  shadow-lg z-40">
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <h3 className="font-semibold text-sm">Uygulamayı Yükle</h3>
@@ -526,7 +526,7 @@ export const MobileApp: React.FC = () => {
             </div>
             
             {isOffline && (
-              <div className="bg-yellow-50 rounded-lg p-3">
+              <div className="bg-yellow-50  p-3">
                 <div className="flex items-center space-x-2">
                   <WifiOff className="w-4 h-4 text-yellow-600" />
                   <span className="text-sm text-yellow-800">
@@ -541,7 +541,7 @@ export const MobileApp: React.FC = () => {
                 <Card key={content.content_id}>
                   <CardContent className="p-3">
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                      <div className="w-8 h-8 bg-green-100  flex items-center justify-center">
                         {content.type === 'video' ? (
                           <Play className="w-4 h-4 text-green-600" />
                         ) : content.type === 'document' ? (

@@ -224,9 +224,9 @@ export const EnhancedCourseDetail: React.FC = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-200 rounded w-3/4"></div>
-          <div className="h-64 bg-gray-200 rounded"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          <div className="h-8 bg-gray-200  w-3/4"></div>
+          <div className="h-64 bg-gray-200 "></div>
+          <div className="h-4 bg-gray-200  w-1/2"></div>
         </div>
       </div>
     );
@@ -312,7 +312,7 @@ export const EnhancedCourseDetail: React.FC = () => {
                   <img 
                     src={course.image_url} 
                     alt={course.title}
-                    className="w-full h-48 object-cover rounded-t-lg"
+                    className="w-full h-48 object-cover "
                   />
                   <Button
                     variant="secondary"
@@ -525,7 +525,7 @@ export const EnhancedCourseDetail: React.FC = () => {
                   <CardContent>
                     <div className="space-y-4">
                       {sections?.map((section: Section) => (
-                        <div key={section.section_id} className="rounded-lg bg-[#F5F6F8]">
+                        <div key={section.section_id} className=" bg-[#F5F6F8]">
                           <button
                             className="w-full p-4 text-left flex items-center justify-between hover:bg-gray-50"
                             onClick={() => toggleSection(section.section_id)}
@@ -686,11 +686,11 @@ export const EnhancedCourseDetail: React.FC = () => {
                   <div className="space-y-4">
                     {/* Mock related courses */}
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="flex space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer bg-[#F5F6F8]">
+                      <div key={i} className="flex space-x-3 p-3  hover:bg-gray-50 cursor-pointer bg-[#F5F6F8]">
                         <img 
                           src={`https://via.placeholder.com/80x60?text=Course${i}`}
                           alt={`Related Course ${i}`}
-                          className="w-20 h-15 object-cover rounded"
+                          className="w-20 h-15 object-cover "
                         />
                         <div className="flex-1">
                           <h4 className="font-medium text-sm line-clamp-2">
@@ -725,7 +725,7 @@ export const EnhancedCourseDetail: React.FC = () => {
             <video
               src={previewVideo}
               controls
-              className="w-full h-full rounded-lg"
+              className="w-full h-full "
               autoPlay
             />
           </div>

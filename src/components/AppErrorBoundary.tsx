@@ -56,7 +56,7 @@ export class AppErrorBoundary extends React.Component<{ children: React.ReactNod
 
         return (
             <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-12">
-                <div className="w-full max-w-xl bg-[#F5F6F8] rounded-2xl p-8 ">
+                <div className="w-full max-w-xl bg-[#F5F6F8]  p-8 ">
                     <h1 className="text-xl font-bold text-slate-900">Bir şeyler ters gitti</h1>
                     <p className="text-sm text-slate-600 mt-2 leading-relaxed">
                         Sayfa yüklenirken beklenmeyen bir hata oluştu. Sayfayı yenilemek
@@ -66,19 +66,19 @@ export class AppErrorBoundary extends React.Component<{ children: React.ReactNod
                     <div className="flex flex-wrap gap-3 mt-6">
                         <button
                             onClick={this.reload}
-                            className="h-10 px-5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-sm font-semibold transition-colors"
+                            className="h-10 px-5  bg-brand-700 hover:bg-brand-800 text-white text-sm font-semibold transition-colors"
                         >
                             Sayfayı yenile
                         </button>
                         <button
                             onClick={this.hardReload}
-                            className="h-10 px-5 rounded-lg text-slate-700 text-sm font-semibold transition-colors bg-[#F5F6F8]"
+                            className="h-10 px-5  text-slate-700 text-sm font-semibold transition-colors bg-[#F5F6F8]"
                         >
                             Önbelleği temizleyip yenile
                         </button>
                         <a
                             href="/"
-                            className="h-10 px-5 inline-flex items-center rounded-lg text-slate-600 hover:text-slate-900 text-sm font-semibold"
+                            className="h-10 px-5 inline-flex items-center  text-slate-600 hover:text-slate-900 text-sm font-semibold"
                         >
                             Ana sayfa
                         </a>
@@ -88,7 +88,7 @@ export class AppErrorBoundary extends React.Component<{ children: React.ReactNod
                         <summary className="cursor-pointer text-xs font-semibold text-slate-500 hover:text-slate-700">
                             Teknik ayrıntı
                         </summary>
-                        <pre className="mt-3 text-[11px] leading-relaxed text-slate-600 bg-slate-50 rounded-lg p-3 overflow-auto max-h-64 whitespace-pre-wrap break-words">
+                        <pre className="mt-3 text-[11px] leading-relaxed text-slate-600 bg-slate-50  p-3 overflow-auto max-h-64 whitespace-pre-wrap break-words">
                             {error.name}: {error.message}
                             {info?.componentStack ? `\n${info.componentStack.trim()}` : ''}
                         </pre>

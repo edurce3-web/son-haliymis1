@@ -111,7 +111,7 @@ export function CreateBook() {
                 {/* Önizleme: kapağın sade hali, kitap sırtıyla */}
                 <aside aria-label="Kapak önizlemesi" className="lg:sticky lg:top-24">
                     <p className="text-[13px] font-bold text-[#00201d] mb-3">Kapak taslağı</p>
-                    <div className="relative w-full max-w-[240px] aspect-[3/4] rounded-r-xl rounded-l-[4px] overflow-hidden bg-[linear-gradient(160deg,#c9f6f0_0%,#9cf2e8_55%,#7fdccf_100%)] shadow-[0_22px_40px_-22px_rgba(0,32,29,0.6)]">
+                    <div className="relative w-full max-w-[240px] aspect-[3/4]   overflow-hidden bg-[linear-gradient(160deg,#c9f6f0_0%,#9cf2e8_55%,#7fdccf_100%)] shadow-[0_22px_40px_-22px_rgba(0,32,29,0.6)]">
                         <span aria-hidden className="absolute inset-y-0 left-0 w-3 bg-[#00201d]/12" />
                         <span aria-hidden className="absolute inset-y-0 left-3 w-px bg-white/40" />
                         <div className="absolute inset-0 pl-8 pr-5 py-7 flex flex-col">

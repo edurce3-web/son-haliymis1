@@ -149,7 +149,7 @@ const GuestHome: React.FC = () => {
                         {testimonials.slice(0, 6).map(t => (
                             <figure
                                 key={t.id}
-                                className="relative rounded-2xl bg-[#F5F6F8] p-6 flex flex-col hover:shadow-[0_20px_44px_-28px_rgba(15,23,42,0.25)] transition-all"
+                                className="relative  bg-[#F5F6F8] p-6 flex flex-col hover:shadow-[0_20px_44px_-28px_rgba(15,23,42,0.25)] transition-all"
                             >
                                 <Quote
                                     className="absolute top-5 right-5 w-8 h-8 text-brand-100"

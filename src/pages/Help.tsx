@@ -385,7 +385,7 @@ const Help: React.FC = () => {
                         value={query}
                         onChange={e => setQuery(e.target.value)}
                         placeholder="Konu ara: iade, sertifika, video, kredi…"
-                        className="w-full h-14 px-5 rounded-2xl bg-white text-[16px] text-[#111827] placeholder:text-[#9CA3AF] outline-none shadow-[0_10px_30px_-18px_rgba(17,24,39,0.35)] focus:ring-2 focus:ring-[#1B7A43]/45 transition-shadow"
+                        className="w-full h-14 px-5  bg-white text-[16px] text-[#111827] placeholder:text-[#9CA3AF] outline-none shadow-[0_10px_30px_-18px_rgba(17,24,39,0.35)] focus:ring-2 focus:ring-[#1B7A43]/45 transition-shadow"
                     />
                     {query && (
                         <p className="text-[13.5px] text-[#4B5563] mt-3">
@@ -405,7 +405,7 @@ const Help: React.FC = () => {
                                 <a
                                     href={`#${g.id}`}
                                     onClick={() => setQuery('')}
-                                    className="flex items-center justify-between gap-4 rounded-xl px-3 py-2.5 text-[14.5px] font-semibold text-[#374151] hover:bg-[#F5F6F8] hover:text-[#111827] transition-colors whitespace-nowrap"
+                                    className="flex items-center justify-between gap-4  px-3 py-2.5 text-[14.5px] font-semibold text-[#374151] hover:bg-[#F5F6F8] hover:text-[#111827] transition-colors whitespace-nowrap"
                                 >
                                     {g.title}
                                     <span className="text-[12.5px] font-bold tabular-nums text-[#9CA3AF]">{g.entries.length}</span>
@@ -418,7 +418,7 @@ const Help: React.FC = () => {
                 {/* Sağ: sorular */}
                 <div className="min-w-0">
                     {totalHits === 0 ? (
-                        <div className="rounded-[28px] bg-[#F5F6F8] py-16 px-6 text-center">
+                        <div className=" bg-[#F5F6F8] py-16 px-6 text-center">
                             <p className="font-montserrat text-[20px] font-extrabold tracking-tight">
                                 "{query}" için sonuç bulunamadı
                             </p>
@@ -438,11 +438,11 @@ const Help: React.FC = () => {
                                         const key = `${group.id}-${entry.q}`;
                                         const isOpen = open === key || Boolean(query);
                                         return (
-                                            <div key={key} className={cn('rounded-[18px] transition-colors', isOpen ? 'bg-[#F5F6F8]' : 'bg-[#F5F6F8]/60 hover:bg-[#F5F6F8]')}>
+                                            <div key={key} className={cn(' transition-colors', isOpen ? 'bg-[#F5F6F8]' : 'bg-[#F5F6F8]/60 hover:bg-[#F5F6F8]')}>
                                                 <button
                                                     onClick={() => setOpen(isOpen && !query ? null : key)}
                                                     aria-expanded={isOpen}
-                                                    className="w-full flex items-start justify-between gap-6 px-5 sm:px-6 py-4 text-left rounded-[18px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/40"
+                                                    className="w-full flex items-start justify-between gap-6 px-5 sm:px-6 py-4 text-left  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/40"
                                                 >
                                                     <span className={cn('text-[15.5px] leading-snug py-0.5', isOpen ? 'font-bold' : 'font-semibold text-[#1F2937]')}>
                                                         {entry.q}

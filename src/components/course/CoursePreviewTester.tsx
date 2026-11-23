@@ -224,7 +224,7 @@ export default function CoursePreviewTester() {
                 <div>
                   <label className="text-sm font-medium mb-2 block">Kullanıcı Tipi</label>
                   <select
-                    className="w-full p-2 rounded text-sm bg-[#F5F6F8]"
+                    className="w-full p-2  text-sm bg-[#F5F6F8]"
                     value={settings.userType}
                     onChange={(e) => setSettings(prev => ({ ...prev, userType: e.target.value as any }))}
                   >
@@ -237,7 +237,7 @@ export default function CoursePreviewTester() {
                 <div>
                   <label className="text-sm font-medium mb-2 block">Dil</label>
                   <select
-                    className="w-full p-2 rounded text-sm bg-[#F5F6F8]"
+                    className="w-full p-2  text-sm bg-[#F5F6F8]"
                     value={settings.language}
                     onChange={(e) => setSettings(prev => ({ ...prev, language: e.target.value }))}
                   >
@@ -264,7 +264,7 @@ export default function CoursePreviewTester() {
           {/* Video Preview */}
           <Card>
             <CardContent className="p-0">
-              <div className="relative bg-black rounded-lg overflow-hidden">
+              <div className="relative bg-black  overflow-hidden">
                 <div className="aspect-video bg-gradient-to-br from-blue-900 to-brand-900 flex items-center justify-center">
                   <div className="text-center text-white">
                     <BookOpen className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -356,7 +356,7 @@ export default function CoursePreviewTester() {
                 </div>
 
                 <div>
-                  <div className="bg-muted rounded-lg p-4">
+                  <div className="bg-muted  p-4">
                     <h4 className="font-medium mb-3">Bu kursta öğrenecekleriniz:</h4>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-center gap-2">
@@ -392,7 +392,7 @@ export default function CoursePreviewTester() {
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 bg-muted rounded-lg">
+                        <div className="p-2 bg-muted ">
                           <TypeIcon className="w-5 h-5" />
                         </div>
                         <div>
@@ -461,7 +461,7 @@ export default function CoursePreviewTester() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="rounded-lg p-4 bg-[#F5F6F8]">
+                <div className=" p-4 bg-[#F5F6F8]">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                       <span className="text-sm font-medium">AY</span>
@@ -491,7 +491,7 @@ export default function CoursePreviewTester() {
                   </div>
                 </div>
 
-                <div className="rounded-lg p-4 bg-[#F5F6F8]">
+                <div className=" p-4 bg-[#F5F6F8]">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                       <span className="text-sm font-medium">MK</span>

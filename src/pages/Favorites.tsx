@@ -122,7 +122,7 @@ const Favorites = () => {
         {band}
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="h-72 bg-[#F5F6F8] rounded-[22px] animate-pulse" />
+            <div key={i} className="h-72 bg-[#F5F6F8]  animate-pulse" />
           ))}
         </div>
       </div>
@@ -134,14 +134,14 @@ const Favorites = () => {
       {band}
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-10">
         {favorites.length === 0 ? (
-          <div className="rounded-[28px] bg-[#F5F6F8] py-16 px-6 text-center">
+          <div className=" bg-[#F5F6F8] py-16 px-6 text-center">
             <p className="text-[20px] font-extrabold">Henüz favori kursun yok</p>
             <p className="mt-2 text-[14.5px] text-[#6B7280] max-w-md mx-auto">
               Beğendiğin kursları favorilere ekle, sonra kolayca bulursun.
             </p>
             <Link
               to="/courses"
-              className="mt-6 inline-flex items-center h-11 px-6 rounded-2xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14.5px] font-bold transition-colors"
+              className="mt-6 inline-flex items-center h-11 px-6  bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14.5px] font-bold transition-colors"
             >
               Kursları keşfet
             </Link>
@@ -159,7 +159,7 @@ const Favorites = () => {
               const href = course.slug ? `/course/${course.slug}` : `/course/${id}`;
 
               return (
-                <article key={id} className="group rounded-[22px] bg-white overflow-hidden flex flex-col transition-shadow hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]">
+                <article key={id} className="group  bg-white overflow-hidden flex flex-col transition-shadow hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]">
                   <div className="relative">
                     <Link to={href} className="block aspect-video bg-[#F1F3F5] overflow-hidden">
                       <img
@@ -199,7 +199,7 @@ const Favorites = () => {
                       <button
                         type="button"
                         onClick={() => addToCart(course)}
-                        className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[13px] font-bold transition-colors"
+                        className="inline-flex items-center gap-1.5 h-9 px-3.5  bg-[#1B7A43] hover:bg-[#16613A] text-white text-[13px] font-bold transition-colors"
                       >
                         <ShoppingCart className="w-4 h-4" />
                         Sepete ekle

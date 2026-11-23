@@ -111,7 +111,7 @@ const TableOfContents: React.FC<{ sections: Section[]; activeId: string }> = ({
                             <a
                                 href={`#${s.id}`}
                                 className={cn(
-                                    'block rounded-xl px-3 py-2 text-[14px] leading-snug transition-colors duration-200',
+                                    'block  px-3 py-2 text-[14px] leading-snug transition-colors duration-200',
                                     active
                                         ? 'bg-[#EEFBF3] text-[#1B7A43] font-bold'
                                         : 'text-[#6B7280] hover:text-[#111827] hover:bg-[#F5F6F8]'
@@ -144,8 +144,8 @@ export const PageHeader: React.FC<{
     /** Başlığın altına giren ek içerik (ör. arama kutusu) */
     children?: React.ReactNode;
 }> = ({ title, lead, updatedAt, eyebrow, children }) => (
-    <div className="px-3 sm:px-4 pt-3 sm:pt-4">
-        <header className="relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-[#F5F6F8]">
+    <div>
+        <header className="relative overflow-hidden   bg-[#F5F6F8]">
             <div aria-hidden className="absolute -right-24 -top-24 w-[340px] h-[340px] sm:w-[460px] sm:h-[460px] rounded-[38%] bg-[#B2F0C8] rotate-12" />
             <div aria-hidden className="absolute right-[12%] bottom-[-120px] w-[220px] h-[220px] rounded-full bg-white/70 hidden md:block" />
 
@@ -186,8 +186,8 @@ export const PageHeader: React.FC<{
 
 /** Sayfaların altındaki ortak iletişim şeridi. */
 export const ContactBand: React.FC = () => (
-    <section className="px-3 sm:px-4 pb-14">
-        <div className="rounded-[28px] sm:rounded-[36px] bg-[#B2F0C8]">
+    <section className="pb-14">
+        <div className="  bg-[#B2F0C8]">
             <div className="container max-w-[1140px] px-6 sm:px-10 py-12 lg:py-14 flex flex-col md:flex-row md:items-center justify-between gap-7">
                 <div className="max-w-xl">
                     <h2 className="font-montserrat text-[26px] lg:text-[32px] font-extrabold text-[#111827] tracking-[-0.025em] leading-tight">
@@ -201,13 +201,13 @@ export const ContactBand: React.FC = () => (
                 <div className="flex flex-wrap gap-3 shrink-0">
                     <Link
                         to="/contact"
-                        className="h-12 px-7 inline-flex items-center rounded-2xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[15px] font-bold transition-colors"
+                        className="h-12 px-7 inline-flex items-center  bg-[#1B7A43] hover:bg-[#16613A] text-white text-[15px] font-bold transition-colors"
                     >
                         İletişime geç
                     </Link>
                     <Link
                         to="/help"
-                        className="h-12 px-7 inline-flex items-center rounded-2xl bg-white/70 hover:bg-white text-[#111827] text-[15px] font-bold transition-colors"
+                        className="h-12 px-7 inline-flex items-center  bg-white/70 hover:bg-white text-[#111827] text-[15px] font-bold transition-colors"
                     >
                         Yardım merkezi
                     </Link>
@@ -269,7 +269,7 @@ export const H3: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 
 /** Vurgulanması gereken not. */
 export const Note: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <aside className="my-7 rounded-2xl bg-[#EEFBF3] px-6 py-5">
+    <aside className="my-7  bg-[#EEFBF3] px-6 py-5">
         <p className="text-[15px] text-[#134D30] leading-[1.75]">{children}</p>
     </aside>
 );
@@ -283,7 +283,7 @@ export const Note: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 export const Stats: React.FC<{ items: Array<{ value: string; label: string }> }> = ({ items }) => (
     <div className="my-8 grid gap-3 sm:grid-cols-3">
         {items.map(item => (
-            <div key={item.label} className="rounded-2xl bg-[#F5F6F8] p-5">
+            <div key={item.label} className=" bg-[#F5F6F8] p-5">
                 <div className="font-montserrat text-[30px] font-extrabold text-[#1B7A43] tracking-[-0.03em] leading-none">
                     {item.value}
                 </div>
@@ -300,8 +300,8 @@ export const Table: React.FC<{
     /** Son satırı sonuç/toplam gibi vurgula */
     emphasizeLast?: boolean;
 }> = ({ head, rows, emphasizeLast }) => (
-    <div className="my-7 overflow-x-auto rounded-2xl bg-[#F5F6F8] p-1.5">
-        <table className="w-full text-[15px] min-w-[440px] bg-white rounded-xl overflow-hidden">
+    <div className="my-7 overflow-x-auto  bg-[#F5F6F8] p-1.5">
+        <table className="w-full text-[15px] min-w-[440px] bg-white  overflow-hidden">
             <thead>
                 <tr className="bg-[#F5F6F8] text-left">
                     {head.map(h => (

@@ -227,7 +227,7 @@ export const StudentLearningDashboard: React.FC = () => {
           src={course.image_url}
           alt={course.title}
           className={`w-full object-cover group-hover:scale-105 transition-transform duration-300 ${
-            viewMode === 'list' ? 'h-32 rounded-l-lg' : 'h-48 rounded-t-lg'
+            viewMode === 'list' ? 'h-32 ' : 'h-48 '
           }`}
         />
         
@@ -297,7 +297,7 @@ export const StudentLearningDashboard: React.FC = () => {
 
         <div className="space-y-3">
           {course.next_lesson && (
-            <div className="p-3 bg-blue-50 rounded-lg">
+            <div className="p-3 bg-blue-50 ">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-blue-800">Sonraki Ders:</p>
@@ -452,11 +452,11 @@ export const StudentLearningDashboard: React.FC = () => {
                 <CardContent>
                   <div className="space-y-4">
                     {courses.slice(0, 3).map((course) => (
-                      <div key={course.course_id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                      <div key={course.course_id} className="flex items-center space-x-3 p-3 bg-gray-50  hover:bg-gray-100 transition-colors cursor-pointer">
                         <img
                           src={course.image_url}
                           alt={course.title}
-                          className="w-12 h-12 object-cover rounded"
+                          className="w-12 h-12 object-cover "
                         />
                         <div className="flex-1">
                           <h4 className="font-medium text-sm line-clamp-1">{course.title}</h4>
@@ -530,7 +530,7 @@ export const StudentLearningDashboard: React.FC = () => {
                   </SelectContent>
                 </Select>
 
-                <div className="flex items-center rounded-lg bg-[#F5F6F8]">
+                <div className="flex items-center  bg-[#F5F6F8]">
                   <Button
                     variant={viewMode === 'grid' ? 'default' : 'ghost'}
                     size="sm"
@@ -601,7 +601,7 @@ export const StudentLearningDashboard: React.FC = () => {
                     {Array.from({ length: 7 }, (_, i) => (
                       <div key={i} className="flex flex-col items-center space-y-2">
                         <div 
-                          className="w-8 bg-blue-200 rounded-sm"
+                          className="w-8 bg-blue-200 "
                           style={{ height: `${Math.random() * 80 + 20}%` }}
                         />
                         <span className="text-xs text-gray-500">
@@ -621,11 +621,11 @@ export const StudentLearningDashboard: React.FC = () => {
               <CardContent>
                 <div className="space-y-4">
                   {courses.map((course) => (
-                    <div key={course.course_id} className="flex items-center space-x-4 p-4 rounded-lg bg-[#F5F6F8]">
+                    <div key={course.course_id} className="flex items-center space-x-4 p-4  bg-[#F5F6F8]">
                       <img
                         src={course.image_url}
                         alt={course.title}
-                        className="w-16 h-16 object-cover rounded"
+                        className="w-16 h-16 object-cover "
                       />
                       <div className="flex-1">
                         <h4 className="font-medium">{course.title}</h4>
@@ -695,7 +695,7 @@ export const StudentLearningDashboard: React.FC = () => {
                     <img
                       src={rec.image_url}
                       alt={rec.title}
-                      className="w-full h-48 object-cover rounded-t-lg"
+                      className="w-full h-48 object-cover "
                     />
                     <Badge className="absolute top-2 right-2 bg-blue-500">
                       %{rec.match_score} eşleşme

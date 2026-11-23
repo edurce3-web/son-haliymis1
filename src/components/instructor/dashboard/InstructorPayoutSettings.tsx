@@ -122,7 +122,7 @@ const InstructorPayoutSettings: React.FC = () => {
         <>
             <PageHead title="Ödeme bilgileri" sub="Kazancının yatacağı hesap ve şimdiye kadarki ödemelerin" />
 
-            <section className="rounded-2xl bg-[#00201d] text-white grid sm:grid-cols-3 mb-6 overflow-hidden">
+            <section className=" bg-[#00201d] text-white grid sm:grid-cols-3 mb-6 overflow-hidden">
                 {[
                     { l: 'Ödenecek bakiye', v: formatPrice(balance), mint: true },
                     { l: 'Bugüne kadar ödenen', v: formatPrice(totalPaid) },

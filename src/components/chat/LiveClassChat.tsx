@@ -410,7 +410,7 @@ export const LiveClassChat: React.FC<LiveClassChatProps> = ({
                         )}
                         
                         {message.reply_to && (
-                          <div className="ml-8 mb-1 p-2 bg-gray-50 rounded text-xs">
+                          <div className="ml-8 mb-1 p-2 bg-gray-50  text-xs">
                             <span className="text-gray-600">Yanıtlanan mesaj...</span>
                           </div>
                         )}
@@ -435,7 +435,7 @@ export const LiveClassChat: React.FC<LiveClassChatProps> = ({
                             </div>
                             
                             {!message.is_deleted ? (
-                              <div className="bg-gray-50 rounded-lg p-2 text-sm">
+                              <div className="bg-gray-50  p-2 text-sm">
                                 {message.message}
                               </div>
                             ) : (
@@ -486,7 +486,7 @@ export const LiveClassChat: React.FC<LiveClassChatProps> = ({
                                       <button
                                         key={emoji}
                                         onClick={() => addReaction(message.message_id, emoji)}
-                                        className="p-1 hover:bg-gray-100 rounded"
+                                        className="p-1 hover:bg-gray-100 "
                                       >
                                         {emoji}
                                       </button>
@@ -529,7 +529,7 @@ export const LiveClassChat: React.FC<LiveClassChatProps> = ({
                 {/* Message Input */}
                 <div className="p-4">
                   {replyTo && (
-                    <div className="mb-2 p-2 bg-blue-50 rounded text-sm flex items-center justify-between">
+                    <div className="mb-2 p-2 bg-blue-50  text-sm flex items-center justify-between">
                       <div>
                         <span className="text-blue-600">Yanıtlanıyor: {replyTo.full_name}</span>
                         <p className="text-gray-600 truncate">{replyTo.message}</p>
@@ -567,7 +567,7 @@ export const LiveClassChat: React.FC<LiveClassChatProps> = ({
                               <button
                                 key={emoji}
                                 onClick={() => setNewMessage(prev => prev + emoji)}
-                                className="p-2 hover:bg-gray-100 rounded text-lg"
+                                className="p-2 hover:bg-gray-100  text-lg"
                               >
                                 {emoji}
                               </button>
@@ -606,7 +606,7 @@ export const LiveClassChat: React.FC<LiveClassChatProps> = ({
                   <ScrollArea className="h-64">
                     <div className="p-2 space-y-2">
                       {participants.map((participant) => (
-                        <div key={participant.user_id} className="flex items-center space-x-2 p-2 rounded hover:bg-gray-50">
+                        <div key={participant.user_id} className="flex items-center space-x-2 p-2  hover:bg-gray-50">
                           <Avatar className="w-6 h-6">
                             <AvatarImage src={participant.avatar_url} />
                             <AvatarFallback className="text-xs">

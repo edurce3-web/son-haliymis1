@@ -167,8 +167,8 @@ export const ProfileView: React.FC<{ data: ProfileData }> = ({ data }) => {
     return (
         <div className="min-h-screen bg-white text-[#111827] font-jakarta">
             {/* ── Kimlik ───────────────────────────────────────────────── */}
-            <div className="px-3 sm:px-4 pt-3">
-                <header className="relative overflow-hidden rounded-[32px] bg-[#B2F0C8] text-[#0A2A1A]">
+            <div>
+                <header className="relative overflow-hidden  bg-[#B2F0C8] text-[#0A2A1A]">
                     {/* Renk lekeleri: çizgi yok, yalnızca ton */}
                     <div aria-hidden className="absolute -left-32 -top-40 w-[520px] h-[520px] rounded-full bg-[#C9F5D8]" />
                     <div aria-hidden className="absolute right-[-120px] bottom-[-200px] w-[560px] h-[560px] rounded-full bg-[#9BE8B6]" />
@@ -204,16 +204,16 @@ export const ProfileView: React.FC<{ data: ProfileData }> = ({ data }) => {
 
                                 <div className="mt-6 flex flex-wrap items-center gap-2">
                                     {isInstructor && courses.length > 0 && (
-                                        <a href="#kurslar" className="h-12 px-5 inline-flex items-center rounded-2xl bg-[#0A2A1A] hover:bg-[#134D30] text-white text-[14.5px] font-bold transition-colors">
+                                        <a href="#kurslar" className="h-12 px-5 inline-flex items-center  bg-[#0A2A1A] hover:bg-[#134D30] text-white text-[14.5px] font-bold transition-colors">
                                             {`Kurslarını gör (${courses.length})`}
                                         </a>
                                     )}
                                     {isOwn && (
-                                        <Link to="/home/settings/profile" className="h-12 px-5 inline-flex items-center rounded-2xl bg-white hover:bg-[#EEFBF3] text-[14.5px] font-bold transition-colors">
+                                        <Link to="/home/settings/profile" className="h-12 px-5 inline-flex items-center  bg-white hover:bg-[#EEFBF3] text-[14.5px] font-bold transition-colors">
                                             Profili düzenle
                                         </Link>
                                     )}
-                                    <button type="button" onClick={copyLink} className="h-12 px-5 inline-flex items-center rounded-2xl bg-white/60 hover:bg-white text-[14.5px] font-bold transition-colors">
+                                    <button type="button" onClick={copyLink} className="h-12 px-5 inline-flex items-center  bg-white/60 hover:bg-white text-[14.5px] font-bold transition-colors">
                                         Bağlantıyı kopyala
                                     </button>
                                 </div>
@@ -226,7 +226,7 @@ export const ProfileView: React.FC<{ data: ProfileData }> = ({ data }) => {
                         {/* Ölçüler */}
                         <dl className={cn('mt-8 sm:mt-10 grid gap-2 sm:gap-3', stats.length === 4 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-3')}>
                             {stats.map(s => (
-                                <div key={s.label} className={cn('rounded-[22px] px-5 py-4 sm:py-5', s.accent ? 'bg-[#0A2A1A] text-white' : 'bg-white/75')}>
+                                <div key={s.label} className={cn(' px-5 py-4 sm:py-5', s.accent ? 'bg-[#0A2A1A] text-white' : 'bg-white/75')}>
                                     <dd className="text-[28px] sm:text-[36px] font-extrabold tracking-[-0.03em] tabular-nums leading-none">{s.value}</dd>
                                     <dt className={cn('mt-2 text-[13px] font-bold', s.accent ? 'text-[#B2F0C8]' : 'text-[#134D30]')}>{s.label}</dt>
                                 </div>
@@ -256,14 +256,14 @@ export const ProfileView: React.FC<{ data: ProfileData }> = ({ data }) => {
                             )}
                         </section>
                     ) : isOwn ? (
-                        <section className="rounded-[24px] bg-[#EEFBF3] p-6">
+                        <section className=" bg-[#EEFBF3] p-6">
                             <h2 className="text-[17px] font-extrabold">Kendini tanıt</h2>
                             <p className="mt-1 text-[14px] text-[#4B5563] max-w-[56ch]">
                                 {isInstructor
                                     ? 'Kısa bir tanıtım yazısı, öğrencilerin kursuna güvenmesini kolaylaştırır.'
                                     : 'Profiline birkaç cümle ekle; ilgi alanların görünsün.'}
                             </p>
-                            <Link to="/home/settings/profile" className="mt-4 h-10 px-4 inline-flex items-center rounded-xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[13.5px] font-bold">
+                            <Link to="/home/settings/profile" className="mt-4 h-10 px-4 inline-flex items-center  bg-[#1B7A43] hover:bg-[#16613A] text-white text-[13.5px] font-bold">
                                 Tanıtım yazısı ekle
                             </Link>
                         </section>
@@ -306,10 +306,10 @@ export const ProfileView: React.FC<{ data: ProfileData }> = ({ data }) => {
                                     {learning.courses.map(c => <LearningRow key={c.id} course={c} />)}
                                 </div>
                             ) : (
-                                <div className="rounded-[24px] bg-[#F5F6F8] p-6">
+                                <div className=" bg-[#F5F6F8] p-6">
                                     <p className="text-[15px] font-bold">{isOwn ? 'Henüz bir eğitime başlamadın.' : 'Henüz bir eğitime kayıtlı değil.'}</p>
                                     {isOwn && (
-                                        <Link to="/courses" className="mt-3 h-10 px-4 inline-flex items-center rounded-xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[13.5px] font-bold">
+                                        <Link to="/courses" className="mt-3 h-10 px-4 inline-flex items-center  bg-[#1B7A43] hover:bg-[#16613A] text-white text-[13.5px] font-bold">
                                             Kurslara göz at
                                         </Link>
                                     )}
@@ -354,7 +354,7 @@ export const ProfileView: React.FC<{ data: ProfileData }> = ({ data }) => {
                                                 href={url}
                                                 target="_blank"
                                                 rel="noopener noreferrer nofollow"
-                                                className="flex items-center justify-between gap-3 h-10 px-3 rounded-xl bg-white hover:bg-[#EEFBF3] transition-colors"
+                                                className="flex items-center justify-between gap-3 h-10 px-3  bg-white hover:bg-[#EEFBF3] transition-colors"
                                             >
                                                 <span className="text-[13.5px] font-bold">{LINK_LABELS[key] || key}</span>
                                                 <span className="min-w-0 truncate text-[12.5px] text-[#6B7280]">{host(url)}</span>
@@ -380,8 +380,8 @@ export const ProfileView: React.FC<{ data: ProfileData }> = ({ data }) => {
 
             {/* ── Aynı alandan başka kurslar ───────────────────────────── */}
             {isInstructor && otherSuggestions.length > 0 && (
-                <div className="px-3 sm:px-4 pb-6">
-                    <section className="rounded-[28px] bg-[#F5F6F8]">
+                <div>
+                    <section className=" bg-[#F5F6F8]">
                         <div className="max-w-[1240px] mx-auto px-5 sm:px-8 py-9">
                             <SectionTitle>Bu alanda başka kurslar</SectionTitle>
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-5 sm:gap-x-4">
@@ -406,7 +406,7 @@ export const ProfileView: React.FC<{ data: ProfileData }> = ({ data }) => {
 /** Profil fotoğrafı; yoksa ya da yüklenemezse baş harfler. */
 const ProfilePhoto: React.FC<{ src: string | null; name: string }> = ({ src, name }) => {
     const [failed, setFailed] = useState(false);
-    const box = 'w-[76px] h-[76px] sm:w-[92px] sm:h-[92px] shrink-0 rounded-[26px] shadow-[0_18px_40px_-18px_rgba(10,42,26,0.55)]';
+    const box = 'w-[76px] h-[76px] sm:w-[92px] sm:h-[92px] shrink-0  shadow-[0_18px_40px_-18px_rgba(10,42,26,0.55)]';
     return src && !failed ? (
         <img src={src} alt={name} onError={() => setFailed(true)} className={cn(box, 'object-cover bg-[#D7F5E2]')} />
     ) : (
@@ -422,7 +422,7 @@ const Collage: React.FC<{ images: string[]; name: string }> = ({ images, name })
     const pics = images.filter(Boolean);
     if (pics.length === 0) {
         return (
-            <div aria-hidden className="hidden lg:flex h-[300px] items-center justify-center rounded-[36px] bg-white/50 text-[140px] font-extrabold tracking-[-0.06em] text-[#0A2A1A]/90">
+            <div aria-hidden className="hidden lg:flex h-[300px] items-center justify-center  bg-white/50 text-[140px] font-extrabold tracking-[-0.06em] text-[#0A2A1A]/90">
                 {getInitials(name)}
             </div>
         );
@@ -438,7 +438,7 @@ const Collage: React.FC<{ images: string[]; name: string }> = ({ images, name })
                 <div
                     key={i}
                     className={cn(
-                        'absolute aspect-video rounded-[22px] overflow-hidden bg-[#D7F5E2] shadow-[0_30px_60px_-24px_rgba(10,42,26,0.55)]',
+                        'absolute aspect-video  overflow-hidden bg-[#D7F5E2] shadow-[0_30px_60px_-24px_rgba(10,42,26,0.55)]',
                         pics.length === 1 ? 'left-[8%] top-[10%] w-[84%] -rotate-[3deg]' : spots[i]
                     )}
                 >
@@ -463,7 +463,7 @@ const SectionTitle: React.FC<{ children: React.ReactNode; count?: number }> = ({
 );
 
 const SideCard: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-    <div className="rounded-[22px] bg-[#F5F6F8] p-5">
+    <div className=" bg-[#F5F6F8] p-5">
         <h3 className="mb-3 text-[12px] font-bold uppercase tracking-[0.14em] text-[#6B7280]">{title}</h3>
         {children}
     </div>
@@ -480,8 +480,8 @@ const FeaturedCourse: React.FC<{ course: ProfileCourse; owned: boolean }> = ({ c
     ].filter(Boolean).join('  ·  ');
 
     return (
-        <Link to={url} className="group grid sm:grid-cols-[minmax(0,48%)_1fr] rounded-[28px] bg-[#1B7A43] text-white overflow-hidden hover:bg-[#16613A] transition-colors">
-            <div className="relative aspect-video sm:aspect-auto sm:min-h-[260px] m-2 sm:m-3 rounded-[20px] bg-[#D7F5E2] overflow-hidden">
+        <Link to={url} className="group grid sm:grid-cols-[minmax(0,48%)_1fr]  bg-[#1B7A43] text-white overflow-hidden hover:bg-[#16613A] transition-colors">
+            <div className="relative aspect-video sm:aspect-auto sm:min-h-[260px] m-2 sm:m-3  bg-[#D7F5E2] overflow-hidden">
                 <img
                     src={course.image}
                     alt={course.title}
@@ -503,7 +503,7 @@ const FeaturedCourse: React.FC<{ course: ProfileCourse; owned: boolean }> = ({ c
                             {course.price > 0 ? `₺${course.price.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'Ücretsiz'}
                         </span>
                     ) : <span className="text-[13.5px] font-bold text-[#B2F0C8]">Bu kursa sahipsin</span>}
-                    <span className="h-11 px-5 inline-flex items-center rounded-2xl bg-[#B2F0C8] text-[#0A2A1A] text-[14px] font-extrabold">
+                    <span className="h-11 px-5 inline-flex items-center  bg-[#B2F0C8] text-[#0A2A1A] text-[14px] font-extrabold">
                         {owned ? 'Derse git' : 'Kursu incele'}
                     </span>
                 </div>
@@ -513,8 +513,8 @@ const FeaturedCourse: React.FC<{ course: ProfileCourse; owned: boolean }> = ({ c
 };
 
 const LearningRow: React.FC<{ course: LearningCourse }> = ({ course }) => (
-    <div className="flex gap-3 rounded-[20px] bg-[#F5F6F8] p-2.5 pr-4">
-        <Link to={`/course/${course.slug || course.id}`} className="w-[112px] shrink-0 aspect-video rounded-[14px] overflow-hidden bg-[#D7F5E2]">
+    <div className="flex gap-3  bg-[#F5F6F8] p-2.5 pr-4">
+        <Link to={`/course/${course.slug || course.id}`} className="w-[112px] shrink-0 aspect-video  overflow-hidden bg-[#D7F5E2]">
             <img
                 src={course.image}
                 alt=""

@@ -36,7 +36,7 @@ const GamificationDashboard: React.FC<GamificationDashboardProps> = ({ userId })
                         <section className="bg-[#F5F6F8] p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
                             <div className="flex justify-between items-end mb-4">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-16 h-16 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl flex items-center justify-center text-white font-black text-2xl shadow-lg">12</div>
+                                    <div className="w-16 h-16 bg-gradient-to-br from-brand-500 to-brand-600  flex items-center justify-center text-white font-black text-2xl shadow-lg">12</div>
                                     <div>
                                         <h3 className="font-black text-xl">Usta Öğrenci</h3>
                                         <p className="text-slate-400 text-sm font-bold uppercase tracking-widest">350 XP sonra Seviye 13</p>
@@ -44,7 +44,7 @@ const GamificationDashboard: React.FC<GamificationDashboardProps> = ({ userId })
                                 </div>
                                 <span className="text-brand-600 font-black">75%</span>
                             </div>
-                            <Progress value={75} className="h-4 rounded-none bg-slate-100" indicatorClassName="bg-brand-600" />
+                            <Progress value={75} className="h-4  bg-slate-100" indicatorClassName="bg-brand-600" />
                         </section>
 
                         {/* Badges Grid */}
@@ -71,7 +71,7 @@ const GamificationDashboard: React.FC<GamificationDashboardProps> = ({ userId })
                     {/* Sidebar Area */}
                     <div className="space-y-10">
                         {/* Leaderboard */}
-                        <section className="bg-slate-900 text-white p-8 space-y-8 rounded-none shadow-2xl">
+                        <section className="bg-slate-900 text-white p-8 space-y-8  shadow-2xl">
                             <h3 className="text-xl font-black flex items-center gap-3 uppercase tracking-tighter">
                                 <Users className="w-5 h-5 text-brand-400" /> Liderlik Tablosu
                             </h3>

@@ -280,7 +280,7 @@ export default function VideoUploadProcessor() {
         <CardContent>
           <div
             {...getRootProps()}
-            className={` rounded-lg p-8 text-center transition-colors cursor-pointer ${
+            className={`  p-8 text-center transition-colors cursor-pointer ${
               isDragActive 
                 ? ' bg-primary/5' 
                 : ''
@@ -357,7 +357,7 @@ export default function VideoUploadProcessor() {
               <Label htmlFor="compression">Sıkıştırma Seviyesi</Label>
               <select
                 id="compression"
-                className="w-full p-2 rounded-md mt-1 bg-[#F5F6F8]"
+                className="w-full p-2  mt-1 bg-[#F5F6F8]"
                 value={settings.compressionLevel}
                 onChange={(e) => 
                   setSettings(prev => ({ ...prev, compressionLevel: e.target.value as any }))
@@ -407,10 +407,10 @@ export default function VideoUploadProcessor() {
           <CardContent>
             <div className="space-y-4">
               {videos.map((video) => (
-                <div key={video.id} className="rounded-lg p-4 bg-[#F5F6F8]">
+                <div key={video.id} className=" p-4 bg-[#F5F6F8]">
                   <div className="flex items-start gap-4">
                     {/* Thumbnail */}
-                    <div className="w-32 h-18 bg-muted rounded-lg flex items-center justify-center overflow-hidden">
+                    <div className="w-32 h-18 bg-muted  flex items-center justify-center overflow-hidden">
                       {video.thumbnail ? (
                         <img src={video.thumbnail} alt={video.name} className="w-full h-full object-cover" />
                       ) : (
@@ -541,21 +541,21 @@ export default function VideoUploadProcessor() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-muted/30 rounded-lg">
+              <div className="text-center p-4 bg-muted/30 ">
                 <div className="text-2xl font-bold text-primary">
                   {videos.reduce((total, video) => total + video.analytics.views, 0)}
                 </div>
                 <div className="text-sm text-muted-foreground">Toplam İzlenme</div>
               </div>
               
-              <div className="text-center p-4 bg-muted/30 rounded-lg">
+              <div className="text-center p-4 bg-muted/30 ">
                 <div className="text-2xl font-bold text-green-600">
                   {Math.round(videos.reduce((total, video) => total + video.analytics.watchTime, 0) / 60)}dk
                 </div>
                 <div className="text-sm text-muted-foreground">İzlenme Süresi</div>
               </div>
               
-              <div className="text-center p-4 bg-muted/30 rounded-lg">
+              <div className="text-center p-4 bg-muted/30 ">
                 <div className="text-2xl font-bold text-orange-600">
                   %{Math.round(videos.reduce((total, video) => total + video.analytics.engagement, 0) / videos.length)}
                 </div>

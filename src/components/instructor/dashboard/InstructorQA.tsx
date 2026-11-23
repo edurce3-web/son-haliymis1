@@ -171,7 +171,7 @@ export function InstructorQA(_props: InstructorQAProps) {
                                                     return (
                                                         <li
                                                             key={a.answer_id}
-                                                            className={cn('flex items-start gap-3 rounded-xl px-3.5 py-3', mine ? 'bg-[#ecfbf8]' : 'bg-[#f6f9f8]')}
+                                                            className={cn('flex items-start gap-3  px-3.5 py-3', mine ? 'bg-[#ecfbf8]' : 'bg-[#f6f9f8]')}
                                                         >
                                                             <Initials name={name} src={a.profile_image} size={28} />
                                                             <div className="min-w-0 flex-1">

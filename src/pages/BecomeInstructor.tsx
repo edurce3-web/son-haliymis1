@@ -110,7 +110,7 @@ const BecomeInstructor: React.FC = () => {
             </p>
             <h1 className="mt-5 text-[40px] sm:text-[54px] lg:text-[62px] leading-[1.03] font-extrabold tracking-[-0.045em] text-white text-balance">
               Bildiğini öğret,{' '}
-              <span className="inline-block px-3 -mx-0.5 rounded-2xl bg-[#b2f0c8] text-[#111827] -rotate-[1.5deg]">yüksek komisyonla</span>{' '}
+              <span className="inline-block px-3 -mx-0.5  bg-[#b2f0c8] text-[#111827] -rotate-[1.5deg]">yüksek komisyonla</span>{' '}
               kazan.
             </h1>
             <p className="mt-6 text-[17px] sm:text-[18px] leading-relaxed text-white/70 max-w-[52ch]">
@@ -120,14 +120,14 @@ const BecomeInstructor: React.FC = () => {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 to={cta.to}
-                className="group inline-flex items-center gap-2 h-[52px] px-7 rounded-2xl bg-[#b2f0c8] text-[#111827] text-[15.5px] font-bold hover:bg-white active:scale-[0.98] transition-[background-color,transform]"
+                className="group inline-flex items-center gap-2 h-[52px] px-7  bg-[#b2f0c8] text-[#111827] text-[15.5px] font-bold hover:bg-white active:scale-[0.98] transition-[background-color,transform]"
               >
                 {cta.label}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <a
                 href="#hesapla"
-                className="inline-flex items-center h-[52px] px-6 rounded-2xl bg-white/[0.08] text-white text-[15px] font-bold hover:bg-white/[0.14] transition-colors"
+                className="inline-flex items-center h-[52px] px-6  bg-white/[0.08] text-white text-[15px] font-bold hover:bg-white/[0.14] transition-colors"
               >
                 Ne kazanırım?
               </a>
@@ -165,11 +165,11 @@ const BecomeInstructor: React.FC = () => {
               <div
                 key={title}
                 className={cn(
-                  'rounded-[24px] p-6 sm:p-7',
+                  ' p-6 sm:p-7',
                   i === 0 ? 'bg-[#1B7A43] text-white' : 'bg-white'
                 )}
               >
-                <span className={cn('w-12 h-12 rounded-2xl flex items-center justify-center', i === 0 ? 'bg-[#b2f0c8] text-[#111827]' : 'bg-[#E3F8EB] text-[#1B7A43]')}>
+                <span className={cn('w-12 h-12  flex items-center justify-center', i === 0 ? 'bg-[#b2f0c8] text-[#111827]' : 'bg-[#E3F8EB] text-[#1B7A43]')}>
                   <Icon className="w-[22px] h-[22px]" />
                 </span>
                 <h3 className="mt-5 text-[18px] font-extrabold tracking-[-0.01em]">{title}</h3>
@@ -194,13 +194,13 @@ const BecomeInstructor: React.FC = () => {
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
           {TOOLS.map(({ icon: Icon, title, body }) => (
-            <div key={title} className="rounded-[24px] bg-[#F5F6F8] p-6">
+            <div key={title} className=" bg-[#F5F6F8] p-6">
               <Icon className="w-6 h-6 text-[#1B7A43]" />
               <h3 className="mt-4 text-[17px] font-extrabold tracking-[-0.01em]">{title}</h3>
               <p className="mt-1.5 text-[14.5px] leading-[1.7] text-[#4B5563]">{body}</p>
             </div>
           ))}
-          <div className="sm:col-span-2 rounded-[24px] bg-[#b2f0c8] p-6 sm:p-7 grid sm:grid-cols-2 gap-6">
+          <div className="sm:col-span-2  bg-[#b2f0c8] p-6 sm:p-7 grid sm:grid-cols-2 gap-6">
             <div>
               <h3 className="text-[16px] font-extrabold">İhtiyacın olanlar</h3>
               <ul className="mt-3 space-y-2">
@@ -235,8 +235,8 @@ const BecomeInstructor: React.FC = () => {
             </h2>
             <ol className="mt-9 space-y-3">
               {STEPS.map((s, i) => (
-                <li key={s.title} className="flex gap-5 rounded-[22px] bg-white p-5 sm:p-6">
-                  <span className="shrink-0 w-11 h-11 rounded-2xl bg-[#1B7A43] text-white text-[17px] font-extrabold tabular-nums flex items-center justify-center">
+                <li key={s.title} className="flex gap-5  bg-white p-5 sm:p-6">
+                  <span className="shrink-0 w-11 h-11  bg-[#1B7A43] text-white text-[17px] font-extrabold tabular-nums flex items-center justify-center">
                     {i + 1}
                   </span>
                   <div>
@@ -248,7 +248,7 @@ const BecomeInstructor: React.FC = () => {
             </ol>
           </div>
 
-          <aside className="lg:sticky lg:top-28 rounded-[28px] bg-[#1B7A43] text-white p-7 sm:p-8">
+          <aside className="lg:sticky lg:top-28  bg-[#1B7A43] text-white p-7 sm:p-8">
             <p className="text-[13px] font-bold uppercase tracking-[0.16em] text-white">Eğitmen hesabı</p>
             <h3 className="mt-3 text-[26px] font-extrabold tracking-[-0.02em] leading-tight">
               Birkaç dakikada eğitmen ol.
@@ -266,7 +266,7 @@ const BecomeInstructor: React.FC = () => {
             </ul>
             <Link
               to={cta.to}
-              className="mt-8 flex items-center justify-center gap-2 h-[52px] rounded-2xl bg-[#b2f0c8] text-[#111827] text-[15.5px] font-bold hover:bg-white active:scale-[0.98] transition-[background-color,transform]"
+              className="mt-8 flex items-center justify-center gap-2 h-[52px]  bg-[#b2f0c8] text-[#111827] text-[15.5px] font-bold hover:bg-white active:scale-[0.98] transition-[background-color,transform]"
             >
               {cta.label} <ArrowRight className="w-4 h-4" />
             </Link>
@@ -297,7 +297,7 @@ const BecomeInstructor: React.FC = () => {
 
       {/* ── Kapanış ────────────────────────────────────────────────── */}
       <section className="px-4 sm:px-6 pb-16 lg:pb-24">
-        <div className="mx-auto max-w-[1280px] rounded-[32px] bg-[#b2f0c8] px-6 sm:px-12 py-12 sm:py-16 text-center">
+        <div className="mx-auto max-w-[1280px]  bg-[#b2f0c8] px-6 sm:px-12 py-12 sm:py-16 text-center">
           <h2 className="text-[30px] sm:text-[44px] leading-[1.05] font-extrabold tracking-[-0.04em] text-balance">
             İlk kursun, ilk adımın.
           </h2>
@@ -306,7 +306,7 @@ const BecomeInstructor: React.FC = () => {
           </p>
           <Link
             to={cta.to}
-            className="mt-8 inline-flex items-center gap-2 h-[52px] px-8 rounded-2xl bg-[#1B7A43] text-white text-[15.5px] font-bold hover:bg-[#16613A] active:scale-[0.98] transition-[background-color,transform]"
+            className="mt-8 inline-flex items-center gap-2 h-[52px] px-8  bg-[#1B7A43] text-white text-[15.5px] font-bold hover:bg-[#16613A] active:scale-[0.98] transition-[background-color,transform]"
           >
             {cta.label} <ArrowRight className="w-4 h-4" />
           </Link>
@@ -321,7 +321,7 @@ const PanelPreview: React.FC = () => {
   const bars = [28, 40, 34, 52, 46, 64, 58, 76, 70, 88, 82, 100];
   return (
     <div aria-hidden className="relative hidden sm:block">
-      <div className="rounded-[28px] bg-white p-6 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.6)] rotate-[1.5deg]">
+      <div className=" bg-white p-6 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.6)] rotate-[1.5deg]">
         <div className="flex items-center justify-between">
           <p className="text-[13px] font-bold text-[#4B5563]">Bu ayki kazancın</p>
           <span className="h-6 px-2.5 rounded-full bg-[#E3F8EB] text-[#1B7A43] text-[11.5px] font-bold inline-flex items-center">Örnek görünüm</span>
@@ -331,14 +331,14 @@ const PanelPreview: React.FC = () => {
           {bars.map((h, i) => (
             <span
               key={i}
-              className="flex-1 rounded-t-md animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both"
+              className="flex-1  animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both"
               style={{ height: `${h}%`, background: i === bars.length - 1 ? INK : MINT, animationDelay: `${i * 40}ms` }}
             />
           ))}
         </div>
         <div className="mt-5 grid grid-cols-3 gap-2">
           {[['Satış', '86'], ['Yeni öğrenci', '74'], ['Puan', '4,8']].map(([k, v]) => (
-            <div key={k} className="rounded-2xl bg-[#F5F6F8] px-3 py-2.5">
+            <div key={k} className=" bg-[#F5F6F8] px-3 py-2.5">
               <p className="text-[11.5px] text-[#6B7280]">{k}</p>
               <p className="text-[17px] font-extrabold tabular-nums" style={{ color: INK }}>{v}</p>
             </div>
@@ -346,8 +346,8 @@ const PanelPreview: React.FC = () => {
         </div>
       </div>
 
-      <div className="absolute -left-6 -bottom-7 rounded-2xl bg-[#b2f0c8] px-4 py-3 shadow-[0_24px_40px_-24px_rgba(0,0,0,0.6)] -rotate-[2deg] flex items-center gap-3">
-        <span className="w-9 h-9 rounded-xl bg-[#1B7A43] text-white flex items-center justify-center">
+      <div className="absolute -left-6 -bottom-7  bg-[#b2f0c8] px-4 py-3 shadow-[0_24px_40px_-24px_rgba(0,0,0,0.6)] -rotate-[2deg] flex items-center gap-3">
+        <span className="w-9 h-9  bg-[#1B7A43] text-white flex items-center justify-center">
           <Wallet className="w-[18px] h-[18px]" />
         </span>
         <span>
@@ -376,7 +376,7 @@ const Calculator: React.FC<{ ctaTo: string; ctaLabel: string }> = ({ ctaTo, ctaL
       </div>
 
       <div className="mt-10 grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-4">
-        <div className="rounded-[28px] bg-[#F5F6F8] p-6 sm:p-9 space-y-9">
+        <div className=" bg-[#F5F6F8] p-6 sm:p-9 space-y-9">
           <Slider
             id="calc-students" label="Ayda kaç öğrenci kaydolur?" value={students} min={10} max={1000} step={10}
             onChange={setStudents} display={`${students.toLocaleString('tr-TR')} öğrenci`} ends={['10', '1.000']}
@@ -390,10 +390,10 @@ const Calculator: React.FC<{ ctaTo: string; ctaLabel: string }> = ({ ctaTo, ctaL
           </p>
         </div>
 
-        <div className="rounded-[28px] bg-[#1B7A43] text-white p-6 sm:p-9 flex flex-col">
+        <div className=" bg-[#1B7A43] text-white p-6 sm:p-9 flex flex-col">
           <p className="text-[14px] font-semibold text-white/60">Aylık satış tutarı</p>
           <p className="mt-1 text-[42px] sm:text-[52px] font-extrabold tracking-[-0.04em] tabular-nums text-white leading-none">{lira(monthly)}</p>
-          <div className="mt-6 rounded-2xl bg-white/[0.07] px-5 py-4 flex items-center justify-between gap-4">
+          <div className="mt-6  bg-white/[0.07] px-5 py-4 flex items-center justify-between gap-4">
             <span className="text-[14px] text-white/70">Yıllık</span>
             <span className="text-[20px] font-extrabold tabular-nums">{lira(monthly * 12)}</span>
           </div>
@@ -405,7 +405,7 @@ const Calculator: React.FC<{ ctaTo: string; ctaLabel: string }> = ({ ctaTo, ctaL
             to={ctaTo}
             className="mt-auto pt-8"
           >
-            <span className="flex items-center justify-center gap-2 h-[52px] rounded-2xl bg-[#b2f0c8] text-[#111827] text-[15px] font-bold hover:bg-white transition-colors">
+            <span className="flex items-center justify-center gap-2 h-[52px]  bg-[#b2f0c8] text-[#111827] text-[15px] font-bold hover:bg-white transition-colors">
               {ctaLabel} <ArrowRight className="w-4 h-4" />
             </span>
           </Link>
@@ -453,12 +453,12 @@ const Slider: React.FC<{
 const Faq: React.FC<{ q: string; a: string }> = ({ q, a }) => {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-[20px] bg-[#F5F6F8]">
+    <div className=" bg-[#F5F6F8]">
       <button
         type="button"
         aria-expanded={open}
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between gap-4 text-left px-6 py-5 rounded-[20px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/40"
+        className="w-full flex items-center justify-between gap-4 text-left px-6 py-5  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/40"
       >
         <span className="text-[16px] font-bold">{q}</span>
         <ChevronDown className={cn('w-5 h-5 shrink-0 text-[#1B7A43] transition-transform duration-200', open && 'rotate-180')} />

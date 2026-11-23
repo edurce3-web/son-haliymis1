@@ -161,13 +161,13 @@ export const ImageCropDialog: React.FC<Props> = ({
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onCancel} />
 
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="relative bg-white  shadow-2xl w-full max-w-md overflow-hidden">
                 <div className="flex items-center justify-between px-5 py-4">
                     <h2 className="font-bold text-slate-900">{title}</h2>
                     <button
                         onClick={onCancel}
                         aria-label="Kapat"
-                        className="p-1.5 -mr-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                        className="p-1.5 -mr-1.5  text-slate-400 hover:text-slate-700 hover:bg-slate-100"
                     >
                         <X className="w-4 h-4" />
                     </button>
@@ -225,7 +225,7 @@ export const ImageCropDialog: React.FC<Props> = ({
                             onClick={reset}
                             aria-label="Sıfırla"
                             title="Sıfırla"
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 shrink-0"
+                            className="p-1.5  text-slate-400 hover:text-slate-700 hover:bg-slate-100 shrink-0"
                         >
                             <RotateCcw className="w-4 h-4" />
                         </button>
@@ -233,13 +233,13 @@ export const ImageCropDialog: React.FC<Props> = ({
                 </div>
 
                 <div className="flex items-center justify-end gap-2 px-5 py-4 bg-slate-50/60">
-                    <Button variant="ghost" onClick={onCancel} className="rounded-lg">
+                    <Button variant="ghost" onClick={onCancel} className="">
                         Vazgeç
                     </Button>
                     <Button
                         onClick={confirm}
                         disabled={!img || busy}
-                        className={cn('rounded-lg bg-brand-700 hover:bg-brand-800 px-6')}
+                        className={cn(' bg-brand-700 hover:bg-brand-800 px-6')}
                     >
                         {busy ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Hazırlanıyor</> : 'Kırp ve yükle'}
                     </Button>

@@ -117,7 +117,7 @@ const SecuritySettings: React.FC = () => {
             </div>
 
             {/* E-posta */}
-            <section className="bg-[#F5F6F8] rounded-2xl overflow-hidden">
+            <section className="bg-[#F5F6F8]  overflow-hidden">
                 <header className="px-6 py-4 flex items-center gap-2">
                     <Mail className="w-4 h-4 text-slate-400" />
                     <h2 className="text-sm font-semibold text-slate-900">E-posta</h2>
@@ -134,7 +134,7 @@ const SecuritySettings: React.FC = () => {
             </section>
 
             {/* Parola */}
-            <section className="bg-[#F5F6F8] rounded-2xl overflow-hidden">
+            <section className="bg-[#F5F6F8]  overflow-hidden">
                 <header className="px-6 py-4 flex items-center gap-2">
                     <Key className="w-4 h-4 text-slate-400" />
                     <h2 className="text-sm font-semibold text-slate-900">Parola değiştir</h2>
@@ -150,7 +150,7 @@ const SecuritySettings: React.FC = () => {
                                     value={form.current_password}
                                     onChange={e => set('current_password', e.target.value)}
                                     autoComplete="current-password"
-                                    className="h-11 rounded-xl pr-10"
+                                    className="h-11  pr-10"
                                 />
                                 {eyeBtn('current')}
                             </div>
@@ -164,13 +164,13 @@ const SecuritySettings: React.FC = () => {
                                     value={form.new_password}
                                     onChange={e => set('new_password', e.target.value)}
                                     autoComplete="new-password"
-                                    className="h-11 rounded-xl pr-10"
+                                    className="h-11  pr-10"
                                 />
                                 {eyeBtn('next')}
                             </div>
 
                             {pw.length > 0 && (
-                                <div className="bg-slate-50 rounded-xl p-3 mt-2 space-y-1.5">
+                                <div className="bg-slate-50  p-3 mt-2 space-y-1.5">
                                     <div className="flex items-center gap-2 text-xs">
                                         {hasMinLength
                                             ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
@@ -199,7 +199,7 @@ const SecuritySettings: React.FC = () => {
                                     value={form.new_password_confirm}
                                     onChange={e => set('new_password_confirm', e.target.value)}
                                     autoComplete="new-password"
-                                    className="h-11 rounded-xl pr-10"
+                                    className="h-11  pr-10"
                                 />
                                 {eyeBtn('confirm')}
                             </div>
@@ -212,7 +212,7 @@ const SecuritySettings: React.FC = () => {
                         <Button
                             onClick={() => requestCode(false)}
                             disabled={busy || !form.current_password || !isPasswordValid || !passwordsMatch}
-                            className="h-11 px-6 rounded-xl bg-brand-700 hover:bg-brand-800"
+                            className="h-11 px-6  bg-brand-700 hover:bg-brand-800"
                         >
                             {busy ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Gönderiliyor</> : 'Doğrulama kodu gönder'}
                         </Button>
@@ -236,7 +236,7 @@ const SecuritySettings: React.FC = () => {
                                 inputMode="numeric"
                                 autoComplete="one-time-code"
                                 placeholder="000000"
-                                className="h-14 rounded-xl text-center text-2xl font-semibold tracking-[0.5em] indent-[0.5em]"
+                                className="h-14  text-center text-2xl font-semibold tracking-[0.5em] indent-[0.5em]"
                             />
                             <p className="text-xs text-slate-400 text-center">Kod 10 dakika geçerlidir.</p>
                         </div>
@@ -245,7 +245,7 @@ const SecuritySettings: React.FC = () => {
                             <Button
                                 onClick={confirmChange}
                                 disabled={busy || form.code.length !== 6}
-                                className="h-11 px-8 rounded-xl bg-brand-700 hover:bg-brand-800"
+                                className="h-11 px-8  bg-brand-700 hover:bg-brand-800"
                             >
                                 {busy ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Değiştiriliyor</> : 'Parolayı değiştir'}
                             </Button>

@@ -206,7 +206,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
               {trend.slice(-7).map((value, index) => (
                 <div
                   key={index}
-                  className="bg-blue-200 rounded-sm flex-1"
+                  className="bg-blue-200  flex-1"
                   style={{ height: `${(value / Math.max(...trend)) * 100}%` }}
                 />
               ))}
@@ -224,7 +224,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
           <img
             src={course.image_url}
             alt={course.title}
-            className="w-20 h-20 object-cover rounded-lg"
+            className="w-20 h-20 object-cover "
           />
           <div className="flex-1">
             <div className="flex items-start justify-between">
@@ -375,7 +375,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
                       { type: 'payout', message: 'Ödeme işlendi: ₺1,250', time: '1 gün önce' },
                       { type: 'question', message: 'Yeni soru: JavaScript konusu', time: '2 gün önce' }
                     ].map((activity, index) => (
-                      <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                      <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 ">
                         <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                         <div className="flex-1">
                           <p className="text-sm">{activity.message}</p>
@@ -460,7 +460,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
                   <CardTitle>Gelir Trendi</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-64 flex items-center justify-center bg-gray-50 rounded">
+                  <div className="h-64 flex items-center justify-center bg-gray-50 ">
                     <LineChart className="w-12 h-12 text-gray-400" />
                     <span className="ml-2 text-gray-500">Grafik burada görünecek</span>
                   </div>
@@ -472,7 +472,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
                   <CardTitle>Öğrenci Dağılımı</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-64 flex items-center justify-center bg-gray-50 rounded">
+                  <div className="h-64 flex items-center justify-center bg-gray-50 ">
                     <PieChart className="w-12 h-12 text-gray-400" />
                     <span className="ml-2 text-gray-500">Grafik burada görünecek</span>
                   </div>
@@ -632,7 +632,7 @@ export const ComprehensiveInstructorDashboard: React.FC = () => {
                       { date: '15 Kasım 2024', amount: '₺1,890', status: 'Ödendi' },
                       { date: '15 Ekim 2024', amount: '₺3,120', status: 'Ödendi' }
                     ].map((payment, index) => (
-                      <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                      <div key={index} className="flex justify-between items-center p-3 bg-gray-50 ">
                         <div>
                           <div className="font-medium">{payment.amount}</div>
                           <div className="text-sm text-gray-600">{payment.date}</div>

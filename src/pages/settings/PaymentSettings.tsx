@@ -10,14 +10,14 @@ const PaymentSettings: React.FC = () => {
             </div>
 
             {/* Eklenmiş herhangi bir ödeme yöntemi yok (Mock Tasarım) */}
-            <div className="bg-slate-50 rounded-3xl p-10 flex flex-col items-center justify-center text-center">
+            <div className="bg-slate-50  p-10 flex flex-col items-center justify-center text-center">
                 <div className="w-16 h-16 bg-slate-200 rounded-full flex items-center justify-center text-slate-400 mb-4">
                     <CreditCard className="w-8 h-8" />
                 </div>
                 <h2 className="text-lg font-bold text-slate-800">Kayıtlı Ödeme Yöntemi Yok</h2>
                 <p className="text-sm text-slate-500 mt-2 max-w-sm">Hızlı ve güvenli işlemler için kredi/banka kartınızı buraya ekleyebilirsiniz.</p>
 
-                <Button className="mt-6 bg-brand-700 hover:bg-brand-800 text-white font-medium rounded-xl h-11 px-6 shadow-[0_8px_16px_-6px_rgba(23,93,93,0.3)] flex items-center gap-2 transition-all">
+                <Button className="mt-6 bg-brand-700 hover:bg-brand-800 text-white font-medium  h-11 px-6 shadow-[0_8px_16px_-6px_rgba(23,93,93,0.3)] flex items-center gap-2 transition-all">
                     <PlusCircle className="w-5 h-5" /> Yeni Kart Ekle
                 </Button>
             </div>

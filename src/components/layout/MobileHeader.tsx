@@ -102,7 +102,7 @@ export const MobileHeader: React.FC = () => {
       <div className="flex items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-primary  flex items-center justify-center">
             <GraduationCap className="w-5 h-5 text-primary-foreground" />
           </div>
           <span className="font-bold text-lg">EduPlatform</span>
@@ -286,7 +286,7 @@ export const MobileHeader: React.FC = () => {
                   {isAuthenticated ? (
                     <button
                       onClick={handleLogout}
-                      className="flex items-center space-x-3 px-4 py-3 w-full text-left hover:bg-destructive/10 transition-all duration-200 text-destructive focus:bg-destructive/10 focus:outline-none focus:ring-2 focus:ring-destructive/20 rounded-md mx-2"
+                      className="flex items-center space-x-3 px-4 py-3 w-full text-left hover:bg-destructive/10 transition-all duration-200 text-destructive focus:bg-destructive/10 focus:outline-none focus:ring-2 focus:ring-destructive/20  mx-2"
                       role="menuitem"
                       tabIndex={0}
                       aria-label="Hesaptan çıkış yap"

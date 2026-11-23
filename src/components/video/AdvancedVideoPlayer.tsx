@@ -432,7 +432,7 @@ export const AdvancedVideoPlayer: React.FC<{
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-96 bg-black rounded-lg">
+      <div className="flex items-center justify-center h-96 bg-black ">
         <Loader2 className="w-8 h-8 animate-spin text-white" />
       </div>
     );
@@ -443,7 +443,7 @@ export const AdvancedVideoPlayer: React.FC<{
       {/* Video Player */}
       <div 
         ref={containerRef}
-        className="relative bg-black rounded-lg overflow-hidden group"
+        className="relative bg-black  overflow-hidden group"
         onMouseEnter={() => setShowControls(true)}
         onMouseLeave={() => !isPlaying || setShowControls(false)}
       >
@@ -732,7 +732,7 @@ export const AdvancedVideoPlayer: React.FC<{
               <TabsContent value="notes" className="space-y-4">
                 <ScrollArea className="h-64">
                   {notesData?.map((note: Note) => (
-                    <div key={note.note_id} className="p-3 bg-gray-50 rounded-lg mb-2">
+                    <div key={note.note_id} className="p-3 bg-gray-50  mb-2">
                       <div className="flex justify-between items-start mb-2">
                         <Button
                           variant="link"
@@ -752,7 +752,7 @@ export const AdvancedVideoPlayer: React.FC<{
               <TabsContent value="bookmarks" className="space-y-4">
                 <ScrollArea className="h-64">
                   {bookmarksData?.map((bookmark: Bookmark) => (
-                    <div key={bookmark.bookmark_id} className="p-3 bg-gray-50 rounded-lg mb-2">
+                    <div key={bookmark.bookmark_id} className="p-3 bg-gray-50  mb-2">
                       <div className="flex justify-between items-start">
                         <div>
                           <h4 className="font-medium text-sm">{bookmark.title}</h4>

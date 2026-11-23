@@ -59,14 +59,14 @@ const ContinueCard: React.FC<{ course: any }> = ({ course }) => {
     );
 
     return (
-        <div className="flex items-center justify-between gap-3 bg-white px-3 py-2.5 rounded-xl ">
+        <div className="flex items-center justify-between gap-3 bg-white px-3 py-2.5  ">
 
             <div className="flex items-center gap-3 flex-1 min-w-0">
                 <button
                     type="button"
                     onClick={open}
                     aria-label={`${course.title} dersine devam et`}
-                    className="relative shrink-0 w-11 h-11 rounded-lg overflow-hidden bg-slate-100 group"
+                    className="relative shrink-0 w-11 h-11  overflow-hidden bg-slate-100 group"
                 >
                     <img
                         src={img}
@@ -106,7 +106,7 @@ const ContinueCard: React.FC<{ course: any }> = ({ course }) => {
             <button
                 type="button"
                 onClick={open}
-                className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-lg bg-[#1B7A43] hover:bg-[#0f766e] text-white text-[12.5px] font-bold transition-colors"
+                className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 px-4  bg-[#1B7A43] hover:bg-[#0f766e] text-white text-[12.5px] font-bold transition-colors"
             >
                 <Play className="w-3.5 h-3.5 fill-current" />
                 Derse devam et

@@ -29,15 +29,15 @@ const UserProfile: React.FC = () => {
 };
 
 export const ProfileSkeleton: React.FC = () => (
-    <div className="min-h-screen bg-white px-3 sm:px-4 pt-3" aria-busy="true">
-        <div className="rounded-[28px] bg-[#F5F6F8] h-[260px] animate-pulse" />
+    <div className="min-h-screen bg-white" aria-busy="true">
+        <div className=" bg-[#F5F6F8] h-[260px] animate-pulse" />
         <div className="max-w-[1240px] mx-auto px-4 sm:px-8 pt-10 grid lg:grid-cols-[1fr_300px] gap-10">
             <div className="space-y-3">
-                <div className="h-6 w-40 rounded bg-[#F1F3F5]" />
-                <div className="h-4 w-full max-w-[560px] rounded bg-[#F5F6F8]" />
-                <div className="h-4 w-4/5 max-w-[480px] rounded bg-[#F5F6F8]" />
+                <div className="h-6 w-40  bg-[#F1F3F5]" />
+                <div className="h-4 w-full max-w-[560px]  bg-[#F5F6F8]" />
+                <div className="h-4 w-4/5 max-w-[480px]  bg-[#F5F6F8]" />
             </div>
-            <div className="h-40 rounded-[22px] bg-[#F5F6F8]" />
+            <div className="h-40  bg-[#F5F6F8]" />
         </div>
     </div>
 );
@@ -47,7 +47,7 @@ export const ProfileNotFound: React.FC = () => (
         <div className="text-center max-w-md">
             <h1 className="text-[22px] font-extrabold text-[#0A2A1A] mb-2">Profil bulunamadı</h1>
             <p className="text-[14.5px] text-[#6B7280] mb-6">Bu profil kaldırılmış ya da adresi değişmiş olabilir.</p>
-            <Link to="/courses" className="h-11 px-5 inline-flex items-center rounded-xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14px] font-bold">
+            <Link to="/courses" className="h-11 px-5 inline-flex items-center  bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14px] font-bold">
                 Kurslara göz at
             </Link>
         </div>

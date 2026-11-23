@@ -132,7 +132,7 @@ const Thread: React.FC<{ a: number; b: number; title: string }> = ({ a, b, title
                                 className={`max-w-[80%] ${fromFirst ? '' : 'ml-auto'}`}
                             >
                                 <div
-                                    className={`rounded-lg px-3.5 py-2.5 ${fromFirst
+                                    className={` px-3.5 py-2.5 ${fromFirst
                                         ? 'bg-slate-100 text-slate-800'
                                         : 'bg-slate-800 text-slate-100'
                                         }`}

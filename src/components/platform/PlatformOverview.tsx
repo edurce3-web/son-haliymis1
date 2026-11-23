@@ -262,7 +262,7 @@ export const PlatformOverview: React.FC = () => {
         </Card>
 
         {/* Call to Action */}
-        <div className="text-center bg-gradient-to-r from-blue-600 to-brand-600 text-white rounded-2xl p-12">
+        <div className="text-center bg-gradient-to-r from-blue-600 to-brand-600 text-white  p-12">
           <h2 className="text-3xl font-bold mb-4">Platform Hazır! 🚀</h2>
           <p className="text-xl mb-8 opacity-90">
             Udemy seviyesinde kapsamlı eğitim platformunuz kullanıma hazır. 

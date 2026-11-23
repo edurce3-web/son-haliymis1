@@ -490,7 +490,7 @@ const InstructorApplication = () => {
 
               <div className="text-center">
                 <Label htmlFor="profileImage" className="cursor-pointer">
-                  <div className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                  <div className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white  hover:bg-primary/90 transition-colors">
                     <Upload className="w-4 h-4" />
                     {imagePreview ? 'Fotoğrafı Değiştir' : 'Fotoğraf Yükle'}
                   </div>
@@ -668,13 +668,13 @@ const InstructorApplication = () => {
           <div className="flex flex-col sm:flex-row gap-2.5 mt-8">
             <button
               onClick={() => navigate('/instructor')}
-              className="flex-1 h-11 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold transition-colors"
+              className="flex-1 h-11  bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold transition-colors"
             >
               Eğitmen paneline git
             </button>
             <button
               onClick={() => navigate('/')}
-              className="flex-1 h-11 rounded-lg hover:text-brand-800 text-slate-700 text-[15px] font-semibold transition-colors bg-[#F5F6F8]"
+              className="flex-1 h-11  hover:text-brand-800 text-slate-700 text-[15px] font-semibold transition-colors bg-[#F5F6F8]"
             >
               Ana sayfa
             </button>
@@ -765,7 +765,7 @@ const InstructorApplication = () => {
         </div>
 
         {/* Form */}
-        <div className="rounded-2xl bg-[#F5F6F8] p-6 sm:p-8">
+        <div className=" bg-[#F5F6F8] p-6 sm:p-8">
             <form onSubmit={handleSubmit}>
               {renderStepContent()}
 
@@ -774,7 +774,7 @@ const InstructorApplication = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="h-11 px-6 rounded-xl"
+                  className="h-11 px-6 "
                   onClick={(e) => {
                     e.preventDefault();
                     prevStep();
@@ -787,7 +787,7 @@ const InstructorApplication = () => {
                 {currentStep < totalSteps ? (
                   <Button
                     type="button"
-                    className="h-11 px-7 rounded-xl bg-brand-700 hover:bg-brand-800 font-semibold"
+                    className="h-11 px-7  bg-brand-700 hover:bg-brand-800 font-semibold"
                     onClick={(e) => {
                       e.preventDefault();
                       nextStep();
@@ -799,7 +799,7 @@ const InstructorApplication = () => {
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="h-11 px-7 rounded-xl bg-brand-700 hover:bg-brand-800 font-semibold"
+                    className="h-11 px-7  bg-brand-700 hover:bg-brand-800 font-semibold"
                   >
                     {loading ? (
                       <span className="flex items-center">
@@ -821,7 +821,7 @@ const InstructorApplication = () => {
             <DialogTitle>Profil Fotoğrafını Düzenle</DialogTitle>
           </DialogHeader>
 
-          <div className="relative w-full h-80 bg-black rounded-md overflow-hidden my-4">
+          <div className="relative w-full h-80 bg-black  overflow-hidden my-4">
             {originalImage && (
               <Cropper
                 image={originalImage}

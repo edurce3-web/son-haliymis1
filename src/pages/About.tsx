@@ -60,8 +60,8 @@ const About: React.FC = () => {
     return (
         <div className="bg-white text-[#111827]">
             {/* Başlık */}
-            <div className="px-3 sm:px-4 pt-3 sm:pt-4">
-                <header className="relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-[#F5F6F8]">
+            <div>
+                <header className="relative overflow-hidden   bg-[#F5F6F8]">
                     <div aria-hidden className="absolute -right-28 -bottom-40 w-[420px] h-[420px] sm:w-[560px] sm:h-[560px] rounded-[38%] bg-[#B2F0C8] -rotate-12" />
                     <div className="relative mx-auto max-w-[1140px] px-5 sm:px-10 pt-10 pb-14 lg:pt-14 lg:pb-24">
                         <nav className="text-[13px] font-medium mb-10">
@@ -97,7 +97,7 @@ const About: React.FC = () => {
                 </div>
                 <ol className="space-y-3 self-start">
                     {PROMISES.map((p, i) => (
-                        <li key={p.t} className="flex gap-5 rounded-[22px] bg-[#F5F6F8] p-6">
+                        <li key={p.t} className="flex gap-5  bg-[#F5F6F8] p-6">
                             <span className="font-montserrat text-[34px] font-extrabold leading-none text-[#1B7A43] tabular-nums w-12 shrink-0">
                                 {String(i + 1).padStart(2, '0')}
                             </span>
@@ -134,7 +134,7 @@ const About: React.FC = () => {
                         </div>
                         <div className="grid sm:grid-cols-2 gap-3">
                             {PRINCIPLES.map((p, i) => (
-                                <div key={p.t} className="rounded-[22px] bg-white p-6">
+                                <div key={p.t} className=" bg-white p-6">
                                     <span className="font-montserrat text-[13px] font-extrabold text-[#1B7A43] tabular-nums">
                                         {String(i + 1).padStart(2, '0')}
                                     </span>
@@ -171,7 +171,7 @@ const About: React.FC = () => {
 
             {/* Konular */}
             <section className="mx-auto max-w-[1140px] px-5 sm:px-10 pb-16 lg:pb-24">
-                <div className="rounded-[28px] bg-[#F5F6F8] p-7 sm:p-10">
+                <div className=" bg-[#F5F6F8] p-7 sm:p-10">
                     <h2 className="font-montserrat text-[24px] sm:text-[30px] font-extrabold tracking-[-0.025em]">Neler öğrenebilirsin?</h2>
                     <div className="mt-6 grid sm:grid-cols-2 gap-x-10 gap-y-7">
                         {CATEGORY_TREE.filter(c => SHOWN.includes(c.slug)).map(c => (
@@ -191,7 +191,7 @@ const About: React.FC = () => {
                             </div>
                         ))}
                     </div>
-                    <Link to="/courses" className="mt-8 inline-flex items-center h-11 px-6 rounded-2xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14.5px] font-bold transition-colors">
+                    <Link to="/courses" className="mt-8 inline-flex items-center h-11 px-6  bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14.5px] font-bold transition-colors">
                         Tüm kurslar
                     </Link>
                 </div>
@@ -205,7 +205,7 @@ const About: React.FC = () => {
 const Side: React.FC<{ title: string; items: string[]; link: { to: string; label: string }; tone: 'mint' | 'gray' }> = ({
     title, items, link, tone,
 }) => (
-    <div className={tone === 'mint' ? 'rounded-[28px] bg-[#B2F0C8] p-7 sm:p-9' : 'rounded-[28px] bg-[#F5F6F8] p-7 sm:p-9'}>
+    <div className={tone === 'mint' ? ' bg-[#B2F0C8] p-7 sm:p-9' : ' bg-[#F5F6F8] p-7 sm:p-9'}>
         <h3 className="font-montserrat text-[22px] sm:text-[26px] font-extrabold tracking-[-0.02em]">{title}</h3>
         <ul className="mt-6 space-y-3.5">
             {items.map(t => (
@@ -218,8 +218,8 @@ const Side: React.FC<{ title: string; items: string[]; link: { to: string; label
         <Link
             to={link.to}
             className={tone === 'mint'
-                ? 'mt-8 inline-flex items-center h-11 px-6 rounded-2xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14.5px] font-bold transition-colors'
-                : 'mt-8 inline-flex items-center h-11 px-6 rounded-2xl bg-white hover:bg-[#EEFBF3] text-[#111827] text-[14.5px] font-bold transition-colors'}
+                ? 'mt-8 inline-flex items-center h-11 px-6  bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14.5px] font-bold transition-colors'
+                : 'mt-8 inline-flex items-center h-11 px-6  bg-white hover:bg-[#EEFBF3] text-[#111827] text-[14.5px] font-bold transition-colors'}
         >
             {link.label}
         </Link>

@@ -233,7 +233,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
                     <img
                       src={item.thumbnail}
                       alt={item.title}
-                      className="w-16 h-12 object-cover rounded"
+                      className="w-16 h-12 object-cover "
                     />
                   )}
                   <div className="flex-1 min-w-0">
@@ -482,7 +482,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
 
               {step === 'review' && (
                 <div className="space-y-4">
-                  <div className="bg-muted p-4 rounded-lg">
+                  <div className="bg-muted p-4 ">
                     <h4 className="font-medium mb-2">Ödeme Özeti</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">

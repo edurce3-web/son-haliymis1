@@ -53,7 +53,7 @@ const Highlighted: React.FC<{ text: string; term?: string }> = ({ text, term }) 
         <>
             {parts.map((part, i) =>
                 part.toLocaleLowerCase('tr-TR') === q.toLocaleLowerCase('tr-TR') ? (
-                    <mark key={i} className="bg-amber-100 text-inherit rounded-sm px-0.5">{part}</mark>
+                    <mark key={i} className="bg-amber-100 text-inherit  px-0.5">{part}</mark>
                 ) : (
                     <React.Fragment key={i}>{part}</React.Fragment>
                 )
@@ -181,7 +181,7 @@ export const CatalogCourseCard: React.FC<Props> = ({
     const subtitle = course.short_description || course.description || '';
 
     return (
-        <article className="group bg-white rounded-2xl overflow-hidden flex flex-col transition-shadow hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]">
+        <article className="group bg-white  overflow-hidden flex flex-col transition-shadow hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]">
             {/* Kapak — 16:9, kartı fazla uzatmıyor */}
             <Link {...linkProps} className="relative block aspect-[16/9] bg-slate-100 overflow-hidden">
                 {course.image && !imgFailed ? (
@@ -199,7 +199,7 @@ export const CatalogCourseCard: React.FC<Props> = ({
                 )}
 
                 {owned && (
-                    <span className="absolute top-1.5 left-1.5 bg-brand-700 text-white text-[10px] font-semibold rounded px-1.5 py-0.5">
+                    <span className="absolute top-1.5 left-1.5 bg-brand-700 text-white text-[10px] font-semibold  px-1.5 py-0.5">
                         Kayıtlı
                     </span>
                 )}
@@ -270,7 +270,7 @@ export const CatalogCourseCard: React.FC<Props> = ({
                             </span>
                             <Link
                                 to={`/learning/${courseId}`}
-                                className="h-8 px-3 leading-8 rounded-md bg-brand-700 hover:bg-brand-800 text-white text-[12px] font-semibold transition-colors shrink-0"
+                                className="h-8 px-3 leading-8  bg-brand-700 hover:bg-brand-800 text-white text-[12px] font-semibold transition-colors shrink-0"
                             >
                                 {progress > 0 ? 'Devam et' : 'Başla'}
                             </Link>
@@ -284,7 +284,7 @@ export const CatalogCourseCard: React.FC<Props> = ({
                                 onClick={addToCart}
                                 disabled={adding}
                                 className={cn(
-                                    'h-8 px-3 rounded-md text-[12px] font-semibold flex items-center justify-center gap-1 transition-colors shrink-0',
+                                    'h-8 px-3  text-[12px] font-semibold flex items-center justify-center gap-1 transition-colors shrink-0',
                                     inCart
                                         ? 'bg-[#F5F6F8] text-brand-800 hover:bg-brand-50'
                                         : 'bg-brand-700 hover:bg-brand-800 text-white',

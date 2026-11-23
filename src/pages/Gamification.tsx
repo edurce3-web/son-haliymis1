@@ -142,7 +142,7 @@ const Gamification: React.FC = () => {
             <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-10 pt-8 grid lg:grid-cols-[minmax(0,1fr)_360px] gap-6 lg:gap-8 items-start">
                 <div className="min-w-0 space-y-6">
                     {/* Bakiye */}
-                    <section className="rounded-[28px] bg-[#B2F0C8] p-6 sm:p-8">
+                    <section className=" bg-[#B2F0C8] p-6 sm:p-8">
                         <div className="flex flex-wrap items-end justify-between gap-6">
                             <div>
                                 <p className="text-[13px] font-semibold text-[#134D30]">Bakiyen</p>
@@ -152,11 +152,11 @@ const Gamification: React.FC = () => {
                                 </p>
                             </div>
                             <div className="flex gap-3">
-                                <div className="rounded-2xl bg-white/60 px-4 py-3 min-w-[120px]">
+                                <div className=" bg-white/60 px-4 py-3 min-w-[120px]">
                                     <p className="text-[12px] text-[#134D30]">Bugüne kadar</p>
                                     <p className="mt-0.5 text-[20px] font-extrabold tabular-nums">{num(data.lifetimeEarned)}</p>
                                 </div>
-                                <div className="rounded-2xl bg-white/60 px-4 py-3 min-w-[120px]">
+                                <div className=" bg-white/60 px-4 py-3 min-w-[120px]">
                                     <p className="text-[12px] text-[#134D30]">Hazır kupon</p>
                                     <p className="mt-0.5 text-[20px] font-extrabold tabular-nums">{activeCoupons.length}</p>
                                 </div>
@@ -180,14 +180,14 @@ const Gamification: React.FC = () => {
                     <section>
                         <h2 className="text-[20px] font-extrabold tracking-[-0.015em]">Nasıl kazanılır?</h2>
                         <div className="mt-4 grid sm:grid-cols-2 gap-3">
-                            <div className="rounded-[22px] bg-[#F5F6F8] p-5">
+                            <div className=" bg-[#F5F6F8] p-5">
                                 <p className="text-[28px] font-extrabold tracking-[-0.02em] tabular-nums">
                                     {`${data.purchaseRate} kredi`}
                                 </p>
                                 <p className="mt-1.5 text-[15px] font-bold">Her 10 ₺'lik alışverişte</p>
                                 <p className="mt-1 text-[13.5px] leading-relaxed text-[#6B7280]">Satın aldığın kursun tutarına göre bakiyene eklenir.</p>
                             </div>
-                            <div className="rounded-[22px] bg-[#F5F6F8] p-5">
+                            <div className=" bg-[#F5F6F8] p-5">
                                 <p className="text-[28px] font-extrabold tracking-[-0.02em] tabular-nums">
                                     {`En fazla ${data.completeReward} kredi`}
                                 </p>
@@ -210,7 +210,7 @@ const Gamification: React.FC = () => {
                                 const missing = Math.max(0, tier.credits - data.balance);
                                 const pct = Math.min(100, (data.balance / tier.credits) * 100);
                                 return (
-                                    <div key={tier.key} className={cn('rounded-[22px] p-5 flex flex-col', tier.affordable ? 'bg-[#EEFBF3]' : 'bg-[#F5F6F8]')}>
+                                    <div key={tier.key} className={cn(' p-5 flex flex-col', tier.affordable ? 'bg-[#EEFBF3]' : 'bg-[#F5F6F8]')}>
                                         <div className="flex items-start justify-between gap-3">
                                             <div>
                                                 <p className="text-[30px] font-extrabold leading-none tracking-[-0.02em] tabular-nums">{lira(tier.discount)}</p>
@@ -231,7 +231,7 @@ const Gamification: React.FC = () => {
                                             onClick={() => redeem(tier)}
                                             disabled={!tier.affordable || redeeming === tier.key}
                                             className={cn(
-                                                'h-10 mt-4 rounded-xl text-[13.5px] font-bold transition-colors',
+                                                'h-10 mt-4  text-[13.5px] font-bold transition-colors',
                                                 tier.affordable ? 'bg-[#1B7A43] hover:bg-[#16613A] text-white' : 'bg-white text-[#9CA3AF] cursor-not-allowed'
                                             )}
                                         >
@@ -249,9 +249,9 @@ const Gamification: React.FC = () => {
                     {data.history.length > 0 && (
                         <section>
                             <h2 className="text-[20px] font-extrabold tracking-[-0.015em]">Hareketler</h2>
-                            <div className="mt-4 rounded-[22px] bg-[#F5F6F8] p-2">
+                            <div className="mt-4  bg-[#F5F6F8] p-2">
                                 {data.history.map((item, i) => (
-                                    <div key={i} className="flex items-center justify-between gap-4 rounded-2xl px-4 py-3 hover:bg-white transition-colors">
+                                    <div key={i} className="flex items-center justify-between gap-4  px-4 py-3 hover:bg-white transition-colors">
                                         <div className="min-w-0">
                                             <p className="text-[14.5px] font-semibold truncate">
                                                 {item.description || REASON_LABELS[item.reason] || item.reason}
@@ -270,12 +270,12 @@ const Gamification: React.FC = () => {
 
                 {/* Sağ: kuponlar */}
                 <aside className="lg:sticky lg:top-24 space-y-6">
-                    <section className="rounded-[28px] bg-[#F5F6F8] p-5">
+                    <section className=" bg-[#F5F6F8] p-5">
                         <h2 className="text-[17px] font-extrabold">Kuponlarım</h2>
                         {activeCoupons.length > 0 ? (
                             <div className="mt-4 space-y-2.5">
                                 {activeCoupons.map(coupon => (
-                                    <div key={coupon.code} className="relative rounded-[18px] bg-white p-4 overflow-hidden">
+                                    <div key={coupon.code} className="relative  bg-white p-4 overflow-hidden">
                                         <span aria-hidden className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#B2F0C8]" />
                                         <div className="flex items-baseline justify-between gap-3">
                                             <span className="text-[22px] font-extrabold tabular-nums">{lira(coupon.discount)}</span>
@@ -284,7 +284,7 @@ const Gamification: React.FC = () => {
                                         <button
                                             type="button"
                                             onClick={() => copy(coupon.code)}
-                                            className="mt-3 w-full h-10 px-3 rounded-xl bg-[#F5F6F8] hover:bg-[#EEFBF3] flex items-center justify-between gap-2 transition-colors"
+                                            className="mt-3 w-full h-10 px-3  bg-[#F5F6F8] hover:bg-[#EEFBF3] flex items-center justify-between gap-2 transition-colors"
                                         >
                                             <span translate="no" className="text-[14.5px] font-bold tracking-[0.08em]">{coupon.code}</span>
                                             <span className="inline-flex items-center gap-1 text-[12.5px] font-bold text-[#1B7A43]">

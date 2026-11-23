@@ -112,7 +112,7 @@ export const CategoryBar: React.FC = () => {
                                         to={`/courses/${category.slug}/${sub.slug}`}
                                         data-active={active}
                                         className={cn(
-                                            'shrink-0 px-3 py-1.5 rounded-lg text-sm whitespace-nowrap transition-colors',
+                                            'shrink-0 px-3 py-1.5  text-sm whitespace-nowrap transition-colors',
                                             active
                                                 ? 'bg-slate-900 text-white font-medium'
                                                 : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'

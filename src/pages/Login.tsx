@@ -50,7 +50,7 @@ const Login = () => {
   };
 
   const inputClass =
-    "h-11 rounded-xl bg-slate-50/60 focus:bg-white focus:ring-2 focus:ring-brand-500/15 transition-colors";
+    "h-11  bg-slate-50/60 focus:bg-white focus:ring-2 focus:ring-brand-500/15 transition-colors";
 
   return (
     <AuthLayout
@@ -133,7 +133,7 @@ const Login = () => {
             type="checkbox"
             checked={formData.remember}
             onChange={handleInputChange}
-            className="w-4 h-4 rounded text-brand-700 focus:ring-brand-500/30 focus:ring-2"
+            className="w-4 h-4  text-brand-700 focus:ring-brand-500/30 focus:ring-2"
           />
           <Label htmlFor="remember" className="text-sm text-slate-600 font-normal cursor-pointer">
             Beni hatırla
@@ -143,7 +143,7 @@ const Login = () => {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-11 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-semibold transition-colors"
+          className="w-full h-11  bg-brand-700 hover:bg-brand-800 text-white font-semibold transition-colors"
         >
           {loading ? (
             <>

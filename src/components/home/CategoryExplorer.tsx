@@ -83,10 +83,10 @@ export const CategoryExplorer: React.FC<{
             </div>
 
             {shown && (
-                <div className="bg-[#F5F6F8] rounded-2xl p-5 sm:p-6 lg:p-7 ">
+                <div className="bg-[#F5F6F8]  p-5 sm:p-6 lg:p-7 ">
                     <div className="flex flex-wrap items-center justify-between gap-3 pb-5">
                         <div className="flex items-center gap-2.5 min-w-0">
-                            <span className="w-9 h-9 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
+                            <span className="w-9 h-9  bg-brand-50 flex items-center justify-center shrink-0">
                                 <CategoryIcon name={shown.icon} />
                             </span>
                             <h3 className="text-[15.5px] font-bold text-slate-900 truncate">
@@ -110,7 +110,7 @@ export const CategoryExplorer: React.FC<{
                             <Link
                                 key={sub.slug}
                                 to={`/courses/${shown.slug}/${sub.slug}`}
-                                className="group shrink-0 w-[220px] snap-start md:w-auto flex items-center justify-between gap-2 bg-slate-50 hover:bg-brand-50 rounded-xl px-3.5 py-3 transition-all hover:translate-x-0.5"
+                                className="group shrink-0 w-[220px] snap-start md:w-auto flex items-center justify-between gap-2 bg-slate-50 hover:bg-brand-50  px-3.5 py-3 transition-all hover:translate-x-0.5"
                             >
                                 <span className="flex items-center gap-2 min-w-0">
                                     <ChevronRight className="w-3.5 h-3.5 text-brand-600 shrink-0 group-hover:translate-x-0.5 transition-transform" />
@@ -119,7 +119,7 @@ export const CategoryExplorer: React.FC<{
                                     </span>
                                 </span>
                                 {sub.count > 0 && (
-                                    <span className="shrink-0 text-[11px] font-semibold text-slate-500 bg-[#F5F6F8] rounded px-1.5 py-0.5 tabular-nums">
+                                    <span className="shrink-0 text-[11px] font-semibold text-slate-500 bg-[#F5F6F8]  px-1.5 py-0.5 tabular-nums">
                                         {sub.count} kurs
                                     </span>
                                 )}

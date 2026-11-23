@@ -187,8 +187,8 @@ export const Loading: React.FC<LoadingProps> = ({
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
         <div className="relative">
-          <div className="absolute -inset-8 bg-gradient-to-r from-primary/10 to-brand-500/10 rounded-2xl blur-2xl animate-pulse" />
-          <div className="relative bg-background/90 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+          <div className="absolute -inset-8 bg-gradient-to-r from-primary/10 to-brand-500/10  blur-2xl animate-pulse" />
+          <div className="relative bg-background/90 backdrop-blur-sm  p-8 shadow-2xl">
             {content}
           </div>
         </div>
@@ -202,12 +202,12 @@ export const Loading: React.FC<LoadingProps> = ({
 // Skeleton Loading Components
 export const SkeletonCard = ({ className }: { className?: string }) => (
   <div className={cn('animate-pulse', className)}>
-    <div className="bg-gradient-to-r from-muted via-muted/50 to-muted h-48 rounded-t-lg animate-shimmer" />
+    <div className="bg-gradient-to-r from-muted via-muted/50 to-muted h-48  animate-shimmer" />
     <div className="p-4 space-y-3">
-      <div className="bg-gradient-to-r from-muted via-muted/50 to-muted h-4 rounded animate-shimmer" />
-      <div className="bg-gradient-to-r from-muted via-muted/50 to-muted h-4 w-3/4 rounded animate-shimmer" />
+      <div className="bg-gradient-to-r from-muted via-muted/50 to-muted h-4  animate-shimmer" />
+      <div className="bg-gradient-to-r from-muted via-muted/50 to-muted h-4 w-3/4  animate-shimmer" />
       <div className="flex justify-between items-center">
-        <div className="bg-gradient-to-r from-muted via-muted/50 to-muted h-4 w-1/4 rounded animate-shimmer" />
+        <div className="bg-gradient-to-r from-muted via-muted/50 to-muted h-4 w-1/4  animate-shimmer" />
         <div className="bg-gradient-to-r from-muted via-muted/50 to-muted h-6 w-16 rounded-full animate-shimmer" />
       </div>
     </div>
@@ -226,7 +226,7 @@ export const SkeletonText = ({
       <div
         key={i}
         className={cn(
-          'bg-gradient-to-r from-muted via-muted/50 to-muted h-4 rounded animate-shimmer',
+          'bg-gradient-to-r from-muted via-muted/50 to-muted h-4  animate-shimmer',
           i === lines - 1 ? 'w-3/4' : 'w-full'
         )}
         style={{ animationDelay: `${i * 100}ms` }}
@@ -274,8 +274,8 @@ export const SearchResultsSkeleton = ({ count = 6 }: { count?: number }) => (
     <div className="flex justify-between items-center">
       <SkeletonText lines={2} className="w-64" />
       <div className="flex gap-2">
-        <div className="bg-gradient-to-r from-muted via-muted/50 to-muted h-10 w-10 rounded-lg animate-shimmer" />
-        <div className="bg-gradient-to-r from-muted via-muted/50 to-muted h-10 w-10 rounded-lg animate-shimmer" />
+        <div className="bg-gradient-to-r from-muted via-muted/50 to-muted h-10 w-10  animate-shimmer" />
+        <div className="bg-gradient-to-r from-muted via-muted/50 to-muted h-10 w-10  animate-shimmer" />
       </div>
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

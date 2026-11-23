@@ -21,8 +21,8 @@ interface Props {
  * başlığın yüksekliği ve rengi değişmiyor.
  */
 export const PageBand: React.FC<Props> = ({ breadcrumb, eyebrow, title, subtitle, actions }) => (
-    <div className="px-3 sm:px-4 pt-3 sm:pt-4">
-        <div className="relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-[#F5F6F8]">
+    <div>
+        <div className="relative overflow-hidden   bg-[#F5F6F8]">
             <div aria-hidden className="absolute -right-20 -top-24 w-[260px] h-[260px] sm:w-[340px] sm:h-[340px] rounded-[38%] bg-[#B2F0C8] rotate-12" />
 
             <div className="relative mx-auto px-5 sm:px-8 lg:px-10 max-w-[1280px] py-7 lg:py-9">

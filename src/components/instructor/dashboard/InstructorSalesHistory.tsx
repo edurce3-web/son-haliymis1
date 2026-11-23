@@ -57,7 +57,7 @@ export const InstructorSalesHistory: React.FC = () => {
                 </div>
             </div>
 
-            <Card className=' rounded-xl overflow-hidden bg-[#F5F6F8]'>
+            <Card className='  overflow-hidden bg-[#F5F6F8]'>
                 <CardHeader className="pb-4 bg-zinc-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <CardTitle className="text-lg font-semibold text-zinc-900 tracking-tight">Tüm Satışlar</CardTitle>

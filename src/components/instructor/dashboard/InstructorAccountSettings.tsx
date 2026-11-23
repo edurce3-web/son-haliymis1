@@ -123,7 +123,7 @@ export const InstructorAccountSettings: React.FC = () => {
             type="button"
             onClick={() => setShow(s => ({ ...s, [key]: !s[key] }))}
             aria-label={show[key] ? 'Şifreyi gizle' : 'Şifreyi göster'}
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center text-[#5f7774] hover:text-[#00201d] hover:bg-[#e8faf6]"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8  flex items-center justify-center text-[#5f7774] hover:text-[#00201d] hover:bg-[#e8faf6]"
         >
             {show[key] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>

@@ -55,7 +55,7 @@ export const AddedToCartModal = ({ isOpen, onClose, course }: AddedToCartModalPr
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-3xl p-0 overflow-hidden bg-[#F5F6F8] shadow-2xl rounded-2xl">
+            <DialogContent className="max-w-3xl p-0 overflow-hidden bg-[#F5F6F8] shadow-2xl ">
                 <DialogTitle className="sr-only">Kurs sepete eklendi</DialogTitle>
 
                 <div className="flex flex-col md:flex-row">
@@ -65,7 +65,7 @@ export const AddedToCartModal = ({ isOpen, onClose, course }: AddedToCartModalPr
                             Sepete eklendi
                         </p>
 
-                        <div className="rounded-lg overflow-hidden bg-slate-100 aspect-[16/10] mb-4">
+                        <div className=" overflow-hidden bg-slate-100 aspect-[16/10] mb-4">
                             <img
                                 src={getCourseImageUrl(course.id, course.image_path || course.thumbnail)}
                                 alt={course.title}
@@ -84,14 +84,14 @@ export const AddedToCartModal = ({ isOpen, onClose, course }: AddedToCartModalPr
                         <div className="flex flex-col gap-2.5 mt-6">
                             <Button
                                 onClick={() => { onClose(); navigate('/cart'); }}
-                                className="w-full h-11 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold"
+                                className="w-full h-11  bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold"
                             >
                                 Sepete git
                             </Button>
                             <Button
                                 variant="outline"
                                 onClick={onClose}
-                                className="w-full h-11 rounded-lg hover:text-brand-800 text-[15px] font-semibold"
+                                className="w-full h-11  hover:text-brand-800 text-[15px] font-semibold"
                             >
                                 Alışverişe devam et
                             </Button>
@@ -111,10 +111,10 @@ export const AddedToCartModal = ({ isOpen, onClose, course }: AddedToCartModalPr
                             <div className="space-y-3">
                                 {Array.from({ length: 3 }).map((_, i) => (
                                     <div key={i} className="flex gap-3 p-3 animate-pulse">
-                                        <div className="w-24 h-16 bg-slate-200 rounded-md shrink-0" />
+                                        <div className="w-24 h-16 bg-slate-200  shrink-0" />
                                         <div className="flex-1 space-y-2 pt-1">
-                                            <div className="w-full h-3 bg-slate-200 rounded" />
-                                            <div className="w-2/3 h-3 bg-slate-200 rounded" />
+                                            <div className="w-full h-3 bg-slate-200 " />
+                                            <div className="w-2/3 h-3 bg-slate-200 " />
                                         </div>
                                     </div>
                                 ))}
@@ -127,9 +127,9 @@ export const AddedToCartModal = ({ isOpen, onClose, course }: AddedToCartModalPr
                                         <button
                                             key={recId}
                                             onClick={() => { onClose(); navigate(`/course/${recId}`); }}
-                                            className="w-full flex gap-3.5 p-3 text-left rounded-lg bg-[#F5F6F8] hover:shadow-sm transition-all group"
+                                            className="w-full flex gap-3.5 p-3 text-left  bg-[#F5F6F8] hover:shadow-sm transition-all group"
                                         >
-                                            <div className="w-24 h-16 shrink-0 overflow-hidden bg-slate-100 rounded-md">
+                                            <div className="w-24 h-16 shrink-0 overflow-hidden bg-slate-100 ">
                                                 <img
                                                     src={getCourseImageUrl(recId, rec.thumbnail)}
                                                     alt={rec.title}

@@ -187,7 +187,7 @@ const InstructorSettings = () => {
                   {stats.map((stat, index) => (
                     <div key={index} className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <div className="w-8 h-8 bg-primary/10  flex items-center justify-center">
                           <stat.icon className="w-4 h-4 text-primary" />
                         </div>
                         <span className="text-sm">{stat.label}</span>

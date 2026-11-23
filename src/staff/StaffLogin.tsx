@@ -46,7 +46,7 @@ const StaffLogin: React.FC<{ onAuthenticated: (staff: StaffUser) => void }> = ({
     }, [screen]);
 
     const field =
-        'w-full h-11 px-3.5 rounded-lg bg-slate-800 text-slate-100 text-[14.5px]'
+        'w-full h-11 px-3.5  bg-slate-800 text-slate-100 text-[14.5px]'
         + 'placeholder:text-slate-500 focus:outline-none transition-colors';
 
     const readError = (err: unknown) =>
@@ -149,7 +149,7 @@ const StaffLogin: React.FC<{ onAuthenticated: (staff: StaffUser) => void }> = ({
                         <button
                             type="submit"
                             disabled={busy}
-                            className="w-full h-11 rounded-lg bg-white text-slate-900 text-[14.5px] font-semibold hover:bg-slate-200 transition-colors disabled:opacity-40"
+                            className="w-full h-11  bg-white text-slate-900 text-[14.5px] font-semibold hover:bg-slate-200 transition-colors disabled:opacity-40"
                         >
                             {busy ? '…' : 'Devam et'}
                         </button>
@@ -159,7 +159,7 @@ const StaffLogin: React.FC<{ onAuthenticated: (staff: StaffUser) => void }> = ({
                 {/* ── 2. ekran: ilk kurulum (QR) ────────────────────────── */}
                 {screen === 'setup' && setup && (
                     <form onSubmit={submitCode} className="space-y-4">
-                        <div className="rounded-lg bg-slate-900 p-4">
+                        <div className=" bg-slate-900 p-4">
                             <p className="text-[13px] font-semibold text-white">
                                 İlk kurulum — telefonunuzu bağlayın
                             </p>
@@ -170,7 +170,7 @@ const StaffLogin: React.FC<{ onAuthenticated: (staff: StaffUser) => void }> = ({
                             </ol>
 
                             <div className="flex justify-center my-4">
-                                <canvas ref={qrRef} className="rounded bg-white p-2" />
+                                <canvas ref={qrRef} className=" bg-white p-2" />
                             </div>
 
                             <p className="text-[12px] text-slate-500 mb-1.5">
@@ -178,7 +178,7 @@ const StaffLogin: React.FC<{ onAuthenticated: (staff: StaffUser) => void }> = ({
                                 Hesap adı: <strong className="text-slate-400">Edurce</strong>, tür:
                                 <strong className="text-slate-400"> Zamana dayalı</strong>. Anahtar:
                             </p>
-                            <code className="block px-3 py-2.5 rounded bg-slate-950 text-[12.5px] font-mono tracking-[0.1em] text-emerald-400 break-all select-all">
+                            <code className="block px-3 py-2.5  bg-slate-950 text-[12.5px] font-mono tracking-[0.1em] text-emerald-400 break-all select-all">
                                 {setup.secret}
                             </code>
                         </div>
@@ -194,7 +194,7 @@ const StaffLogin: React.FC<{ onAuthenticated: (staff: StaffUser) => void }> = ({
                         <button
                             type="submit"
                             disabled={busy || code.length !== 6}
-                            className="w-full h-11 rounded-lg bg-white text-slate-900 text-[14.5px] font-semibold hover:bg-slate-200 transition-colors disabled:opacity-40"
+                            className="w-full h-11  bg-white text-slate-900 text-[14.5px] font-semibold hover:bg-slate-200 transition-colors disabled:opacity-40"
                         >
                             {busy ? '…' : 'Kurulumu tamamla'}
                         </button>
@@ -218,7 +218,7 @@ const StaffLogin: React.FC<{ onAuthenticated: (staff: StaffUser) => void }> = ({
                         <button
                             type="submit"
                             disabled={busy || code.length !== 6}
-                            className="w-full h-11 rounded-lg bg-white text-slate-900 text-[14.5px] font-semibold hover:bg-slate-200 transition-colors disabled:opacity-40"
+                            className="w-full h-11  bg-white text-slate-900 text-[14.5px] font-semibold hover:bg-slate-200 transition-colors disabled:opacity-40"
                         >
                             {busy ? '…' : 'Giriş yap'}
                         </button>

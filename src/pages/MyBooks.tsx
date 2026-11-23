@@ -73,7 +73,7 @@ const BookCard = ({ book, onRead }: { book: any; onRead: () => void }) => {
     const hasEpub = !!book.epub_file_path;
 
     return (
-        <div className="group relative bg-white rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)] hover:-translate-y-0.5 flex flex-col">
+        <div className="group relative bg-white  overflow-hidden transition-all duration-300 hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)] hover:-translate-y-0.5 flex flex-col">
 
             {/* Top gradient accent */}
             
@@ -87,7 +87,7 @@ const BookCard = ({ book, onRead }: { book: any; onRead: () => void }) => {
                     />
                 ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-6">
-                        <div className="w-16 h-16 rounded-2xl bg-brand-700/20 flex items-center justify-center">
+                        <div className="w-16 h-16  bg-brand-700/20 flex items-center justify-center">
                             <BookOpen className="w-8 h-8 text-brand-700" />
                         </div>
                         <p className="text-slate-500 text-xs text-center font-medium leading-snug">{book.title}</p>
@@ -136,14 +136,14 @@ const BookCard = ({ book, onRead }: { book: any; onRead: () => void }) => {
                 <div className="mt-auto flex gap-2">
                     <button
                         onClick={onRead}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-brand-700/10 hover:bg-brand-700/20 text-brand-700 hover:text-brand-700 text-xs font-bold rounded-xl transition-all"
+                        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-brand-700/10 hover:bg-brand-700/20 text-brand-700 hover:text-brand-700 text-xs font-bold  transition-all"
                     >
                         <BookOpen className="w-3.5 h-3.5" /> Oku
                     </button>
                     {hasEpub && (
                         <a
                             href={`${API_BASE_URL}/books/${book.book_id}/download`}
-                            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 hover:text-emerald-300 text-xs font-bold rounded-xl transition-all"
+                            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 hover:text-emerald-300 text-xs font-bold  transition-all"
                         >
                             <Download className="w-3.5 h-3.5" /> İndir
                         </a>

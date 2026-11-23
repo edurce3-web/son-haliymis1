@@ -89,7 +89,7 @@ export const GuestHero: React.FC<{
 
                     <form onSubmit={submit} role="search" className="mt-8 max-w-[560px]">
                         <label htmlFor="hero-search" className="sr-only">Kurs ara</label>
-                        <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-white shadow-[0_18px_40px_-22px_rgba(11,38,25,0.55)] focus-within:ring-2 focus-within:ring-[#111827]/25 transition-shadow">
+                        <div className="flex items-center gap-2 p-1.5  bg-white shadow-[0_18px_40px_-22px_rgba(11,38,25,0.55)] focus-within:ring-2 focus-within:ring-[#111827]/25 transition-shadow">
                             <Search aria-hidden className="ml-3 w-5 h-5 shrink-0 text-[#6B7280]" />
                             <input
                                 id="hero-search"
@@ -101,7 +101,7 @@ export const GuestHero: React.FC<{
                             />
                             <button
                                 type="submit"
-                                className="shrink-0 inline-flex items-center gap-2 h-12 px-5 sm:px-6 rounded-xl bg-[#1B7A43] text-white text-[15px] font-bold hover:bg-[#16613A] active:scale-[0.98] transition-[background-color,transform]"
+                                className="shrink-0 inline-flex items-center gap-2 h-12 px-5 sm:px-6  bg-[#1B7A43] text-white text-[15px] font-bold hover:bg-[#16613A] active:scale-[0.98] transition-[background-color,transform]"
                             >
                                 <span className="hidden sm:inline">Kurs bul</span>
                                 <ArrowRight className="w-4 h-4" />
@@ -138,9 +138,9 @@ export const GuestHero: React.FC<{
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-3.5">
                     <Link
                         to={`/courses/${soft.slug}`}
-                        className="hero-tile group col-span-2 sm:row-span-2 relative overflow-hidden rounded-[28px] bg-[#1B7A43] text-white p-6 sm:p-7 flex flex-col min-h-[260px] sm:min-h-[330px] animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both hover:-translate-y-0.5 transition-transform"
+                        className="hero-tile group col-span-2 sm:row-span-2 relative overflow-hidden  bg-[#1B7A43] text-white p-6 sm:p-7 flex flex-col min-h-[260px] sm:min-h-[330px] animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both hover:-translate-y-0.5 transition-transform"
                     >
-                        <span className="w-12 h-12 rounded-2xl bg-[#b2f0c8] text-[#111827] flex items-center justify-center">
+                        <span className="w-12 h-12  bg-[#b2f0c8] text-[#111827] flex items-center justify-center">
                             <Code2 className="w-6 h-6" />
                         </span>
                         <pre aria-hidden className="mt-6 font-mono text-[12.5px] leading-[1.7] text-white/45 overflow-hidden">
@@ -165,11 +165,11 @@ export const GuestHero: React.FC<{
                     <Tile to={`/courses/${eng.slug}`} icon={Cpu} name={eng.name} count={eng.children.length} delay={140} />
 
                     <div
-                        className="hero-tile col-span-2 sm:col-span-3 rounded-[28px] bg-white/60 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both"
+                        className="hero-tile col-span-2 sm:col-span-3  bg-white/60 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both"
                         style={{ animationDelay: '200ms' }}
                     >
                         <Link to={`/courses/${biz.slug}`} className="group flex items-center gap-3.5 min-w-0 flex-1">
-                            <span className="w-11 h-11 shrink-0 rounded-2xl bg-white text-[#1B7A43] flex items-center justify-center">
+                            <span className="w-11 h-11 shrink-0  bg-white text-[#1B7A43] flex items-center justify-center">
                                 <BarChart3 className="w-5 h-5" />
                             </span>
                             <span className="min-w-0">
@@ -179,7 +179,7 @@ export const GuestHero: React.FC<{
                         </Link>
                         <Link
                             to="/courses"
-                            className="shrink-0 inline-flex items-center justify-center gap-2 h-11 px-5 rounded-2xl bg-[#1B7A43] text-white text-[14px] font-bold hover:bg-[#16613A] transition-colors"
+                            className="shrink-0 inline-flex items-center justify-center gap-2 h-11 px-5  bg-[#1B7A43] text-white text-[14px] font-bold hover:bg-[#16613A] transition-colors"
                         >
                             Tüm kategoriler <ArrowRight className="w-4 h-4" />
                         </Link>
@@ -196,13 +196,13 @@ const Tile: React.FC<{ to: string; icon: React.ElementType; name: string; count:
     <Link
         to={to}
         className={cn(
-            'hero-tile group relative rounded-[28px] bg-white p-5 sm:p-6 flex flex-col justify-between min-h-[160px]',
+            'hero-tile group relative  bg-white p-5 sm:p-6 flex flex-col justify-between min-h-[160px]',
             'shadow-[0_18px_40px_-28px_rgba(11,38,25,0.5)] hover:-translate-y-0.5 transition-transform',
             'animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both'
         )}
         style={{ animationDelay: `${delay}ms` }}
     >
-        <span className="w-11 h-11 rounded-2xl bg-[#E3F8EB] text-[#1B7A43] flex items-center justify-center">
+        <span className="w-11 h-11  bg-[#E3F8EB] text-[#1B7A43] flex items-center justify-center">
             <Icon className="w-5 h-5" />
         </span>
         <span className="mt-5">

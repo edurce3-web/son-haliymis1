@@ -77,8 +77,8 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
             <Skeleton className="h-4 w-32 animate-pulse" />
           </div>
           <div className="flex gap-2">
-            <Skeleton className="h-10 w-10 rounded-lg animate-pulse" />
-            <Skeleton className="h-10 w-10 rounded-lg animate-pulse" />
+            <Skeleton className="h-10 w-10  animate-pulse" />
+            <Skeleton className="h-10 w-10  animate-pulse" />
           </div>
         </div>
         <div className={cn(
@@ -136,7 +136,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
             }
           </p>
           
-          <div className="bg-muted/30 rounded-xl p-6 space-y-3">
+          <div className="bg-muted/30  p-6 space-y-3">
             <h4 className="font-semibold text-foreground">Öneriler:</h4>
             <ul className="text-sm text-muted-foreground space-y-2 text-left">
               <li className="flex items-center space-x-2">
@@ -162,7 +162,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
     <div className="space-y-6">
       {/* Enhanced Results Header */}
       <div className={cn(
-        "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 p-6 rounded-2xl",
+        "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 p-6 ",
         "bg-gradient-to-r from-background to-muted/30",
         "transition-all duration-500",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
@@ -202,7 +202,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
         </div>
         
         {/* Enhanced View Mode Toggle */}
-        <div className="flex items-center gap-2 p-1 bg-muted/50 rounded-xl">
+        <div className="flex items-center gap-2 p-1 bg-muted/50 ">
           <Button
             variant={viewMode === 'grid' ? 'default' : 'ghost'}
             size="sm"
@@ -297,7 +297,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
             Önceki
           </Button>
           
-          <div className="flex space-x-2 bg-muted/30 p-2 rounded-xl">
+          <div className="flex space-x-2 bg-muted/30 p-2 ">
             {/* First page */}
             {currentPage > 3 && (
               <>
@@ -305,7 +305,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
                   variant={1 === currentPage ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => onPageChange(1)}
-                  className="w-10 h-10 rounded-lg transition-all duration-200 hover:scale-110"
+                  className="w-10 h-10  transition-all duration-200 hover:scale-110"
                 >
                   1
                 </Button>
@@ -329,7 +329,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
                   size="sm"
                   onClick={() => onPageChange(pageNum)}
                   className={cn(
-                    "w-10 h-10 rounded-lg transition-all duration-200",
+                    "w-10 h-10  transition-all duration-200",
                     pageNum === currentPage 
                       ? "bg-primary text-primary-foreground shadow-lg scale-110" 
                       : "hover:scale-110 hover:bg-background"
@@ -352,7 +352,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
                   variant={totalPages === currentPage ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => onPageChange(totalPages)}
-                  className="w-10 h-10 rounded-lg transition-all duration-200 hover:scale-110"
+                  className="w-10 h-10  transition-all duration-200 hover:scale-110"
                 >
                   {totalPages}
                 </Button>

@@ -211,7 +211,7 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
             görünüyordu. Artık detay yandaki panelde. */}
         <div
           className={cn(
-            "w-full bg-[#F5F6F8] rounded-xl flex flex-col overflow-hidden transition-shadow duration-200",
+            "w-full bg-[#F5F6F8]  flex flex-col overflow-hidden transition-shadow duration-200",
             isHovered ? "shadow-lg" : ""
           )}
         >
@@ -233,7 +233,7 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
             </div>
 
             {isBestseller && (
-              <span className="absolute top-2 left-2 bg-brand-700 text-white text-[10px] font-black tracking-wider px-2 py-1 rounded shadow-md">
+              <span className="absolute top-2 left-2 bg-brand-700 text-white text-[10px] font-black tracking-wider px-2 py-1  shadow-md">
                 Çok Satan
               </span>
             )}
@@ -292,7 +292,7 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
             style={panelPos.side === "right" ? { left: -16 } : { right: -16 }}
             aria-hidden
           />
-          <div className="relative bg-[#F5F6F8] rounded-xl shadow-[0_24px_60px_-15px_rgba(15,23,42,0.25)] animate-in fade-in zoom-in-95 duration-150">
+          <div className="relative bg-[#F5F6F8]  shadow-[0_24px_60px_-15px_rgba(15,23,42,0.25)] animate-in fade-in zoom-in-95 duration-150">
             {/* Panelin kartla bağını gösteren küçük ok */}
             <span
               className={cn(
@@ -312,10 +312,10 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
 
                 {hoverLoading ? (
                   <div className="space-y-2.5 mt-4 animate-pulse">
-                    <div className="h-2.5 bg-slate-100 rounded w-1/3" />
-                    <div className="h-2.5 bg-slate-100 rounded w-full" />
-                    <div className="h-2.5 bg-slate-100 rounded w-4/5" />
-                    <div className="h-2.5 bg-slate-100 rounded w-2/3" />
+                    <div className="h-2.5 bg-slate-100  w-1/3" />
+                    <div className="h-2.5 bg-slate-100  w-full" />
+                    <div className="h-2.5 bg-slate-100  w-4/5" />
+                    <div className="h-2.5 bg-slate-100  w-2/3" />
                   </div>
                 ) : hoverData ? (
                   <>
@@ -373,7 +373,7 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
                     onClick={addToCart}
                     disabled={inCart || addToCartMutation.isPending}
                     className={cn(
-                      "flex-1 h-11 text-sm font-bold rounded-lg transition-colors",
+                      "flex-1 h-11 text-sm font-bold  transition-colors",
                       inCart
                         ? "bg-slate-100 text-slate-500 cursor-not-allowed"
                         : "bg-brand-700 hover:bg-brand-800 text-white"
@@ -387,7 +387,7 @@ export const CourseCard = ({ course, isAuthenticated: propIsAuth }: CourseCardPr
                     onClick={toggleFav}
                     aria-label={favorited ? "Favorilerden çıkar" : "Favorilere ekle"}
                     className={cn(
-                      "w-11 h-11 shrink-0 flex items-center justify-center rounded-lg transition-colors bg-[#F5F6F8]",
+                      "w-11 h-11 shrink-0 flex items-center justify-center  transition-colors bg-[#F5F6F8]",
                       favorited
                         ? "bg-rose-50"
                         : "bg-white"

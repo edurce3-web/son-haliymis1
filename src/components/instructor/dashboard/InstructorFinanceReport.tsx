@@ -136,7 +136,7 @@ const InstructorFinanceReport: React.FC = () => {
             />
 
             {/* Paranın yolu: brüt → vergi → senin payın → ödenecek */}
-            <section className="rounded-2xl bg-[#00201d] text-white overflow-hidden mb-6">
+            <section className=" bg-[#00201d] text-white overflow-hidden mb-6">
                 <div className="grid grid-cols-2 lg:grid-cols-4">
                     <Flow label="Toplam satış" value={formatPrice(summary.gross)} note={`${summary.count.toLocaleString('tr-TR')} satış`} />
                     <Flow label={`Vergi (%${taxPct})`} value={`−${formatPrice(summary.tax)}`} note="Brütten düşülen" dim />
@@ -171,7 +171,7 @@ const InstructorFinanceReport: React.FC = () => {
                                         alt=""
                                         loading="lazy"
                                         onError={e => { (e.currentTarget as HTMLImageElement).style.visibility = 'hidden'; }}
-                                        className="w-14 h-9 rounded-lg object-cover bg-[#e3f6f2] shrink-0"
+                                        className="w-14 h-9  object-cover bg-[#e3f6f2] shrink-0"
                                     />
                                     <div className="flex-1 min-w-0">
                                         <p className="text-[13.5px] font-bold text-[#00201d] truncate">{c.title}</p>

@@ -203,7 +203,7 @@ export function InstructorMessages() {
                                                 type="button"
                                                 onClick={() => setSelectedUserId(c.other_user_id)}
                                                 className={cn(
-                                                    'w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-colors duration-150',
+                                                    'w-full flex items-center gap-3 px-3 py-3  text-left transition-colors duration-150',
                                                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45',
                                                     on ? 'bg-[#9cf2e8]/45' : 'hover:bg-[#f5f6f6]'
                                                 )}
@@ -273,10 +273,10 @@ export function InstructorMessages() {
                                             <div key={m.message_id} className={cn('flex', isMe ? 'justify-end' : 'justify-start')}>
                                                 <div className="max-w-[78%] sm:max-w-[65%]">
                                                     <div className={cn(
-                                                        'rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed whitespace-pre-wrap break-words',
+                                                        ' px-4 py-2.5 text-[14.5px] leading-relaxed whitespace-pre-wrap break-words',
                                                         isMe
-                                                            ? 'bg-[#9cf2e8] text-[#00201d] rounded-br-md'
-                                                            : 'bg-white text-[#00201d] rounded-bl-md'
+                                                            ? 'bg-[#9cf2e8] text-[#00201d] '
+                                                            : 'bg-white text-[#00201d] '
                                                     )}>
                                                         {m.message_content}
                                                     </div>

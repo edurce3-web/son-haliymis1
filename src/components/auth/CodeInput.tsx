@@ -67,7 +67,7 @@ export const CodeInput: React.FC<CodeInputProps> = ({
                         <div
                             key={i}
                             className={cn(
-                                'flex-1 h-14 rounded-xl flex items-center justify-center bg-[#F5F6F8]',
+                                'flex-1 h-14  flex items-center justify-center bg-[#F5F6F8]',
                                 'text-[22px] font-bold text-slate-900 tabular-nums transition-all duration-150',
                                 filled && 'bg-brand-50/60',
                                 !filled && active && 'bg-white shadow-[0_0_0_4px_rgba(23,93,93,0.08)]',

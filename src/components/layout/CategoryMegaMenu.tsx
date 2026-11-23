@@ -83,7 +83,7 @@ export const CategoryMegaMenu: React.FC = () => {
 
             {open && (
                 <div
-                    className="absolute left-0 top-[calc(100%+10px)] z-50 flex bg-white rounded-2xl shadow-[0_24px_60px_-20px_rgba(11,38,25,0.35),0_0_0_1px_rgba(11,38,25,0.06)] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150"
+                    className="absolute left-0 top-[calc(100%+10px)] z-50 flex bg-white  shadow-[0_24px_60px_-20px_rgba(11,38,25,0.35),0_0_0_1px_rgba(11,38,25,0.06)] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150"
                     role="menu"
                 >
                     {/* Sol sütun: kategoriler */}
@@ -117,7 +117,7 @@ export const CategoryMegaMenu: React.FC = () => {
                                     <span
                                         aria-hidden
                                         className={cn(
-                                            'absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-r bg-brand-700 transition-opacity',
+                                            'absolute left-0 top-1.5 bottom-1.5 w-[3px]  bg-brand-700 transition-opacity',
                                             active ? 'opacity-100' : 'opacity-0'
                                         )}
                                     />

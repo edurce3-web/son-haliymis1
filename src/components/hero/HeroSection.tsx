@@ -79,7 +79,7 @@ export const HeroSection = ({ data }: HeroSectionProps) => {
               {slides.map((slide, index) => (
                 <div key={index} className="flex-[0_0_100%] min-w-0 px-2 lg:px-4">
                   <div className={cn(
-                    "rounded-[2rem] p-6 lg:p-10 transition-colors duration-500 bg-[#F5F6F8]",
+                    " p-6 lg:p-10 transition-colors duration-500 bg-[#F5F6F8]",
                     slide.bgColor,
                     index === 0 ? "" : index === 1 ? "" : ""
                   )}>
@@ -96,7 +96,7 @@ export const HeroSection = ({ data }: HeroSectionProps) => {
                           <span className="block mb-1">{slide.title[0]}</span>
                           <span className="relative inline-block pb-1">
                             <span className="relative z-10 bg-gradient-to-r from-brand-600 to-brand-600 bg-clip-text text-transparent">{slide.title[1]}</span>
-                            <span className="absolute bottom-2 left-0 w-full h-2.5 bg-brand-100 -z-0 rounded-lg opacity-40" />
+                            <span className="absolute bottom-2 left-0 w-full h-2.5 bg-brand-100 -z-0  opacity-40" />
                           </span>
                           <span className="block">{slide.title[2]}</span>
                         </h1>
@@ -107,7 +107,7 @@ export const HeroSection = ({ data }: HeroSectionProps) => {
 
                         <div className="flex flex-wrap items-center gap-3 pt-2">
                           {index === 0 ? (
-                            <form className="relative flex items-center p-1 rounded-xl bg-[#F5F6F8] shadow-lg w-full max-w-sm">
+                            <form className="relative flex items-center p-1  bg-[#F5F6F8] shadow-lg w-full max-w-sm">
                               <Search className="ml-3 w-4 h-4 text-gray-400" />
                               <Input
                                 placeholder="Kurs ara..."
@@ -115,13 +115,13 @@ export const HeroSection = ({ data }: HeroSectionProps) => {
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                               />
-                              <Button size="sm" className="bg-brand-600 hover:bg-brand-700 text-white px-4 h-10 rounded-lg font-bold">
+                              <Button size="sm" className="bg-brand-600 hover:bg-brand-700 text-white px-4 h-10  font-bold">
                                 Ara
                               </Button>
                             </form>
                           ) : (
                             <Link to={slide.link}>
-                              <Button size="lg" className="bg-black hover:bg-gray-800 text-white px-6 h-12 rounded-xl font-bold transition-all hover:scale-105">
+                              <Button size="lg" className="bg-black hover:bg-gray-800 text-white px-6 h-12  font-bold transition-all hover:scale-105">
                                 Keşfet
                                 <ArrowRight className="w-4 h-4 ml-2" />
                               </Button>
@@ -145,7 +145,7 @@ export const HeroSection = ({ data }: HeroSectionProps) => {
 
                       {/* Right Visual */}
                       <div className="relative hidden lg:block">
-                        <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-video max-h-[300px] bg-[#F5F6F8]">
+                        <div className="relative  overflow-hidden shadow-2xl aspect-video max-h-[300px] bg-[#F5F6F8]">
                           <img
                             src={slide.image}
                             alt="Visual"
@@ -155,15 +155,15 @@ export const HeroSection = ({ data }: HeroSectionProps) => {
                         </div>
 
                         {/* Compact Floating Cards */}
-                        <div className="absolute -top-4 -right-4 bg-[#F5F6F8] p-3 rounded-xl shadow-lg flex items-center gap-2">
-                          <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center">
+                        <div className="absolute -top-4 -right-4 bg-[#F5F6F8] p-3  shadow-lg flex items-center gap-2">
+                          <div className="w-8 h-8 bg-green-50  flex items-center justify-center">
                             <Zap className="w-4 h-4 text-green-600" />
                           </div>
                           <span className="text-[10px] font-bold text-gray-900">PRATİK EĞİTİM</span>
                         </div>
 
-                        <div className="absolute -bottom-4 -left-4 bg-[#F5F6F8] p-3 rounded-xl shadow-lg flex items-center gap-2">
-                          <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                        <div className="absolute -bottom-4 -left-4 bg-[#F5F6F8] p-3  shadow-lg flex items-center gap-2">
+                          <div className="w-8 h-8 bg-blue-50  flex items-center justify-center">
                             <GraduationCap className="w-4 h-4 text-blue-600" />
                           </div>
                           <span className="text-[10px] font-bold text-gray-900">RESMİ BELGE</span>

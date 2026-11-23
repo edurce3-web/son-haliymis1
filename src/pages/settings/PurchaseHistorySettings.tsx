@@ -93,20 +93,20 @@ const PurchaseHistorySettings: React.FC = () => {
                     )}
                 </div>
                 {purchases.length > 0 && (
-                    <Button variant="outline" onClick={exportCsv} className="h-10 rounded-xl gap-2">
+                    <Button variant="outline" onClick={exportCsv} className="h-10  gap-2">
                         <Download className="w-4 h-4" /> CSV indir
                     </Button>
                 )}
             </div>
 
             {purchases.length === 0 ? (
-                <div className="bg-[#F5F6F8] rounded-2xl py-16 text-center">
+                <div className="bg-[#F5F6F8]  py-16 text-center">
                     <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
                         <ShoppingBag className="w-5 h-5 text-slate-400" />
                     </div>
                     <p className="text-sm text-slate-500 mb-4">Henüz bir satın alma yapmadın.</p>
                     <Link to="/courses">
-                        <Button className="h-10 px-5 rounded-xl bg-brand-700 hover:bg-brand-800">
+                        <Button className="h-10 px-5  bg-brand-700 hover:bg-brand-800">
                             Kursları keşfet
                         </Button>
                     </Link>
@@ -119,11 +119,11 @@ const PurchaseHistorySettings: React.FC = () => {
                             value={query}
                             onChange={e => setQuery(e.target.value)}
                             placeholder="Kurs veya eğitmen ara"
-                            className="w-full h-9 pl-9 pr-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 bg-[#F5F6F8]"
+                            className="w-full h-9 pl-9 pr-3  text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 bg-[#F5F6F8]"
                         />
                     </div>
 
-                    <div className="bg-[#F5F6F8] rounded-2xl overflow-hidden">
+                    <div className="bg-[#F5F6F8]  overflow-hidden">
                         {filtered.map(p => (
                             <div key={p.id} className="flex items-center gap-4 p-4">
                                 <Link to={`/course/${p.course_id}`} className="shrink-0">
@@ -132,7 +132,7 @@ const PurchaseHistorySettings: React.FC = () => {
                                         alt={p.title}
                                         loading="lazy"
                                         onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/placeholder.svg'; }}
-                                        className="w-24 h-16 rounded-lg object-cover bg-slate-100"
+                                        className="w-24 h-16  object-cover bg-slate-100"
                                     />
                                 </Link>
 

@@ -14,7 +14,7 @@ const CloseAccountSettings: React.FC = () => {
                 <h1 className="text-2xl font-bold text-red-600">Hesabı Kapat</h1>
             </div>
 
-            <div className="bg-red-50 rounded-3xl p-6 lg:p-8 space-y-6 relative overflow-hidden">
+            <div className="bg-red-50  p-6 lg:p-8 space-y-6 relative overflow-hidden">
                 {/* Dekoratif Arka Plan (isteğe bağlı) */}
                 <div className="absolute top-0 right-0 -mt-10 -mr-10 opacity-10 pointer-events-none">
                     <AlertTriangle className="w-64 h-64 text-red-500" />
@@ -32,14 +32,14 @@ const CloseAccountSettings: React.FC = () => {
 
                 <div className="relative z-10 pt-4">
                     <p className="text-sm font-semibold text-slate-800">Devam etmek istediğinize tamamen eminseniz kutucuğa işlemi onaylamak için aşağıdaki metni girin:</p>
-                    <div className="bg-slate-100 px-4 py-2 rounded-lg mt-3 inline-block shadow-inner">
+                    <div className="bg-slate-100 px-4 py-2  mt-3 inline-block shadow-inner">
                         <code className="text-slate-600 font-bold tracking-tight select-all">Hesabımı Kalıcı Olarak Sil</code>
                     </div>
 
                     <div className="mt-4">
                         <input
                             type="text"
-                            className="w-full h-12 px-4 rounded-xl bg-[#F1F3F5] focus:outline-none focus:ring-2 focus:ring-red-400 placeholder:text-slate-300 font-medium transition-all"
+                            className="w-full h-12 px-4  bg-[#F1F3F5] focus:outline-none focus:ring-2 focus:ring-red-400 placeholder:text-slate-300 font-medium transition-all"
                             placeholder="Hesabımı Kalıcı Olarak Sil"
                             value={confirmText}
                             onChange={(e) => setConfirmText(e.target.value)}
@@ -51,7 +51,7 @@ const CloseAccountSettings: React.FC = () => {
                     <Button
                         variant="destructive"
                         className={cn(
-                            "w-full h-12 text-md font-bold rounded-xl transition-all shadow-[0_8px_16px_-6px_rgba(220,38,38,0.5)] flex items-center justify-center gap-2",
+                            "w-full h-12 text-md font-bold  transition-all shadow-[0_8px_16px_-6px_rgba(220,38,38,0.5)] flex items-center justify-center gap-2",
                             !isMatch && "opacity-50 cursor-not-allowed shadow-none"
                         )}
                         disabled={!isMatch}

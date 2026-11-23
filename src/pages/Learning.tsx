@@ -82,13 +82,13 @@ const Learning = () => {
                     <>
                         <Link
                             to="/home/gamification"
-                            className="h-10 px-4 leading-10 rounded-lg bg-[#F5F6F8] hover:text-brand-800 text-slate-700 text-sm font-semibold transition-colors"
+                            className="h-10 px-4 leading-10  bg-[#F5F6F8] hover:text-brand-800 text-slate-700 text-sm font-semibold transition-colors"
                         >
                             Edurce Kredi
                         </Link>
                         <Link
                             to="/home/certificates"
-                            className="h-10 px-4 leading-10 rounded-lg bg-[#F5F6F8] hover:text-brand-800 text-slate-700 text-sm font-semibold transition-colors"
+                            className="h-10 px-4 leading-10  bg-[#F5F6F8] hover:text-brand-800 text-slate-700 text-sm font-semibold transition-colors"
                         >
                             Sertifikalarım
                         </Link>
@@ -118,7 +118,7 @@ const Learning = () => {
                         </p>
                         <button
                             onClick={() => navigate('/courses')}
-                            className="h-11 px-6 mt-5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[14.5px] font-semibold transition-colors"
+                            className="h-11 px-6 mt-5  bg-brand-700 hover:bg-brand-800 text-white text-[14.5px] font-semibold transition-colors"
                         >
                             Kurslara göz at
                         </button>
@@ -152,7 +152,7 @@ const CourseCard = ({
 
     return (
         <div className={[
-            "group relative bg-white rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col",
+            "group relative bg-white  overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col",
             isGrant
                 ? "hover:shadow-amber-500/10 bg-[#F5F6F8]"
                 : "hover:shadow-[0_18px_40px_-22px_rgba(17,24,39,0.35)]",
@@ -235,7 +235,7 @@ const CourseCard = ({
                     <div className="flex gap-2">
                         <button
                             onClick={onNavigate}
-                            className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-colors ${
+                            className={`flex-1 py-2.5 text-xs font-bold  transition-colors ${
                                 isCompleted
                                     ? 'bg-white hover:text-brand-800 text-slate-700'
                                     : 'bg-brand-700 hover:bg-brand-800 text-white'
@@ -248,7 +248,7 @@ const CourseCard = ({
                             course.certificate_id ? (
                                 <button
                                     onClick={onCertificate}
-                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold rounded-xl transition-colors"
+                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold  transition-colors"
                                 >
                                     <Award className="w-3.5 h-3.5" /> Sertifika
                                 </button>
@@ -256,7 +256,7 @@ const CourseCard = ({
                                 <button
                                     disabled={isClaiming === course.course_id}
                                     onClick={onClaim}
-                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl transition-colors disabled:opacity-50"
+                                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold  transition-colors disabled:opacity-50"
                                 >
                                     {isClaiming === course.course_id
                                         ? <Loader2 className="w-3.5 h-3.5 animate-spin" />

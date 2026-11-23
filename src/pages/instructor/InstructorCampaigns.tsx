@@ -374,9 +374,9 @@ const InstructorCampaigns = () => {
               <CardContent>
                 <div className="space-y-4">
                   {campaigns.filter(c => c.status === "completed").map((campaign) => (
-                    <div key={campaign.id} className="flex items-center justify-between p-4 rounded-lg bg-[#F5F6F8]">
+                    <div key={campaign.id} className="flex items-center justify-between p-4  bg-[#F5F6F8]">
                       <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center">
+                        <div className="w-12 h-12 bg-success/10  flex items-center justify-center">
                           <Gift className="w-6 h-6 text-success" />
                         </div>
                         <div>

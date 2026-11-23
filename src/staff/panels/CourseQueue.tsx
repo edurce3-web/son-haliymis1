@@ -174,7 +174,7 @@ const CourseRow: React.FC<{
                                 <p className="text-[12px] font-bold uppercase tracking-wider text-slate-500 mb-2">
                                     Müfredat ({detail.lessons.length} ders)
                                 </p>
-                                <div className="rounded-md bg-[#F5F6F8] max-h-64 overflow-y-auto">
+                                <div className=" bg-[#F5F6F8] max-h-64 overflow-y-auto">
                                     {detail.sections.map((section: any) => (
                                         <div key={section.section_id}>
                                             <p className="px-3 py-2 text-[12.5px] font-semibold text-slate-700 bg-slate-50">
@@ -253,7 +253,7 @@ const CourseRow: React.FC<{
                                         href={`https://edurce.com/course/${detail.course.slug || detail.course.course_id}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="h-9 px-3.5 leading-9 rounded-md text-[13px] font-semibold text-slate-700 bg-[#F5F6F8]"
+                                        className="h-9 px-3.5 leading-9  text-[13px] font-semibold text-slate-700 bg-[#F5F6F8]"
                                     >
                                         Sitede aç
                                     </a>

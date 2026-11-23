@@ -143,11 +143,11 @@ const NotificationSettings: React.FC = () => {
                 </p>
             </div>
 
-            <section className="bg-[#F5F6F8] rounded-2xl overflow-hidden">
+            <section className="bg-[#F5F6F8]  overflow-hidden">
                 {visible.map(opt => (
                     <div key={opt.key} className="flex items-start justify-between gap-4 p-5">
                         <div className="flex gap-3 min-w-0">
-                            <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+                            <div className="w-9 h-9  bg-slate-100 flex items-center justify-center shrink-0">
                                 <opt.icon className="w-4 h-4 text-slate-500" />
                             </div>
                             <div className="min-w-0">
@@ -165,7 +165,7 @@ const NotificationSettings: React.FC = () => {
                 {/* İşlemsel e-postalar kapatılamaz — kullanıcının bilmesi gereken kayıtlar */}
                 <div className="flex items-start justify-between gap-4 p-5 bg-slate-50/60">
                     <div className="flex gap-3 min-w-0">
-                        <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+                        <div className="w-9 h-9  bg-slate-100 flex items-center justify-center shrink-0">
                             <Lock className="w-4 h-4 text-slate-400" />
                         </div>
                         <div className="min-w-0">
@@ -184,7 +184,7 @@ const NotificationSettings: React.FC = () => {
                 <Button
                     onClick={save}
                     disabled={!dirty || saving}
-                    className="h-10 px-6 rounded-xl bg-brand-700 hover:bg-brand-800"
+                    className="h-10 px-6  bg-brand-700 hover:bg-brand-800"
                 >
                     {saving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Kaydediliyor</> : 'Tercihleri kaydet'}
                 </Button>

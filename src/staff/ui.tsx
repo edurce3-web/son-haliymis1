@@ -9,11 +9,11 @@ import React, { useState } from 'react';
  */
 
 export const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-    <div className={`rounded-lg bg-[#F5F6F8] ${className}`}>{children}</div>
+    <div className={` bg-[#F5F6F8] ${className}`}>{children}</div>
 );
 
 export const Empty: React.FC<{ text: string }> = ({ text }) => (
-    <div className="rounded-lg bg-[#F5F6F8] py-14 text-center">
+    <div className=" bg-[#F5F6F8] py-14 text-center">
         <p className="text-[14px] text-slate-500">{text}</p>
     </div>
 );
@@ -23,7 +23,7 @@ export const Loading: React.FC = () => (
 );
 
 export const ErrorBox: React.FC<{ message: string }> = ({ message }) => (
-    <div className="rounded-lg bg-red-50 px-4 py-3">
+    <div className=" bg-red-50 px-4 py-3">
         <p className="text-[13.5px] text-red-700">{message}</p>
     </div>
 );
@@ -37,7 +37,7 @@ const TONES: Record<string, string> = {
 };
 
 export const Tag: React.FC<{ tone?: keyof typeof TONES | string; children: React.ReactNode }> = ({ tone = 'neutral', children }) => (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11.5px] font-semibold ${TONES[tone] || TONES.neutral}`}>
+    <span className={`inline-flex items-center px-2 py-0.5  text-[11.5px] font-semibold ${TONES[tone] || TONES.neutral}`}>
         {children}
     </span>
 );
@@ -59,7 +59,7 @@ export const Button: React.FC<{
             type={type}
             onClick={onClick}
             disabled={disabled}
-            className={`h-9 px-3.5 rounded-md text-[13px] font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${styles}`}
+            className={`h-9 px-3.5  text-[13px] font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${styles}`}
         >
             {children}
         </button>
@@ -79,11 +79,11 @@ export const Field: React.FC<{
 );
 
 export const inputClass =
-    'w-full h-9 px-3 rounded-md bg-[#F5F6F8] text-[13.5px]'
+    'w-full h-9 px-3  bg-[#F5F6F8] text-[13.5px]'
     + 'focus:outline-none transition-colors';
 
 export const textareaClass =
-    'w-full p-3 rounded-md bg-[#F5F6F8] text-[13.5px] leading-relaxed'
+    'w-full p-3  bg-[#F5F6F8] text-[13.5px] leading-relaxed'
     + 'focus:outline-none transition-colors resize-y';
 
 /** Basit sekme şeridi — kuyruk durumları arasında geçiş için. */
@@ -98,7 +98,7 @@ export const Tabs: React.FC<{
                 key={o.value}
                 onClick={() => onChange(o.value)}
                 className={[
-                    'h-8 px-3.5 rounded-md text-[13px] font-semibold transition-colors',
+                    'h-8 px-3.5  text-[13px] font-semibold transition-colors',
                     value === o.value
                         ? 'bg-slate-900 text-white'
                         : 'text-slate-600 hover:bg-slate-200',
@@ -130,7 +130,7 @@ export const ReasonBox: React.FC<{
     const tooShort = note.trim().length < minLength;
 
     return (
-        <div className="mt-3 rounded-md bg-slate-50 p-3.5">
+        <div className="mt-3  bg-slate-50 p-3.5">
             <p className="text-[13px] font-semibold text-slate-800 mb-2">{title}</p>
             <textarea
                 rows={3}

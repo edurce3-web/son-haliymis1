@@ -246,7 +246,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center">
-          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
+          <div className="w-8 h-8 bg-primary/10  flex items-center justify-center mr-3">
             <Mail className="w-4 h-4 text-primary" />
           </div>
           İletişim Formu

@@ -90,7 +90,7 @@ const Contact: React.FC = () => {
     };
 
     const inputClass =
-        'w-full h-12 px-4 rounded-2xl bg-white text-[15px] text-[#111827] placeholder:text-[#9CA3AF] outline-none' +
+        'w-full h-12 px-4  bg-white text-[15px] text-[#111827] placeholder:text-[#9CA3AF] outline-none' +
         'focus:ring-2 focus:ring-[#1B7A43]/50 transition-shadow';
     const labelClass = 'block text-[13.5px] font-bold text-[#111827] mb-1.5';
 
@@ -107,7 +107,7 @@ const Contact: React.FC = () => {
                 <aside className="lg:sticky lg:top-28 space-y-10">
                     <div className="grid grid-cols-2 gap-3">
                         {FACTS.map(f => (
-                            <div key={f.k} className="rounded-[22px] bg-[#F5F6F8] p-5">
+                            <div key={f.k} className=" bg-[#F5F6F8] p-5">
                                 <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#6B7280]">{f.k}</p>
                                 <p className="mt-2 text-[18px] font-extrabold tracking-[-0.01em] leading-tight">{f.v}</p>
                                 <p className="mt-1.5 text-[13.5px] leading-[1.55] text-[#6B7280]">{f.d}</p>
@@ -115,12 +115,12 @@ const Contact: React.FC = () => {
                         ))}
                     </div>
 
-                    <div className="rounded-[22px] bg-[#B2F0C8] p-6">
+                    <div className=" bg-[#B2F0C8] p-6">
                         <p className="text-[17px] font-bold">Önce yardım merkezine bak</p>
                         <p className="mt-1.5 text-[14.5px] leading-[1.6] text-[#1F2937]/80">
                             Ödeme, iade, erişim ve video sorunlarının çoğunun yanıtı orada; beklemeden çözülür.
                         </p>
-                        <Link to="/help" className="mt-4 inline-flex items-center h-10 px-5 rounded-xl bg-white/80 hover:bg-white text-[14px] font-bold transition-colors">
+                        <Link to="/help" className="mt-4 inline-flex items-center h-10 px-5  bg-white/80 hover:bg-white text-[14px] font-bold transition-colors">
                             Yardım merkezi
                         </Link>
                     </div>
@@ -140,13 +140,13 @@ const Contact: React.FC = () => {
 
                 {/* Sağ: form ya da gönderildi ekranı */}
                 {ticketId !== null ? (
-                    <div className="rounded-[28px] bg-[#F5F6F8] px-7 sm:px-10 py-14 text-center">
+                    <div className=" bg-[#F5F6F8] px-7 sm:px-10 py-14 text-center">
                         <p className="text-[12.5px] font-bold uppercase tracking-[0.18em] text-[#1B7A43]">Mesajın alındı</p>
                         <h2 className="mt-3 font-montserrat text-[28px] sm:text-[34px] font-extrabold tracking-[-0.025em]">Teşekkürler.</h2>
                         <p className="mt-3 text-[15.5px] leading-[1.75] text-[#4B5563] max-w-md mx-auto">
                             Onay e-postası gönderdik; dönüşü de aynı adrese, 48 saat içinde yapacağız.
                         </p>
-                        <div className="mt-8 inline-flex flex-col items-center rounded-[22px] bg-white px-8 py-5">
+                        <div className="mt-8 inline-flex flex-col items-center  bg-white px-8 py-5">
                             <span className="text-[11.5px] font-bold uppercase tracking-[0.16em] text-[#9CA3AF]">Talep no</span>
                             <span className="mt-1 font-montserrat text-[34px] font-extrabold tracking-[-0.02em] leading-none tabular-nums text-[#1B7A43]">
                                 #{ticketId}
@@ -162,7 +162,7 @@ const Contact: React.FC = () => {
                         </div>
                     </div>
                 ) : (
-                    <form onSubmit={submit} className="rounded-[28px] bg-[#F5F6F8] p-6 sm:p-9 space-y-6">
+                    <form onSubmit={submit} className=" bg-[#F5F6F8] p-6 sm:p-9 space-y-6">
                         <div>
                             <h2 className="font-montserrat text-[24px] sm:text-[28px] font-extrabold tracking-[-0.025em]">Bize yaz</h2>
                             <p className="mt-1.5 text-[14.5px] text-[#6B7280]">Yıldızlı alanlar zorunlu.</p>
@@ -181,8 +181,8 @@ const Contact: React.FC = () => {
                                             aria-checked={on}
                                             onClick={() => set('subject', sub)}
                                             className={on
-                                                ? 'h-10 px-4 rounded-xl bg-[#1B7A43] text-white text-[14px] font-bold'
-                                                : 'h-10 px-4 rounded-xl bg-white text-[#374151] text-[14px] font-semibold hover:bg-[#EEFBF3] hover:text-[#1B7A43] transition-colors'}
+                                                ? 'h-10 px-4  bg-[#1B7A43] text-white text-[14px] font-bold'
+                                                : 'h-10 px-4  bg-white text-[#374151] text-[14px] font-semibold hover:bg-[#EEFBF3] hover:text-[#1B7A43] transition-colors'}
                                         >
                                             {sub}
                                         </button>
@@ -215,7 +215,7 @@ const Contact: React.FC = () => {
                                 id="message" required rows={7} maxLength={5000} value={form.message}
                                 onChange={e => set('message', e.target.value)}
                                 placeholder="Sorunu olabildiğince açık anlat. Bir kursla ilgiliyse kursun adını, hata alıyorsan hatanın tam metnini yazman çözümü hızlandırır."
-                                className="w-full p-4 rounded-2xl bg-white text-[15px] leading-[1.7] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:ring-2 focus:ring-[#1B7A43]/50 transition-shadow resize-y"
+                                className="w-full p-4  bg-white text-[15px] leading-[1.7] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:ring-2 focus:ring-[#1B7A43]/50 transition-shadow resize-y"
                             />
                             <p className="mt-1.5 text-[12.5px] text-[#9CA3AF] text-right tabular-nums">{`${form.message.length} / 5000`}</p>
                         </div>
@@ -224,7 +224,7 @@ const Contact: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={sending}
-                                className="shrink-0 inline-flex items-center justify-center gap-2 h-12 px-8 rounded-2xl bg-[#1B7A43] hover:bg-[#16613A] disabled:opacity-60 text-white text-[15px] font-bold transition-colors"
+                                className="shrink-0 inline-flex items-center justify-center gap-2 h-12 px-8  bg-[#1B7A43] hover:bg-[#16613A] disabled:opacity-60 text-white text-[15px] font-bold transition-colors"
                             >
                                 {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> Gönderiliyor</> : 'Mesajı gönder'}
                             </button>

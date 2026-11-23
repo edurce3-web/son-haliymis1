@@ -70,7 +70,7 @@ const Sales: React.FC = () => {
                                 <div key={d.gun} className="flex-1 flex flex-col items-center gap-2 min-w-0">
                                     <div className="w-full flex-1 flex items-end">
                                         <div
-                                            className="w-full rounded-t bg-slate-800"
+                                            className="w-full  bg-slate-800"
                                             style={{ height: `${Math.max(3, (Number(d.ciro) / maxDaily) * 100)}%` }}
                                             title={`${money(d.ciro)} · ${d.adet} satış`}
                                         />

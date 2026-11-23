@@ -164,7 +164,7 @@ const UserRow: React.FC<{
                                     <p className="text-[12px] font-bold uppercase tracking-wider text-slate-500 mb-2">
                                         Yaptırım geçmişi
                                     </p>
-                                    <div className="rounded-md bg-[#F5F6F8]">
+                                    <div className=" bg-[#F5F6F8]">
                                         {detail.sanctions.map((s: any) => (
                                             <div key={s.id} className="px-3 py-2.5">
                                                 <div className="flex items-center gap-2 flex-wrap">

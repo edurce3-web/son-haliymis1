@@ -249,7 +249,7 @@ const BundleForm: React.FC<{
                         Satışta (ana sayfada görünsün)
                     </label>
 
-                    <div className="rounded-lg bg-slate-50 p-3 text-[13px] text-slate-600">
+                    <div className=" bg-slate-50 p-3 text-[13px] text-slate-600">
                         Kursların toplamı: <b className="text-slate-900">{lira(listTotal)}</b>
                         {savings > 0 && (
                             <span className="ml-2 text-emerald-700 font-semibold">→ %{savings} tasarruf</span>
@@ -264,7 +264,7 @@ const BundleForm: React.FC<{
                     {courses.length === 0 ? (
                         <p className="text-[13px] text-slate-400 mb-3">Aşağıdan en az {MIN} kurs ekle.</p>
                     ) : (
-                        <ol className="rounded-lg mb-3 bg-[#F5F6F8]">
+                        <ol className=" mb-3 bg-[#F5F6F8]">
                             {courses.map((c, i) => (
                                 <li key={c.id} className="flex items-center gap-2 px-3 py-2">
                                     <span className="text-[12px] font-bold text-slate-500 w-4">{i + 1}</span>

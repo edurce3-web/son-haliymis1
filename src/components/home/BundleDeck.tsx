@@ -107,7 +107,7 @@ export const BundleDeck: React.FC<{
         : 'Bir Arada Mega Paketler');
 
     return (
-        <section className={embedded ? 'w-full rounded-[28px] bg-[#F5F6F8] py-6 font-jakarta overflow-hidden' : 'w-full bg-[#F5F6F8] py-7 lg:py-8 font-jakarta overflow-hidden'}>
+        <section className={embedded ? 'w-full  bg-[#F5F6F8] py-6 font-jakarta overflow-hidden' : 'w-full bg-[#F5F6F8] py-7 lg:py-8 font-jakarta overflow-hidden'}>
             <div className={embedded ? 'px-4 sm:px-6' : 'container mx-auto px-4'}>
                 <div className="flex items-end justify-between gap-6 mb-5">
                     <div className="min-w-0">
@@ -203,7 +203,7 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
 
     return (
         <article
-            className="group h-full flex flex-col bg-white rounded-[20px] p-3.5 transition-shadow duration-300  hover:shadow-[0_24px_48px_-26px_rgba(17,24,39,0.4)]"
+            className="group h-full flex flex-col bg-white  p-3.5 transition-shadow duration-300  hover:shadow-[0_24px_48px_-26px_rgba(17,24,39,0.4)]"
             onPointerEnter={e => { if (e.pointerType === 'mouse') setFan(true); }}
             onPointerLeave={e => { if (e.pointerType === 'mouse') setFan(false); }}
         >
@@ -294,7 +294,7 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                                     alt=""
                                     loading="lazy"
                                     onError={e => { (e.target as HTMLImageElement).src = '/placeholder.svg'; }}
-                                    className="w-12 h-[27px] rounded-md object-cover shrink-0 bg-[#EEFBF3]"
+                                    className="w-12 h-[27px]  object-cover shrink-0 bg-[#EEFBF3]"
                                 />
                                 <span className="min-w-0 flex-1">
                                     <span className="block text-[12.5px] leading-tight font-bold text-[#111827] truncate">{c.title}</span>
@@ -303,7 +303,7 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                                 <span className="text-[11px] text-[#6B7280] line-through tabular-nums shrink-0 pr-1.5">{lira(c.price)}</span>
                             </>
                         );
-                        const rowClass = 'shrink-0 flex items-center gap-2 h-[34px] rounded-xl bg-[#F5F6F8] pl-1';
+                        const rowClass = 'shrink-0 flex items-center gap-2 h-[34px]  bg-[#F5F6F8] pl-1';
                         return (
                             <li key={c.id}>
                                 {c.slug ? (
@@ -363,7 +363,7 @@ const BundleCard: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                     <button
                         type="button"
                         onClick={buy}
-                        className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-[#1B7A43] hover:bg-[#16613A] active:scale-[0.98] text-white text-[13px] font-bold whitespace-nowrap transition-[background-color,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/50 focus-visible:ring-offset-2"
+                        className="inline-flex items-center gap-1.5 h-9 px-3.5  bg-[#1B7A43] hover:bg-[#16613A] active:scale-[0.98] text-white text-[13px] font-bold whitespace-nowrap transition-[background-color,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B7A43]/50 focus-visible:ring-offset-2"
                     >
                         Paketi al
                         <ArrowRight className="w-4 h-4" />
@@ -380,7 +380,7 @@ const CourseFace: React.FC<{ course: BundleCourse; label: string; lifted?: boole
 }) => (
     <div
         className={cn(
-            'h-full flex flex-col rounded-[12px] bg-white overflow-hidden transition-shadow duration-300',
+            'h-full flex flex-col  bg-white overflow-hidden transition-shadow duration-300',
             strong
                 ? 'shadow-[0_18px_34px_-14px_rgba(19,27,46,0.5)]'
                 : lifted
@@ -388,7 +388,7 @@ const CourseFace: React.FC<{ course: BundleCourse; label: string; lifted?: boole
                     : ''
         )}
     >
-        <div className="relative h-[64px] shrink-0 bg-[#F1F3F5] m-[2px] mb-0 rounded-t-[10px] overflow-hidden">
+        <div className="relative h-[64px] shrink-0 bg-[#F1F3F5] m-[2px] mb-0  overflow-hidden">
             <img
                 src={imageOf(course)}
                 alt=""
@@ -397,7 +397,7 @@ const CourseFace: React.FC<{ course: BundleCourse; label: string; lifted?: boole
                 onError={e => { (e.target as HTMLImageElement).src = '/placeholder.svg'; }}
                 className="w-full h-full object-cover"
             />
-            <span className="absolute top-1.5 left-1.5 px-1.5 py-[2px] rounded-md bg-[#111827]/85 text-white text-[9px] font-extrabold uppercase tracking-[0.04em]">
+            <span className="absolute top-1.5 left-1.5 px-1.5 py-[2px]  bg-[#111827]/85 text-white text-[9px] font-extrabold uppercase tracking-[0.04em]">
                 {label}
             </span>
         </div>

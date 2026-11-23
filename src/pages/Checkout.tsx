@@ -254,7 +254,7 @@ export const Checkout: React.FC = () => {
             <Button
               onClick={() => navigate('/learning')}
               size="lg"
-              className="w-full bg-slate-900 hover:bg-slate-800 h-13 text-base font-bold rounded-xl shadow-lg"
+              className="w-full bg-slate-900 hover:bg-slate-800 h-13 text-base font-bold  shadow-lg"
             >
               Kurslarıma Git
             </Button>
@@ -262,7 +262,7 @@ export const Checkout: React.FC = () => {
               variant="ghost"
               onClick={() => navigate('/')}
               size="lg"
-              className="w-full text-slate-500 h-12 font-medium rounded-xl"
+              className="w-full text-slate-500 h-12 font-medium "
             >
               Ana Sayfa
             </Button>
@@ -285,7 +285,7 @@ export const Checkout: React.FC = () => {
           <Button
             onClick={() => { setPaymentStatus(null); navigate('/checkout'); }}
             size="lg"
-            className="w-full bg-slate-900 text-white h-13 text-base font-bold rounded-xl"
+            className="w-full bg-slate-900 text-white h-13 text-base font-bold "
           >
             Tekrar Dene
           </Button>
@@ -334,7 +334,7 @@ export const Checkout: React.FC = () => {
           <div className="lg:col-span-7 space-y-6">
 
             {/* Sipariş içeriği */}
-            <section className="bg-[#F5F6F8] rounded-2xl overflow-hidden">
+            <section className="bg-[#F5F6F8]  overflow-hidden">
               <header className="px-6 py-4 flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
                   <ShoppingBag className="w-4 h-4 text-slate-400" />
@@ -368,7 +368,7 @@ export const Checkout: React.FC = () => {
                       alt={item.title}
                       loading="lazy"
                       onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/placeholder.svg'; }}
-                      className="w-28 h-[70px] rounded-lg object-cover bg-slate-100 shrink-0"
+                      className="w-28 h-[70px]  object-cover bg-slate-100 shrink-0"
                     />
                     <div className="flex-1 min-w-0">
                       <h3 className="text-sm font-semibold text-slate-900 line-clamp-2 leading-snug">
@@ -387,7 +387,7 @@ export const Checkout: React.FC = () => {
                   <div className="px-6 py-12 text-center">
                     <p className="text-sm text-slate-400 mb-4">Sepetiniz boş</p>
                     <Link to="/courses">
-                      <Button variant="outline" className="h-10 rounded-xl">Kursları keşfet</Button>
+                      <Button variant="outline" className="h-10 ">Kursları keşfet</Button>
                     </Link>
                   </div>
                 )}
@@ -395,7 +395,7 @@ export const Checkout: React.FC = () => {
             </section>
 
             {/* Fatura ülkesi */}
-            <section className="bg-[#F5F6F8] rounded-2xl p-6">
+            <section className="bg-[#F5F6F8]  p-6">
               <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2 mb-4">
                 <Globe className="w-4 h-4 text-slate-400" />
                 Fatura bilgisi
@@ -403,10 +403,10 @@ export const Checkout: React.FC = () => {
               <div className="max-w-xs">
                 <Label className="text-xs text-slate-500 mb-1.5 block">Ülke</Label>
                 <Select value={country} onValueChange={setCountry}>
-                  <SelectTrigger className="h-11 rounded-xl">
+                  <SelectTrigger className="h-11 ">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
+                  <SelectContent className="">
                     {countries.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                   </SelectContent>
                 </Select>
@@ -415,7 +415,7 @@ export const Checkout: React.FC = () => {
 
             {/* Ödeme ekranı — iframe açıldığında burada gösterilir */}
             {iframeUrl && (
-              <section className="bg-[#F5F6F8] rounded-2xl overflow-hidden">
+              <section className="bg-[#F5F6F8]  overflow-hidden">
                 <header className="px-6 py-4 flex items-center justify-between">
                   <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
                     <CreditCard className="w-4 h-4 text-slate-400" />
@@ -440,7 +440,7 @@ export const Checkout: React.FC = () => {
 
           {/* ============ SAĞ: TOPLAM + ÖDEME + KUPON ============ */}
           <div className="lg:col-span-5">
-            <div className="lg:sticky lg:top-24 bg-[#F5F6F8] rounded-2xl p-6">
+            <div className="lg:sticky lg:top-24 bg-[#F5F6F8]  p-6">
 
               <div className="space-y-2.5 text-sm">
                 <div className="flex justify-between">
@@ -472,14 +472,14 @@ export const Checkout: React.FC = () => {
               </div>
 
               {errorMsg && (
-                <div className="mt-4 p-3 bg-red-50 rounded-xl text-red-600 text-xs flex items-start gap-2">
+                <div className="mt-4 p-3 bg-red-50  text-red-600 text-xs flex items-start gap-2">
                   <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                   <span>{errorMsg}</span>
                 </div>
               )}
 
               <Button
-                className="w-full h-12 mt-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold disabled:bg-slate-200 disabled:text-slate-400"
+                className="w-full h-12 mt-5  bg-brand-600 hover:bg-brand-700 text-white font-semibold disabled:bg-slate-200 disabled:text-slate-400"
                 onClick={handlePayment}
                 disabled={isLoading || isProcessing || items.length === 0}
               >
@@ -500,7 +500,7 @@ export const Checkout: React.FC = () => {
                   zaten indirimli fiyat, sunucu da kuponu yok sayıyor. */}
               <div className={isBundle ? 'hidden' : 'mt-4'}>
                 {appliedCoupon ? (
-                  <div className="flex items-center justify-between gap-3 bg-emerald-50 rounded-xl px-3 py-2.5">
+                  <div className="flex items-center justify-between gap-3 bg-emerald-50  px-3 py-2.5">
                     <div className="flex items-center gap-2 min-w-0">
                       <Gift className="w-4 h-4 text-emerald-600 shrink-0" />
                       <span className="text-xs text-emerald-700 truncate">
@@ -509,7 +509,7 @@ export const Checkout: React.FC = () => {
                     </div>
                     <button
                       onClick={() => { setAppliedCoupon(null); setCouponCode(''); }}
-                      className="shrink-0 w-6 h-6 rounded-md hover:bg-emerald-100 flex items-center justify-center text-emerald-600 transition-colors"
+                      className="shrink-0 w-6 h-6  hover:bg-emerald-100 flex items-center justify-center text-emerald-600 transition-colors"
                       title="Kuponu kaldır"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -522,11 +522,11 @@ export const Checkout: React.FC = () => {
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                       onKeyDown={(e) => { if (e.key === 'Enter' && couponCode) handleApplyCoupon(couponCode); }}
-                      className="h-10 rounded-xl font-mono text-sm tracking-wider flex-1"
+                      className="h-10  font-mono text-sm tracking-wider flex-1"
                     />
                     <Button
                       variant="outline"
-                      className="h-10 px-4 rounded-xl text-sm font-medium"
+                      className="h-10 px-4  text-sm font-medium"
                       disabled={!couponCode || couponLoading}
                       onClick={() => handleApplyCoupon(couponCode)}
                     >

@@ -94,7 +94,7 @@ export const CreateCourseInitial: React.FC = () => {
                         autoFocus
                         placeholder="Örnek: Sıfırdan ileri seviye React ve Next.js"
                         className={cn(
-                            'mt-2.5 w-full h-[60px] px-5 rounded-2xl bg-white text-[17px] sm:text-[18px] font-semibold text-[#00201d]',
+                            'mt-2.5 w-full h-[60px] px-5  bg-white text-[17px] sm:text-[18px] font-semibold text-[#00201d]',
                             'placeholder:font-normal placeholder:text-[#93a6a3] outline-none',
                             '',
                             'focus:ring-2 focus:ring-[#005c55]/55 transition-shadow duration-150'
@@ -118,7 +118,7 @@ export const CreateCourseInitial: React.FC = () => {
                     </div>
                     <div role="radiogroup" aria-labelledby="cat-label" className="mt-3 flex flex-wrap gap-2.5">
                         {catsLoading && Array.from({ length: 8 }).map((_, i) => (
-                            <span key={i} className="h-12 w-40 rounded-2xl bg-[#e6e9e8] animate-pulse" />
+                            <span key={i} className="h-12 w-40  bg-[#e6e9e8] animate-pulse" />
                         ))}
                         {categories.map(cat => (
                             <Pick
@@ -152,7 +152,7 @@ export const CreateCourseInitial: React.FC = () => {
                         type="submit"
                         disabled={loading || !canSubmit}
                         className={cn(
-                            'inline-flex items-center justify-center gap-2 h-[52px] px-7 rounded-2xl text-[15px] font-bold',
+                            'inline-flex items-center justify-center gap-2 h-[52px] px-7  text-[15px] font-bold',
                             'transition-[background-color,color,transform,box-shadow] duration-150 active:scale-[0.98]',
                             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45 focus-visible:ring-offset-2',
                             canSubmit
@@ -185,7 +185,7 @@ const Pick: React.FC<{ on: boolean; onClick: () => void; small?: boolean; childr
         aria-checked={on}
         onClick={onClick}
         className={cn(
-            'rounded-2xl font-bold transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.97]',
+            ' font-bold transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.97]',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/45 focus-visible:ring-offset-2',
             small ? 'h-10 px-4 text-[13.5px]' : 'h-12 px-5 text-[14.5px]',
             on

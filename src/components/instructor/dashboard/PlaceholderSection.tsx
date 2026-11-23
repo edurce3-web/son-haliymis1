@@ -71,7 +71,7 @@ export const PlaceholderSection: React.FC<PlaceholderSectionProps> = () => {
                 })}
             </Panel>
 
-            <section className="mt-6 rounded-2xl bg-[#9cf2e8] px-6 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <section className="mt-6  bg-[#9cf2e8] px-6 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-[17px] font-extrabold tracking-tight text-[#00201d]">Cevabını bulamadın mı?</h2>
                     <p className="mt-1 text-[14px] text-[#1d4a45]">Bize yaz, sorunun ne olduğunu birlikte çözelim.</p>

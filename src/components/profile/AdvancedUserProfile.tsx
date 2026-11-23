@@ -360,11 +360,11 @@ export const AdvancedUserProfile: React.FC = () => {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-3 bg-blue-50 rounded-lg">
+                  <div className="text-center p-3 bg-blue-50 ">
                     <div className="text-lg font-semibold text-blue-600">{profile?.points}</div>
                     <div className="text-xs text-gray-600">Toplam Puan</div>
                   </div>
-                  <div className="text-center p-3 bg-orange-50 rounded-lg">
+                  <div className="text-center p-3 bg-orange-50 ">
                     <div className="text-lg font-semibold text-orange-600">{profile?.max_streak}</div>
                     <div className="text-xs text-gray-600">En Uzun Seri</div>
                   </div>
@@ -398,7 +398,7 @@ export const AdvancedUserProfile: React.FC = () => {
                 <div className={`absolute top-0 right-0 w-16 h-16 ${getRarityColor(achievement.rarity)} opacity-20 transform rotate-45 translate-x-8 -translate-y-8`}></div>
                 <CardContent className="p-4">
                   <div className="flex items-start space-x-3">
-                    <div className={`p-2 rounded-lg ${achievement.unlocked_at ? 'bg-yellow-100' : 'bg-gray-100'}`}>
+                    <div className={`p-2  ${achievement.unlocked_at ? 'bg-yellow-100' : 'bg-gray-100'}`}>
                       {getAchievementIcon(achievement.icon)}
                     </div>
                     <div className="flex-1">
@@ -494,7 +494,7 @@ export const AdvancedUserProfile: React.FC = () => {
                 <div>
                   <Label>Profil Görünürlüğü</Label>
                   <select 
-                    className="w-full mt-1 p-2 rounded-md bg-[#F5F6F8]"
+                    className="w-full mt-1 p-2  bg-[#F5F6F8]"
                     value={settings?.privacy_profile}
                     onChange={(e) => handleSettingChange('privacy_profile', e.target.value)}
                   >
@@ -506,7 +506,7 @@ export const AdvancedUserProfile: React.FC = () => {
                 <div>
                   <Label>Kurs Listesi</Label>
                   <select 
-                    className="w-full mt-1 p-2 rounded-md bg-[#F5F6F8]"
+                    className="w-full mt-1 p-2  bg-[#F5F6F8]"
                     value={settings?.privacy_courses}
                     onChange={(e) => handleSettingChange('privacy_courses', e.target.value)}
                   >
@@ -539,7 +539,7 @@ export const AdvancedUserProfile: React.FC = () => {
                 <div>
                   <Label>Video Kalitesi</Label>
                   <select 
-                    className="w-full mt-1 p-2 rounded-md bg-[#F5F6F8]"
+                    className="w-full mt-1 p-2  bg-[#F5F6F8]"
                     value={settings?.video_quality}
                     onChange={(e) => handleSettingChange('video_quality', e.target.value)}
                   >
@@ -562,7 +562,7 @@ export const AdvancedUserProfile: React.FC = () => {
                 <div>
                   <Label>Tema</Label>
                   <select 
-                    className="w-full mt-1 p-2 rounded-md bg-[#F5F6F8]"
+                    className="w-full mt-1 p-2  bg-[#F5F6F8]"
                     value={settings?.theme}
                     onChange={(e) => handleSettingChange('theme', e.target.value)}
                   >
@@ -574,7 +574,7 @@ export const AdvancedUserProfile: React.FC = () => {
                 <div>
                   <Label>Dil</Label>
                   <select 
-                    className="w-full mt-1 p-2 rounded-md bg-[#F5F6F8]"
+                    className="w-full mt-1 p-2  bg-[#F5F6F8]"
                     value={settings?.language}
                     onChange={(e) => handleSettingChange('language', e.target.value)}
                   >
@@ -596,7 +596,7 @@ export const AdvancedUserProfile: React.FC = () => {
               <CardTitle>Güvenlik Ayarları</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 bg-yellow-50 rounded-lg">
+              <div className="p-4 bg-yellow-50 ">
                 <p className="text-sm text-yellow-800">
                   Güvenlik ayarları henüz geliştirme aşamasındadır. İki faktörlü kimlik doğrulama ve şifre değiştirme özellikleri yakında eklenecektir.
                 </p>

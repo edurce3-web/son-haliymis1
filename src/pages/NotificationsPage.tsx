@@ -188,7 +188,7 @@ const NotificationsPage = () => {
                     <p className="text-sm text-slate-500 mb-5">
                         Satın alma, mesaj ve duyuru bildirimlerin burada toplanır.
                     </p>
-                    <Button onClick={() => navigate('/login')} className="rounded-xl bg-brand-600 hover:bg-brand-700">
+                    <Button onClick={() => navigate('/login')} className=" bg-brand-600 hover:bg-brand-700">
                         Giriş yap
                     </Button>
                 </div>
@@ -215,7 +215,7 @@ const NotificationsPage = () => {
                                 onClick={markAllAsRead}
                                 disabled={busy}
                                 variant="ghost"
-                                className="h-9 rounded-xl gap-2 text-sm bg-[#F1F3F5] hover:bg-[#E9ECEF] font-semibold"
+                                className="h-9  gap-2 text-sm bg-[#F1F3F5] hover:bg-[#E9ECEF] font-semibold"
                             >
                                 <CheckCheck className="w-4 h-4" /> Tümünü okundu yap
                             </Button>
@@ -225,7 +225,7 @@ const NotificationsPage = () => {
                                 onClick={clearRead}
                                 disabled={busy}
                                 variant="ghost"
-                                className="h-9 rounded-xl gap-2 text-sm text-slate-500 hover:text-red-600"
+                                className="h-9  gap-2 text-sm text-slate-500 hover:text-red-600"
                             >
                                 <Trash2 className="w-4 h-4" /> Okunanları temizle
                             </Button>
@@ -234,7 +234,7 @@ const NotificationsPage = () => {
                 </div>
 
                 {notifications.length > 0 && (
-                    <div className="bg-[#F5F6F8] rounded-[22px] p-3 mb-4 space-y-3">
+                    <div className="bg-[#F5F6F8]  p-3 mb-4 space-y-3">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <input
@@ -242,7 +242,7 @@ const NotificationsPage = () => {
                                 placeholder="Bildirimlerde ara…"
                                 value={query}
                                 onChange={e => setQuery(e.target.value)}
-                                className="w-full h-9 pl-9 pr-3 rounded-xl bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                                className="w-full h-9 pl-9 pr-3  bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                             />
                         </div>
                         <div className="flex flex-wrap gap-1.5">
@@ -251,7 +251,7 @@ const NotificationsPage = () => {
                                     key={t.key}
                                     onClick={() => setFilter(t.key)}
                                     className={cn(
-                                        'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
+                                        'px-3 py-1.5  text-xs font-medium transition-colors',
                                         filter === t.key
                                             ? 'bg-slate-900 text-white'
                                             : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -275,20 +275,20 @@ const NotificationsPage = () => {
                 {loading ? (
                     <div className="space-y-2">
                         {[...Array(4)].map((_, i) => (
-                            <div key={i} className="bg-[#F5F6F8] rounded-[22px] p-4 animate-pulse">
+                            <div key={i} className="bg-[#F5F6F8]  p-4 animate-pulse">
                                 <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 bg-slate-100 rounded-xl shrink-0" />
+                                    <div className="w-10 h-10 bg-slate-100  shrink-0" />
                                     <div className="flex-1 space-y-2 pt-1">
-                                        <div className="h-3 bg-slate-100 rounded w-1/3" />
-                                        <div className="h-3 bg-slate-50 rounded w-2/3" />
+                                        <div className="h-3 bg-slate-100  w-1/3" />
+                                        <div className="h-3 bg-slate-50  w-2/3" />
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
                 ) : filtered.length === 0 ? (
-                    <div className="bg-[#F5F6F8] rounded-[22px] py-16 text-center">
-                        <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <div className="bg-[#F5F6F8]  py-16 text-center">
+                        <div className="w-14 h-14 bg-slate-100  flex items-center justify-center mx-auto mb-4">
                             <Bell className="w-7 h-7 text-slate-300" />
                         </div>
                         <h3 className="text-base font-semibold text-slate-700 mb-1">
@@ -307,7 +307,7 @@ const NotificationsPage = () => {
                                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2 px-1">
                                     {group.label}
                                 </p>
-                                <div className="bg-[#F5F6F8] rounded-[22px] overflow-hidden">
+                                <div className="bg-[#F5F6F8]  overflow-hidden">
                                     {group.items.map(n => {
                                         const meta = metaFor(n.type);
                                         const Icon = meta.icon;
@@ -325,7 +325,7 @@ const NotificationsPage = () => {
                                                 )}
                                             >
                                                 <div className={cn(
-                                                    'w-10 h-10 rounded-xl flex items-center justify-center shrink-0',
+                                                    'w-10 h-10  flex items-center justify-center shrink-0',
                                                     meta.bg
                                                 )}>
                                                     <Icon className={cn('w-5 h-5', meta.fg)} />
@@ -354,7 +354,7 @@ const NotificationsPage = () => {
                                                     {unread && (
                                                         <button
                                                             onClick={e => { e.stopPropagation(); markAsRead(n.notification_id); }}
-                                                            className="p-1.5 rounded-lg hover:bg-emerald-50 text-slate-400 hover:text-emerald-600"
+                                                            className="p-1.5  hover:bg-emerald-50 text-slate-400 hover:text-emerald-600"
                                                             title="Okundu işaretle"
                                                         >
                                                             <Check className="w-4 h-4" />
@@ -362,7 +362,7 @@ const NotificationsPage = () => {
                                                     )}
                                                     <button
                                                         onClick={e => { e.stopPropagation(); remove(n.notification_id); }}
-                                                        className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500"
+                                                        className="p-1.5  hover:bg-red-50 text-slate-400 hover:text-red-500"
                                                         title="Sil"
                                                     >
                                                         <Trash2 className="w-4 h-4" />

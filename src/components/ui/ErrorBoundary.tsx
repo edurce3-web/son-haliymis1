@@ -94,7 +94,7 @@ export class ErrorBoundary extends Component<Props, State> {
             
             <CardContent className="space-y-4">
               {process.env.NODE_ENV === 'development' && this.state.error && (
-                <div className="bg-red-50 rounded-lg p-4">
+                <div className="bg-red-50  p-4">
                   <h4 className="text-sm font-medium text-red-800 mb-2">
                     Hata Detayları (Geliştirme Modu)
                   </h4>

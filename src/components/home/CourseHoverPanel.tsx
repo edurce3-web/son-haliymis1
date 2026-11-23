@@ -143,7 +143,7 @@ export const CourseHoverPanel: React.FC<{
                 style={pos.side === 'right' ? { left: -16 } : { right: -16 }}
             />
 
-            <div className="relative bg-[#F5F6F8] rounded-xl shadow-[0_24px_60px_-15px_rgba(19,27,46,0.32)] animate-in fade-in zoom-in-95 duration-150">
+            <div className="relative bg-[#F5F6F8]  shadow-[0_24px_60px_-15px_rgba(19,27,46,0.32)] animate-in fade-in zoom-in-95 duration-150">
                 <span
                     aria-hidden
                     className={cn(
@@ -181,9 +181,9 @@ export const CourseHoverPanel: React.FC<{
 
                     {isLoading ? (
                         <div className="space-y-2 mt-4 animate-pulse">
-                            <div className="h-2.5 bg-[#EEFBF3] rounded w-full" />
-                            <div className="h-2.5 bg-[#EEFBF3] rounded w-4/5" />
-                            <div className="h-2.5 bg-[#EEFBF3] rounded w-2/3" />
+                            <div className="h-2.5 bg-[#EEFBF3]  w-full" />
+                            <div className="h-2.5 bg-[#EEFBF3]  w-4/5" />
+                            <div className="h-2.5 bg-[#EEFBF3]  w-2/3" />
                         </div>
                     ) : (
                         <>
@@ -212,7 +212,7 @@ export const CourseHoverPanel: React.FC<{
                             onClick={onAddToCart}
                             disabled={inCart || adding}
                             className={cn(
-                                'flex-1 h-11 rounded-lg text-[14px] font-bold transition-colors',
+                                'flex-1 h-11  text-[14px] font-bold transition-colors',
                                 inCart
                                     ? 'bg-[#EEFBF3] text-[#6e7977] cursor-default'
                                     : 'bg-[#1B7A43] hover:bg-[#0f766e] text-white'
@@ -225,7 +225,7 @@ export const CourseHoverPanel: React.FC<{
                             onClick={onToggleFav}
                             aria-label={favorited ? 'İstek listesinden çıkar' : 'İstek listesine ekle'}
                             className={cn(
-                                'w-11 h-11 shrink-0 rounded-lg flex items-center justify-center transition-colors',
+                                'w-11 h-11 shrink-0  flex items-center justify-center transition-colors',
                                 favorited ? 'bg-rose-50 text-rose-500' : 'bg-[#EEFBF3] text-[#3e4947] hover:text-rose-500'
                             )}
                         >

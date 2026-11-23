@@ -90,11 +90,11 @@ export const HomeHero: React.FC<{
                                 onChange={e => setTerm(e.target.value)}
                                 placeholder="Ne öğrenmek istiyorsun?"
                                 aria-label="Kurs ara"
-                                className="w-full h-14 pl-12 pr-32 rounded-xl bg-white text-[15px] text-slate-900 placeholder:text-slate-400 shadow-2xl shadow-black/25 focus:outline-none focus:ring-4 focus:ring-brand-400/40"
+                                className="w-full h-14 pl-12 pr-32  bg-white text-[15px] text-slate-900 placeholder:text-slate-400 shadow-2xl shadow-black/25 focus:outline-none focus:ring-4 focus:ring-brand-400/40"
                             />
                             <Button
                                 type="submit"
-                                className="absolute right-2 top-2 h-10 px-6 rounded-lg bg-brand-700 hover:bg-brand-800 font-semibold"
+                                className="absolute right-2 top-2 h-10 px-6  bg-brand-700 hover:bg-brand-800 font-semibold"
                             >
                                 Ara
                             </Button>

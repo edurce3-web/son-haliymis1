@@ -81,7 +81,7 @@ const StaffDashboard: React.FC = () => {
                                 <div key={a.day} className="flex-1 flex flex-col items-center gap-2">
                                     <div className="w-full flex-1 flex items-end">
                                         <div
-                                            className="w-full rounded-t bg-slate-800"
+                                            className="w-full  bg-slate-800"
                                             style={{ height: `${Math.max(4, (a.count / maxActivity) * 100)}%` }}
                                             title={`${a.count} işlem`}
                                         />

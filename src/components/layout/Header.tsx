@@ -31,7 +31,7 @@ const HoverPopover = ({ children, content, width = 'w-80' }: { children: React.R
       {children}
       {open && (
         <div className={`absolute right-0 top-full pt-1.5 z-[100]`}>
-          <div className={`${width} bg-[#F5F6F8] rounded-2xl shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150 overflow-hidden`} onMouseEnter={enter} onMouseLeave={leave}>
+          <div className={`${width} bg-[#F5F6F8]  shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150 overflow-hidden`} onMouseEnter={enter} onMouseLeave={leave}>
             {content}
           </div>
         </div>
@@ -215,7 +215,7 @@ export const Header = () => {
   // ─── Cart Popover Content ───
   const CartPopoverContent = () => (
     <div>
-      <div className="p-3 bg-brand-50 rounded-t-2xl flex items-center justify-between">
+      <div className="p-3 bg-brand-50  flex items-center justify-between">
         <p className="font-bold text-slate-800 text-sm">Sepetim ({cartCount})</p>
         {cartCount > 0 && <span className="text-xs font-bold text-brand-700">₺{cartTotal.toFixed(2)}</span>}
       </div>
@@ -228,7 +228,7 @@ export const Header = () => {
         ) : (
           cartItems.slice(0, 4).map((item) => (
             <div key={item.course_id} className="flex items-center gap-3 p-3 hover:bg-slate-50 transition-colors group">
-              <div className="w-14 h-10 bg-brand-50 rounded-lg flex-shrink-0 overflow-hidden">
+              <div className="w-14 h-10 bg-brand-50  flex-shrink-0 overflow-hidden">
                 {(item.image_path || item.image_url) ? (
                   <img src={item.image_path || item.image_url} className="w-full h-full object-cover" alt="" />
                 ) : (
@@ -242,7 +242,7 @@ export const Header = () => {
                 <p className="text-[11px] text-slate-500">{item.instructor_name || `${item.instructor_first_name || ''} ${item.instructor_last_name || ''}`.trim()}</p>
                 <p className="text-xs font-bold text-brand-700">₺{parseFloat(item.price).toFixed(2)}</p>
               </div>
-              <button onClick={(e) => handleRemoveFromCart(item.course_id, e)} className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-red-50 rounded-md transition-all">
+              <button onClick={(e) => handleRemoveFromCart(item.course_id, e)} className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-red-50  transition-all">
                 <X className="w-4 h-4 text-red-500" />
               </button>
             </div>
@@ -250,12 +250,12 @@ export const Header = () => {
         )}
       </div>
       {cartItems.length > 0 && (
-        <div className="p-3 bg-slate-50/50 rounded-b-2xl space-y-2">
+        <div className="p-3 bg-slate-50/50  space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-slate-600">Toplam:</span>
             <span className="font-bold text-slate-900">₺{cartTotal.toFixed(2)}</span>
           </div>
-          <Button onClick={() => navigate('/cart')} className="w-full bg-brand-700 hover:bg-brand-800 text-white rounded-xl text-sm h-9">
+          <Button onClick={() => navigate('/cart')} className="w-full bg-brand-700 hover:bg-brand-800 text-white  text-sm h-9">
             Sepete Git
           </Button>
         </div>
@@ -280,7 +280,7 @@ export const Header = () => {
               className="flex gap-3 p-4 hover:bg-slate-50 transition-colors cursor-pointer relative group"
               onClick={() => navigate(`/course/${fav.course_id}`)}>
               {/* Thumbnail */}
-              <div className="w-16 h-16 bg-slate-100 rounded-lg flex-shrink-0 overflow-hidden">
+              <div className="w-16 h-16 bg-slate-100  flex-shrink-0 overflow-hidden">
                 {(fav.image_path || fav.image_url) ? (
                   <img src={fav.image_path || fav.image_url} className="w-full h-full object-cover" alt={fav.title} />
                 ) : (
@@ -297,7 +297,7 @@ export const Header = () => {
                 {/* Add to cart button */}
                 <button
                   onClick={(e) => handleAddToCart(fav.course_id, e)}
-                  className="mt-2 w-full py-1.5 text-xs font-bold text-brand-700 rounded-md hover:bg-brand-700 hover:text-white transition-all text-center bg-[#F5F6F8]"
+                  className="mt-2 w-full py-1.5 text-xs font-bold text-brand-700  hover:bg-brand-700 hover:text-white transition-all text-center bg-[#F5F6F8]"
                 >
                   Sepete ekle
                 </button>
@@ -306,7 +306,7 @@ export const Header = () => {
               {/* Remove Favorite Button */}
               <button
                 onClick={(e) => handleRemoveFavorite(fav.course_id, e)}
-                className="absolute top-2 right-2 p-1.5 bg-white/80 backdrop-blur-sm rounded-md opacity-0 group-hover:opacity-100 hover:bg-red-50 focus:opacity-100 transition-all shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+                className="absolute top-2 right-2 p-1.5 bg-white/80 backdrop-blur-sm  opacity-0 group-hover:opacity-100 hover:bg-red-50 focus:opacity-100 transition-all shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
               >
                 <X className="w-4 h-4 text-red-500" />
               </button>
@@ -316,7 +316,7 @@ export const Header = () => {
       </div>
       {favorites.length > 0 && (
         <div className="p-3">
-          <Button onClick={() => navigate('/favorites')} className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-md text-sm h-10 font-bold">
+          <Button onClick={() => navigate('/favorites')} className="w-full bg-slate-900 hover:bg-slate-800 text-white  text-sm h-10 font-bold">
             İstek listesine git
           </Button>
         </div>
@@ -327,7 +327,7 @@ export const Header = () => {
   // ─── Notifications Popover Content ───
   const NotificationsPopoverContent = () => (
     <div>
-      <div className="p-3 bg-brand-50 rounded-t-2xl flex items-center justify-between">
+      <div className="p-3 bg-brand-50  flex items-center justify-between">
         <p className="font-bold text-slate-800 text-sm">
           Bildirimler {unreadCount > 0 && <span className="ml-1 text-xs bg-red-500 text-white px-1.5 py-0.5 rounded-full">{unreadCount}</span>}
         </p>
@@ -367,8 +367,8 @@ export const Header = () => {
           ))
         )}
       </div>
-      <div className="p-3 bg-slate-50/50 rounded-b-2xl">
-        <Button onClick={() => navigate('/notifications')} variant="outline" className="w-full rounded-xl text-sm h-9 text-brand-700 hover:bg-brand-50">
+      <div className="p-3 bg-slate-50/50 ">
+        <Button onClick={() => navigate('/notifications')} variant="outline" className="w-full  text-sm h-9 text-brand-700 hover:bg-brand-50">
           Tüm Bildirimleri Gör
         </Button>
       </div>
@@ -386,7 +386,7 @@ export const Header = () => {
     <button
       onClick={onClick}
       className={cn(
-        'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-left transition-colors',
+        'w-full flex items-center gap-3 px-3 py-2  text-sm text-left transition-colors',
         tone === 'danger' ? 'text-red-600 hover:bg-red-50'
           : tone === 'primary' ? 'font-semibold text-brand-800 hover:bg-brand-50'
             : 'text-slate-700 hover:bg-slate-50'
@@ -401,7 +401,7 @@ export const Header = () => {
     <div className="p-2">
       {isAuthenticated ? (
         <>
-          <div className="flex items-center gap-3 p-3 bg-brand-50/70 rounded-xl mb-2">
+          <div className="flex items-center gap-3 p-3 bg-brand-50/70  mb-2">
             <Avatar className="h-9 w-9  shrink-0 bg-[#F5F6F8]">
               <AvatarImage src={user?.profile_image || ''} className="object-cover" />
               <AvatarFallback className="bg-brand-700 text-white font-bold text-xs">
@@ -455,10 +455,10 @@ export const Header = () => {
         </>
       ) : (
         <div className="p-1.5 space-y-2">
-          <Button onClick={() => navigate('/register')} className="w-full bg-brand-700 hover:bg-brand-800 text-white rounded-xl text-sm h-9">
+          <Button onClick={() => navigate('/register')} className="w-full bg-brand-700 hover:bg-brand-800 text-white  text-sm h-9">
             Kayıt Ol
           </Button>
-          <Button onClick={() => navigate('/login')} variant="outline" className="w-full rounded-xl text-sm h-9">
+          <Button onClick={() => navigate('/login')} variant="outline" className="w-full  text-sm h-9">
             Giriş Yap
           </Button>
         </div>
@@ -611,10 +611,10 @@ export const Header = () => {
       {mobileMenu && (
         <>
           <div aria-hidden onClick={() => setMobileMenu(false)} className="lg:hidden fixed inset-0 top-[116px] md:top-16 z-40 bg-black/25 animate-in fade-in duration-150" />
-          <div className="lg:hidden absolute inset-x-3 top-[calc(100%-4px)] z-50 rounded-[22px] bg-white shadow-[0_24px_60px_-20px_rgba(17,24,39,0.45),0_0_0_1px_rgba(17,24,39,0.05)] max-h-[75vh] overflow-y-auto animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="lg:hidden absolute inset-x-3 top-[calc(100%-4px)] z-50  bg-white shadow-[0_24px_60px_-20px_rgba(17,24,39,0.45),0_0_0_1px_rgba(17,24,39,0.05)] max-h-[75vh] overflow-y-auto animate-in fade-in slide-in-from-top-1 duration-150">
             <div className="p-2 grid grid-cols-2 gap-1.5">
-              <Link to="/courses" className="h-11 px-3 rounded-xl bg-[#F5F6F8] text-[14px] font-bold text-[#111827] flex items-center">Tüm Kurslar</Link>
-              <Link to={isInstructor ? '/instructor' : '/become-instructor'} className="h-11 px-3 rounded-xl bg-[#F5F6F8] text-[14px] font-bold text-[#111827] flex items-center">
+              <Link to="/courses" className="h-11 px-3  bg-[#F5F6F8] text-[14px] font-bold text-[#111827] flex items-center">Tüm Kurslar</Link>
+              <Link to={isInstructor ? '/instructor' : '/become-instructor'} className="h-11 px-3  bg-[#F5F6F8] text-[14px] font-bold text-[#111827] flex items-center">
                 {isInstructor ? 'Eğitmen Paneli' : 'Eğitmen Ol'}
               </Link>
             </div>

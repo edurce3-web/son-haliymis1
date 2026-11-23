@@ -162,14 +162,14 @@ const Cart = () => {
       <div className="container mx-auto px-4 max-w-6xl pt-8">
 
         {cartItems.length === 0 ? (
-          <div className="bg-[#F5F6F8] rounded-[22px] py-16 text-center">
+          <div className="bg-[#F5F6F8]  py-16 text-center">
             <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
               <ShoppingCart className="w-6 h-6 text-slate-400" />
             </div>
             <h3 className="text-lg font-semibold text-slate-900 mb-1">Sepetiniz boş</h3>
             <p className="text-sm text-slate-500 mb-6">Öğrenmeye başlamak için bir kurs ekleyin.</p>
             <Link to="/courses">
-              <Button className="h-11 px-6 rounded-xl bg-brand-700 hover:bg-brand-800">
+              <Button className="h-11 px-6  bg-brand-700 hover:bg-brand-800">
                 Kursları keşfet
               </Button>
             </Link>
@@ -182,7 +182,7 @@ const Cart = () => {
               {cartItems.map((item) => (
                 <div
                   key={item.course_id}
-                  className="bg-[#F5F6F8] rounded-[22px] p-4 flex gap-4"
+                  className="bg-[#F5F6F8]  p-4 flex gap-4"
                 >
                   <Link to={`/course/${item.course_id}`} className="shrink-0">
                     <img
@@ -190,7 +190,7 @@ const Cart = () => {
                       alt={item.title}
                       loading="lazy"
                       onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/placeholder.svg'; }}
-                      className="w-32 h-20 sm:w-40 sm:h-24 object-cover rounded-xl bg-slate-100"
+                      className="w-32 h-20 sm:w-40 sm:h-24 object-cover  bg-slate-100"
                     />
                   </Link>
 
@@ -243,7 +243,7 @@ const Cart = () => {
 
             {/* Özet */}
             <div className="lg:col-span-1">
-              <div className="lg:sticky lg:top-24 bg-[#F5F6F8] rounded-[22px] p-6">
+              <div className="lg:sticky lg:top-24 bg-[#F5F6F8]  p-6">
                 <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
                   Sipariş özeti
                 </h2>
@@ -266,7 +266,7 @@ const Cart = () => {
 
                 <Button
                   onClick={() => navigate('/checkout')}
-                  className="w-full h-12 mt-5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-semibold"
+                  className="w-full h-12 mt-5  bg-brand-700 hover:bg-brand-800 text-white font-semibold"
                 >
                   Satın al
                 </Button>
@@ -301,7 +301,7 @@ const Cart = () => {
               {recommended.map(rec => (
                 <div
                   key={rec.course_id}
-                  className="bg-white rounded-2xl overflow-hidden flex flex-col hover:shadow-md transition-all"
+                  className="bg-white  overflow-hidden flex flex-col hover:shadow-md transition-all"
                 >
                   <Link to={`/course/${rec.slug || rec.course_id}`} className="block aspect-video bg-slate-100 overflow-hidden">
                     <img

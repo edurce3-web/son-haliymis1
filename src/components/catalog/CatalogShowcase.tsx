@@ -79,7 +79,7 @@ export function useCatalogBundles(opts: { categorySlug?: string; categoryName?: 
 export const BundleStrip: React.FC<{ bundles: Bundle[]; title: string }> = ({ bundles, title }) => {
     if (!bundles.length) return null;
     return (
-        <section aria-label={title} className="col-span-full rounded-[22px] bg-[#EEFBF3] px-4 sm:px-5 py-4">
+        <section aria-label={title} className="col-span-full  bg-[#EEFBF3] px-4 sm:px-5 py-4">
             <div className="flex items-baseline justify-between gap-3 mb-3">
                 <h2 className="text-[16px] sm:text-[17px] font-extrabold tracking-[-0.01em] text-[#0A2A1A]">{title}</h2>
                 <span className="hidden sm:inline text-[12.5px] font-semibold text-[#1B7A43]">Tek tek almaktan daha uygun</span>
@@ -103,7 +103,7 @@ const BundleTile: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
     };
 
     return (
-        <article className="snap-start shrink-0 w-[300px] sm:w-[340px] flex gap-3 rounded-2xl bg-white p-3 ">
+        <article className="snap-start shrink-0 w-[300px] sm:w-[340px] flex gap-3  bg-white p-3 ">
             {/* Üst üste kapaklar: paketin kaç kurstan oluştuğu bir bakışta */}
             <div className="relative w-[84px] h-[84px] shrink-0">
                 {courses.slice(0, 3).map((c, i) => (
@@ -113,7 +113,7 @@ const BundleTile: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                         alt=""
                         loading="lazy"
                         onError={e => { (e.target as HTMLImageElement).src = '/placeholder.svg'; }}
-                        className="absolute w-[68px] h-[68px] rounded-xl object-cover bg-[#F1F3F5]"
+                        className="absolute w-[68px] h-[68px]  object-cover bg-[#F1F3F5]"
                         style={{ left: i * 8, top: i * 8, zIndex: 3 - i }}
                     />
                 ))}
@@ -137,7 +137,7 @@ const BundleTile: React.FC<{ bundle: Bundle }> = ({ bundle }) => {
                     <button
                         type="button"
                         onClick={buy}
-                        className="shrink-0 h-8 px-3 rounded-lg bg-[#1B7A43] hover:bg-[#16613A] active:scale-[0.98] text-white text-[12.5px] font-bold transition-[background-color,transform] duration-150"
+                        className="shrink-0 h-8 px-3  bg-[#1B7A43] hover:bg-[#16613A] active:scale-[0.98] text-white text-[12.5px] font-bold transition-[background-color,transform] duration-150"
                     >
                         Paketi al
                     </button>
@@ -176,9 +176,9 @@ export const InstructorRow: React.FC<{ instructors: Array<{ id: number; name: st
                     <Link
                         key={ins.id}
                         to={`/instructors/${ins.id}`}
-                        className="shrink-0 flex items-center gap-2.5 h-12 pl-1.5 pr-4 rounded-2xl bg-[#F5F6F8] hover:bg-[#EEFBF3] transition-colors"
+                        className="shrink-0 flex items-center gap-2.5 h-12 pl-1.5 pr-4  bg-[#F5F6F8] hover:bg-[#EEFBF3] transition-colors"
                     >
-                        <span className="w-9 h-9 rounded-xl bg-[#B2F0C8] text-[#134D30] text-[12px] font-extrabold flex items-center justify-center">
+                        <span className="w-9 h-9  bg-[#B2F0C8] text-[#134D30] text-[12px] font-extrabold flex items-center justify-center">
                             {ins.name.split(/\s+/).map(p => p[0]).slice(0, 2).join('').toLocaleUpperCase('tr-TR')}
                         </span>
                         <span className="leading-tight">

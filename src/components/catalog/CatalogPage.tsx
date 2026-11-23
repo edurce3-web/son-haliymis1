@@ -189,7 +189,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                         Aradığın kategori kaldırılmış ya da adresi değişmiş olabilir.
                     </p>
                     <Link to="/courses">
-                        <Button className="rounded-xl bg-[#1B7A43] hover:bg-[#16613A] font-bold">
+                        <Button className=" bg-[#1B7A43] hover:bg-[#16613A] font-bold">
                             Tüm kurslara göz at
                         </Button>
                     </Link>
@@ -308,13 +308,13 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                 )}
 
                 {/* Araç çubuğu */}
-                <div id="catalog-results" className="scroll-mt-28 mt-5 mb-4 flex items-center gap-2 rounded-2xl bg-[#F5F6F8] p-1.5">
+                <div id="catalog-results" className="scroll-mt-28 mt-5 mb-4 flex items-center gap-2  bg-[#F5F6F8] p-1.5">
                     <div className="min-w-0 flex-1 flex items-center gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
                         <button
                             type="button"
                             onClick={() => setShowMobileFilters(true)}
                             className={cn(
-                                'shrink-0 h-9 pl-3 pr-3.5 rounded-xl inline-flex items-center gap-2 text-[13.5px] font-bold transition-colors',
+                                'shrink-0 h-9 pl-3 pr-3.5  inline-flex items-center gap-2 text-[13.5px] font-bold transition-colors',
                                 activeFilterCount > 0 ? 'bg-[#1B7A43] text-white hover:bg-[#16613A]' : 'bg-white text-[#111827] hover:bg-[#EEFBF3] '
                             )}
                         >
@@ -338,7 +338,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                                     aria-pressed={on}
                                     onClick={() => toggleLevel(l.level)}
                                     className={cn(
-                                        'hidden sm:inline-flex shrink-0 h-9 px-3 rounded-xl items-center gap-1.5 text-[13px] font-semibold whitespace-nowrap transition-colors',
+                                        'hidden sm:inline-flex shrink-0 h-9 px-3  items-center gap-1.5 text-[13px] font-semibold whitespace-nowrap transition-colors',
                                         on ? 'bg-[#0A2A1A] text-white' : 'text-[#374151] hover:bg-white'
                                     )}
                                 >
@@ -362,16 +362,16 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                 {loading ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
                         {Array.from({ length: 10 }).map((_, i) => (
-                            <div key={i} className="rounded-lg overflow-hidden animate-pulse">
-                                <div className="aspect-video bg-[#F1F3F5] rounded-lg" />
-                                <div className="h-3.5 bg-[#F1F3F5] rounded w-4/5 mt-3" />
-                                <div className="h-3 bg-[#F5F6F8] rounded w-2/5 mt-2" />
-                                <div className="h-4 bg-[#F1F3F5] rounded w-1/3 mt-3" />
+                            <div key={i} className=" overflow-hidden animate-pulse">
+                                <div className="aspect-video bg-[#F1F3F5] " />
+                                <div className="h-3.5 bg-[#F1F3F5]  w-4/5 mt-3" />
+                                <div className="h-3 bg-[#F5F6F8]  w-2/5 mt-2" />
+                                <div className="h-4 bg-[#F1F3F5]  w-1/3 mt-3" />
                             </div>
                         ))}
                     </div>
                 ) : courses.length === 0 ? (
-                    <div className="bg-[#F5F6F8] rounded-[24px] py-14 text-center px-6">
+                    <div className="bg-[#F5F6F8]  py-14 text-center px-6">
                         <h2 className="text-[18px] font-extrabold mb-1.5">
                             {query ? `"${query}" için sonuç yok` : 'Burada henüz kurs yok'}
                         </h2>
@@ -382,9 +382,9 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                         </p>
                         <div className="flex flex-wrap gap-2 justify-center">
                             {activeFilterCount > 0 && (
-                                <button onClick={resetFilters} className="h-10 px-5 rounded-xl bg-white text-[14px] font-bold">Filtreleri temizle</button>
+                                <button onClick={resetFilters} className="h-10 px-5  bg-white text-[14px] font-bold">Filtreleri temizle</button>
                             )}
-                            <Link to="/courses" className="h-10 px-5 inline-flex items-center rounded-xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14px] font-bold">
+                            <Link to="/courses" className="h-10 px-5 inline-flex items-center  bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14px] font-bold">
                                 Tüm kurslara göz at
                             </Link>
                         </div>
@@ -416,7 +416,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
             {showMobileFilters && (
                 <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center sm:p-4" role="dialog" aria-modal="true" aria-label="Filtreler">
                     <div className="absolute inset-0 bg-black/40 animate-in fade-in duration-150" onClick={() => setShowMobileFilters(false)} />
-                    <div className="relative w-full sm:max-w-[600px] max-h-[88vh] flex flex-col bg-white rounded-t-[28px] sm:rounded-[28px] shadow-[0_40px_90px_-30px_rgba(17,24,39,0.6)] animate-in fade-in zoom-in-95 duration-200">
+                    <div className="relative w-full sm:max-w-[600px] max-h-[88vh] flex flex-col bg-white   shadow-[0_40px_90px_-30px_rgba(17,24,39,0.6)] animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between px-6 pt-5 pb-2">
                             <h2 className="text-[19px] font-extrabold">Filtrele</h2>
                             <button onClick={() => setShowMobileFilters(false)} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#F1F3F5]" aria-label="Kapat">
@@ -441,13 +441,13 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                             <button
                                 onClick={resetFilters}
                                 disabled={activeFilterCount === 0}
-                                className="h-11 px-5 rounded-xl text-[14px] font-bold text-[#374151] hover:bg-[#F1F3F5] disabled:opacity-40"
+                                className="h-11 px-5  text-[14px] font-bold text-[#374151] hover:bg-[#F1F3F5] disabled:opacity-40"
                             >
                                 Temizle
                             </button>
                             <button
                                 onClick={() => setShowMobileFilters(false)}
-                                className="flex-1 h-11 rounded-xl bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14.5px] font-bold"
+                                className="flex-1 h-11  bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14.5px] font-bold"
                             >
                                 {loading ? 'Yükleniyor…' : `${pagination?.total ?? 0} kursu göster`}
                             </button>
@@ -502,7 +502,7 @@ const RemovableChip: React.FC<{ onRemove: () => void; children: React.ReactNode 
     <button
         type="button"
         onClick={onRemove}
-        className="shrink-0 h-9 inline-flex items-center gap-1.5 rounded-xl bg-[#0A2A1A] text-white pl-3 pr-2.5 text-[13px] font-semibold whitespace-nowrap"
+        className="shrink-0 h-9 inline-flex items-center gap-1.5  bg-[#0A2A1A] text-white pl-3 pr-2.5 text-[13px] font-semibold whitespace-nowrap"
     >
         {children}
         <X className="w-3.5 h-3.5 opacity-70" />
@@ -535,7 +535,7 @@ const SortMenu: React.FC<{
                 aria-haspopup="listbox"
                 aria-expanded={open}
                 onClick={() => setOpen(v => !v)}
-                className="h-9 pl-3 pr-2.5 rounded-xl inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#111827] hover:bg-white transition-colors"
+                className="h-9 pl-3 pr-2.5  inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#111827] hover:bg-white transition-colors"
             >
                 <span className="hidden sm:inline font-semibold text-[#6B7280]">Sırala:</span>
                 {current?.label}
@@ -544,7 +544,7 @@ const SortMenu: React.FC<{
             {open && (
                 <ul
                     role="listbox"
-                    className="absolute right-0 top-[calc(100%+6px)] z-30 w-[220px] p-1.5 rounded-2xl bg-white shadow-[0_20px_50px_-12px_rgba(17,24,39,0.3)] animate-in fade-in zoom-in-95 duration-150 origin-top-right"
+                    className="absolute right-0 top-[calc(100%+6px)] z-30 w-[220px] p-1.5  bg-white shadow-[0_20px_50px_-12px_rgba(17,24,39,0.3)] animate-in fade-in zoom-in-95 duration-150 origin-top-right"
                 >
                     {options.map(o => (
                         <li key={o.value}>
@@ -554,7 +554,7 @@ const SortMenu: React.FC<{
                                 aria-selected={o.value === value}
                                 onClick={() => { onChange(o.value); setOpen(false); }}
                                 className={cn(
-                                    'w-full h-10 px-3 rounded-xl flex items-center justify-between text-left text-[13.5px] transition-colors',
+                                    'w-full h-10 px-3  flex items-center justify-between text-left text-[13.5px] transition-colors',
                                     o.value === value ? 'bg-[#EEFBF3] text-[#1B7A43] font-bold' : 'text-[#374151] font-semibold hover:bg-[#F5F6F8]'
                                 )}
                             >
@@ -592,7 +592,7 @@ const Pagination: React.FC<{
             <button
                 onClick={() => onChange(page - 1)}
                 disabled={page <= 1}
-                className="h-10 px-4 rounded-xl text-[14px] font-semibold text-[#374151] hover:bg-[#F1F3F5] disabled:opacity-30 disabled:hover:bg-transparent"
+                className="h-10 px-4  text-[14px] font-semibold text-[#374151] hover:bg-[#F1F3F5] disabled:opacity-30 disabled:hover:bg-transparent"
             >
                 Önceki
             </button>
@@ -606,7 +606,7 @@ const Pagination: React.FC<{
                         onClick={() => onChange(p)}
                         aria-current={p === page ? 'page' : undefined}
                         className={cn(
-                            'h-10 min-w-[40px] px-2 rounded-xl text-[14px] font-bold tabular-nums transition-colors',
+                            'h-10 min-w-[40px] px-2  text-[14px] font-bold tabular-nums transition-colors',
                             p === page
                                 ? 'bg-[#1B7A43] text-white'
                                 : 'text-[#374151] bg-[#F5F6F8] hover:bg-[#E9ECEF]'
@@ -620,7 +620,7 @@ const Pagination: React.FC<{
             <button
                 onClick={() => onChange(page + 1)}
                 disabled={page >= totalPages}
-                className="h-10 px-4 rounded-xl text-[14px] font-semibold text-[#374151] hover:bg-[#F1F3F5] disabled:opacity-30 disabled:hover:bg-transparent"
+                className="h-10 px-4  text-[14px] font-semibold text-[#374151] hover:bg-[#F1F3F5] disabled:opacity-30 disabled:hover:bg-transparent"
             >
                 Sonraki
             </button>

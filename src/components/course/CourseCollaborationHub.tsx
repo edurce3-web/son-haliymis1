@@ -362,7 +362,7 @@ export default function CourseCollaborationHub() {
                   className="flex-1"
                 />
                 <select
-                  className="p-2 rounded-md bg-[#F5F6F8]"
+                  className="p-2  bg-[#F5F6F8]"
                   value={inviteRole}
                   onChange={(e) => setInviteRole(e.target.value as any)}
                 >
@@ -393,7 +393,7 @@ export default function CourseCollaborationHub() {
                 {collaborators.map((collaborator) => {
                   const RoleIcon = getRoleIcon(collaborator.role);
                   return (
-                    <div key={collaborator.id} className="flex items-center justify-between p-4 rounded-lg bg-[#F5F6F8]">
+                    <div key={collaborator.id} className="flex items-center justify-between p-4  bg-[#F5F6F8]">
                       <div className="flex items-center gap-3">
                         <Avatar>
                           <AvatarImage src={collaborator.avatar} />
@@ -563,7 +563,7 @@ export default function CourseCollaborationHub() {
             <CardContent>
               <div className="space-y-4">
                 {versions.map((version) => (
-                  <div key={version.id} className="rounded-lg p-4 bg-[#F5F6F8]">
+                  <div key={version.id} className=" p-4 bg-[#F5F6F8]">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <Badge variant={version.isCurrent ? 'default' : 'outline'}>
@@ -630,8 +630,8 @@ export default function CourseCollaborationHub() {
                 {activities.map((activity) => {
                   const ActivityIcon = getActivityIcon(activity.type);
                   return (
-                    <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg bg-[#F5F6F8]">
-                      <div className="p-2 bg-primary/10 rounded-lg">
+                    <div key={activity.id} className="flex items-start gap-3 p-3  bg-[#F5F6F8]">
+                      <div className="p-2 bg-primary/10 ">
                         <ActivityIcon className="w-4 h-4 text-primary" />
                       </div>
                       <div className="flex-1">

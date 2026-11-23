@@ -176,14 +176,14 @@ export const ShelfSection: React.FC<{
                         ? Array.from({ length: columns * (rows || 1) }).map((_, i) => (
                             <div
                                 key={i}
-                                className={cn(mobileItem, 'bg-white rounded-lg overflow-hidden animate-pulse ')}
+                                className={cn(mobileItem, 'bg-white  overflow-hidden animate-pulse ')}
                             >
                                 <div className="aspect-video bg-[#D7F5E2]" />
                                 <div className="p-3 space-y-2">
-                                    <div className="h-3.5 bg-[#EEFBF3] rounded w-full" />
-                                    <div className="h-3.5 bg-[#EEFBF3] rounded w-3/5" />
-                                    <div className="h-3 bg-[#EEFBF3] rounded w-2/5 mt-3" />
-                                    <div className="h-5 bg-[#EEFBF3] rounded w-1/3 mt-3" />
+                                    <div className="h-3.5 bg-[#EEFBF3]  w-full" />
+                                    <div className="h-3.5 bg-[#EEFBF3]  w-3/5" />
+                                    <div className="h-3 bg-[#EEFBF3]  w-2/5 mt-3" />
+                                    <div className="h-5 bg-[#EEFBF3]  w-1/3 mt-3" />
                                 </div>
                             </div>
                         ))
@@ -211,14 +211,14 @@ export const ShelfSection: React.FC<{
                         ? Array.from({ length: columns }).map((_, i) => (
                             <div
                                 key={i}
-                                className={cn(cardWidth, 'shrink-0 ', 'bg-white rounded-lg overflow-hidden animate-pulse ')}
+                                className={cn(cardWidth, 'shrink-0 ', 'bg-white  overflow-hidden animate-pulse ')}
                             >
                                 <div className="aspect-video bg-[#D7F5E2]" />
                                 <div className="p-3 space-y-2">
-                                    <div className="h-3.5 bg-[#EEFBF3] rounded w-full" />
-                                    <div className="h-3.5 bg-[#EEFBF3] rounded w-3/5" />
-                                    <div className="h-3 bg-[#EEFBF3] rounded w-2/5 mt-3" />
-                                    <div className="h-5 bg-[#EEFBF3] rounded w-1/3 mt-3" />
+                                    <div className="h-3.5 bg-[#EEFBF3]  w-full" />
+                                    <div className="h-3.5 bg-[#EEFBF3]  w-3/5" />
+                                    <div className="h-3 bg-[#EEFBF3]  w-2/5 mt-3" />
+                                    <div className="h-5 bg-[#EEFBF3]  w-1/3 mt-3" />
                                 </div>
                             </div>
                         ))

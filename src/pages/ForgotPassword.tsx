@@ -36,7 +36,7 @@ const ForgotPassword = () => {
     const [passwordConfirm, setPasswordConfirm] = useState('');
 
     const inputClass =
-        'h-11 rounded-xl bg-slate-50/60 focus:bg-white focus:ring-2 focus:ring-brand-500/15 transition-colors';
+        'h-11  bg-slate-50/60 focus:bg-white focus:ring-2 focus:ring-brand-500/15 transition-colors';
 
     const post = async (path: string, body: Record<string, string>) => {
         const res = await fetch(`${API_BASE_URL}/auth/${path}`, {
@@ -161,7 +161,7 @@ const ForgotPassword = () => {
 
             <div className="mb-7">
                 <div className="flex items-center gap-3">
-                    <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-brand-50 shrink-0">
+                    <span className="flex items-center justify-center w-10 h-10  bg-brand-50 shrink-0">
                         {step === 'email' && <Mail className="w-5 h-5 text-brand-700" />}
                         {step === 'code' && <ShieldCheck className="w-5 h-5 text-brand-700" />}
                         {step === 'password' && <KeyRound className="w-5 h-5 text-brand-700" />}
@@ -196,7 +196,7 @@ const ForgotPassword = () => {
                     <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-11 rounded-xl bg-brand-700 hover:bg-brand-800 font-semibold"
+                        className="w-full h-11  bg-brand-700 hover:bg-brand-800 font-semibold"
                     >
                         {loading
                             ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Gönderiliyor</>
@@ -217,7 +217,7 @@ const ForgotPassword = () => {
                     <Button
                         type="submit"
                         disabled={loading || code.length !== 6}
-                        className="w-full h-11 rounded-xl bg-brand-700 hover:bg-brand-800 font-semibold disabled:opacity-50"
+                        className="w-full h-11  bg-brand-700 hover:bg-brand-800 font-semibold disabled:opacity-50"
                     >
                         {loading
                             ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Doğrulanıyor</>
@@ -296,7 +296,7 @@ const ForgotPassword = () => {
                     <Button
                         type="submit"
                         disabled={loading || !password || mismatch}
-                        className="w-full h-11 rounded-xl bg-brand-700 hover:bg-brand-800 font-semibold disabled:opacity-50"
+                        className="w-full h-11  bg-brand-700 hover:bg-brand-800 font-semibold disabled:opacity-50"
                     >
                         {loading
                             ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Güncelleniyor</>

@@ -40,7 +40,7 @@ export const EditorFrame: React.FC<{
                     <span aria-hidden className="hidden sm:block w-2" />
                     <Link
                         to={back.to}
-                        className="shrink-0 inline-flex items-center gap-1.5 h-9 px-2.5 -ml-1 sm:ml-0 rounded-lg text-[13.5px] font-semibold text-[#3d5754] hover:text-[#00201d] hover:bg-[#ecfbf8] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40"
+                        className="shrink-0 inline-flex items-center gap-1.5 h-9 px-2.5 -ml-1 sm:ml-0  text-[13.5px] font-semibold text-[#3d5754] hover:text-[#00201d] hover:bg-[#ecfbf8] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40"
                     >
                         <ArrowLeft className="w-4 h-4" />
                         <span className="hidden md:inline">{back.label}</span>

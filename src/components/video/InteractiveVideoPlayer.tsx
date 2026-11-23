@@ -319,7 +319,7 @@ export default function InteractiveVideoPlayer({
   return (
     <div className="flex gap-4 h-[600px]">
       {/* Video Player */}
-      <div className={`relative bg-black rounded-lg overflow-hidden ${showSidebar ? 'flex-1' : 'w-full'}`}>
+      <div className={`relative bg-black  overflow-hidden ${showSidebar ? 'flex-1' : 'w-full'}`}>
         <video
           ref={videoRef}
           src={videoUrl}
@@ -396,7 +396,7 @@ export default function InteractiveVideoPlayer({
                 <select
                   value={playbackSpeed}
                   onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}
-                  className="bg-black/50 text-white text-sm rounded px-2 py-1"
+                  className="bg-black/50 text-white text-sm  px-2 py-1"
                 >
                   <option value={0.5}>0.5x</option>
                   <option value={0.75}>0.75x</option>
@@ -410,7 +410,7 @@ export default function InteractiveVideoPlayer({
                 <select
                   value={quality}
                   onChange={(e) => setQuality(e.target.value)}
-                  className="bg-black/50 text-white text-sm rounded px-2 py-1"
+                  className="bg-black/50 text-white text-sm  px-2 py-1"
                 >
                   <option value="480p">480p</option>
                   <option value="720p">720p</option>
@@ -452,7 +452,7 @@ export default function InteractiveVideoPlayer({
 
       {/* Interactive Sidebar */}
       {showSidebar && (
-        <div className="w-80 bg-[#F5F6F8] rounded-lg">
+        <div className="w-80 bg-[#F5F6F8] ">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="notes">Notlar</TabsTrigger>

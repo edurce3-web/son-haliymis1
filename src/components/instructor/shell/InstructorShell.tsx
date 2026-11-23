@@ -132,7 +132,7 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
                     onClick={() => setDrawer(true)}
                     aria-label="Menüyü aç"
                     aria-expanded={drawer}
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60"
+                    className="w-10 h-10  flex items-center justify-center text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60"
                 >
                     <Menu className="w-5 h-5" />
                 </button>
@@ -162,7 +162,7 @@ export const InstructorShell: React.FC<{ children: React.ReactNode }> = ({ child
                     type="button"
                     onClick={() => setDrawer(false)}
                     aria-label="Menüyü kapat"
-                    className="absolute top-3 right-3 w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10"
+                    className="absolute top-3 right-3 w-9 h-9  flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10"
                 >
                     <X className="w-4 h-4" />
                 </button>
@@ -193,7 +193,7 @@ const Brand: React.FC<{ className?: string; size?: 'lg' | 'sm' }> = ({ className
     <Link
         to="/instructor/dashboard"
         aria-label="Edurce eğitmen paneli"
-        className={cn('inline-flex items-end gap-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60', className)}
+        className={cn('inline-flex items-end gap-2  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60', className)}
     >
         <span
             aria-hidden
@@ -212,7 +212,7 @@ const StudentLink: React.FC<{ compact?: boolean; className?: string }> = ({ comp
         to="/"
         title="Öğrenci görünümüne geç"
         className={cn(
-            'inline-flex items-center gap-2 rounded-xl font-bold transition-colors duration-150',
+            'inline-flex items-center gap-2  font-bold transition-colors duration-150',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40',
             compact
                 ? 'h-9 px-2.5 text-[13px] text-white hover:bg-white/10'
@@ -300,7 +300,7 @@ const DesktopNav: React.FC = () => {
                         const isOpen = openId === s.id;
                         const Icon = s.icon;
                         const row = cn(
-                            'relative flex items-center gap-3 w-full h-[50px] pl-4 pr-4 text-left rounded-2xl',
+                            'relative flex items-center gap-3 w-full h-[50px] pl-4 pr-4 text-left ',
                             'text-[16px] tracking-[-0.01em] transition-[background-color,color] duration-150',
                             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#9cf2e8]/60',
                             active
@@ -370,7 +370,7 @@ const DesktopNav: React.FC = () => {
                     onMouseEnter={keep}
                     onMouseLeave={hide}
                     className={cn(
-                        'absolute left-full -mt-3 z-50 rounded-r-[24px] bg-[#0f302c] text-white overflow-hidden',
+                        'absolute left-full -mt-3 z-50  bg-[#0f302c] text-white overflow-hidden',
                         'shadow-[28px_24px_60px_-28px_rgba(11,38,25,0.65)]',
                         'transition-[opacity,transform,top] motion-reduce:transition-none',
                         settled ? 'duration-150' : 'duration-200',
@@ -404,7 +404,7 @@ const Flyout: React.FC<{ section: Section; animate: boolean }> = ({ section, ani
                         to={sub.to}
                         role="menuitem"
                         className={({ isActive }) => cn(
-                            'group flex items-center gap-3 h-11 rounded-xl px-3 text-[15px] transition-colors duration-150',
+                            'group flex items-center gap-3 h-11  px-3 text-[15px] transition-colors duration-150',
                             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9cf2e8]/60',
                             isActive ? 'bg-white/[0.09] text-[#9cf2e8] font-bold' : 'text-white/80 font-semibold hover:bg-white/[0.06] hover:text-white'
                         )}
@@ -431,7 +431,7 @@ const Flyout: React.FC<{ section: Section; animate: boolean }> = ({ section, ani
             <div className="px-5 pt-4">
                 <Link
                     to={section.action.to}
-                    className="flex items-center justify-center gap-2 h-11 rounded-xl bg-[#9cf2e8] hover:bg-white active:scale-[0.98] text-[#00201d] text-[14px] font-bold transition-[background-color,transform] duration-150"
+                    className="flex items-center justify-center gap-2 h-11  bg-[#9cf2e8] hover:bg-white active:scale-[0.98] text-[#00201d] text-[14px] font-bold transition-[background-color,transform] duration-150"
                 >
                     <Plus className="w-4 h-4" />
                     {section.action.label}
@@ -519,7 +519,7 @@ const MonthCard: React.FC = () => {
     return (
         <Link
             to="/instructor/finance/report"
-            className="group mx-4 mb-3 rounded-2xl bg-white/[0.06] hover:bg-white/[0.1] px-4 py-3.5 transition-colors duration-150"
+            className="group mx-4 mb-3  bg-white/[0.06] hover:bg-white/[0.1] px-4 py-3.5 transition-colors duration-150"
         >
             <span className="flex items-center justify-between text-[12px] font-semibold text-white/55">
                 Bu ayki kazancın
@@ -527,8 +527,8 @@ const MonthCard: React.FC = () => {
             </span>
             {isLoading || !stats ? (
                 <span className="block mt-2 space-y-1.5" aria-hidden>
-                    <span className="block h-4 w-24 rounded bg-white/10 animate-pulse" />
-                    <span className="block h-2.5 w-16 rounded bg-white/10 animate-pulse" />
+                    <span className="block h-4 w-24  bg-white/10 animate-pulse" />
+                    <span className="block h-2.5 w-16  bg-white/10 animate-pulse" />
                 </span>
             ) : (
                 <>
@@ -575,7 +575,7 @@ const MobileNav: React.FC = () => {
                             to={firstPage(s)}
                             aria-current={active ? 'page' : undefined}
                             className={cn(
-                                'flex items-center gap-3 flex-1 min-w-0 h-[50px] px-4 rounded-xl text-[17px] tracking-[-0.01em]',
+                                'flex items-center gap-3 flex-1 min-w-0 h-[50px] px-4  text-[17px] tracking-[-0.01em]',
                                 active ? 'bg-[#9cf2e8] text-[#00201d] font-bold' : 'text-white/80 font-semibold'
                             )}
                         >
@@ -586,7 +586,7 @@ const MobileNav: React.FC = () => {
                     );
                     if (!s.subs) return <div key={s.id} className="flex">{link}</div>;
                     return (
-                        <div key={s.id} className={cn('rounded-xl transition-colors', isOpen && 'bg-white/[0.05]')}>
+                        <div key={s.id} className={cn(' transition-colors', isOpen && 'bg-white/[0.05]')}>
                             <div className="flex items-center gap-1">
                                 {link}
                                 <button
@@ -594,7 +594,7 @@ const MobileNav: React.FC = () => {
                                     aria-expanded={isOpen}
                                     aria-label={`${s.label} sayfalarını ${isOpen ? 'gizle' : 'göster'}`}
                                     onClick={() => setExpanded(isOpen ? null : s.id)}
-                                    className="w-11 h-[50px] shrink-0 rounded-xl flex items-center justify-center text-white/55 hover:text-white hover:bg-white/10"
+                                    className="w-11 h-[50px] shrink-0  flex items-center justify-center text-white/55 hover:text-white hover:bg-white/10"
                                 >
                                     <ChevronDown className={cn('w-4 h-4 transition-transform duration-200', isOpen && 'rotate-180')} />
                                 </button>
@@ -606,7 +606,7 @@ const MobileNav: React.FC = () => {
                                             <NavLink
                                                 to={sub.to}
                                                 className={({ isActive }) => cn(
-                                                    'flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-[15px]',
+                                                    'flex items-center justify-between gap-3  px-3 py-2.5 text-[15px]',
                                                     isActive ? 'bg-[#9cf2e8]/15 text-[#9cf2e8] font-bold' : 'text-white/70 font-medium'
                                                 )}
                                             >
@@ -619,7 +619,7 @@ const MobileNav: React.FC = () => {
                                         <li>
                                             <Link
                                                 to={s.action.to}
-                                                className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2.5 text-[15px] font-bold text-[#9cf2e8]"
+                                                className="mt-1 flex items-center gap-2  px-3 py-2.5 text-[15px] font-bold text-[#9cf2e8]"
                                             >
                                                 <Plus className="w-4 h-4" /> {s.action.label}
                                             </Link>
@@ -645,7 +645,7 @@ const UserFooter: React.FC = () => {
     return (
         <Link
             to="/instructor/settings/profile"
-            className="shrink-0 mx-3 mb-3 rounded-xl px-3 py-2.5 flex items-center gap-2.5 hover:bg-white/[0.05] transition-colors"
+            className="shrink-0 mx-3 mb-3  px-3 py-2.5 flex items-center gap-2.5 hover:bg-white/[0.05] transition-colors"
         >
             {user?.profile_image ? (
                 <img src={user.profile_image} alt="" className="w-8 h-8 rounded-full object-cover" />

@@ -203,7 +203,7 @@ export const SpotlightCarousel: React.FC<{ courses: any[] }> = ({ courses }) => 
                                 key={`${course.id}-${i}`}
                                 aria-hidden={duplicate || undefined}
                                 className={cn(
-                                    'group shrink-0 w-[236px] sm:w-[248px] flex flex-col rounded-2xl p-3',
+                                    'group shrink-0 w-[236px] sm:w-[248px] flex flex-col  p-3',
                                     'bg-white/[0.06]',
                                     'transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/[0.1]',
                                     accent.ring
@@ -212,7 +212,7 @@ export const SpotlightCarousel: React.FC<{ courses: any[] }> = ({ courses }) => 
                                 <Link
                                     to={url}
                                     tabIndex={duplicate ? -1 : undefined}
-                                    className="relative block aspect-video rounded-xl overflow-hidden bg-slate-950"
+                                    className="relative block aspect-video  overflow-hidden bg-slate-950"
                                 >
                                     <img
                                         src={img}
@@ -257,7 +257,7 @@ export const SpotlightCarousel: React.FC<{ courses: any[] }> = ({ courses }) => 
                                     {tags.map(t => (
                                         <span
                                             key={t}
-                                            className="px-1.5 py-0.5 rounded-md bg-white/[0.07] text-slate-300 text-[10.5px]"
+                                            className="px-1.5 py-0.5  bg-white/[0.07] text-slate-300 text-[10.5px]"
                                         >
                                             {t}
                                         </span>

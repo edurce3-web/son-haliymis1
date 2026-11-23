@@ -264,7 +264,7 @@ export const CertificateSystem: React.FC = () => {
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600  flex items-center justify-center">
               <Award className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -307,7 +307,7 @@ export const CertificateSystem: React.FC = () => {
         </div>
 
         {certificate.blockchain_verified && (
-          <div className="bg-green-50 rounded-lg p-3 mb-4">
+          <div className="bg-green-50  p-3 mb-4">
             <div className="flex items-center space-x-2">
               <CheckCircle className="w-4 h-4 text-green-600" />
               <span className="text-sm font-medium text-green-800">Blockchain Doğrulandı</span>
@@ -375,7 +375,7 @@ export const CertificateSystem: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-blue-50 p-4 rounded-lg">
+        <div className="bg-blue-50 p-4 ">
           <h4 className="font-medium text-blue-800 mb-2">Blockchain Avantajları</h4>
           <ul className="text-sm text-blue-700 space-y-1">
             <li>• Değiştirilemez kayıt</li>
@@ -386,12 +386,12 @@ export const CertificateSystem: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="text-center p-3 bg-gray-50 rounded-lg">
+          <div className="text-center p-3 bg-gray-50 ">
             <Trophy className="w-6 h-6 mx-auto mb-1 text-yellow-600" />
             <div className="font-medium">{certificates?.length || 0}</div>
             <div className="text-gray-600">Toplam Sertifika</div>
           </div>
-          <div className="text-center p-3 bg-gray-50 rounded-lg">
+          <div className="text-center p-3 bg-gray-50 ">
             <Zap className="w-6 h-6 mx-auto mb-1 text-blue-600" />
             <div className="font-medium">
               {certificates?.filter((c: Certificate) => c.blockchain_verified).length || 0}
@@ -459,15 +459,15 @@ export const CertificateSystem: React.FC = () => {
                 <Card key={i} className="animate-pulse">
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-3 mb-4">
-                      <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                      <div className="w-12 h-12 bg-gray-200 "></div>
                       <div className="flex-1">
-                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                        <div className="h-4 bg-gray-200  w-3/4 mb-2"></div>
+                        <div className="h-3 bg-gray-200  w-1/2"></div>
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <div className="h-3 bg-gray-200 rounded"></div>
-                      <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                      <div className="h-3 bg-gray-200 "></div>
+                      <div className="h-3 bg-gray-200  w-2/3"></div>
                     </div>
                   </CardContent>
                 </Card>
@@ -496,10 +496,10 @@ export const CertificateSystem: React.FC = () => {
                 {templates?.slice(0, 3).map((template: CertificateTemplate) => (
                   <div
                     key={template.template_id}
-                    className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer bg-[#F5F6F8]"
+                    className="flex items-center space-x-3 p-2  hover:bg-gray-50 cursor-pointer bg-[#F5F6F8]"
                     onClick={() => setSelectedTemplate(template.template_id)}
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-brand-600 rounded"></div>
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-brand-600 "></div>
                     <div className="flex-1">
                       <div className="font-medium text-sm">{template.name}</div>
                       <div className="text-xs text-gray-600">{template.category}</div>
@@ -535,7 +535,7 @@ export const CertificateSystem: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="bg-gradient-to-r from-blue-600 to-brand-600 text-white p-6 rounded-lg text-center">
+                <div className="bg-gradient-to-r from-blue-600 to-brand-600 text-white p-6  text-center">
                   <Award className="w-16 h-16 mx-auto mb-4" />
                   <h2 className="text-2xl font-bold mb-2">{selectedCertificate.course_title}</h2>
                   <p className="text-lg">{selectedCertificate.student_name}</p>
@@ -563,7 +563,7 @@ export const CertificateSystem: React.FC = () => {
                 </div>
 
                 {selectedCertificate.blockchain_verified && (
-                  <div className="bg-green-50 rounded-lg p-4">
+                  <div className="bg-green-50  p-4">
                     <h4 className="font-medium text-green-800 mb-2 flex items-center">
                       <Shield className="w-4 h-4 mr-2" />
                       Blockchain Doğrulaması

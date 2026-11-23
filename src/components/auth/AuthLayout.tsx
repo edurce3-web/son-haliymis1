@@ -21,7 +21,7 @@ interface Props {
  */
 export const AuthLayout: React.FC<Props> = ({ title, subtitle, points, children }) => (
     <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4 py-10">
-        <div className="w-full max-w-[1080px] flex flex-col lg:flex-row bg-[#F5F6F8] rounded-3xl shadow-[0_10px_40px_-12px_rgba(15,23,42,0.18)] overflow-hidden">
+        <div className="w-full max-w-[1080px] flex flex-col lg:flex-row bg-[#F5F6F8]  shadow-[0_10px_40px_-12px_rgba(15,23,42,0.18)] overflow-hidden">
 
             {/* ── Sol: marka paneli ──────────────────────────────────────── */}
             <div className="hidden lg:flex lg:w-[44%] relative bg-brand-900 p-12 flex-col justify-between">

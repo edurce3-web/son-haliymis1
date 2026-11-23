@@ -73,7 +73,7 @@ export const CourseShowcase: React.FC<{
 
                     <div className="flex items-center gap-3 shrink-0">
                         {note && (
-                            <span className="hidden lg:inline-block text-[12px] font-semibold text-slate-500 bg-[#F5F6F8] rounded-xl px-3 py-1.5">
+                            <span className="hidden lg:inline-block text-[12px] font-semibold text-slate-500 bg-[#F5F6F8]  px-3 py-1.5">
                                 {note}
                             </span>
                         )}
@@ -94,14 +94,14 @@ export const CourseShowcase: React.FC<{
                         ? Array.from({ length: limit }).map((_, i) => (
                             <div
                                 key={i}
-                                className="w-[196px] sm:w-[220px] shrink-0 lg:w-auto bg-[#F5F6F8] rounded-2xl overflow-hidden animate-pulse"
+                                className="w-[196px] sm:w-[220px] shrink-0 lg:w-auto bg-[#F5F6F8]  overflow-hidden animate-pulse"
                             >
                                 <div className="aspect-[16/9] bg-slate-100" />
                                 <div className="p-5 space-y-3">
-                                    <div className="h-3 bg-slate-100 rounded w-1/3" />
-                                    <div className="h-4 bg-slate-100 rounded w-full" />
-                                    <div className="h-4 bg-slate-100 rounded w-3/5" />
-                                    <div className="h-10 bg-slate-100 rounded-xl mt-6" />
+                                    <div className="h-3 bg-slate-100  w-1/3" />
+                                    <div className="h-4 bg-slate-100  w-full" />
+                                    <div className="h-4 bg-slate-100  w-3/5" />
+                                    <div className="h-10 bg-slate-100  mt-6" />
                                 </div>
                             </div>
                         ))

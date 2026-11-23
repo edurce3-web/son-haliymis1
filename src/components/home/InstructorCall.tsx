@@ -29,7 +29,7 @@ export const InstructorCall: React.FC = () => (
                 <div>
                     <h2 className="font-jakarta font-extrabold tracking-[-0.035em] leading-[1.14] text-[38px] sm:text-[52px] lg:text-[60px]">
                         <span className="block">Bildiğini öğret,</span>
-                        <span className="inline-block my-1 -ml-1 -rotate-[1.5deg] rounded-[0.32em] bg-[#1B7A43] px-[0.28em] pb-[0.1em] pt-[0.02em] text-white whitespace-nowrap shadow-[0_14px_30px_-14px_rgba(0,32,29,0.7)]">
+                        <span className="inline-block my-1 -ml-1 -rotate-[1.5deg] bg-[#1B7A43] px-[0.28em] pb-[0.1em] pt-[0.02em] text-white whitespace-nowrap shadow-[0_14px_30px_-14px_rgba(0,32,29,0.7)]">
                             yüksek komisyonla
                         </span>{' '}
                         <span className="whitespace-nowrap">kazan.</span>
@@ -57,7 +57,7 @@ export const InstructorCall: React.FC = () => (
                     <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
                         <Link
                             to="/become-instructor"
-                            className="group inline-flex items-center gap-2.5 h-14 px-7 rounded-2xl bg-[#1B7A43] text-white text-[16px] font-extrabold shadow-[0_18px_36px_-16px_rgba(0,32,29,0.7)] hover:bg-[#16613A] active:scale-[0.98] transition-[background-color,transform]"
+                            className="group inline-flex items-center gap-2.5 h-14 px-7  bg-[#1B7A43] text-white text-[16px] font-extrabold shadow-[0_18px_36px_-16px_rgba(0,32,29,0.7)] hover:bg-[#16613A] active:scale-[0.98] transition-[background-color,transform]"
                         >
                             Eğitmen ol
                             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
@@ -83,7 +83,7 @@ export const InstructorCall: React.FC = () => (
                                 // Alt kenar tırtıklı: fiş kopartılmış gibi
                                 maskImage: 'linear-gradient(#000 0 0) top/100% calc(100% - 12px) no-repeat, radial-gradient(circle at 10px 0, transparent 9px, #000 9.5px) bottom/20px 12px repeat-x',
                                 WebkitMaskImage: 'linear-gradient(#000 0 0) top/100% calc(100% - 12px) no-repeat, radial-gradient(circle at 10px 0, transparent 9px, #000 9.5px) bottom/20px 12px repeat-x',
-                                borderRadius: '18px 18px 0 0',
+                                borderRadius: 0,
                             }}
                         >
                             <div className="flex items-center justify-between">
@@ -104,7 +104,7 @@ export const InstructorCall: React.FC = () => (
 
                             <div className="mt-4 pt-5 bg-[#F5F6F8]">
                                 <p className="text-[13px] font-bold text-[#4B5563]">Satıştan payın</p>
-                                <p className="mt-2 inline-flex items-center rounded-xl bg-[#1B7A43] px-4 py-2.5 text-[22px] font-extrabold tracking-tight text-white">
+                                <p className="mt-2 inline-flex items-center  bg-[#1B7A43] px-4 py-2.5 text-[22px] font-extrabold tracking-tight text-white">
                                     Yüksek komisyon
                                 </p>
                             </div>

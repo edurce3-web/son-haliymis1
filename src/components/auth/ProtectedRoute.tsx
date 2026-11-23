@@ -53,13 +53,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
           <div className="flex flex-col sm:flex-row gap-2.5 mt-8">
             <a
               href={`/login?redirect=${encodeURIComponent(location.pathname)}`}
-              className="flex-1 h-11 leading-[44px] rounded-lg bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold transition-colors"
+              className="flex-1 h-11 leading-[44px]  bg-brand-700 hover:bg-brand-800 text-white text-[15px] font-semibold transition-colors"
             >
               Giriş yap
             </a>
             <a
               href="/register"
-              className="flex-1 h-11 leading-[42px] rounded-lg hover:text-brand-800 text-slate-700 text-[15px] font-semibold transition-colors bg-[#F5F6F8]"
+              className="flex-1 h-11 leading-[42px]  hover:text-brand-800 text-slate-700 text-[15px] font-semibold transition-colors bg-[#F5F6F8]"
             >
               Hesap oluştur
             </a>

@@ -49,7 +49,7 @@ export const NotificationIcon: React.FC<{ type: string; size?: 'sm' | 'md'; clas
         <span
             aria-hidden
             className={cn(
-                'shrink-0 flex items-center justify-center rounded-xl',
+                'shrink-0 flex items-center justify-center ',
                 size === 'sm' ? 'w-8 h-8' : 'w-10 h-10',
                 m.bg, m.fg, className
             )}

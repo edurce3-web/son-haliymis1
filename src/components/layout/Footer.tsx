@@ -101,8 +101,8 @@ const Footer = () => {
     ];
 
     return (
-        <footer className="px-3 sm:px-4 pb-3 sm:pb-4 bg-white">
-            <div className="rounded-[28px] sm:rounded-[36px] bg-[#F5F6F8] text-[#4B5563]">
+        <footer className="bg-white">
+            <div className="  bg-[#F5F6F8] text-[#4B5563]">
                 {/* Kategori haritası */}
                 {categories.length > 0 && (
                     <div className="mx-auto max-w-7xl px-6 sm:px-10 pt-14">
@@ -140,7 +140,7 @@ const Footer = () => {
 
                 {/* Platform bağlantıları */}
                 <div className="mx-auto max-w-7xl px-6 sm:px-10 py-14">
-                    <div className="rounded-[24px] bg-white px-6 sm:px-8 py-9 grid grid-cols-2 lg:grid-cols-[1.5fr_repeat(4,1fr)] gap-x-8 gap-y-10">
+                    <div className=" bg-white px-6 sm:px-8 py-9 grid grid-cols-2 lg:grid-cols-[1.5fr_repeat(4,1fr)] gap-x-8 gap-y-10">
                         <div className="col-span-2 lg:col-span-1">
                             <Link to="/" className="inline-flex" aria-label="Edurce ana sayfa">
                                 <img src="/logo-mint.png" alt="Edurce" className="h-10 w-auto" />

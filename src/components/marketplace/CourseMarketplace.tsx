@@ -188,8 +188,8 @@ export const CourseMarketplace: React.FC = () => {
         <img
           src={course.image_url}
           alt={course.title}
-          className={`w-full object-cover rounded-t-lg group-hover:scale-105 transition-transform duration-300 ${
-            viewMode === 'list' ? 'h-32 rounded-l-lg rounded-t-none' : 'h-48'
+          className={`w-full object-cover  group-hover:scale-105 transition-transform duration-300 ${
+            viewMode === 'list' ? 'h-32  ' : 'h-48'
           }`}
         />
         
@@ -504,7 +504,7 @@ export const CourseMarketplace: React.FC = () => {
           {/* Course Grid */}
           <div className="flex-1">
             {/* Toolbar */}
-            <div className="flex items-center justify-between mb-6 bg-white p-4 rounded-lg ">
+            <div className="flex items-center justify-between mb-6 bg-white p-4  ">
               <div className="flex items-center space-x-4">
                 <span className="text-sm text-gray-600">
                   {totalCourses.toLocaleString()} kurs bulundu
@@ -535,7 +535,7 @@ export const CourseMarketplace: React.FC = () => {
                   </SelectContent>
                 </Select>
 
-                <div className="flex items-center rounded-lg bg-[#F5F6F8]">
+                <div className="flex items-center  bg-[#F5F6F8]">
                   <Button
                     variant={viewMode === 'grid' ? 'default' : 'ghost'}
                     size="sm"
@@ -559,11 +559,11 @@ export const CourseMarketplace: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array.from({ length: 6 }).map((_, index) => (
                   <Card key={index} className="animate-pulse">
-                    <div className="h-48 bg-gray-200 rounded-t-lg"></div>
+                    <div className="h-48 bg-gray-200 "></div>
                     <CardContent className="p-4">
-                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                      <div className="h-4 bg-gray-200 rounded mb-2 w-3/4"></div>
-                      <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                      <div className="h-4 bg-gray-200  mb-2"></div>
+                      <div className="h-4 bg-gray-200  mb-2 w-3/4"></div>
+                      <div className="h-4 bg-gray-200  w-1/2"></div>
                     </CardContent>
                   </Card>
                 ))}

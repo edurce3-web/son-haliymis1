@@ -78,11 +78,11 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, onMessage, onEmail, 
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4 text-xs">
-            <div className="flex items-center space-x-2 text-slate-300 bg-slate-800/50 p-2 rounded-lg">
+            <div className="flex items-center space-x-2 text-slate-300 bg-slate-800/50 p-2 ">
               <BookOpen className="h-4 w-4 text-brand-400" />
               <span className="font-medium">{student.enrolledCourses} Kurs</span>
             </div>
-            <div className="flex items-center space-x-2 text-slate-300 bg-slate-800/50 p-2 rounded-lg">
+            <div className="flex items-center space-x-2 text-slate-300 bg-slate-800/50 p-2 ">
               <Clock className="h-4 w-4 text-emerald-400" />
               <span className="font-medium">{student.lastActive}</span>
             </div>
@@ -107,9 +107,9 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, onMessage, onEmail, 
             ) : courses && courses.length > 0 ? (
               <div className="space-y-3">
                 {courses.map(course => (
-                  <div key={course.course_id} className="flex flex-col gap-2 p-3 bg-slate-900/50 rounded-xl">
+                  <div key={course.course_id} className="flex flex-col gap-2 p-3 bg-slate-900/50 ">
                     <div className="flex gap-3">
-                      <img src={getCourseImageUrl(course.course_id, course.image_path)} alt={course.title} className="w-12 h-8 object-cover rounded  opacity-90" />
+                      <img src={getCourseImageUrl(course.course_id, course.image_path)} alt={course.title} className="w-12 h-8 object-cover   opacity-90" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-slate-200 truncate">{course.title}</p>
                         <p className="text-[10px] text-slate-500 mt-0.5">{course.completed_lessons} / {course.total_lessons} ders</p>
@@ -129,10 +129,10 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, onMessage, onEmail, 
         )}
 
         <div className="flex space-x-2 pt-2">
-          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); onMessage?.(student.id); }} className="flex-1 bg-white/5 hover:bg-white/10 hover:text-white h-9 rounded-xl text-xs">
+          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); onMessage?.(student.id); }} className="flex-1 bg-white/5 hover:bg-white/10 hover:text-white h-9  text-xs">
             <MessageCircle className="h-3.5 w-3.5 mr-1.5" /> Mesaj Gönder
           </Button>
-          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); onEmail?.(student.id); }} className="px-3 bg-white/5 hover:bg-white/10 hover:text-white h-9 rounded-xl">
+          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); onEmail?.(student.id); }} className="px-3 bg-white/5 hover:bg-white/10 hover:text-white h-9 ">
             <Mail className="h-3.5 w-3.5" />
           </Button>
         </div>

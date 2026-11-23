@@ -73,7 +73,7 @@ export const SocialLogin: React.FC<{ redirectAfter?: string }> = ({ redirectAfte
                         key={name}
                         type="button"
                         onClick={() => start(name)}
-                        className="w-full h-11 rounded-xl bg-[#F5F6F8] hover:bg-slate-50 transition-colors flex items-center justify-center gap-2.5 text-sm font-medium text-slate-700"
+                        className="w-full h-11  bg-[#F5F6F8] hover:bg-slate-50 transition-colors flex items-center justify-center gap-2.5 text-sm font-medium text-slate-700"
                     >
                         {ICONS[name]}
                         {data!.providers[name].label} ile devam et

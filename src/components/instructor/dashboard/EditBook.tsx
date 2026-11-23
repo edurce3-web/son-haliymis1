@@ -300,7 +300,7 @@ export function EditBook() {
                                     onClick={() => goToSection(n)}
                                     aria-current={isActive ? 'page' : undefined}
                                     className={cn(
-                                        'shrink-0 lg:w-full flex items-center gap-3 px-3.5 h-11 rounded-xl text-left transition-colors duration-150',
+                                        'shrink-0 lg:w-full flex items-center gap-3 px-3.5 h-11  text-left transition-colors duration-150',
                                         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005c55]/40',
                                         isActive ? 'bg-[#9cf2e8] text-[#00201d]' : 'text-[#3d5754] hover:bg-white hover:text-[#00201d]'
                                     )}
@@ -313,7 +313,7 @@ export function EditBook() {
                     </nav>
                 </div>
 
-                <section className="min-w-0 rounded-2xl bg-[#f4f6f6] overflow-hidden">
+                <section className="min-w-0  bg-[#f4f6f6] overflow-hidden">
                     <div className="px-5 sm:px-8 pt-7 pb-6">
                         <h2 className="text-[24px] font-extrabold tracking-[-0.02em] text-[#00201d]">{STEPS[step - 1].title}</h2>
                         <p className="text-[14.5px] text-[#4a6360] mt-1">{STEPS[step - 1].desc}</p>
@@ -420,7 +420,7 @@ export function EditBook() {
                                                 <label
                                                     key={o.v}
                                                     className={cn(
-                                                        'flex items-start gap-3 rounded-xl px-4 py-3.5 cursor-pointer transition-colors',
+                                                        'flex items-start gap-3  px-4 py-3.5 cursor-pointer transition-colors',
                                                         on ? 'bg-[#ecfbf8]' : 'bg-white'
                                                     )}
                                                 >
@@ -458,7 +458,7 @@ export function EditBook() {
                                     <button
                                         type="button"
                                         onClick={() => document.getElementById('cover-upload')?.click()}
-                                        className="group relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-[#f5f6f6] hover:bg-[#ecfbf8] transition-colors flex items-center justify-center"
+                                        className="group relative w-full aspect-[3/4]  overflow-hidden bg-[#f5f6f6] hover:bg-[#ecfbf8] transition-colors flex items-center justify-center"
                                     >
                                         {uploadCoverMutation.isPending && (
                                             <span className="absolute inset-0 z-[1] bg-white/80 flex items-center justify-center text-[13px] font-bold text-[#00201d]">
@@ -468,7 +468,7 @@ export function EditBook() {
                                         {coverPreview ? (
                                             <>
                                                 <img src={coverPreview} alt="Kapak önizlemesi" className="absolute inset-0 w-full h-full object-cover" />
-                                                <span className="absolute inset-x-2 bottom-2 rounded-lg bg-white/90 py-1.5 text-[12.5px] font-bold text-[#00201d] opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <span className="absolute inset-x-2 bottom-2  bg-white/90 py-1.5 text-[12.5px] font-bold text-[#00201d] opacity-0 group-hover:opacity-100 transition-opacity">
                                                     Değiştir
                                                 </span>
                                             </>
@@ -488,7 +488,7 @@ export function EditBook() {
                                     <button
                                         type="button"
                                         onClick={() => document.getElementById('book-upload')?.click()}
-                                        className="flex-1 min-h-[180px] w-full rounded-xl bg-[#f5f6f6] hover:bg-[#ecfbf8] transition-colors flex items-center justify-center px-6 text-center"
+                                        className="flex-1 min-h-[180px] w-full  bg-[#f5f6f6] hover:bg-[#ecfbf8] transition-colors flex items-center justify-center px-6 text-center"
                                     >
                                         <span>
                                             {bookFileName || book?.epub_file_path
@@ -512,7 +512,7 @@ export function EditBook() {
                         {/* 4: Yayınla — mağazadaki görünüm */}
                         {step === 4 && (
                             <div className="flex flex-col sm:flex-row gap-6 sm:items-center">
-                                <div className="w-[150px] shrink-0 aspect-[3/4] rounded-r-xl rounded-l-[4px] overflow-hidden bg-[#e3f6f2] shadow-[0_18px_34px_-18px_rgba(0,32,29,0.55)]">
+                                <div className="w-[150px] shrink-0 aspect-[3/4]   overflow-hidden bg-[#e3f6f2] shadow-[0_18px_34px_-18px_rgba(0,32,29,0.55)]">
                                     {coverPreview && <img src={coverPreview} alt="" className="w-full h-full object-cover" />}
                                 </div>
                                 <div className="min-w-0">

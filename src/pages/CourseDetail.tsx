@@ -220,13 +220,13 @@ const CourseDetail = () => {
                     <img
                       src={course.image}
                       alt={course.title}
-                      className="w-full h-48 object-cover rounded-lg"
+                      className="w-full h-48 object-cover "
                       onError={(e) => {
                         e.currentTarget.src = `https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop`;
                       }}
                     />
                     {/* Preview overlay */}
-                    <div className="absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/20  flex items-center justify-center">
                       <Button size="lg" className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30">
                         <Play className="w-5 h-5 mr-2" />
                         Önizleme
@@ -336,7 +336,7 @@ const CourseDetail = () => {
                     <CardContent>
                       <div className="space-y-3">
                         {course.curriculum.map((item: string, index: number) => (
-                          <div key={index} className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                          <div key={index} className="flex items-center space-x-3 p-3  hover:bg-muted/50 transition-colors">
                             <div className="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center text-sm font-semibold">
                               {index + 1}
                             </div>
@@ -365,16 +365,16 @@ const CourseDetail = () => {
                       {course.books && course.books.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {course.books.map((book: any) => (
-                            <div key={book.id} className="rounded-lg p-4 hover:shadow-course transition-all duration-300 bg-[#F5F6F8]">
+                            <div key={book.id} className=" p-4 hover:shadow-course transition-all duration-300 bg-[#F5F6F8]">
                               <div className="flex space-x-4">
                                 <div className="relative">
                                   <img
                                     src={book.cover}
                                     alt={book.title}
-                                    className="w-16 h-20 object-cover rounded shadow-md"
+                                    className="w-16 h-20 object-cover  shadow-md"
                                   />
                                   {!isPurchased && (
-                                    <div className="absolute inset-0 bg-black/50 rounded flex items-center justify-center">
+                                    <div className="absolute inset-0 bg-black/50  flex items-center justify-center">
                                       <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
                                         <span className="text-xs">🔒</span>
                                       </div>
@@ -488,7 +488,7 @@ const CourseDetail = () => {
                 <h3 className="text-xl font-semibold mb-4">Benzer Kurslar</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {similar.map((c) => (
-                    <div key={c.id} className="rounded-lg p-4 bg-[#F5F6F8]">
+                    <div key={c.id} className=" p-4 bg-[#F5F6F8]">
                       <div className="font-semibold line-clamp-2 mb-1">
                         <a href={`/course/${c.id}`}>{c.title}</a>
                       </div>
@@ -507,7 +507,7 @@ const CourseDetail = () => {
                 <h3 className="text-xl font-semibold mb-4">Bu kursu alanlar bunları da aldı</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {alsoBought.map((c) => (
-                    <div key={c.id} className="rounded-lg p-4 bg-[#F5F6F8]">
+                    <div key={c.id} className=" p-4 bg-[#F5F6F8]">
                       <div className="font-semibold line-clamp-2 mb-1">
                         <a href={`/course/${c.id}`}>{c.title}</a>
                       </div>

@@ -155,7 +155,7 @@ const ReviewIntegrity: React.FC = () => {
                                         href={`https://edurce.com/course/${review.course_id}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="h-9 px-3.5 leading-9 rounded-md text-[13px] font-semibold text-slate-700 bg-[#F5F6F8]"
+                                        className="h-9 px-3.5 leading-9  text-[13px] font-semibold text-slate-700 bg-[#F5F6F8]"
                                     >
                                         Kursu aç
                                     </a>

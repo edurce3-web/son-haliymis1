@@ -223,7 +223,7 @@ export const InstructorDashboard: React.FC = () => {
           <select
             value={selectedTimeRange}
             onChange={(e) => setSelectedTimeRange(e.target.value)}
-            className="px-3 py-2 rounded-lg bg-[#F5F6F8]"
+            className="px-3 py-2  bg-[#F5F6F8]"
           >
             <option value="7d">Son 7 Gün</option>
             <option value="30d">Son 30 Gün</option>
@@ -387,7 +387,7 @@ export const InstructorDashboard: React.FC = () => {
             <CardContent>
               <ScrollArea className="h-64">
                 <div className="space-y-3">
-                  <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
+                  <div className="flex items-center space-x-3 p-3 bg-green-50 ">
                     <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                       <Users className="w-4 h-4 text-green-600" />
                     </div>
@@ -396,7 +396,7 @@ export const InstructorDashboard: React.FC = () => {
                       <p className="text-xs text-gray-500">2 saat önce</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
+                  <div className="flex items-center space-x-3 p-3 bg-blue-50 ">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                       <Star className="w-4 h-4 text-blue-600" />
                     </div>
@@ -405,7 +405,7 @@ export const InstructorDashboard: React.FC = () => {
                       <p className="text-xs text-gray-500">4 saat önce</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-3 p-3 bg-brand-50 rounded-lg">
+                  <div className="flex items-center space-x-3 p-3 bg-brand-50 ">
                     <div className="w-8 h-8 bg-brand-100 rounded-full flex items-center justify-center">
                       <DollarSign className="w-4 h-4 text-brand-600" />
                     </div>
@@ -441,10 +441,10 @@ export const InstructorDashboard: React.FC = () => {
               {[...Array(6)].map((_, i) => (
                 <Card key={i} className="animate-pulse">
                   <CardContent className="p-6">
-                    <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-4 bg-gray-200  mb-4"></div>
                     <div className="space-y-2">
-                      <div className="h-3 bg-gray-200 rounded"></div>
-                      <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                      <div className="h-3 bg-gray-200 "></div>
+                      <div className="h-3 bg-gray-200  w-3/4"></div>
                     </div>
                   </CardContent>
                 </Card>
@@ -508,7 +508,7 @@ export const InstructorDashboard: React.FC = () => {
             <select
               value={selectedCourse || ''}
               onChange={(e) => setSelectedCourse(e.target.value ? Number(e.target.value) : null)}
-              className="px-3 py-2 rounded-lg bg-[#F5F6F8]"
+              className="px-3 py-2  bg-[#F5F6F8]"
             >
               <option value="">Tüm Kurslar</option>
               {courseAnalytics?.items?.map((course: CourseAnalytics) => (
@@ -528,8 +528,8 @@ export const InstructorDashboard: React.FC = () => {
                       <div key={i} className="flex items-center space-x-4 p-4 animate-pulse">
                         <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
                         <div className="flex-1">
-                          <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                          <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                          <div className="h-4 bg-gray-200  mb-2"></div>
+                          <div className="h-3 bg-gray-200  w-3/4"></div>
                         </div>
                       </div>
                     ))}
@@ -639,9 +639,9 @@ export const InstructorDashboard: React.FC = () => {
                     <div className="flex items-start space-x-4">
                       <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
                       <div className="flex-1">
-                        <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                        <div className="h-3 bg-gray-200 rounded w-3/4 mb-2"></div>
-                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                        <div className="h-4 bg-gray-200  mb-2"></div>
+                        <div className="h-3 bg-gray-200  w-3/4 mb-2"></div>
+                        <div className="h-3 bg-gray-200  w-1/2"></div>
                       </div>
                     </div>
                   </CardContent>

@@ -261,7 +261,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
           {/* Keyboard shortcuts help */}
           <div className="absolute top-4 right-4 z-20">
-            <div className="bg-black/70 text-white text-xs px-2 py-1 rounded backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="bg-black/70 text-white text-xs px-2 py-1  backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
               Space: Play/Pause • ←→: Skip • ↑↓: Volume • F: Fullscreen • M: Mute
             </div>
           </div>
@@ -386,7 +386,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     <select
                       value={selectedQuality}
                       onChange={(e) => handleQualityChange(e.target.value)}
-                      className="bg-transparent text-white text-sm rounded px-2 py-1 hover:bg-white/10 transition-colors"
+                      className="bg-transparent text-white text-sm  px-2 py-1 hover:bg-white/10 transition-colors"
                       aria-label="Video kalitesi"
                     >
                       {qualities.map((quality) => (
@@ -401,7 +401,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   <select
                     value={playbackRate}
                     onChange={(e) => handlePlaybackRateChange(Number(e.target.value))}
-                    className="bg-transparent text-white text-sm rounded px-2 py-1 hover:bg-white/10 transition-colors"
+                    className="bg-transparent text-white text-sm  px-2 py-1 hover:bg-white/10 transition-colors"
                     aria-label="Oynatma hızı"
                   >
                     <option value={0.5} className="bg-black">0.5x</option>

@@ -159,7 +159,7 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({
     <Card className={cn("", className)}>
       <CardContent className="p-6">
         <div className="flex items-center mb-4">
-          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
+          <div className="w-10 h-10 bg-primary/10  flex items-center justify-center mr-3">
             <Mail className="w-5 h-5 text-primary" />
           </div>
           <div>

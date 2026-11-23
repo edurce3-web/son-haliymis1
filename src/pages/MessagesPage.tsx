@@ -290,7 +290,7 @@ export default function MessagesPage() {
                         type="button"
                         onClick={showNewMessage ? closeCompose : startCompose}
                         className={cn(
-                            'h-11 px-5 rounded-2xl inline-flex items-center gap-2 text-[14px] font-bold transition-colors',
+                            'h-11 px-5  inline-flex items-center gap-2 text-[14px] font-bold transition-colors',
                             showNewMessage ? 'bg-[#F1F3F5] text-[#111827] hover:bg-[#E9ECEF]' : 'bg-[#1B7A43] text-white hover:bg-[#16613A]'
                         )}
                     >
@@ -301,7 +301,7 @@ export default function MessagesPage() {
                 <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] gap-3 h-[calc(100vh-220px)] min-h-[520px]">
 
                     {/* Sol: konuşmalar */}
-                    <div className={cn('rounded-[24px] bg-[#F5F6F8] flex flex-col overflow-hidden', rightOpen && 'hidden md:flex')}>
+                    <div className={cn(' bg-[#F5F6F8] flex flex-col overflow-hidden', rightOpen && 'hidden md:flex')}>
                         <div className="p-3">
                             <div className="relative">
                                 <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
@@ -309,7 +309,7 @@ export default function MessagesPage() {
                                     placeholder="Konuşma ara…"
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
-                                    className="w-full h-10 pl-10 pr-3 rounded-xl bg-white text-[14px] placeholder:text-[#9CA3AF] outline-none focus:ring-2 focus:ring-[#1B7A43]/40"
+                                    className="w-full h-10 pl-10 pr-3  bg-white text-[14px] placeholder:text-[#9CA3AF] outline-none focus:ring-2 focus:ring-[#1B7A43]/40"
                                 />
                             </div>
                         </div>
@@ -330,7 +330,7 @@ export default function MessagesPage() {
                                         key={c.other_user_id}
                                         onClick={() => openConversation(c.other_user_id)}
                                         className={cn(
-                                            'w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-left transition-colors',
+                                            'w-full flex items-center gap-3 px-3 py-2.5  text-left transition-colors',
                                             selectedUserId === c.other_user_id ? 'bg-white ' : 'hover:bg-white/70'
                                         )}
                                     >
@@ -349,7 +349,7 @@ export default function MessagesPage() {
                                             </div>
                                             <div className="flex items-center gap-1.5 mt-0.5">
                                                 {c.role === 'instructor' && (
-                                                    <span className="text-[10px] font-bold text-[#1B7A43] bg-[#EEFBF3] px-1.5 py-0.5 rounded shrink-0">Eğitmen</span>
+                                                    <span className="text-[10px] font-bold text-[#1B7A43] bg-[#EEFBF3] px-1.5 py-0.5  shrink-0">Eğitmen</span>
                                                 )}
                                                 <p className={cn('text-[12.5px] truncate', Number(c.unread_count) > 0 ? 'text-[#111827] font-semibold' : 'text-[#6B7280]')}>
                                                     {c.last_message || '…'}
@@ -363,7 +363,7 @@ export default function MessagesPage() {
                     </div>
 
                     {/* Sağ: yeni mesaj ya da seçili konuşma */}
-                    <div className={cn('rounded-[24px] bg-[#F5F6F8] flex flex-col overflow-hidden', !rightOpen && 'hidden md:flex')}>
+                    <div className={cn(' bg-[#F5F6F8] flex flex-col overflow-hidden', !rightOpen && 'hidden md:flex')}>
                         {showNewMessage ? (
                             <>
                                 <div className="px-4 sm:px-5 pt-4 pb-3 flex items-center gap-3">
@@ -375,7 +375,7 @@ export default function MessagesPage() {
 
                                 {/* Kime: en üstte */}
                                 <div className="px-3 sm:px-4">
-                                    <div className="relative rounded-2xl bg-white px-4 py-2.5 flex items-center gap-3 min-h-[52px] focus-within:ring-2 focus-within:ring-[#1B7A43]/40">
+                                    <div className="relative  bg-white px-4 py-2.5 flex items-center gap-3 min-h-[52px] focus-within:ring-2 focus-within:ring-[#1B7A43]/40">
                                         <span className="text-[13.5px] font-bold text-[#6B7280] shrink-0">Kime</span>
                                         {composeTo ? (
                                             <span className="inline-flex items-center gap-2 h-9 pl-1 pr-2 rounded-full bg-[#EEFBF3]">
@@ -432,7 +432,7 @@ export default function MessagesPage() {
                                                     <button
                                                         key={c.user_id}
                                                         onClick={() => { setComposeTo(c); setContactQuery(''); }}
-                                                        className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-white/60 hover:bg-white text-left transition-colors"
+                                                        className="flex items-center gap-3 px-3 py-2.5  bg-white/60 hover:bg-white text-left transition-colors"
                                                     >
                                                         <UserAvatar src={c.profile_image} name={`${c.first_name} ${c.last_name}`} size={36} className="shrink-0" />
                                                         <span className="min-w-0 flex-1">
@@ -450,7 +450,7 @@ export default function MessagesPage() {
                                 </div>
 
                                 <div className="p-3">
-                                    <div className="flex gap-2 items-end rounded-2xl bg-white p-2">
+                                    <div className="flex gap-2 items-end  bg-white p-2">
                                         <Textarea
                                             placeholder={composeTo ? 'Mesajını yaz…' : 'Önce alıcıyı seç'}
                                             disabled={!composeTo}
@@ -463,7 +463,7 @@ export default function MessagesPage() {
                                         <Button
                                             onClick={sendCompose}
                                             disabled={!composeTo || !messageText.trim() || composeMutation.isPending}
-                                            className="h-10 w-10 rounded-xl bg-[#1B7A43] hover:bg-[#16613A] shrink-0 p-0"
+                                            className="h-10 w-10  bg-[#1B7A43] hover:bg-[#16613A] shrink-0 p-0"
                                             aria-label="Gönder"
                                         >
                                             {composeMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
@@ -478,7 +478,7 @@ export default function MessagesPage() {
                                 <button
                                     type="button"
                                     onClick={startCompose}
-                                    className="mt-5 h-10 px-5 rounded-xl bg-white text-[14px] font-bold hover:bg-[#EEFBF3] hover:text-[#1B7A43] transition-colors"
+                                    className="mt-5 h-10 px-5  bg-white text-[14px] font-bold hover:bg-[#EEFBF3] hover:text-[#1B7A43] transition-colors"
                                 >
                                     Yeni mesaj
                                 </button>
@@ -528,8 +528,8 @@ export default function MessagesPage() {
                                                             )}
                                                             <div className="max-w-[75%]">
                                                                 <div className={cn(
-                                                                    'rounded-2xl px-3.5 py-2 text-[14px] leading-relaxed whitespace-pre-wrap break-words',
-                                                                    isMe ? 'bg-[#1B7A43] text-white rounded-br-md' : 'bg-white text-[#1F2937] rounded-bl-md'
+                                                                    ' px-3.5 py-2 text-[14px] leading-relaxed whitespace-pre-wrap break-words',
+                                                                    isMe ? 'bg-[#1B7A43] text-white ' : 'bg-white text-[#1F2937] '
                                                                 )}>
                                                                     {m.message_content}
                                                                 </div>
@@ -547,7 +547,7 @@ export default function MessagesPage() {
                                 </div>
 
                                 <div className="p-3">
-                                    <div className="flex gap-2 items-end rounded-2xl bg-white p-2">
+                                    <div className="flex gap-2 items-end  bg-white p-2">
                                         <Textarea
                                             placeholder="Mesajını yaz… (Enter ile gönder, Shift+Enter alt satır)"
                                             value={messageText}
@@ -559,7 +559,7 @@ export default function MessagesPage() {
                                         <Button
                                             onClick={handleSend}
                                             disabled={!messageText.trim() || sendMutation.isPending}
-                                            className="h-10 w-10 rounded-xl bg-[#1B7A43] hover:bg-[#16613A] shrink-0 p-0"
+                                            className="h-10 w-10  bg-[#1B7A43] hover:bg-[#16613A] shrink-0 p-0"
                                             aria-label="Gönder"
                                         >
                                             {sendMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}

@@ -56,7 +56,7 @@ export function InstructorReviews() {
             ) : (
                 <>
                     {/* Puan özeti: koyu mürekkep üstünde nane, panelin imzası */}
-                    <section className="rounded-2xl bg-[#00201d] text-white px-6 sm:px-8 py-6 grid sm:grid-cols-[auto_1fr] gap-6 sm:gap-10 items-center mb-6">
+                    <section className=" bg-[#00201d] text-white px-6 sm:px-8 py-6 grid sm:grid-cols-[auto_1fr] gap-6 sm:gap-10 items-center mb-6">
                         <div>
                             <p className="text-[56px] leading-none font-extrabold tracking-[-0.03em] text-[#9cf2e8] tabular-nums">
                                 {avg.toFixed(1).replace('.', ',')}
@@ -74,7 +74,7 @@ export function InstructorReviews() {
                                             type="button"
                                             onClick={() => setStar(star === String(s) ? 'all' : (String(s) as StarFilter))}
                                             className={cn(
-                                                'w-full grid grid-cols-[52px_1fr_44px] items-center gap-3 rounded-lg px-2 py-1 text-left transition-colors',
+                                                'w-full grid grid-cols-[52px_1fr_44px] items-center gap-3  px-2 py-1 text-left transition-colors',
                                                 star === String(s) ? 'bg-white/10' : 'hover:bg-white/[0.06]'
                                             )}
                                         >

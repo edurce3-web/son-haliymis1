@@ -70,8 +70,8 @@ export const LanguagePicker: React.FC<{ className?: string }> = ({ className }) 
                         aria-label="Dil seç"
                         className={cn(
                             'z-[61] bg-white overflow-hidden',
-                            'fixed inset-x-0 bottom-0 rounded-t-[28px] pb-[max(16px,env(safe-area-inset-bottom))] animate-in slide-in-from-bottom-4 fade-in duration-200',
-                            'sm:absolute sm:inset-x-auto sm:bottom-[calc(100%+10px)] sm:right-0 sm:w-[340px] sm:rounded-[24px] sm:pb-2 sm:slide-in-from-bottom-1',
+                            'fixed inset-x-0 bottom-0  pb-[max(16px,env(safe-area-inset-bottom))] animate-in slide-in-from-bottom-4 fade-in duration-200',
+                            'sm:absolute sm:inset-x-auto sm:bottom-[calc(100%+10px)] sm:right-0 sm:w-[340px]  sm:pb-2 sm:slide-in-from-bottom-1',
                             'shadow-[0_30px_70px_-20px_rgba(17,24,39,0.45),0_0_0_1px_rgba(17,24,39,0.05)]'
                         )}
                     >
@@ -92,7 +92,7 @@ export const LanguagePicker: React.FC<{ className?: string }> = ({ className }) 
                                             aria-checked={on}
                                             onClick={() => choose(l.code)}
                                             className={cn(
-                                                'w-full flex items-center gap-3.5 rounded-2xl px-3 py-2.5 text-left transition-colors',
+                                                'w-full flex items-center gap-3.5  px-3 py-2.5 text-left transition-colors',
                                                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1B7A43]/45',
                                                 on ? 'bg-[#EEFBF3]' : 'hover:bg-[#F5F6F8]'
                                             )}
@@ -100,7 +100,7 @@ export const LanguagePicker: React.FC<{ className?: string }> = ({ className }) 
                                             <span
                                                 translate="no"
                                                 className={cn(
-                                                    'w-9 h-9 shrink-0 rounded-xl text-[11.5px] font-extrabold tracking-wide flex items-center justify-center',
+                                                    'w-9 h-9 shrink-0  text-[11.5px] font-extrabold tracking-wide flex items-center justify-center',
                                                     on ? 'bg-[#1B7A43] text-white' : 'bg-[#F1F3F5] text-[#374151]'
                                                 )}
                                             >
