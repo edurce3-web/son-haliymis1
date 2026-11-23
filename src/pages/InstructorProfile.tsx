@@ -1,110 +1,97 @@
-import { useEffect, useState } from "react";
-import { API_BASE_URL } from '@/lib/api';
-import { useParams, Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import React from 'react';
+import { Navigate, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { API_BASE_URL, getCourseImageUrl } from '@/lib/api';
+import { ProfileView, type ProfileData } from '@/components/profile/ProfileView';
+import { ProfileNotFound, ProfileSkeleton } from './UserProfile';
 
-const InstructorProfile = () => {
-  const { id } = useParams();
-  const [profile, setProfile] = useState<any>(null);
-  const [stats, setStats] = useState<any>(null);
-  const [courses, setCourses] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+/**
+ * Eski eğitmen bağlantısı — /instructors/<id>.
+ *
+ * Tek profil sayfası /user/<slug>; numaradan adresi bulup oraya yönlendiriyor.
+ * Sunucu adres bilgisini vermezse (eski sürüm) eğitmen verisini aynı
+ * görünüme çevirip burada gösteriyor.
+ */
+type Resolved = { slug: string } | { data: ProfileData };
 
-  useEffect(() => {
-    const controller = new AbortController();
-    const load = async () => {
-      if (!id || id === 'dashboard') return; // Prevent loading if ID is just 'dashboard'
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`${API_BASE_URL}/instructor/${id}`, { signal: controller.signal });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.profile) {
-            setProfile(data.profile);
-            setStats(data.stats);
-            setCourses(data.courses || []);
-          } else {
-            setError('Eğitmen profili bulunamadı.');
-          }
-        } else {
-          setError('Profil yüklenirken bir sorun oluştu.');
-        }
-      } catch (err: any) {
-        if (err.name !== 'AbortError') {
-          setError('Bir ağ hatası oluştu.');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-    return () => controller.abort();
-  }, [id]);
+const InstructorProfile: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-16 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-        Yükleniyor...
-      </div>
-    );
-  }
+    const { data, isLoading, isError } = useQuery<Resolved>({
+        queryKey: ['instructor-profile', id],
+        queryFn: async () => {
+            try {
+                const r = await fetch(`${API_BASE_URL}/users/profile/by-id/${id}`);
+                if (r.ok) {
+                    const j = await r.json();
+                    if (j?.slug) return { slug: j.slug };
+                }
+            } catch { /* eski sunucu: aşağıdaki yola düş */ }
 
-  if (error || !profile) {
-    return (
-      <div className="container mx-auto px-4 py-16 text-center">
-        <h2 className="text-2xl font-bold mb-4">{error || 'Eğitmen bulunamadı.'}</h2>
-        <Link to="/" className="text-primary hover:underline">Ana Sayfaya Dön</Link>
-      </div>
-    );
-  }
+            const res = await fetch(`${API_BASE_URL}/instructor/${id}`);
+            if (!res.ok) throw new Error('notfound');
+            const j = await res.json();
+            if (!j?.profile) throw new Error('notfound');
+            if (j.profile.slug) return { slug: j.profile.slug };
+            return { data: adapt(j) };
+        },
+        enabled: Boolean(id) && id !== 'dashboard',
+        retry: false,
+    });
 
-  return (
-    <div className="container mx-auto px-4 py-10">
-      <div className="flex items-center gap-4 mb-8">
-        <img
-          src={`https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face`}
-          alt={`${profile.first_name} ${profile.last_name}`}
-          className="w-16 h-16 rounded-full"
-        />
-        <div>
-          <h1 className="text-2xl font-bold">{profile.first_name} {profile.last_name}</h1>
-          <div className="text-muted-foreground">{profile.email}</div>
-          {stats && (
-            <div className="mt-2 flex items-center gap-2 text-sm">
-              <Badge variant="outline">Kurs: {stats.course_count}</Badge>
-              <Badge variant="outline">Puan: {Number(stats.avg_rating || 0).toFixed(1)}</Badge>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <Card className="border-0 shadow-course">
-        <CardHeader>
-          <CardTitle>Eğitmenin Kursları</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courses.map((c) => (
-              <Link key={c.id} to={`/course/${c.id}`} className="border rounded-lg p-4 hover:shadow-course-hover transition">
-                <div className="font-semibold line-clamp-2 mb-1">{c.title}</div>
-                <div className="flex items-center justify-between text-sm">
-                  <span>⭐ {Number(c.rating || 0).toFixed(1)}</span>
-                  <span className="font-semibold">₺{c.price}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+    if (isLoading) return <ProfileSkeleton />;
+    if (isError || !data) return <ProfileNotFound />;
+    if ('slug' in data) return <Navigate to={`/user/${data.slug}`} replace />;
+    return <ProfileView data={data.data} />;
 };
 
+/** /api/instructor/:id yanıtını profil görünümünün biçimine çevirir. */
+function adapt(j: any): ProfileData {
+    const p = j.profile || {};
+    const courses = (j.courses || []).map((c: any) => ({
+        id: Number(c.id),
+        title: c.title,
+        slug: c.slug,
+        summary: null,
+        price: Number(c.price) || 0,
+        level: null,
+        rating: Number(c.rating) || 0,
+        reviewCount: Number(c.review_count) || 0,
+        studentCount: Number(c.student_count) || 0,
+        hours: 0,
+        categoryName: null,
+        categorySlug: null,
+        image: getCourseImageUrl(c.id, c.image_path),
+    }));
+    const reviews = courses.reduce((s: number, c: any) => s + c.reviewCount, 0);
+    const links: Record<string, string> = {};
+    for (const k of ['youtube', 'instagram', 'twitter', 'tiktok', 'facebook']) {
+        if (/^https?:\/\//i.test(String(p[k] || ''))) links[k] = p[k];
+    }
+    return {
+        user: {
+            id: Number(p.id),
+            name: p.full_name || `${p.first_name || ''} ${p.last_name || ''}`.trim(),
+            bio: p.bio || null,
+            website: /^https?:\/\//i.test(String(p.website || '')) ? p.website : null,
+            image: null,
+        },
+        role: courses.length > 0 ? 'instructor' : 'student',
+        title: p.title || null,
+        expertise: (p.expertise || []).map(String),
+        links,
+        categories: [],
+        suggested: [],
+        instructor: {
+            courseCount: courses.length,
+            totalStudents: Number(j.stats?.total_students) || 0,
+            totalReviews: reviews,
+            averageRating: Math.round((Number(j.stats?.avg_rating) || 0) * 10) / 10,
+            totalHours: 0,
+        },
+        courses,
+        learning: { enrolledCount: 0, completedCount: 0, courses: [] },
+    };
+}
+
 export default InstructorProfile;
-
-
-
