@@ -4,12 +4,13 @@ import { API_BASE_URL } from '@/lib/api';
 import { useSeo } from '@/hooks/useSeo';
 import { cn } from '@/lib/utils';
 import {
-    SlidersHorizontal, X, ChevronDown, Check,
+    SlidersHorizontal, X, ChevronDown, Check, LayoutGrid, Rows3,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CatalogFilters, { type CatalogFacets, type FilterState, type FacetCategory } from './CatalogFilters';
 import { type CatalogCourse } from './CatalogCourseCard';
-import { ShelfCourseCard } from '@/components/home/ShelfCourseCard';
+import { MiniCourseCard } from './MiniCourseCard';
+import { CatalogBoard } from './CatalogBoard';
 import { useCategoryNav } from '@/hooks/useCategoryNav';
 import { useOwnedCourses } from '@/hooks/useOwnedCourses';
 import { CATEGORY_TREE } from '@/data/categoryTree';
@@ -61,6 +62,13 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
     const [loading, setLoading] = useState(true);
     const [notFound, setNotFound] = useState(false);
     const [showMobileFilters, setShowMobileFilters] = useState(false);
+    const [view, setView] = useState<'grid' | 'row'>(() => {
+        try { return localStorage.getItem('catalog-view') === 'row' ? 'row' : 'grid'; } catch { return 'grid'; }
+    });
+    const changeView = (v: 'grid' | 'row') => {
+        setView(v);
+        try { localStorage.setItem('catalog-view', v); } catch { /* yok say */ }
+    };
 
     // Sahip olunan ve sepetteki kurslar — kartın doğru butonu göstermesi için
     const { ownedIds, cartIds, progressById } = useOwnedCourses();
@@ -109,6 +117,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                 if (filters.freeOnly) params.set('free', '1');
                 if (sort) params.set('sort', sort);
                 if (page > 1) params.set('page', String(page));
+                params.set('limit', '36');
 
                 const token = localStorage.getItem('token');
                 const res = await fetch(`${API_BASE_URL}/catalog?${params.toString()}`, {
@@ -241,81 +250,120 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
     const quickLevels = (facets?.levels || []).filter(l => l.count > 0 || filters.levels.includes(l.level));
 
     // Paket şeridi ızgaranın ikinci satırından sonra giriyor
-    const split = Math.min(courses.length, columns * 2);
+    const split = Math.min(courses.length, view === 'row' ? (columns >= 5 ? 6 : 4) : columns * 2);
     const showBundles = page === 1 && bundleSet.list.length > 0;
     const bundleTitle = query
         ? `"${query}" içeren paketler`
         : bundleSet.related ? `${data?.subcategory?.name || data?.category?.name} paketleri` : 'Paketler: birkaç kurs, tek fiyat';
 
+    const showBoard = page === 1 && activeFilterCount === 0 && (pagination?.total ?? 0) >= 8 && (Boolean(data?.category) || Boolean(query));
+    const boardBase: Record<string, string> = {};
+    if (query && !data?.category) boardBase.q = query;
+    if (categorySlug) boardBase.category = categorySlug;
+    if (subcategorySlug) boardBase.subcategory = subcategorySlug;
+    const scopeName = data?.subcategory?.name || data?.category?.name || (query ? `"${query}"` : '');
+
     const card = (course: CatalogCourse) => {
         const id = course.course_id ?? course.id;
         return (
-            <ShelfCourseCard
+            <MiniCourseCard
                 key={course.id}
-                course={{ ...course, id, progress: progressById.get(id) ?? 0, image: course.image }}
+                course={course}
                 owned={ownedIds.has(id)}
-                compact
+                progress={progressById.get(id) ?? 0}
+                view={view}
             />
         );
     };
+    const gridClass = view === 'row'
+        ? 'grid grid-cols-1 lg:grid-cols-2 gap-2'
+        : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-3 gap-y-5';
 
     return (
         <div className="min-h-screen bg-white text-[#111827] font-jakarta">
-            <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pt-5 sm:pt-7 pb-16">
+            {/* ── Başlık bandı ─────────────────────────────────────── */}
+            <header className="bg-[#F5F6F8]">
+                <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pt-5 sm:pt-7 pb-5">
+                    {data?.seo?.breadcrumbs && data.seo.breadcrumbs.length > 1 && (
+                        <nav aria-label="Kırıntı navigasyonu" className="hidden sm:block mb-2">
+                            <ol className="flex items-center gap-1.5 text-[12.5px] font-medium text-[#6B7280] flex-wrap">
+                                {data.seo.breadcrumbs.slice(0, -1).map(b => {
+                                    const path = b.url.replace(/^https?:\/\/[^/]+/, '') || '/';
+                                    return (
+                                        <li key={b.url} className="flex items-center gap-1.5">
+                                            <Link to={path} className="hover:text-[#1B7A43] transition-colors">{b.name}</Link>
+                                            <span className="text-[#D1D5DB]">/</span>
+                                        </li>
+                                    );
+                                })}
+                            </ol>
+                        </nav>
+                    )}
 
-                {/* Başlık */}
-                {data?.seo?.breadcrumbs && data.seo.breadcrumbs.length > 1 && (
-                    <nav aria-label="Kırıntı navigasyonu" className="hidden sm:block mb-2">
-                        <ol className="flex items-center gap-1.5 text-[12.5px] font-medium text-[#6B7280] flex-wrap">
-                            {data.seo.breadcrumbs.slice(0, -1).map(b => {
-                                const path = b.url.replace(/^https?:\/\/[^/]+/, '') || '/';
-                                return (
-                                    <li key={b.url} className="flex items-center gap-1.5">
-                                        <Link to={path} className="hover:text-[#1B7A43] transition-colors">{b.name}</Link>
-                                        <span className="text-[#D1D5DB]">/</span>
-                                    </li>
-                                );
-                            })}
-                        </ol>
-                    </nav>
+                    <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+                        <h1 className="text-[28px] sm:text-[38px] font-extrabold tracking-[-0.04em] leading-[1.04] text-[#0A2A1A]">
+                            {loading && !data ? 'Yükleniyor…' : heading}
+                        </h1>
+                        {pagination && (
+                            <p className="text-[13.5px] font-bold text-[#1B7A43] tabular-nums">{`${pagination.total} kurs`}</p>
+                        )}
+                    </div>
+                    {description && (
+                        <p className="mt-1.5 text-[14px] leading-[1.55] text-[#4B5563] max-w-[80ch] line-clamp-1 sm:line-clamp-2">{description}</p>
+                    )}
+
+                    {/* Alt kategoriler: kare döşemeler, sayılarıyla */}
+                    {activeCat && activeCat.subcategories.length > 0 && (
+                        <TileIndex
+                            className="mt-4"
+                            items={[
+                                { key: '_all', label: 'Tümü', to: `/courses/${activeCat.slug}`, count: activeCat.count, on: !data?.subcategory },
+                                ...activeCat.subcategories.map(sub => ({
+                                    key: sub.slug,
+                                    label: sub.name,
+                                    to: `/courses/${activeCat.slug}/${sub.slug}`,
+                                    count: sub.count,
+                                    on: data?.subcategory?.slug === sub.slug,
+                                })),
+                            ]}
+                        />
+                    )}
+                    {!data?.category && topics.length > 0 && (
+                        <TileIndex
+                            className="mt-4"
+                            label="İlgili konular"
+                            items={topics.map(t => ({ key: t.to, label: t.name, to: t.to }))}
+                        />
+                    )}
+                </div>
+            </header>
+
+            <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pt-6 pb-16">
+                {/* Listeler panosu */}
+                {showBoard && (
+                    <div className="mb-8">
+                        <h2 className="mb-3 text-[18px] sm:text-[20px] font-extrabold tracking-[-0.02em] text-[#0A2A1A]">
+                            {`${scopeName} listeleri`}
+                        </h2>
+                        <CatalogBoard base={boardBase} onSort={s => updateParams({ sort: s })} />
+                    </div>
                 )}
 
-                <h1 className="text-[28px] sm:text-[36px] font-extrabold tracking-[-0.035em] leading-[1.08] text-[#0A2A1A]">
-                    {loading && !data ? 'Yükleniyor…' : heading}
-                </h1>
-                <p className="mt-2 text-[14px] sm:text-[14.5px] leading-[1.55] text-[#4B5563] max-w-[78ch] line-clamp-2">
-                    {pagination && <span className="font-bold text-[#111827]">{`${pagination.total} kurs`}</span>}
-                    {pagination && description && <span className="text-[#D1D5DB]">{'  ·  '}</span>}
-                    {description}
-                </p>
-
-                {/* Alt kategoriler ya da ilgili konular: tek satır */}
-                {activeCat && activeCat.subcategories.length > 0 && (
-                    <ScrollRow className="mt-4">
-                        <NavPill to={`/courses/${activeCat.slug}`} on={!data?.subcategory}>Tümü</NavPill>
-                        {activeCat.subcategories.map(sub => (
-                            <NavPill key={sub.slug} to={`/courses/${activeCat.slug}/${sub.slug}`} on={data?.subcategory?.slug === sub.slug}>
-                                {sub.name}
-                            </NavPill>
-                        ))}
-                    </ScrollRow>
-                )}
-                {!data?.category && topics.length > 0 && (
-                    <ScrollRow className="mt-4">
-                        <span className="shrink-0 self-center text-[12.5px] font-semibold text-[#6B7280] mr-1">İlgili konular</span>
-                        {topics.map(t => <NavPill key={t.to} to={t.to}>{t.name}</NavPill>)}
-                    </ScrollRow>
+                {showBoard && (
+                    <h2 className="mb-3 text-[18px] sm:text-[20px] font-extrabold tracking-[-0.02em] text-[#0A2A1A]">
+                        {`Tüm ${scopeName} kursları`}
+                    </h2>
                 )}
 
                 {/* Araç çubuğu */}
-                <div id="catalog-results" className="scroll-mt-28 mt-5 mb-4 flex items-center gap-2  bg-[#F5F6F8] p-1.5">
+                <div id="catalog-results" className="scroll-mt-28 mb-4 flex items-center gap-1.5 bg-[#F5F6F8] p-1.5">
                     <div className="min-w-0 flex-1 flex items-center gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
                         <button
                             type="button"
                             onClick={() => setShowMobileFilters(true)}
                             className={cn(
-                                'shrink-0 h-9 pl-3 pr-3.5  inline-flex items-center gap-2 text-[13.5px] font-bold transition-colors',
-                                activeFilterCount > 0 ? 'bg-[#1B7A43] text-white hover:bg-[#16613A]' : 'bg-white text-[#111827] hover:bg-[#EEFBF3] '
+                                'shrink-0 h-9 pl-3 pr-3.5 inline-flex items-center gap-2 text-[13.5px] font-bold transition-colors',
+                                activeFilterCount > 0 ? 'bg-[#1B7A43] text-white hover:bg-[#16613A]' : 'bg-white text-[#111827] hover:bg-[#EEFBF3]'
                             )}
                         >
                             <SlidersHorizontal className="w-4 h-4" />
@@ -327,8 +375,6 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                             )}
                         </button>
 
-                        <span aria-hidden className="hidden sm:block shrink-0 w-2" />
-
                         {quickLevels.map(l => {
                             const on = filters.levels.includes(l.level);
                             return (
@@ -338,7 +384,7 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                                     aria-pressed={on}
                                     onClick={() => toggleLevel(l.level)}
                                     className={cn(
-                                        'hidden sm:inline-flex shrink-0 h-9 px-3  items-center gap-1.5 text-[13px] font-semibold whitespace-nowrap transition-colors',
+                                        'hidden sm:inline-flex shrink-0 h-9 px-3 items-center gap-1.5 text-[13px] font-semibold whitespace-nowrap transition-colors',
                                         on ? 'bg-[#0A2A1A] text-white' : 'text-[#374151] hover:bg-white'
                                     )}
                                 >
@@ -355,23 +401,36 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                         )}
                     </div>
 
+                    <div className="shrink-0 flex bg-white p-0.5" role="group" aria-label="Görünüm">
+                        {([['grid', LayoutGrid, 'Izgara'], ['row', Rows3, 'Liste']] as const).map(([v, Icon, label]) => (
+                            <button
+                                key={v}
+                                type="button"
+                                aria-label={label}
+                                aria-pressed={view === v}
+                                onClick={() => changeView(v)}
+                                className={cn('w-8 h-8 flex items-center justify-center transition-colors', view === v ? 'bg-[#0A2A1A] text-white' : 'text-[#6B7280] hover:text-[#111827]')}
+                            >
+                                <Icon className="w-4 h-4" />
+                            </button>
+                        ))}
+                    </div>
                     <SortMenu options={sortOptions} value={currentSort} onChange={v => updateParams({ sort: v })} />
                 </div>
 
                 {/* Kurslar */}
                 {loading ? (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
-                        {Array.from({ length: 10 }).map((_, i) => (
-                            <div key={i} className=" overflow-hidden animate-pulse">
-                                <div className="aspect-video bg-[#F1F3F5] " />
-                                <div className="h-3.5 bg-[#F1F3F5]  w-4/5 mt-3" />
-                                <div className="h-3 bg-[#F5F6F8]  w-2/5 mt-2" />
-                                <div className="h-4 bg-[#F1F3F5]  w-1/3 mt-3" />
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                        {Array.from({ length: 12 }).map((_, i) => (
+                            <div key={i} className="animate-pulse">
+                                <div className="aspect-video bg-[#F1F3F5]" />
+                                <div className="h-3 bg-[#F1F3F5] w-4/5 mt-2.5" />
+                                <div className="h-3 bg-[#F5F6F8] w-2/5 mt-2" />
                             </div>
                         ))}
                     </div>
                 ) : courses.length === 0 ? (
-                    <div className="bg-[#F5F6F8]  py-14 text-center px-6">
+                    <div className="bg-[#F5F6F8] py-14 text-center px-6">
                         <h2 className="text-[18px] font-extrabold mb-1.5">
                             {query ? `"${query}" için sonuç yok` : 'Burada henüz kurs yok'}
                         </h2>
@@ -382,16 +441,16 @@ export const CatalogPage: React.FC<Props> = ({ mode, categorySlug, subcategorySl
                         </p>
                         <div className="flex flex-wrap gap-2 justify-center">
                             {activeFilterCount > 0 && (
-                                <button onClick={resetFilters} className="h-10 px-5  bg-white text-[14px] font-bold">Filtreleri temizle</button>
+                                <button onClick={resetFilters} className="h-10 px-5 bg-white text-[14px] font-bold">Filtreleri temizle</button>
                             )}
-                            <Link to="/courses" className="h-10 px-5 inline-flex items-center  bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14px] font-bold">
+                            <Link to="/courses" className="h-10 px-5 inline-flex items-center bg-[#1B7A43] hover:bg-[#16613A] text-white text-[14px] font-bold">
                                 Tüm kurslara göz at
                             </Link>
                         </div>
                     </div>
                 ) : (
                     <>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-3 gap-y-5 sm:gap-x-4">
+                        <div className={gridClass}>
                             {courses.slice(0, split).map(card)}
                             {showBundles && <BundleStrip bundles={bundleSet.list} title={bundleTitle} />}
                             {courses.slice(split).map(card)}
@@ -464,7 +523,7 @@ function useColumns() {
     const get = () => {
         if (typeof window === 'undefined') return 5;
         const w = window.innerWidth;
-        return w >= 1280 ? 5 : w >= 1024 ? 4 : w >= 768 ? 3 : 2;
+        return w >= 1280 ? 6 : w >= 1024 ? 5 : w >= 768 ? 4 : w >= 640 ? 3 : 2;
     };
     const [n, setN] = useState(get);
     useEffect(() => {
@@ -475,28 +534,57 @@ function useColumns() {
     return n;
 }
 
-/** Tek satır, yana kayan dizi; sağ kenarda yumuşak geçiş. */
-const ScrollRow: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
-    <div className={cn('relative -mx-4 sm:mx-0', className)}>
-        <div className="flex gap-1 overflow-x-auto px-4 sm:px-0 pr-10 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
-            {children}
-        </div>
-        <span aria-hidden className="pointer-events-none absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-white to-transparent" />
-    </div>
-);
-
-const NavPill: React.FC<{ to: string; on?: boolean; children: React.ReactNode }> = ({ to, on, children }) => (
-    <Link
-        to={to}
-        aria-current={on ? 'page' : undefined}
-        className={cn(
-            'shrink-0 h-9 px-3.5 inline-flex items-center rounded-full text-[13.5px] whitespace-nowrap transition-colors',
-            on ? 'bg-[#0A2A1A] text-white font-bold' : 'text-[#374151] font-semibold hover:bg-[#F5F6F8] hover:text-[#111827]'
-        )}
-    >
-        {children}
-    </Link>
-);
+/**
+ * Alt kategori dizini — kare döşemeler, yanında kurs sayısı.
+ *
+ * Yana kayan tek satır yerine: hepsi bir bakışta görünüyor, iki satırı
+ * geçmiyor. Telefonda ilk beşi görünüyor, kalanı "+N" döşemesiyle açılıyor.
+ */
+const TileIndex: React.FC<{
+    items: Array<{ key: string; label: string; to: string; count?: number; on?: boolean }>;
+    label?: string;
+    className?: string;
+}> = ({ items, label, className }) => {
+    const [open, setOpen] = useState(false);
+    const MOBILE = 5;
+    const hidden = items.length - MOBILE;
+    return (
+        <nav aria-label={label || 'Alt kategoriler'} className={className}>
+            {label && <p className="mb-2 text-[12px] font-bold uppercase tracking-[0.14em] text-[#6B7280]">{label}</p>}
+            <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1.5">
+                {items.map((it, i) => (
+                    <li key={it.key} className={cn(!open && i >= MOBILE && 'hidden sm:block')}>
+                        <Link
+                            to={it.to}
+                            aria-current={it.on ? 'page' : undefined}
+                            className={cn(
+                                'h-11 px-3 flex items-center justify-between gap-2 transition-colors',
+                                it.on ? 'bg-[#0A2A1A] text-white' : 'bg-white text-[#111827] hover:bg-[#B2F0C8]',
+                                it.count === 0 && !it.on && 'opacity-55'
+                            )}
+                        >
+                            <span className="min-w-0 truncate text-[13px] font-bold">{it.label}</span>
+                            {typeof it.count === 'number' && (
+                                <span className={cn('shrink-0 text-[11.5px] font-bold tabular-nums', it.on ? 'text-[#B2F0C8]' : 'text-[#9CA3AF]')}>{it.count}</span>
+                            )}
+                        </Link>
+                    </li>
+                ))}
+                {hidden > 0 && !open && (
+                    <li className="sm:hidden">
+                        <button
+                            type="button"
+                            onClick={() => setOpen(true)}
+                            className="w-full h-11 px-3 flex items-center justify-center bg-[#B2F0C8] text-[#0A2A1A] text-[13px] font-extrabold"
+                        >
+                            {`+${hidden} daha`}
+                        </button>
+                    </li>
+                )}
+            </ul>
+        </nav>
+    );
+};
 
 const RemovableChip: React.FC<{ onRemove: () => void; children: React.ReactNode }> = ({ onRemove, children }) => (
     <button
